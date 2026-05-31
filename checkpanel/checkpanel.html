@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    
+    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信息协同数据校对助手</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <style>
+        :root {
+            --bg-main: #121212;
+            --text-main: #E0E0E0;
+            --text-muted: #9E9E9E;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #FF9800;      /* 活力橘色 */
+            --accent-hover: #F57C00;      /* 深橘色交互 */
+            --danger-color: #F44336;
+            --panel-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100vh;
+            /* 引入同目录下的背景图片，居中、覆盖、不重复并固定 */
+            background: var(--bg-main) url('./texture2.png') center/cover no-repeat fixed;
+            font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(30, 30, 30, 0.5); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+
+        /* ================= 初始拖拽界面 ================= */
+        #init-view {
+            flex: 1; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center;
+            /* 加上一层半透明暗色遮罩和背景模糊，让文字更清晰 */
+            background: rgba(18, 18, 18, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .main-title {
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            color: #FFFFFF;
+            text-shadow: 0 2px 10px rgba(255, 152, 0, 0.3);
+        }
+        
+        .drop-area {
+            width: 80%; 
+            max-width: 500px; 
+            height: 260px;
+            border: 2px dashed rgba(255, 255, 255, 0.3); 
+            border-radius: var(--panel-radius);
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center;
+            background: rgba(30, 30, 30, 0.6); 
+            backdrop-filter: blur(10px); /* 拖拽区毛玻璃效果 */
+            font-size: 18px; 
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .drop-area svg {
+            width: 64px; height: 64px;
+            fill: var(--text-muted);
+            margin-bottom: 20px;
+            transition: fill 0.3s ease;
+        }
+
+        .drop-area:hover, .drop-area.dragover { 
+            border-color: var(--accent-color); 
+            background: rgba(255, 152, 0, 0.1); 
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255, 152, 0, 0.2);
+        }
+
+        .drop-area:hover svg, .drop-area.dragover svg {
+            fill: var(--accent-color);
+        }
+
+        .drop-subtext {
+            margin-top: 10px;
+            font-size: 14px; 
+            color: var(--text-muted);
+        }
+
+        /* ================= 看板界面 ================= */
+        #dashboard-view {
+            display: none; 
+            flex: 1; 
+            flex-direction: column;
+            padding: 20px; 
+            gap: 15px;
+            /* 看板整体也加一点遮罩，烘托质感 */
+            background: rgba(10, 10, 10, 0.3);
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .dashboard-title::before {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 20px;
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        .main-split {
+            flex: 1; 
+            display: flex; 
+            gap: 20px; 
+            min-height: 0;
+        }
+
+        .panel {
+            /* 将实色面板改为半透明，配合背景形成亚克力玻璃质感 */
+            background: rgba(25, 25, 25, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color); 
+            border-radius: var(--panel-radius);
+            display: flex; 
+            flex-direction: column; 
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px; 
+            font-weight: bold;
+            color: var(--accent-color);
+            letter-spacing: 1px;
+        }
+
+        .panel-body {
+            flex: 1;
+            padding: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .left-panel { flex: 0 0 320px; }
+        .center-panel { flex: 1; }
+        .right-panel { flex: 0 0 280px; }
+
+        textarea {
+            width: 100%; 
+            height: 100%; 
+            background: transparent; 
+            color: var(--text-main);
+            border: none; 
+            outline: none; 
+            resize: none; 
+            font-family: 'Consolas', 'Microsoft YaHei', monospace;
+            font-size: 13px; 
+            line-height: 1.6;
+        }
+
+        #chart-container { width: 100%; height: 100%; }
+
+        /* ================= 按钮及交互 ================= */
+        .bottom-bar {
+            text-align: center; 
+            padding: 10px 0 0 0;
+        }
+
+        button {
+            padding: 10px 24px; 
+            background: var(--accent-color); 
+            color: #121212; 
+            border: none;
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 14px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3);
+        }
+
+        button:hover { 
+            background: var(--accent-hover); 
+            transform: scale(1.02);
+            box-shadow: 0 6px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-back { 
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            color: var(--text-main);
+            padding: 8px 16px;
+            box-shadow: none;
+        }
+
+        .btn-back:hover { 
+            background: rgba(255, 255, 255, 0.1); 
+            border-color: var(--text-muted);
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="init-view">
+    <div class="main-title">信息协同数据校对助手</div>
+    <div class="drop-area" id="dropArea">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+        </svg>
+        <div>拖入 XLSX 报价表进行逻辑校验</div>
+        <div class="drop-subtext">(或点击此处选择文件)</div>
+    </div>
+    <input type="file" id="fileInput" accept=".xlsx" style="display: none;">
+</div>
+
+<div id="dashboard-view">
+    <div class="top-nav">
+        <div class="dashboard-title">校对结果分析看板</div>
+        <button class="btn-back" onclick="location.reload()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回重新校对
+        </button>
+    </div>
+    
+    <div class="main-split" id="capture-area">
+        <div class="panel left-panel">
+            <div class="panel-header">协同校验预警明细 (单位:万元/%)</div>
+            <div class="panel-body">
+                <textarea id="logArea" readonly></textarea>
+            </div>
+        </div>
+        
+        <div class="panel center-panel">
+            <div class="panel-header">异常供应商绝对报价走势 (单位: 万元)</div>
+            <div class="panel-body">
+                <div id="chart-container"></div>
+            </div>
+        </div>
+        
+        <div class="panel right-panel">
+            <div class="panel-header">各轮降幅百分比明细</div>
+            <div class="panel-body">
+                <textarea id="detailArea" readonly></textarea>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bottom-bar">
+        <button onclick="exportReport()"> 
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            导出 TXT 校验报告 
+        </button>
+    </div>
+</div>
+
+<script>
+    // ---------------- 核心逻辑区 ----------------
+
+    const ROUNDS = ["首轮报价", "二轮报价", "三轮报价", "四轮报价", "五轮报价", "六轮报价", "终轮报价"];
+    let globalErrors = [];
+    let globalDropData = {};
+    let chartInstance = null;
+
+    // 绑定拖拽和点击事件
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+
+    dropArea.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => dropArea.addEventListener(evt, e => e.preventDefault()));
+    dropArea.addEventListener('dragover', () => dropArea.classList.add('dragover'));
+    dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
+    dropArea.addEventListener('drop', (e) => {
+        dropArea.classList.remove('dragover');
+        if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+
+    // 处理 Excel 文件
+    function handleFile(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, {type: 'array'});
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, {header: 1, defval: ""});
+            processExcelData(jsonData);
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    // 解析逻辑
+    function processExcelData(data) {
+        globalErrors = [];
+        let dropDataMap = {};
+        let priceDataMap = {};
+        let flaggedCompanies = new Set();
+        let roundPricesMap = {}; 
+
+        let percentDuplicateMap = {};
+        let valueDuplicateMap = {};
+
+        let supIdx = -1;
+        let colIdxMap = Array(ROUNDS.length).fill(-1);
+        let foundHeader = false;
+
+        for (let r = 0; r < data.length; r++) {
+            let row = data[r];
+            if (!foundHeader) {
+                for (let c = 0; c < row.length; c++) {
+                    let val = String(row[c]).trim();
+                    if (val.includes("供应商名称")) supIdx = c;
+                    let rIdx = ROUNDS.indexOf(val);
+                    if (rIdx !== -1) colIdxMap[rIdx] = c;
+                }
+                if (supIdx !== -1) foundHeader = true;
+                continue;
+            }
+
+            let company = String(row[supIdx] || "").trim();
+            if (!company || company.includes("※")) continue;
+
+            let prevPrice = null;
+            let prevRoundName = null;
+            let companyDrops = [];
+            let companyPrices = [];
+
+            for (let i = 0; i < colIdxMap.length; i++) {
+                let cIdx = colIdxMap[i];
+                if (cIdx === -1) continue;
+                
+                let rawVal = row[cIdx];
+                let currPrice = parseFloat(rawVal);
+                if (isNaN(currPrice)) continue;
+
+                companyPrices.push({roundName: ROUNDS[i], price: currPrice});
+                if(!roundPricesMap[i]) roundPricesMap[i] = {};
+                roundPricesMap[i][company] = currPrice;
+
+                if (prevPrice !== null && prevRoundName !== null) {
+                    // 涨价异常
+                    if (currPrice > prevPrice) {
+                        globalErrors.push(`【涨价异常】${company}\n    ${ROUNDS[i]}(${currPrice}) 高于上一轮(${prevPrice})`);
+                        flaggedCompanies.add(company);
+                    }
+
+                    let dropPercent = 0.0;
+                    if (prevPrice > 0) {
+                        dropPercent = (prevPrice - currPrice) / prevPrice * 100.0;
+                        let percentStr = dropPercent.toFixed(4);
+
+                        if(!percentDuplicateMap[i]) percentDuplicateMap[i] = {};
+                        if(!percentDuplicateMap[i][percentStr]) percentDuplicateMap[i][percentStr] = [];
+                        percentDuplicateMap[i][percentStr].push(company);
+
+                        let dropValue = prevPrice - currPrice;
+                        if (dropValue > 0.0001) {
+                            let valueStr = dropValue.toFixed(2);
+                            if(!valueDuplicateMap[i]) valueDuplicateMap[i] = {};
+                            if(!valueDuplicateMap[i][valueStr]) valueDuplicateMap[i][valueStr] = [];
+                            valueDuplicateMap[i][valueStr].push(company);
+                        }
+                    }
+                    let phaseName = prevRoundName.replace("报价", "") + "->" + ROUNDS[i].replace("报价", "");
+                    companyDrops.push({phaseName: phaseName, dropPercent: dropPercent});
+                }
+                prevPrice = currPrice;
+                prevRoundName = ROUNDS[i];
+            }
+
+            if (companyDrops.length) dropDataMap[company] = companyDrops;
+            if (companyPrices.length) priceDataMap[company] = companyPrices;
+        }
+
+        // 统一降幅校验
+        for (let roundIdx in percentDuplicateMap) {
+            let roundName = ROUNDS[roundIdx];
+            for (let pStr in percentDuplicateMap[roundIdx]) {
+                let comps = percentDuplicateMap[roundIdx][pStr];
+                if (comps.length > 1 && parseFloat(pStr) > 0.0001) {
+                    globalErrors.push(`【一致比例降幅】${roundName} 降幅: ${pStr}%\n    涉及:\n      - ` + comps.join("\n      - "));
+                    comps.forEach(c => flaggedCompanies.add(c));
+                }
+            }
+        }
+        for (let roundIdx in valueDuplicateMap) {
+            let roundName = ROUNDS[roundIdx];
+            for (let vStr in valueDuplicateMap[roundIdx]) {
+                let comps = valueDuplicateMap[roundIdx][vStr];
+                if (comps.length > 1) {
+                    globalErrors.push(`【一致定额降幅】${roundName} 降幅: ${vStr} \n    涉及:\n      - ` + comps.join("\n      - "));
+                    comps.forEach(c => flaggedCompanies.add(c));
+                }
+            }
+        }
+
+        // 等差等比核心校验逻辑
+        for (let roundIdx in roundPricesMap) {
+            let prices = roundPricesMap[roundIdx];
+            if (Object.keys(prices).length >= 3) {
+                checkAPGP(ROUNDS[roundIdx], prices, globalErrors, flaggedCompanies);
+            }
+        }
+
+        if (globalErrors.length === 0 && flaggedCompanies.size === 0) {
+            alert("校对完成，数据逻辑正常，未发现异常协同行为。");
+        } else {
+            let flaggedHistoryPrices = {};
+            globalDropData = {};
+            flaggedCompanies.forEach(c => {
+                if (priceDataMap[c]) flaggedHistoryPrices[c] = priceDataMap[c];
+                if (dropDataMap[c]) globalDropData[c] = dropDataMap[c];
+            });
+            showDashboard(globalErrors, flaggedHistoryPrices, globalDropData);
+        }
+    }
+
+    function checkAPGP(roundName, companyPrices, errors, flaggedCompanies) {
+        let list = Object.entries(companyPrices).sort((a, b) => a[1] - b[1]);
+        let n = list.length;
+
+        // 1. 常规等差等比 (升序)
+        for (let i = 0; i < n - 2; i++) {
+            for (let j = i + 1; j < n - 1; j++) {
+                let p1 = list[i][1], p2 = list[j][1];
+                let diff = p2 - p1;
+                
+                if (diff > 0.0001) {
+                    let apSeq = [`${list[i][0]}(${p1})`, `${list[j][0]}(${p2})`];
+                    let rawNames = [list[i][0], list[j][0]];
+                    let expected = p2 + diff;
+                    for (let k = j + 1; k < n; k++) {
+                        if (Math.abs(list[k][1] - expected) < 0.0001) {
+                            apSeq.push(`${list[k][0]}(${list[k][1]})`);
+                            rawNames.push(list[k][0]);
+                            expected += diff;
+                        }
+                    }
+                    if (apSeq.length >= 3) {
+                        errors.push(`【等差串通预警】${roundName} 中发现等差报价序列 (等差额: ${diff.toFixed(2)})\n    涉及:\n      - ` + apSeq.join("\n      - "));
+                        rawNames.forEach(c => flaggedCompanies.add(c));
+                    }
+                }
+
+                if (p1 > 0.0001) {
+                    let ratio = p2 / p1;
+                    if (ratio > 1.0001) {
+                        let gpSeq = [`${list[i][0]}(${p1})`, `${list[j][0]}(${p2})`];
+                        let rawNamesGP = [list[i][0], list[j][0]];
+                        let expected = p2 * ratio;
+                        for (let k = j + 1; k < n; k++) {
+                            if (Math.abs(list[k][1] - expected) < 0.0001) {
+                                gpSeq.push(`${list[k][0]}(${list[k][1]})`);
+                                rawNamesGP.push(list[k][0]);
+                                expected *= ratio;
+                            }
+                        }
+                        if (gpSeq.length >= 3) {
+                            errors.push(`【等比串通预警】${roundName} 中发现等比报价序列 (比例系数: ${ratio.toFixed(4)})\n    涉及:\n      - ` + gpSeq.join("\n      - "));
+                            rawNamesGP.forEach(c => flaggedCompanies.add(c));
+                        }
+                    }
+                }
+            }
+        }
+
+        // 2. 独立差值等比 (降序)
+        let descList = Object.entries(companyPrices).sort((a, b) => b[1] - a[1]);
+        for (let i = 0; i < n - 3; i++) {
+            for (let j = i + 1; j < n - 2; j++) {
+                for (let k = j + 1; k < n - 1; k++) {
+                    let p1 = descList[i][1], p2 = descList[j][1], p3 = descList[k][1];
+                    let d1 = p1 - p2, d2 = p2 - p3;
+
+                    if (d1 > 0.0001 && d2 > 0.0001) {
+                        let diffRatio = d2 / d1;
+                        let diffGpSeq = [`${descList[i][0]}(${p1})`, `${descList[j][0]}(${p2})`, `${descList[k][0]}(${p3})`];
+                        let rawNamesDiffGP = [descList[i][0], descList[j][0], descList[k][0]];
+                        
+                        let expectedDiff = d2 * diffRatio;
+                        let expectedPrice = p3 - expectedDiff;
+
+                        for (let m = k + 1; m < n; m++) {
+                            if (Math.abs(descList[m][1] - expectedPrice) < 0.0001) {
+                                diffGpSeq.push(`${descList[m][0]}(${descList[m][1]})`);
+                                rawNamesDiffGP.push(descList[m][0]);
+                                expectedDiff *= diffRatio;
+                                expectedPrice -= expectedDiff;
+                            }
+                        }
+                        if (diffGpSeq.length >= 4) {
+                            errors.push(`【差值等比串通预警】${roundName} 中发现差值呈等比递减规律 (差值衰减系数: ${diffRatio.toFixed(4)})\n    涉及:\n      - ` + diffGpSeq.join("\n      - "));
+                            rawNamesDiffGP.forEach(c => flaggedCompanies.add(c));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function showDashboard(errors, priceData, dropData) {
+        document.getElementById('init-view').style.display = 'none';
+        document.getElementById('dashboard-view').style.display = 'flex';
+
+        // 渲染文本数据
+        document.getElementById('logArea').value = errors.length > 0 ? errors.join("\n\n") : "未发现明显异常数据。";
+        let detailStr = "";
+        for (let comp in dropData) {
+            detailStr += `【${comp}】\n`;
+            dropData[comp].forEach(node => {
+                detailStr += `  ${node.phaseName} : ${node.dropPercent.toFixed(2)}%\n`;
+            });
+            detailStr += "\n";
+        }
+        document.getElementById('detailArea').value = detailStr;
+
+        // 渲染图表
+        renderChart(priceData);
+    }
+
+    function renderChart(priceData) {
+        const dom = document.getElementById('chart-container');
+        if (chartInstance) chartInstance.dispose();
+        
+        // 渲染背景设置为透明，以免遮挡卡片的亚克力效果
+        chartInstance = echarts.init(dom, 'dark');
+
+        let allRounds = new Set();
+        let series = [];
+        
+        // --- 动态计算全局最大值与最小值 ---
+        let minPrice = Infinity;
+        let maxPrice = -Infinity;
+
+        for (let comp in priceData) {
+            priceData[comp].forEach(node => {
+                allRounds.add(node.roundName);
+                if (node.price < minPrice) minPrice = node.price;
+                if (node.price > maxPrice) maxPrice = node.price;
+            });
+        }
+        
+        // 处理边界情况（以防数据异常或者全平）
+        if (minPrice === Infinity || maxPrice === -Infinity) {
+            minPrice = 0; maxPrice = 100;
+        } else if (minPrice === maxPrice) {
+            minPrice = minPrice > 0 ? 0 : minPrice - 10;
+            maxPrice = maxPrice + 10;
+        }
+        
+        // 算出五等分的步长
+        let yInterval = (maxPrice - minPrice) / 5;
+        // ----------------------------------------
+
+        let xAxisData = Array.from(allRounds).sort((a,b) => ROUNDS.indexOf(a) - ROUNDS.indexOf(b));
+
+        for (let comp in priceData) {
+            let dataMap = {};
+            priceData[comp].forEach(node => dataMap[node.roundName] = node.price);
+            let sData = xAxisData.map(r => dataMap[r] !== undefined ? dataMap[r] : null);
+            
+            series.push({
+                name: comp,
+                type: 'line',
+                data: sData,
+                symbolSize: 8,
+                smooth: true,
+                lineStyle: { width: 3 }
+            });
+        }
+
+        const option = {
+            backgroundColor: 'transparent',
+            tooltip: { 
+                trigger: 'item', 
+                backgroundColor: 'rgba(25, 25, 25, 0.9)',
+                borderColor: '#444',
+                textStyle: { color: '#EEE' },
+                formatter: '{a} <br/>{b} : <b>{c}</b> 万元' 
+            },
+            legend: { 
+                type: 'scroll', 
+                orient: 'vertical', 
+                right: 0, 
+                top: 10, 
+                textStyle: { color: '#B0B0B0', fontSize: 12 }
+            },
+            grid: { left: '2%', right: '18%', bottom: '2%', top: '8%', containLabel: true },
+            dataZoom: [
+                { type: 'inside', xAxisIndex: 0 },
+                { type: 'inside', yAxisIndex: 0 }
+            ],
+            xAxis: { 
+                type: 'category', 
+                boundaryGap: false, 
+                data: xAxisData,
+                axisLine: { lineStyle: { color: '#555' } },
+                axisLabel: { color: '#B0B0B0' }
+            },
+            yAxis: { 
+                type: 'value',
+                min: minPrice,         
+                max: maxPrice,         
+                interval: yInterval,   
+                axisLine: { show: true, lineStyle: { color: '#555' } },
+                splitLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.05)', type: 'dashed' } },
+                axisLabel: { 
+                    color: '#B0B0B0',
+                    formatter: function (value) {
+                        return value.toFixed(2);
+                    }
+                }
+            },
+            series: series,
+            color: ['#FF9800', '#00BCD4', '#8BC34A', '#E91E63', '#9C27B0', '#3F51B5', '#FFEB3B', '#009688']
+        };
+        chartInstance.setOption(option);
+        
+        window.addEventListener('resize', () => chartInstance.resize());
+    }
+
+    // 纯文本报告导出
+    function exportReport() {
+        const ts = new Date().getTime();
+        
+        let txtContent = "================ 数据逻辑协同预警明细 ================\n\n";
+        txtContent += globalErrors.length > 0 ? globalErrors.join("\n\n") : "未发现明显预警项。";
+        txtContent += "\n\n================ 各轮降幅详细明细 ================\n\n";
+        for (let comp in globalDropData) {
+            txtContent += `【${comp}】\n`;
+            globalDropData[comp].forEach(node => {
+                txtContent += `  ${node.phaseName} : ${node.dropPercent.toFixed(2)}%\n`;
+            });
+            txtContent += "\n";
+        }
+        
+        const blob = new Blob([txtContent], {type: "text/plain;charset=utf-8"});
+        const txtLink = document.createElement("a");
+        txtLink.href = URL.createObjectURL(blob);
+        txtLink.download = `协同校验分析报告_${ts}.txt`;
+        txtLink.click();
+    }
+</script>
+</body>
+</html>
