@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GBA Emulator Core</title>
+    <style>
+        /* 消除边距，纯黑背景，完美融合进你的 iframe 玻璃窗口 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4ade80;
+            font-family: monospace;
+        }
+        #game-container {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="game"></div>
+    </div>
+
+    <script>
+        // 1. 获取 URL 中的 rom 参数 (例如 ?rom=emerald.gba)
+        const urlParams = new URLSearchParams(window.location.search);
+        const romFile = urlParams.get('rom');
+
+        if (!romFile) {
+            // 如果没有参数，显示极客风格的错误提示
+            document.body.innerHTML = `
+                <div style="text-align:center; line-height: 2;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                    <h3>SYSTEM ERROR: NO ROM DETECTED</h3>
+                    <p style="color: #64748b; font-size: 12px;">Missing "?rom=filename.gba" parameter in URL.</p>
+                </div>
+            `;
+        } else {
+            // 2. 配置 EmulatorJS 核心参数
+            window.EJS_player = '#game';
+            
+            // 指定为 GBA 核心（如果你以后想玩 NDS，可以把这里改成 'nds'）
+            window.EJS_core = 'gba'; 
+            
+            // 拼接真实的 ROM 相对路径：从 /game/ 跳到上级目录，再进入 /rom/ 找到该文件
+            window.EJS_gameUrl = '../rom/' + romFile; 
+            
+            // 指定 EmulatorJS 核心依赖文件的网络 CDN 地址 (必填，免去了你本地配置底层的烦恼)
+            window.EJS_pathtodata = 'https://cdn.emulatorjs.org/latest/data/';
+
+            // --- 其他体验优化的选填配置 ---
+            window.EJS_color = '#000000'; // 模拟器背景色
+            window.EJS_startOnLoaded = true; // 加载完 ROM 后自动启动游戏
+            window.EJS_Buttons = {
+                playPause: false, // 隐藏底部多余的控制条，保持界面纯净
+                restart: true,
+                mute: true,
+                settings: true,
+                fullscreen: false // 因为你的主页面已经做了全屏按钮，这里就隐藏掉
+            };
+        }
+    </script>
+    
+    <script src="https://cdn.emulatorjs.org/latest/data/loader.js"></script>
+    
+</body>
+</html>
