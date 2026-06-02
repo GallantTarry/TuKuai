@@ -352,7 +352,7 @@
             </main>
         </div>
 
-        <audio ref="audioRef" :src="currentTrack ? currentTrack.file : ''" @timeupdate="onTimeUpdate" @loadedmetadata="onLoadedMetadata" @ended="onEnded"></audio>
+        <audio ref="audioRef" preload="none" :src="currentTrack ? currentTrack.file : ''" @timeupdate="onTimeUpdate" @loadedmetadata="onLoadedMetadata" @ended="onEnded"></audio>
     </div>
 
     <script>
