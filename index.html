@@ -39,12 +39,42 @@
         .tab-title { color: var(--theme-color); text-shadow: 0 0 12px var(--theme-glow); transition: color 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .theme-link { color: var(--theme-color); border: 1px solid var(--theme-color); border-radius: 9999px; transition: all 0.3s ease; }
         .theme-link:hover { background: var(--theme-color); color: #000; box-shadow: 0 0 20px var(--theme-glow); }
+        
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; background: var(--theme-color); box-shadow: 0 0 12px var(--theme-glow); cursor: pointer; border-radius: 50%; margin-top: -6px; transition: background 0.5s ease; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(255,255,255,0.15); border-radius: 2px; }
         input[type=range]:focus { outline: none; }
+        
         .game-pop-enter-active, .game-pop-leave-active { transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .game-pop-enter-from, .game-pop-leave-to { opacity: 0; transform: scale(0.85) translateY(20px); }
+
+        /* ====== 新增：紫色玻璃滑动块专属样式 ====== */
+        .music-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 18px !important;
+            width: 10px !important;
+            background: rgba(168, 85, 247, 0.7) !important; 
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.8), inset 0 0 5px rgba(255,255,255,0.4) !important;
+            border-radius: 4px !important;
+            margin-top: -7px !important;
+            transition: all 0.3s ease;
+        }
+        .music-slider::-webkit-slider-thumb:hover {
+            background: rgba(168, 85, 247, 1) !important;
+            transform: scale(1.2);
+        }
+
+        /* ====== 新增：跳舞小电视动画 ====== */
+        .tv-character {
+            animation: dance 0.5s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes dance {
+            0% { transform: translateY(2px) rotate(-4deg) scale(0.95); }
+            100% { transform: translateY(-3px) rotate(4deg) scale(1.05); }
+        }
     </style>
 </head>
 <body class="font-pixel text-[10px] md:text-xs">
@@ -230,10 +260,28 @@
                     <div v-if="currentTab === 'music'" class="space-y-6">
                         <h2 class="text-lg md:text-xl tab-title mb-6 font-bold">> 电子音乐终端</h2>
                         <div class="glass-card p-6 flex flex-col space-y-6">
+                            
                             <div class="flex items-center space-x-5">
                                 <div class="w-16 h-16 md:w-20 md:h-20 shrink-0 bg-black/40 rounded-2xl border-[3px] flex items-center justify-center relative overflow-hidden transition-all duration-500 shadow-lg" :style="{ borderColor: activeColor, boxShadow: isPlaying ? `0 0 20px ${activeGlow}` : 'none' }">
                                     <div v-if="isPlaying" class="absolute inset-0 animate-pulse opacity-40" :style="{ backgroundColor: activeColor }"></div>
-                                    <span class="text-2xl md:text-3xl z-10 drop-shadow-md">{{ isPlaying ? '🎵' : '⬛' }}</span>
+                                    
+                                    <div v-if="isPlaying" class="tv-character z-10 flex flex-col items-center justify-center drop-shadow-lg" :style="{ color: activeColor }">
+                                        <svg viewBox="0 0 64 64" class="w-10 h-10 md:w-12 md:h-12" fill="currentColor">
+                                            <path d="M32 12 L22 2 M32 12 L42 2" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none" />
+                                            <rect x="8" y="16" width="48" height="36" rx="6" fill="#1e293b" stroke="currentColor" stroke-width="4" />
+                                            <rect x="14" y="22" width="36" height="24" rx="3" fill="#020617" />
+                                            <text x="32" y="38" font-family="monospace" font-size="14" fill="#4ade80" text-anchor="middle" font-weight="bold" class="tv-face">{{ currentTvFace }}</text>
+                                        </svg>
+                                    </div>
+                                    
+                                    <div v-else class="z-10 flex flex-col items-center justify-center drop-shadow-lg text-gray-600">
+                                        <svg viewBox="0 0 64 64" class="w-10 h-10 md:w-12 md:h-12" fill="currentColor">
+                                            <path d="M32 12 L22 2 M32 12 L42 2" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none" />
+                                            <rect x="8" y="16" width="48" height="36" rx="6" fill="#1e293b" stroke="currentColor" stroke-width="4" />
+                                            <rect x="14" y="22" width="36" height="24" rx="3" fill="#000000" />
+                                            <text x="32" y="38" font-family="monospace" font-size="14" fill="#475569" text-anchor="middle" font-weight="bold">-_-</text>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <div class="flex flex-col space-y-3 overflow-hidden flex-1">
                                     <div class="tab-title text-xs md:text-sm truncate font-bold" :title="currentTrack ? currentTrack.title : ''">
@@ -245,24 +293,50 @@
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="flex items-center space-x-4 text-[9px] text-gray-300 font-mono font-bold">
                                 <span class="w-10 text-right">{{ currentTimeDisplay }}</span>
-                                <input type="range" min="0" :max="durationSec || 100" v-model="seekProgress" @input="onSeek" class="flex-1">
+                                <input type="range" min="0" :max="durationSec || 100" v-model="seekProgress" @input="onSeek" class="flex-1 music-slider">
                                 <span class="w-10">{{ durationDisplay }}</span>
                             </div>
-                            <div class="flex justify-center items-center space-x-10 pt-2">
-                                <button @click="prevTrack" class="text-gray-400 hover:text-white transition-transform hover:scale-110">
-                                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"/></svg>
-                                </button>
-                                <button @click="togglePlay" class="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-400 border-[3px]" 
-                                    :style="{ borderColor: activeColor, color: isPlaying ? '#000' : activeColor, backgroundColor: isPlaying ? activeColor : 'rgba(0,0,0,0.3)', boxShadow: isPlaying ? `0 8px 25px ${activeGlow}` : 'none' }">
-                                    <svg v-if="!isPlaying" class="w-7 h-7 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
-                                    <svg v-else class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-                                </button>
-                                <button @click="nextTrack" class="text-gray-400 hover:text-white transition-transform hover:scale-110">
-                                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M11.555 14.832A1 1 0 0013 14v-2.798l5.445 3.63A1 1 0 0020 14V6a1 1 0 00-1.555-.832L13 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"/><path d="M4.555 14.832A1 1 0 006 14v-2.798l5.445 3.63A1 1 0 0013 14V6a1 1 0 00-1.555-.832L6 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"/></svg>
-                                </button>
-                            </div>
+                            
+                            <div class="flex justify-center items-center relative pt-2">
+    
+    <button @click="togglePlayMode" class="absolute left-0 text-gray-400 hover:text-white transition-all text-xs font-bold flex flex-col items-center group w-10">
+        <div class="mb-1 drop-shadow-md">
+            <svg v-if="playModeText === '顺序播放'" class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0020 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+            </svg>
+            <svg v-else-if="playModeText === '随机播放'" class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+            </svg>
+            <svg v-else class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M13 15v-3h-2v4h3v-1zm-1-11V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0020 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+            </svg>
+        </div>
+        <span class="text-[8px] opacity-0 group-hover:opacity-100 absolute -bottom-4 whitespace-nowrap">{{ playModeText }}</span>
+    </button>
+
+    <div class="flex items-center space-x-8 md:space-x-10">
+        <button @click="prevTrack" class="text-gray-400 hover:text-white transition-transform hover:scale-110">
+            <svg class="w-7 h-7 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+            </svg>
+        </button>
+        
+        <button @click="togglePlay" class="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-400 border-[3px]" 
+            :style="{ borderColor: activeColor, color: isPlaying ? '#000' : activeColor, backgroundColor: isPlaying ? activeColor : 'rgba(0,0,0,0.3)', boxShadow: isPlaying ? `0 8px 25px ${activeGlow}` : 'none' }">
+            <svg v-if="!isPlaying" class="w-7 h-7 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+            <svg v-else class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+        </button>
+        
+        <button @click="nextTrack" class="text-gray-400 hover:text-white transition-transform hover:scale-110">
+            <svg class="w-7 h-7 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+            </svg>
+        </button>
+    </div>
+</div>
                         </div>
                         <div class="glass-card p-3 max-h-48 overflow-y-auto hide-scrollbar">
                             <div class="text-[9px] text-gray-400 mb-3 px-3 border-b border-white/10 pb-2 font-bold">LOCAL DISK > /music/</div>
@@ -288,7 +362,7 @@
                                 </div>
                                 <span class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[ 启动 BOOT ]</span>
                             </div>
-                            <div @click="openGame('口袋妖怪：绿宝石', './game/emulator.html?rom=emerald.gba')" class="glass-card p-3 md:p-4 flex justify-between items-center cursor-pointer hover:bg-white/10 group transition-all">
+                            <div @click="openGame('口袋妖怪：绿宝石', './emulator.html?rom=emerald.gba')" class="glass-card p-3 md:p-4 flex justify-between items-center cursor-pointer hover:bg-white/10 group transition-all">
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0"><span class="text-xl">🐉</span></div>
                                     <div class="flex flex-col truncate">
@@ -298,7 +372,7 @@
                                 </div>
                                 <span class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[ 启动 BOOT ]</span>
                             </div>
-                            <div @click="openGame('星之卡比：镜之大迷宫', './game/emulator.html?rom=kirby.gba')" class="glass-card p-3 md:p-4 flex justify-between items-center cursor-pointer hover:bg-white/10 group transition-all">
+                            <div @click="openGame('星之卡比：镜之大迷宫', './emulator.html?rom=kirby.gba')" class="glass-card p-3 md:p-4 flex justify-between items-center cursor-pointer hover:bg-white/10 group transition-all">
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0"><span class="text-xl">⭐</span></div>
                                     <div class="flex flex-col truncate">
@@ -308,7 +382,7 @@
                                 </div>
                                 <span class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[ 启动 BOOT ]</span>
                             </div>
-                            <div @click="openGame('牧场物语：矿石镇的伙伴们', './game/emulator.html?rom=harvest_moon.gba')" class="glass-card p-3 md:p-4 flex justify-between items-center cursor-pointer hover:bg-white/10 group transition-all">
+                            <div @click="openGame('牧场物语：矿石镇的伙伴们', './emulator.html?rom=harvest_moon.gba')" class="glass-card p-3 md:p-4 flex justify-between items-center cursor-pointer hover:bg-white/10 group transition-all">
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0"><span class="text-xl">🐄</span></div>
                                     <div class="flex flex-col truncate">
@@ -356,7 +430,8 @@
     </div>
 
     <script>
-        const { createApp, ref, computed, onMounted, nextTick } = Vue;
+        // 引入了 Vue 的 watch 功能用于小电视的动画控制
+        const { createApp, ref, computed, onMounted, nextTick, watch } = Vue;
 
         createApp({
             setup() {
@@ -438,21 +513,53 @@
                 const seekProgress = ref(0);
                 const durationSec = ref(0);
 
+                // --- 新增：播放模式控制 ---
+                const playModes = ['sequence', 'random', 'loop'];
+                const currentPlayModeIndex = ref(0);
+                const playMode = computed(() => playModes[currentPlayModeIndex.value]);
+                
+                const playModeIcon = computed(() => {
+                    if (playMode.value === 'sequence') return '🔁';
+                    if (playMode.value === 'random') return '🔀';
+                    return '🔂';
+                });
+                
+                const playModeText = computed(() => {
+                    if (playMode.value === 'sequence') return '顺序播放';
+                    if (playMode.value === 'random') return '随机播放';
+                    return '单曲循环';
+                });
+                
+                const togglePlayMode = () => {
+                    currentPlayModeIndex.value = (currentPlayModeIndex.value + 1) % playModes.length;
+                };
+
+                // --- 新增：跳舞小电视颜文字控制 ---
+                const tvFaces = ['^_^', '>_<', '0_0', 'T_T', '$_$', '@_@', 'OuO', '*_*', 'Q_Q', 'x_x'];
+                const currentTvFace = ref('^_^');
+                let faceInterval = null;
+
+                watch(isPlaying, (newVal) => {
+                    if(newVal) {
+                        // 音乐播放时，小电视随机变换表情
+                        faceInterval = setInterval(() => {
+                            currentTvFace.value = tvFaces[Math.floor(Math.random() * tvFaces.length)];
+                        }, 800);
+                    } else {
+                        // 暂停时清除计时器，强制睡眠表情
+                        if (faceInterval) clearInterval(faceInterval);
+                        currentTvFace.value = '-_-';
+                    }
+                });
+
                 const playlist = ref([
                     { title: '燃起来吧!', file: './music/燃起来吧!.mp3' },
                     { title: '勇者斗恶龙序曲', file: './music/勇者斗恶龙序曲.mp3' },
-					  { title: 'Erika', file: './music/Erika.mp3' },
-					    { title: 'Let It Be', file: './music/Let It Be.mp3' },
-						  { title: '来一起喝一杯吧!', file: './music/来一起喝一杯吧!.mp3' },
-						    { title: '云中杉', file: './music/云中杉.mp3' },
-							  { title: '待更新', file: './music/勇者斗恶龙序曲.mp3' },
-							    { title: '待更新', file: './music/勇者斗恶龙序曲.mp3' },
-								  { title: '待更新', file: './music/勇者斗恶龙序曲.mp3' },
-								    { title: '待更新', file: './music/勇者斗恶龙序曲.mp3' },
-									  { title: '待更新', file: './music/勇者斗恶龙序曲.mp3' },
-									    { title: '待更新', file: './music/勇者斗恶龙序曲.mp3' },
-										  { title: '待更新', file: './music/勇者斗恶龙序曲.mp3' },
-										    { title: '待更新', file: './music/勇者斗恶龙序曲.mp3' }
+                    { title: 'Erika', file: './music/Erika.mp3' },
+                    { title: 'Let It Be', file: './music/Let It Be.mp3' },
+                    { title: '来一起喝一杯吧!', file: './music/来一起喝一杯吧!.mp3' },
+                    { title: '云中杉', file: './music/云中杉.mp3' },
+                    { title: '待更新', file: './music/勇者斗恶龙序曲.mp3' }
                 ]);
 
                 const currentTrack = computed(() => playlist.value[currentTrackIndex.value] || null);
@@ -478,24 +585,48 @@
                     else { audioRef.value.play().then(() => { isPlaying.value = true; }).catch(e => { console.error('播放被阻止', e); isPlaying.value = false; }); }
                 };
 
-                const nextTrack = () => { if (playlist.value.length === 0) return; playTrack((currentTrackIndex.value + 1) % playlist.value.length); };
-                const prevTrack = () => { if (playlist.value.length === 0) return; playTrack((currentTrackIndex.value - 1 + playlist.value.length) % playlist.value.length); };
+                const nextTrack = () => { 
+                    if (playlist.value.length === 0) return; 
+                    if (playMode.value === 'random') {
+                        playTrack(Math.floor(Math.random() * playlist.value.length));
+                    } else {
+                        playTrack((currentTrackIndex.value + 1) % playlist.value.length); 
+                    }
+                };
+                
+                const prevTrack = () => { 
+                    if (playlist.value.length === 0) return; 
+                    if (playMode.value === 'random') {
+                        playTrack(Math.floor(Math.random() * playlist.value.length));
+                    } else {
+                        playTrack((currentTrackIndex.value - 1 + playlist.value.length) % playlist.value.length); 
+                    }
+                };
+                
                 const onLoadedMetadata = () => { durationSec.value = audioRef.value.duration; durationDisplay.value = formatTime(durationSec.value); };
                 const onTimeUpdate = () => { if (!audioRef.value) return; seekProgress.value = audioRef.value.currentTime; currentTimeDisplay.value = formatTime(audioRef.value.currentTime); };
                 const onSeek = () => { if (!audioRef.value) return; audioRef.value.currentTime = seekProgress.value; };
-                const onEnded = () => { nextTrack(); };
+                
+                // 监听当前歌曲播放完毕事件
+                const onEnded = () => { 
+                    if (playMode.value === 'loop') {
+                        playTrack(currentTrackIndex.value);
+                    } else if (playMode.value === 'random') {
+                        playTrack(Math.floor(Math.random() * playlist.value.length));
+                    } else {
+                        nextTrack(); 
+                    }
+                };
 
                 const activeGame = ref(null);
                 const gameWindowRef = ref(null);
                 
-                // 【核心修改点：加入 nextTick 和跨窗口通信，实现焦点守护】
                 const openGame = (gameTitle, targetUrl) => { 
                     activeGame.value = { title: gameTitle, url: targetUrl }; 
                     nextTick(() => {
                         const frame = document.querySelector('iframe');
                         if (frame) {
-                            frame.focus(); // 第一层聚焦：聚焦 iframe 容器
-                            // 第二层聚焦：向 iframe 发送指令，让其内部的 canvas 抢占焦点
+                            frame.focus(); 
                             frame.contentWindow.postMessage('focus-emulator', '*');
                         }
                     });
@@ -515,7 +646,6 @@
                         else { clearInterval(typeInterval); setTimeout(() => { isBooted.value = true; }, 600); }
                     }, 3000 / targetText.length);
 
-                    // 【核心修改点：监听子页面加载完成的信号，确保万无一失】
                     window.addEventListener('message', (event) => {
                         if (event.data === 'emulator-ready') {
                             const frame = document.querySelector('iframe');
@@ -533,7 +663,8 @@
                     audioRef, isPlaying, playlist, currentTrack, currentTrackIndex, 
                     currentTimeDisplay, durationDisplay, seekProgress, durationSec,
                     togglePlay, playTrack, nextTrack, prevTrack, onTimeUpdate, onLoadedMetadata, onSeek, onEnded,
-                    activeGame, gameWindowRef, openGame, closeGame, toggleFullscreen
+                    activeGame, gameWindowRef, openGame, closeGame, toggleFullscreen,
+                    playModeIcon, playModeText, togglePlayMode, currentTvFace
                 };
             }
         }).mount('#app');
