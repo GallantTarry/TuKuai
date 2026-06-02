@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tukuai Emulator Core</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4ade80;
+            font-family: monospace;
+        }
+        #game-container {
+            width: 100%;
+            height: 100%;
+        }
+        /* 加一个友好的提示小条，过几秒自动消失 */
+        #focus-hint {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #4ade80;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 9999;
+            animation: fadeout 4s forwards;
+            animation-delay: 3s; /* 显示3秒后开始消失 */
+        }
+        @keyframes fadeout {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* 极简本地存档 UI 样式 - 毛玻璃效果 */
+        #save-ui-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 20, 20, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            padding: 12px 24px;
+            border-radius: 12px;
+            display: flex;
+            gap: 15px;
+            z-index: 10000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .save-btn {
+            background: transparent;
+            border: 1px solid #4ade80;
+            color: #4ade80;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .save-btn:hover {
+            background: #4ade80;
+            color: #000;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="focus-hint">💡 提示：按键无反应请先【点击游戏画面】。可点击底部手柄图标修改键位。</div>
+
+    <div id="game-container">
+        <div id="game"></div>
+    </div>
+
+    <div id="save-ui-container">
+        <button id="export-save-btn" class="save-btn">💾 导出存档</button>
+        <button id="import-save-btn" class="save-btn">📂 导入存档</button>
+        <input type="file" id="save-file-input" style="display: none;" accept=".sav,.srm,.state" />
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const romFile = urlParams.get('rom');
+        const coreParam = urlParams.get('core'); 
+
+        if (!romFile) {
+            document.body.innerHTML = `
+                <div style="text-align:center; line-height: 2;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                    <h3>SYSTEM ERROR: NO ROM DETECTED</h3>
+                    <p style="color: #64748b; font-size: 12px;">Missing "?rom=filename" parameter in URL.</p>
+                </div>
+            `;
+        } else {
+            window.EJS_player = '#game';
+            
+            // 1. 动态判断模拟器核心
+            let core = 'gba'; 
+            if (coreParam) {
+                core = coreParam; 
+            } else {
+                const ext = romFile.split('.').pop().toLowerCase();
+                if (ext === 'sfc' || ext === 'smc') {
+                    core = 'snes'; 
+                } else if (ext === 'nes') {
+                    core = 'nes';  
+                } else if (ext === 'gb' || ext === 'gbc') {
+                    core = 'gb';   
+                }
+            }
+            window.EJS_core = core; 
+            
+            // 2. 核心存档设置
+            window.EJS_gameName = romFile;
+            
+            // 3. 语言设置
+            window.EJS_language = 'en';
+            
+            window.EJS_gameUrl = '../rom/' + romFile; 
+            window.EJS_pathtodata = 'https://cdn.emulatorjs.org/latest/data/';
+
+            window.EJS_color = '#000000'; 
+            window.EJS_startOnLoaded = true; 
+            window.EJS_Buttons = {
+                playPause: false, 
+                restart: true,
+                mute: true,
+                settings: true, 
+                fullscreen: false 
+            };
+
+            // 【黑科技保留】：游戏启动完毕后，强制抢夺系统键盘焦点
+            window.EJS_onGameStart = function() {
+                console.log("[Tukuai OS] 游戏已启动，正在强制获取键盘焦点...");
+                window.focus(); 
+                setTimeout(() => {
+                    const canvas = document.querySelector('#game canvas');
+                    if(canvas) {
+                        canvas.focus();
+                    }
+                }, 500); 
+            };
+        }
+    </script>
+    
+    <script src="https://cdn.emulatorjs.org/latest/data/loader.js"></script>
+
+    <script>
+        // 【加入跨窗口通信监听】
+        window.addEventListener('message', (event) => {
+            if (event.data === 'focus-emulator') {
+                const canvas = document.querySelector('canvas');
+                if (canvas) {
+                    canvas.setAttribute('tabindex', '0'); 
+                    canvas.focus();
+                    console.log("[EmulatorJS] 收到主页面焦点同步指令");
+                }
+            }
+        });
+
+        // 页面加载完成后，告诉父级窗口自己准备好了
+        window.addEventListener('load', () => {
+            if (window.parent) {
+                window.parent.postMessage('emulator-ready', '*');
+            }
+        });
+
+        /* ========================================================
+           本地存档导出 / 导入逻辑区
+           注意：由于你使用的是 EmulatorJS，它的虚拟文件系统(FS)管理着存档。
+           你需要利用其底层的 FS 接口读取/写入 '/home/web_user/retroarch/userdata/saves/' 
+           或者 '/home/web_user/retroarch/userdata/states/' 目录下的文件。
+        ======================================================== */
+
+        // 1. 导出存档到桌面
+        document.getElementById('export-save-btn').addEventListener('click', function() {
+            try {
+                // 【核心对接点】：尝试从 EmulatorJS 底层文件系统抓取存档文件
+                // EmulatorJS 电池存档通常后缀为 .srm
+                const saveFileName = window.EJS_gameName + '.srm';
+                const savePath = '/home/web_user/retroarch/userdata/saves/' + saveFileName;
+                
+                let saveData;
+                try {
+                    // 调用 Emscripten 虚拟文件系统接口读取数据
+                    saveData = FS.readFile(savePath);
+                } catch (err) {
+                    alert("获取存档失败！可能游戏尚未生成存档，请确保在游戏内进行过【保存】操作。");
+                    console.warn("文件系统读取失败:", err);
+                    return;
+                }
+
+                if (!saveData || saveData.length === 0) {
+                    alert("存档数据为空！");
+                    return;
+                }
+
+                // 将数据转换为 Blob 下载
+                const blob = new Blob([saveData], { type: "application/octet-stream" });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+                a.download = `GBA_Save_${timestamp}.srm`;
+                document.body.appendChild(a);
+                a.click();
+
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                console.log("存档已成功保存至桌面！");
+
+                // 抢回焦点防误触
+                document.querySelector('canvas').focus();
+            } catch (e) {
+                console.error("导出存档崩溃:", e);
+                alert("导出失败，请检查控制台报错。可能需要等待游戏完全加载。");
+            }
+        });
+
+        // 2. 从桌面导入存档
+        const fileInput = document.getElementById('save-file-input');
+
+        document.getElementById('import-save-btn').addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const arrayBuffer = e.target.result;
+                    const saveData = new Uint8Array(arrayBuffer);
+
+                    // 【核心对接点】：写入到 EmulatorJS 虚拟文件系统
+                    const saveFileName = window.EJS_gameName + '.srm';
+                    const savePath = '/home/web_user/retroarch/userdata/saves/' + saveFileName;
+                    
+                    // 覆盖写入存档
+                    FS.writeFile(savePath, saveData);
+                    
+                    // 重要：导入电池存档后，必须重启模拟器核心才能生效
+                    alert("存档导入成功！点击确定将重启游戏以加载存档。");
+                    if (typeof window.EJS_emulator !== 'undefined' && window.EJS_emulator.restart) {
+                        window.EJS_emulator.restart();
+                    } else {
+                        // 如果无法调用软重启，直接刷新页面
+                        location.reload(); 
+                    }
+                } catch (err) {
+                    console.error("导入存档失败:", err);
+                    alert("读取或写入存档失败。确保模拟器核心已加载完成。");
+                } finally {
+                    fileInput.value = '';
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+    </script>
+</body>
+</html>
