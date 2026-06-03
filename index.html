@@ -12,6 +12,8 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <script src="https://cdn.staticfile.org/twikoo/1.6.39/twikoo.all.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -75,6 +77,26 @@
             0% { transform: translateY(2px) rotate(-4deg) scale(0.95); }
             100% { transform: translateY(-3px) rotate(4deg) scale(1.05); }
         }
+
+        /* ====== 新增：Twikoo 留言板主题适配 ====== */
+        .twikoo { color: #e2e8f0; font-family: sans-serif; font-size: 14px; }
+        .tk-comment { margin-top: 20px; }
+        .tk-content { color: #f1f5f9; }
+        .tk-action-icon svg { fill: #94a3b8; }
+        .tk-comments-title .tk-comments-count span:nth-child(1) { color: #38bdf8 !important; }
+        .tk-comments-title .tk-comments-count span:nth-child(2) { color: #a1a1aa !important; }
+		
+		/* ====== Twikoo 留言板完美宽度适配魔改 ====== */
+        .tk-meta-input { display: flex !important; gap: 10px !important; width: 100% !important; }
+        .tk-meta-input > div:nth-child(1), .tk-meta-input > div:nth-child(2) {
+            flex: 1 !important; 
+            width: auto !important; 
+            max-width: 100% !important; 
+        }
+        .tk-meta-input > div:nth-child(3) { display: none !important; }
+        .tk-submit-action-icon.__markdown { display: none !important; }
+        .tk-footer { display: none !important; }
+		
     </style>
 </head>
 <body class="font-pixel text-[10px] md:text-xs">
@@ -254,6 +276,13 @@
                                 <span class="text-[9px] md:text-[10px] text-gray-400">招标代理部门办公辅助软件</span>
                             </div>
                             <a href="https://github.com/ImShaoXiaBieZou/javaswing-dlzs1.2-app/releases/download/%E4%BB%A3%E7%90%86%E5%8A%A9%E6%89%8B/1.2.rar " download class="theme-link px-4 py-2 text-center font-bold">⬇ DOWNLOAD</a>
+                        </div>
+                    </div>
+
+                    <div v-show="currentTab === 'guestbook'" class="space-y-6 h-full flex flex-col">
+                        <h2 class="text-lg md:text-xl tab-title mb-6 font-bold">> 留言终端</h2>
+                        <div class="glass-card p-5 md:p-6 flex-1 overflow-y-auto hide-scrollbar">
+                            <div id="tcomment"></div>
                         </div>
                     </div>
 
@@ -440,10 +469,31 @@
                     { id: 'online', title: '在线使用', icon: '🌐', color: '#4ade80' },
                     { id: 'download', title: '文件下载', icon: '📦', color: '#facc15' },
                     { id: 'music', title: '电子音乐', icon: '🎵', color: '#a855f7' },
-                    { id: 'games', title: '复古游戏', icon: '🎮', color: '#ef4444' }
+                    { id: 'games', title: '复古游戏', icon: '🎮', color: '#ef4444' },
+                    // ====== 新增：留言终端菜单项 ======
+                    { id: 'guestbook', title: '留言终端', icon: '📝', color: '#f472b6' }
                 ]);
 
                 const currentTab = ref('about');
+                
+                // ====== 新增：留言板初始化控制 ======
+                const twikooInitialized = ref(false);
+
+                // 监听当前所在标签，如果切到了“留言终端”且尚未加载，就执行 Twikoo 渲染
+                watch(currentTab, (newVal) => {
+                    if (newVal === 'guestbook' && !twikooInitialized.value) {
+                        nextTick(() => {
+                            if(window.twikoo) {
+                                window.twikoo.init({
+                                    // 这里已经为你填入了刚刚部署好的专属链接！
+                                    envId: 'https://twikoo-server-lovat.vercel.app', 
+                                    el: '#tcomment',
+                                });
+                                twikooInitialized.value = true;
+                            }
+                        });
+                    }
+                });
 
                 const activeColor = computed(() => {
                     const item = menuItems.value.find(i => i.id === currentTab.value);
