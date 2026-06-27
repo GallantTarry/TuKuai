@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black Hole | 极简桌面暗物质引擎</title>
+    <link rel="icon" href="imgs/BlackHole.ico" type="image/x-icon">
+    <style>
+        /* CSS 变量与全局重置 */
+        :root {
+            --primary: #3B82F6;
+            --accent: #8B5CF6;
+            --success: #10B981;
+            --bg-color: #050505;
+            --glass-bg: rgba(24, 24, 27, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glow-color: rgba(139, 92, 246, 0.5);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "-apple-system", "Microsoft YaHei", "Segoe UI", sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15), transparent 25%);
+            color: #E4E4E7;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 静态星空漂移特效 */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            animation: drift 100s linear infinite;
+        }
+
+        @keyframes drift {
+            from { background-position: 0 0; }
+            to { background-position: -10000px 5000px; }
+        }
+
+        /* 导航栏 */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(5, 5, 5, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* 音乐播放器 Logo 区 */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-container:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-container img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--accent);
+            transition: transform 0.3s ease;
+        }
+
+        .logo-container img.playing {
+            animation: spin-slow 10s linear infinite;
+        }
+
+        @keyframes spin-slow {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 动态流光文字 */
+        .logo-text, .hero h1 {
+            font-weight: 800;
+            background: linear-gradient(270deg, #3B82F6, #8B5CF6, #06B6D4, #3B82F6);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 5s ease infinite;
+        }
+
+        .logo-text { font-size: 1.5rem; }
+
+        /* 毛玻璃按钮 + 脉冲引力波 */
+        .buy-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            backdrop-filter: blur(10px);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .buy-btn:hover {
+            background: rgba(139, 92, 246, 0.4);
+            border-color: rgba(139, 92, 246, 0.8);
+            box-shadow: 0 0 25px var(--glow-color);
+            transform: translateY(-2px);
+        }
+
+        .buy-btn.pulse {
+            box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7);
+            animation: pulse-ring 2s infinite;
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(139, 92, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+        }
+
+        .price-tag {
+            background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            box-shadow: inset 0 0 5px rgba(255,255,255,0.2);
+        }
+
+        /* 英雄区域 (Hero Section) */
+        .hero {
+            text-align: center;
+            padding: 120px 20px 80px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #A1A1AA;
+            max-width: 600px;
+            margin: 0 auto 50px auto;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-img-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 30px auto;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-img-container::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 0 80px var(--accent);
+            z-index: -1;
+            opacity: 0.5;
+            animation: pulse-glow 4s ease-in-out infinite alternate;
+        }
+
+        .hero-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+        }
+
+        .hero-btn {
+            padding: 16px 36px; 
+            font-size: 1.25rem;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.02); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+        
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 40px var(--accent); opacity: 0.3; }
+            to { box-shadow: 0 0 100px #3B82F6; opacity: 0.7; }
+        }
+
+        /* 功能区块与滚动涌现特效 */
+        .features {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        .feature-row {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            margin-bottom: 90px;
+            background: linear-gradient(145deg, rgba(30, 30, 35, 0.4), rgba(15, 15, 20, 0.6));
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 50px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            
+            opacity: 0;
+            transform: translateY(60px);
+        }
+
+        .feature-row.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-row:hover {
+            transform: translateY(-8px) scale(1.01);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 30px rgba(139, 92, 246, 0.2);
+        }
+
+        .feature-row.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .feature-text { flex: 1; }
+
+        .feature-text h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #FAFAFA;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .feature-text h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px; left: 0;
+            width: 40px; height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        .feature-row:hover .feature-text h2::after {
+            width: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .feature-text p {
+            color: #D4D4D8;
+            font-size: 1.15rem;
+            line-height: 1.8;
+        }
+
+        .feature-visual {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .feature-visual img {
+            max-width: 320px;
+            width: 100%;
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(255,255,255,0.08);
+            background: #000;
+            transition: transform 0.5s ease;
+        }
+
+        .feature-row:hover .feature-visual img {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 0 60px rgba(139, 92, 246, 0.4);
+        }
+
+        /* 底部 */
+        footer {
+            text-align: center;
+            padding: 80px 20px 40px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+            position: relative;
+        }
+
+        .footer-action { margin-bottom: 50px; }
+        .footer-title { margin-bottom: 25px; font-size: 2rem; }
+        .footer-btn { padding: 16px 45px; font-size: 1.35rem; }
+
+        /* 移动端完美适配 */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+            .logo-text { font-size: 1.2rem; }
+            .buy-btn {
+                padding: 8px 16px;
+                font-size: 0.95rem;
+            }
+            .price-tag {
+                padding: 2px 8px;
+                font-size: 0.75rem;
+            }
+            
+            .hero { padding: 80px 15px 60px; }
+            .hero h1 { font-size: 2.2rem; }
+            .hero p {
+                font-size: 1rem;
+                margin-bottom: 35px;
+            }
+            .hero-img-container {
+                width: 200px;
+                height: 200px;
+                margin-bottom: 25px;
+            }
+            .hero-btn {
+                padding: 12px 28px;
+                font-size: 1.1rem;
+            }
+            
+            .feature-row, .feature-row.reverse {
+                flex-direction: column;
+                text-align: center;
+                padding: 30px 20px;
+                gap: 30px;
+                margin-bottom: 40px;
+                border-radius: 20px;
+            }
+            .feature-text h2 { font-size: 1.6rem; }
+            .feature-text h2::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .feature-text p { font-size: 1rem; }
+            .feature-visual img { max-width: 260px; }
+            
+            footer { padding: 60px 20px 30px; }
+            .footer-title { font-size: 1.6rem; }
+            .footer-btn {
+                padding: 14px 35px;
+                font-size: 1.15rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            header { padding: 12px 15px; }
+            .logo-text { font-size: 1.05rem; }
+            .buy-btn { padding: 6px 12px; font-size: 0.85rem; }
+            .logo-container img { width: 32px; height: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars"></div>
+
+    <header>
+        <div class="logo-container" id="music-toggle" title="点击开启/关闭黑洞环境音">
+            <img src="imgs/BlackHole.png" alt="Black Hole Logo" id="music-disk">
+            <div class="logo-text">Black Hole</div>
+            <audio id="bg-music" src="music/Travelers.mp3" loop></audio>
+        </div>
+        
+        <a href="https://github.com/GallantTarry/ABlackHole/releases/download/untagged-362c72d49cd80d1f1f59/ABlackHole.exe" class="buy-btn">
+            获取引擎 
+            <span class="price-tag">下载</span>
+        </a>
+    </header>
+
+    <section class="hero">
+        <div class="hero-img-container">
+            <img src="imgs/BlackHole.png" alt="Black Hole 核心">
+        </div>
+        <h1>吞噬混乱，重塑秩序</h1>
+        <p>一款极致轻巧的桌面暗物质引擎。它悬浮于你的视界边缘，自动分类文件、榨干系统冗余、拦截时间碎片。</p>
+        
+        <a href="https://github.com/GallantTarry/ABlackHole/releases/download/untagged-362c72d49cd80d1f1f59/ABlackHole.exe" class="buy-btn pulse hero-btn">
+            立即下载宇宙黑洞
+        </a>
+    </section>
+
+    <section class="features">
+        <div class="feature-row">
+            <div class="feature-text">
+                <h2>静默守护，引力无形</h2>
+                <p>平时化作一颗静谧的奇点，悬浮于屏幕边缘或自动隐藏。它极度克制，绝不打扰你的工作流，但在你需要时，只需一次拖拽或快捷键（Ctrl+Alt+E），视界立即为你展开。</p>
+            </div>
+            <div class="feature-visual">
+                <img src="imgs/giphy.gif" alt="静默状态">
+            </div>
+        </div>
+
+        <div class="feature-row reverse">
+            <div class="feature-text">
+                <h2>万物吞噬，智能归档</h2>
+                <p>无论是错综复杂的代码、杂乱的办公表格、还是网上的高清图片素材，只需将它们拖入黑洞。强大的暗物质引擎会瞬间将其吞噬，并自动在底层文件系统中为你精准分类归档，还你一个绝对干净的桌面。</p>
+            </div>
+            <div class="feature-visual">
+                <img src="imgs/Space.gif" alt="吞噬吸收">
+            </div>
+        </div>
+
+        <div class="feature-row">
+            <div class="feature-text">
+                <h2>涤荡冗余，释放潜能</h2>
+                <p>电脑卡顿？双击黑洞核心，立即触发空间坍缩。它将强制遍历并榨干所有后台进程的驻留内存，吞噬系统垃圾，让你的设备重获新生，时刻保持巅峰状态。</p>
+            </div>
+            <div class="feature-visual">
+                <img src="imgs/refreshing.gif" alt="内存清理">
+            </div>
+        </div>
+
+        <div class="feature-row reverse">
+            <div class="feature-text">
+                <h2>时空胶囊，精准警报</h2>
+                <p>内置纯净的待办系统与便利贴截图引擎。将未来的任务注入黑洞，当时间奇点到达时，黑洞会发出高亮能量脉冲提醒你。事情完成后，记录将被彻底粉碎湮灭。</p>
+            </div>
+            <div class="feature-visual">
+                <img src="imgs/message.gif" alt="消息警报">
+            </div>
+        </div>
+    </section>
+
+    <footer id="download">
+        <div class="footer-action">
+            <h2 class="footer-title">准备好开启你的桌面奇点了吗？</h2>
+            <a href="https://github.com/GallantTarry/ABlackHole/releases/download/untagged-362c72d49cd80d1f1f59/ABlackHole.exe" class="buy-btn pulse footer-btn">
+                立即下载 ( .exe )
+            </a>
+        </div>
+        <p style="color: #64748B; font-size: 0.95rem; letter-spacing: 1px;">
+            &copy; 2026 Black Hole Desktop Engine. Created by 土块. All rights reserved.
+        </p>
+    </footer>
+
+    <script>
+        // --- 1. 音乐播放器逻辑 ---
+        const musicToggle = document.getElementById('music-toggle');
+        const bgMusic = document.getElementById('bg-music');
+        const musicDisk = document.getElementById('music-disk');
+
+        musicToggle.addEventListener('click', () => {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                musicDisk.classList.add('playing');
+            } else {
+                bgMusic.pause();
+                musicDisk.classList.remove('playing');
+            }
+        });
+
+        // --- 2. 视界滚动涌现特效 ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('.feature-row').forEach(row => {
+                observer.observe(row);
+            });
+        });
+    </script>
+</body>
+</html>
