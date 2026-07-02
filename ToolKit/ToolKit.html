@@ -3,24 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ToolKit - 高效桌面办公利器 | by 土块</title>
+    <title>ToolKit - 高效桌面办公 | by 土块</title>
     <link rel="icon" href="imgs/ToolKit.ico" type="image/x-icon">
     <style>
         :root {
-            /* 深邃宇宙暗色底色 */
-            --bg-base: #0b0f19;
-            /* 极暗毛玻璃卡片背景 */
-            --card-bg: rgba(30, 41, 59, 0.4);
-            /* 文字颜色 */
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            /* 点缀亮色 (科技蓝) */
-            --accent-color: #0ea5e9;
-            --accent-hover: #38bdf8;
-            /* 柔和的边框与阴影 */
-            --border-color: rgba(255, 255, 255, 0.08);
-            --hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            /* 根据插画背景提取的复古暖调卧室配色 */
+            --bg-base: #2a2522; /* 较深的暖灰底色 */
+            --card-bg: rgba(43, 74, 111, 0.6); /* 呼应插画人物外套的深蓝色毛玻璃 */
+            --text-main: #f2ebe5; /* 奶油白 */
+            --text-muted: #d6c1ad; /* 偏暖的米灰色 */
+            --accent-color: #c95234; /* 呼应被子与唱片的橘红 */
+            --accent-hover: #e06d4f; /* 明亮的橘红 */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         * {
@@ -49,7 +45,7 @@
             height: 100vh;
             z-index: -1;
             overflow: hidden;
-            background: radial-gradient(circle at top right, #131b2f, #0b0f19);
+            background: radial-gradient(circle at top right, #3a302c, #2a2522);
         }
 
         .blob {
@@ -63,7 +59,7 @@
         .blob-1 {
             width: 500px;
             height: 500px;
-            background: rgba(14, 165, 233, 0.4); /* 科技蓝 */
+            background: rgba(201, 82, 52, 0.35); /* 橘红色光晕 */
             top: -150px;
             left: -100px;
             animation-delay: 0s;
@@ -72,7 +68,7 @@
         .blob-2 {
             width: 400px;
             height: 400px;
-            background: rgba(139, 92, 246, 0.3); /* 深邃紫 */
+            background: rgba(43, 74, 111, 0.4); /* 深蓝色光晕 */
             bottom: -100px;
             right: -50px;
             animation-delay: -5s;
@@ -81,7 +77,7 @@
         .blob-3 {
             width: 600px;
             height: 600px;
-            background: rgba(16, 185, 129, 0.2); /* 幽绿色 */
+            background: rgba(214, 193, 173, 0.15); /* 米色光晕 */
             top: 40%;
             left: 30%;
             animation-delay: -10s;
@@ -121,7 +117,7 @@
 
         .author {
             display: inline-block;
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(28, 25, 23, 0.6);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             padding: 6px 18px;
@@ -148,7 +144,7 @@
             height: auto;
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 40px rgba(14, 165, 233, 0.1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 40px rgba(201, 82, 52, 0.1);
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
@@ -180,28 +176,14 @@
         .btn-primary {
             background-color: var(--accent-color);
             color: #ffffff;
-            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+            box-shadow: 0 8px 20px rgba(201, 82, 52, 0.3);
             border: 1px solid transparent;
         }
 
         .btn-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(14, 165, 233, 0.5);
+            box-shadow: 0 12px 25px rgba(201, 82, 52, 0.5);
             background-color: var(--accent-hover);
-        }
-
-        .btn-secondary {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: var(--card-shadow);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent-hover);
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--accent-hover);
-            transform: translateY(-3px);
         }
 
         /* ========================================= */
@@ -258,7 +240,7 @@
         .card:hover {
             transform: translateY(-8px);
             box-shadow: var(--hover-shadow);
-            background: rgba(30, 41, 59, 0.6);
+            background: rgba(43, 74, 111, 0.8);
             border-color: rgba(255, 255, 255, 0.15);
         }
 
@@ -272,7 +254,7 @@
             border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.05);
             margin-bottom: 20px;
-            background-color: #0f172a;
+            background-color: #1a1716;
             object-fit: cover;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
@@ -324,14 +306,14 @@
 
         .credits-grid div {
             padding: 20px;
-            background: rgba(15, 23, 42, 0.4);
+            background: rgba(28, 25, 23, 0.4);
             border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.05);
             transition: all 0.3s ease;
         }
         
         .credits-grid div:hover {
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(28, 25, 23, 0.8);
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
             transform: translateY(-2px);
             border-color: rgba(255,255,255,0.1);
@@ -397,7 +379,6 @@
             
             footer { padding: 30px 15px; }
             
-            /* 手机端流光稍微缩小，防止卡顿 */
             .blob-1 { width: 300px; height: 300px; }
             .blob-2 { width: 250px; height: 250px; }
             .blob-3 { width: 350px; height: 350px; }
@@ -420,7 +401,7 @@
 
     <header>
         <h1>ToolKit</h1>
-        <p>全能的现代化办公与数据处理集成平台</p>
+        <p>招标代理辅助办公软件</p>
         <div class="author">Creator: <strong>土块</strong></div>
         
         <div class="hero-img-container">
@@ -431,68 +412,71 @@
             <a href="https://github.com/GallantTarry/javaswing-toolkit1.4-app/releases/download/ToolKit1.4/ToolKit1.4.exe" class="btn btn-primary" download>
                 ⬇️ 下载 ToolKit 1.4 (Windows)
             </a>
-            <a href="https://gallanttarry.github.io/TuKuai/" target="_blank" class="btn btn-secondary">
-                🌐 访问项目主页
-            </a>
         </div>
     </header>
 
     <div class="container">
-        <h2 class="section-title">全模块功能概览</h2>
+        <h2 class="section-title">核心功能一览</h2>
         
         <div class="grid">
             <div class="card">
                 <img src="imgs/renamerpanel.png" alt="协同改名助手界面" class="card-img">
-                <h3>🏷️ 协同改名助手<br>(RenamerPanel)</h3>
-                <p>高效的归档管理工具。支持保存供应商后拖入单个文件智能改名，也支持批量。应答生成按供应商名称自动分类到文件夹。并支持将装满农行回单的PDF或整个PDF进行极速批量改名。</p>
+                <h3>🏷️ 协同改名助手</h3>
+                <p>先保存供应商再拖入单个文件进行改名，当应答文件放入一个文件夹后点击应答文件生成，就会把不同供应商的名称分别放入新建的供应商名称中，方便归档与放入中标与未中标文件夹中。点击电子回单命名生成拖入装满pdf的中国农行/招商银行回单，或者整个pdf进行批量改名。现在也支持以倒数第一二下划线之间的供应商同标包同文件形式的批量改名。</p>
             </div>
 
             <div class="card">
                 <img src="imgs/checkerpanel.png" alt="数据校对助手界面" class="card-img">
-                <h3>📊 数据校对助手<br>(CheckerPanel)</h3>
-                <p>化繁为简的数据审核员。拖入导出的信息协同数据，即可对“首轮”至“终轮”的多轮报价进行严格的四项智能审查，确保数据零差错。</p>
+                <h3>📊 数据校对助手</h3>
+                <p>拖入导出的信息协同数据，对数据中"首轮报价", "二轮报价", "三轮报价", "四轮报价", "五轮报价", " 六轮报价", "终轮报价"进行四项审查。</p>
             </div>
 
             <div class="card">
                 <img src="imgs/finderpanel.png" alt="文件检索助手界面" class="card-img">
-                <h3>🔍 文件检索助手<br>(FinderPanel)</h3>
-                <p>深层目录探索者。支持直接扫描文件夹或通过输入规则（一行一规则）提取核心文件。支持 "+" 号间隔模糊搜索，快速在海量文档中锁定目标。</p>
+                <h3>🔍 文件检索助手</h3>
+                <p>对文件夹进行检索，提取规则中输入文字回车换行，可删除，一行算一个检索，点击2.一键提取核心文件检索文件夹下的文件，可用+来模糊搜索，但要注意顺序，现在也可以仅扫描文件夹。</p>
             </div>
 
             <div class="card">
                 <img src="imgs/scoringpanel.png" alt="评分生成助手界面" class="card-img">
-                <h3>📝 评分生成助手<br>(ScoringPanel)</h3>
-                <p>解放双手的制表神器。一键拖入采购文件，系统将自动检索解析，并在桌面瞬间生成专属的 xlsx 评分表，支持直接粘贴进入综合表格。</p>
+                <h3>📝 评分生成助手</h3>
+                <p>直接拖入采购文件，自动检索在桌面生成xlsx表，粘贴入综合表里。</p>
             </div>
 
             <div class="card">
                 <img src="imgs/replacerpanel.png" alt="文档替换助手界面" class="card-img">
-                <h3>🔄 文档替换助手<br>(ReplacerPanel)</h3>
-                <p>批量文本替换中心。完美支持现代版 DOCX, PPTX, XLSX 以及 XLS 格式。支持拖拽单个文件或整个文件夹进行极速批量文本替换。</p>
+                <h3>🔄 文档替换助手</h3>
+                <p>支持DOCX，pptx，xlsx,xls,不支持doc！(超文本很容易丢失，不要勉强请新建docx文件全选复制粘贴如docx使用！)，拖入文件夹或多份或单份文件，注意表格xlsx关联需要双击回车刷新。</p>
             </div>
 
             <div class="card">
                 <img src="imgs/comparisonpanel.png" alt="公告比对助手界面" class="card-img">
-                <h3>⚖️ 公告比对助手<br>(ComparisonPanel)</h3>
-                <p>时间逻辑校验仪。左侧拖入采购公告，右侧拖入导出的电工或林老师 PDF，自动执行编号比对，精准校验截止时间与应答截止时间是否匹配。</p>
+                <h3>⚖️ 公告比对助手</h3>
+                <p>左边拖入采购公告，右方拖入电工导出PDF，或者林老师PDF，进行编号，获取截止，应答截止时间比对。</p>
             </div>
 
             <div class="card">
                 <img src="imgs/regionfetcherpanel.png" alt="地区查询助手界面" class="card-img">
-                <h3>🌍 地区查询助手<br>(RegionFetcherPanel)</h3>
-                <p>地理文化双修引擎。输入递交登记表中的地址，即可极速返回对应的省市区及邮政编码。右侧更会为你展示当地的文化熏陶摘要，支持一键双击复制。</p>
+                <h3>🌍 地区查询助手</h3>
+                <p>输入递交登记表中的地址，返回省市区及其邮政编码，右侧会返回文化熏陶你，你可以复制两个板块也可以右键单独复制以供工作与学习。</p>
             </div>
 
             <div class="card">
                 <img src="imgs/converterpanel.png" alt="文档转换助手界面" class="card-img">
-                <h3>🔃 文档转换助手<br>(ConverterPanel)</h3>
-                <p>原生文件无损转换。支持 Word、PDF 及图片格式的互相转换。基于系统底层的 Office 引擎驱动，拒绝排版错乱，确保极高的文档还原度与隐私安全。</p>
+                <h3>🔀 文档转换助手</h3>
+                <p>电脑中必须有office2013及以上版本，确保引擎已启动才可以使用，仅支持单个文件防止卡死，可拖入文档/pdf/图片自动生成为pdf/文档/pdf。右键右上角重新部署引擎。</p>
             </div>
 
             <div class="card">
-                <img src="imgs/setting.png" alt="系统设置界面" class="card-img">
-                <h3>⚙️ 系统外观与设置<br>(Settings)</h3>
-                <p>个性化定制您的工作台。支持一键调整全局默认窗口尺寸，切换内置的高清宇宙地球背景壁纸，并可控制桌面伴游小猫 (MITI) 的启用状态。</p>
+                <img src="imgs/SavePigPanel.png" alt="拯救公猪游戏" class="card-img">
+                <h3>🎮 拯救公猪游戏</h3>
+                <p>主页面按G可以呼出彩蛋哦！E键回到主页面！去证明您的实力吧！您的名号将永远被人铭记！</p>
+            </div>
+
+            <div class="card">
+                <img src="imgs/miti.png" alt="智能AIMITI" class="card-img">
+                <h3>🤖 智能AIMITI</h3>
+                <p>您可以右键问他问题，虽然他可能比较高冷。右键取消对话框。</p>
             </div>
         </div>
 
@@ -508,7 +492,7 @@
             
             <div style="margin-top: 30px; text-align: center; color: var(--text-muted); font-size: 0.95rem;">
                 <p>感谢 Gemini 与 ChatGPT 对开发提供的巨大帮助与支持！</p>
-                <p>地区检索板块学习于 <a href="https://tombcato.github.io/china-zipcode-data/" target="_blank">tombcato</a> 大佬开源数据，特此鸣谢。</p>
+              
             </div>
         </div>
     </div>
