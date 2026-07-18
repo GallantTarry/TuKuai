@@ -231,7 +231,7 @@
                     <p>--- TUKUAI OS CORE DISK V2.0.0 ---</p>
                     <p>SYSTEM RECOVERY MODE // APPLE_GLASS_BUILD</p>
                     <p>ALL MODULES STATUS: <span class="text-green-400">READY</span></p>
-                    <p class="text-amber-400">NOTICE: ACCESS RESTRICTED. ENCRYPTION LEVEL 4.</p>
+                    <p class="text-amber-400">THANK GOD FOR SMALL MERCIES.</p>
                     <br>
                     <div class="flex items-center">
                         <span class="text-white mr-2">C:\Users\少侠></span>
@@ -1284,6 +1284,48 @@
                         </div>
                     </div>
 
+
+                    <!-- 新增：视频板块 -->
+                    <div v-if="currentTab === 'video'" class="space-y-4 flex flex-col h-full max-h-full">
+                        <h2 class="text-lg md:text-xl tab-title mb-4 font-bold shrink-0">> 哔哩哔哩 (゜-゜)つロ 干杯~</h2>
+                        <div class="flex flex-col space-y-4 overflow-y-auto hide-scrollbar flex-1 pb-6 pt-2 px-2 -mx-2">
+
+                            <!-- B站视频示例 1 -->
+                            <!-- 注意：只需将 bvid= 后面的值替换为你想播放的 BV 号即可 -->
+                            <div @click="openGame('Holdfast', 'https://www.bilibili.com/video/BV1zHBBBKEXH/?spm_id_from=333.1387.homepage.video_card.click&vd_source=682ba3ab5d7967ad8807d92aa049c887')"
+                                 class="glass-card p-3 md:p-4 flex justify-between items-center cursor-pointer hover:bg-white/10 group transition-all">
+                                <div class="flex items-center space-x-4 overflow-hidden">
+                                    <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
+                                        <span class="text-xl">⚔️</span>
+                                    </div>
+                                    <div class="flex flex-col truncate">
+                                        <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Holdfast</span>
+                                        <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">坚守国家战争</span>
+                                    </div>
+                                </div>
+                                <span class="text-[#fb7299] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
+                播放 PLAY ]</span>
+                            </div>
+
+                            <!-- B站视频示例 2 -->
+                            <div @click="openGame('ToolKit软件使用教程', 'https://www.bilibili.com/video/BV1U2K36wET4/?spm_id_from=333.1387.homepage.video_card.click&vd_source=682ba3ab5d7967ad8807d92aa049c887')"
+                                 class="glass-card p-3 md:p-4 flex justify-between items-center cursor-pointer hover:bg-white/10 group transition-all">
+                                <div class="flex items-center space-x-4 overflow-hidden">
+                                    <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
+                                        <span class="text-xl">💿️</span>
+                                    </div>
+                                    <div class="flex flex-col truncate">
+                                        <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Toolkit</span>
+                                        <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">工具箱使用教程</span>
+                                    </div>
+                                </div>
+                                <span class="text-[#fb7299] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
+                播放 PLAY ]</span>
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
 
                 <transition name="game-pop">
@@ -1340,7 +1382,8 @@
                     { id: 'online', title: '在线使用', icon: '🌐', color: '#4ade80' },
                     { id: 'download', title: '文件下载', icon: '📦', color: '#facc15' },
                     { id: 'music', title: '电子音乐', icon: '🎵', color: '#a855f7' },
-                    { id: 'games', title: '复古游戏', icon: '🎮', color: '#ef4444' }
+                    { id: 'games', title: '复古游戏', icon: '🎮', color: '#ef4444' },
+                    { id: 'video', title: '视频放送', icon: '📺', color: '#fb7299' }
                 ]);
 
                 const currentTab = ref('about');
@@ -1361,7 +1404,7 @@
 
                 const isBooted = ref(false);
                 const typedText = ref('');
-                const targetText = 'helloworld';
+                const targetText = 'HelloWorld';
 
                 const particleCanvas = ref(null);
                 const initParticleSystem = () => {
