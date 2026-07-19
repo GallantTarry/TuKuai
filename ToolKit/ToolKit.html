@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ToolKit - 高效桌面办公 | by 土块</title>
-    <link rel="icon" href="imgs/ToolKit.ico" type="image/x-icon">
+    <title>ToolKit - 招标代理辅助软件 | by 土块</title>
+    <link rel="icon" href="imgs/toolkit.ico" type="image/x-icon">
     <style>
         :root {
             /* 根据插画背景提取的复古暖调卧室配色 */
@@ -326,6 +326,63 @@
             font-size: 1.1rem;
         }
 
+        /* 特别鸣谢样式 */
+        .special-thanks-container {
+            margin-top: 60px;
+            text-align: center;
+        }
+        .special-thanks-container h4 {
+            color: #ffffff;
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+        .thanks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .thanks-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        .thanks-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: var(--text-main);
+        }
+        .thanks-item strong {
+            color: var(--accent-hover);
+            font-weight: 600;
+        }
+
+        /* MIT 许可证样式 */
+        .license-box {
+            margin-top: 60px;
+            background: rgba(20, 18, 17, 0.6);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-align: left;
+            line-height: 1.8;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .license-box h4 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
         footer {
             text-align: center;
             padding: 50px 20px;
@@ -376,6 +433,7 @@
             .credits h3 { font-size: 1.4rem; }
             
             .credits-grid { grid-template-columns: 1fr; gap: 15px; }
+            .thanks-grid { grid-template-columns: 1fr; }
             
             footer { padding: 30px 15px; }
             
@@ -409,8 +467,8 @@
         </div>
 
         <div class="hero-actions">
-            <a href="https://github.com/GallantTarry/javaswing-toolkit-app/releases/download/ToolKitv1.5.0/ToolKit1.5.exe" class="btn btn-primary" download>
-                ⬇️ 下载 ToolKit 1.5 (Windows)
+            <a href="https://github.com/GallantTarry/javaswing-toolkit-app/releases/download/ToolKitv1.6.0/ToolKit1.6.exe" class="btn btn-primary" download>
+                ⬇️ 下载 ToolKit 1.6 (Windows)
             </a>
         </div>
     </header>
@@ -444,8 +502,8 @@
             </div>
 
             <div class="card">
-                <img src="imgs/replacerpanel.png" alt="文档转换" class="card-img">
-                <h3>🔄 文档转换</h3>
+                <img src="imgs/replacerpanel.png" alt="文档替换" class="card-img">
+                <h3>🔄 文档替换</h3>
                 <p>将需要修改的文档内容输入，然后拖入整个文件夹或单/多个文件全局内容修改。</p>
             </div>
 
@@ -468,13 +526,13 @@
             </div>
 
             <div class="card">
-                <img src="imgs/SecretChatPanel.png" alt="加密通话" class="card-img">
-                <h3>🔐 加密通话</h3>
-                <p>输入密钥可以对原文进行加密，或者同密钥对加密进行解码。</p>
+                <img src="imgs/cloudsharepanel.png" alt="极速云传" class="card-img">
+                <h3>☁️ 极速云传</h3>
+                <p>支持在局域网内实现文件的高速直连传输，并提供临时内网穿透服务，轻松跨越公网共享数据。</p>
             </div>
 
             <div class="card">
-                <img src="imgs/SavePigPanel.png" alt="拯救公猪" class="card-img">
+                <img src="imgs/savepigpanel.png" alt="拯救公猪" class="card-img">
                 <h3>🎮 拯救公猪</h3>
                 <p>主页面按G呼出按E退出，为纪念一个有趣的灵魂。</p>
             </div>
@@ -486,14 +544,14 @@
             </div>
 
             <div class="card">
-                <img src="imgs/SettingsDialog.png" alt="系统设置与帮助" class="card-img">
+                <img src="imgs/settingsdialog.png" alt="系统设置与帮助" class="card-img">
                 <h3>⚙️ 系统设置与帮助</h3>
                 <p>自定义主窗口关闭行为与启动尺寸，支持更改全局背景壁纸及明暗调节，并可在此灵活控制桌面小猫(MITI)的启用状态。</p>
             </div>
         </div>
 
         <div class="credits">
-            <h3>依赖与特别鸣谢</h3>
+            <h3>依赖与开源组件鸣谢</h3>
             <div class="credits-grid">
                 <div><strong>FlatLaf (3.0)</strong>：感谢 FlatLaf 提供现代化的深色毛玻璃跨平台 UI 视觉支撑。</div>
                 <div><strong>iTextPDF (5.5.13.3)</strong>：感谢 iTextPDF 提供极其稳定的动态 PDF 生成与深度操作支持。</div>
@@ -508,14 +566,39 @@
                 <div><strong>org.json (20240303)</strong>：感谢 org.json 提供极简优雅的树状节点解析，精准解构网络 API 返回数据。</div>
                 <div><strong>Maven Compiler Plugin (3.11.0)</strong>：感谢 Maven Compiler 插件保驾护航，完美锁定并顺滑编译前沿的 Java 21 代码。</div>
                 <div><strong>Maven Shade Plugin (3.5.1)</strong>：感谢 Maven Shade 超级插件完美融合错综复杂的依赖并剥离冲突签名，凝练出纯粹的独立可执行程序。</div>
+                <div><strong>Java 21 (JDK 21)</strong>：感谢 Java 21 强大的核心底座，提供最前沿的语法特性与极速性能，支撑 ToolKit v1.5 的稳定跨平台运行。</div>
+                <div><strong>UTF-8 Encoding</strong>：感谢 UTF-8 字符集标准作为项目的全局编译编码，为底层文本数据和跨平台编译提供统一的规范，消除一切乱码困扰。</div>
+                <div><strong>Apache Maven (4.0.0 Model)</strong>：感谢 Maven 构建工具体系，以严谨的生命周期和依赖管理，将散落的代码与错综复杂的组件完美融。</div>
+                <div><strong>Google ZXing (3.5.2 Core)</strong>：感谢 ZXing 二维码核心引擎，以精密的矩阵算法与卓越的容错机制，将冗长的数据链接化作方寸之间的黑白像素，在数字世界与物理设备间架设起极速交互的桥梁。</div>
             </div>
             
-            <div style="margin-top: 40px; text-align: center; color: var(--text-muted); font-size: 1rem; line-height: 1.8;">
-                <h4 style="color: #ffffff; font-size: 1.3rem; margin-bottom: 20px;">=====================特别鸣谢=====================</h4>
-                <p>感谢 Gemini 对开发提供的巨大帮助与支持！</p>
-                <p>感谢 supabase 数据库为拯救公猪游戏提供了后端数据库。</p>
-                <p>感谢 智谱Ai 为桌宠MITI提供了智慧。</p>
-                <p style="margin-top: 20px; font-weight: bold;">代码已上传至github并开源！再次感谢您的使用。</p>
+            <div class="special-thanks-container">
+                <h4>===================== 特别鸣谢 =====================</h4>
+                <div class="thanks-grid">
+                    <div class="thanks-item">感谢 <strong>Gemini</strong> 对开发提供的巨大帮助与支持。</div>
+                    <div class="thanks-item">感谢 <strong>supabase</strong> 提供了数据库。</div>
+                    <div class="thanks-item">感谢 <strong>智谱Ai</strong> 提供了Api接口。</div>
+                    <div class="thanks-item">感谢 <strong>Removebg</strong> 裁剪了阿尔法通道。</div>
+                    <div class="thanks-item">感谢 <strong>Wallhaven</strong> 提供了壁纸的使用。</div>
+                    <div class="thanks-item">感谢 <strong>Convertio</strong> 提供了图标的转换功能。</div>
+                    <div class="thanks-item">感谢 <strong>iconfont</strong> 提供了主菜单图标库源文件。</div>
+                    <div class="thanks-item">感谢 <strong>github</strong> 提供了避风港和开源发布页。</div>
+                    <div class="thanks-item">感谢 <strong>@tombcato</strong> 提供了地区数据与开发灵感。</div>
+                    <div class="thanks-item">感谢 <strong>ChatGPT</strong> 提供的额外Ai辅助。</div>
+                    <div class="thanks-item">感谢 <strong>loading.io</strong> 提供的启动闪图源文件。</div>
+                    <div class="thanks-item">感谢 <strong>诸多up主</strong> 提供的音乐文件。</div>
+                    <div class="thanks-item">感谢 <strong>唧唧down</strong> 提供的文件下载功能。</div>
+                    <div class="thanks-item">感谢 <strong>南瑞工程招标代理一部All</strong>。</div>
+                </div>
+                <p style="margin-top: 30px; font-weight: bold; color: var(--accent-hover); font-size: 1.05rem;">代码已上传至github并开源！再次感谢您的使用。</p>
+            </div>
+
+            <div class="license-box">
+                <h4>MIT 许可证</h4>
+                <p>版权所有 (c) 2026 TuKuai</p>
+                <p style="margin-top: 10px;">特此免费授予任何获得本软件及相关文档文件（以下简称“软件”）副本的人，不受限制地处理本软件的权利，包括但不限于使用、复制、修改、合并、发布、分发、再许可和/或出售本软件副本的权利，并允许向其提供本软件的人这样做，但须符合以下条件：</p>
+                <p style="margin-top: 10px;">上述版权声明和本许可声明应包含在本软件的所有副本或主要部分中。</p>
+                <p style="margin-top: 10px;">本软件按“原样”提供，没有任何形式的明示或暗示的保证，包括但不限于对适销性、特定用途适用性和非侵权性的保证。在任何情况下，无论是在合同、侵权或其他诉讼中，作者或版权持有人均不对因本软件或本软件的使用或其他交易而产生、引起或与之相关的任何索赔、损害或其他责任负责。</p>
             </div>
         </div>
     </div>
