@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="referrer" content="no-referrer-when-downgrade">
     <title>少侠别走</title>
-	
+
 
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
 
@@ -295,17 +295,29 @@
                             </svg>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-base tracking-widest tab-title font-bold">土块</span>
-                            <span class="mt-1 text-gray-400 text-[8px] md:text-[10px]">now: smoking</span>
-                            
-                            <!-- 新增：不算子独立访客统计，样式与上面的说明保持一致 -->
-                            <!-- 新增一层纯粹用来控制隐藏的 span，保护内层的 flex 布局 -->
-                            <span id="busuanzi_container_site_uv">
-                                <span class="mt-0.5 text-gray-400 text-[8px] md:text-[10px] flex items-center space-x-1">
-                                    <span>fans:</span>
-                                    <span id="busuanzi_value_site_uv" class="text-green-400 font-bold animate-pulse"></span>
-                                </span>
-                            </span>
+                            <!-- 第一行：名字，绝对左对齐 -->
+                            <span class="text-base tracking-widest tab-title font-bold text-left">土块</span>
+
+                            <!-- 外层统一设为 text-gray-400，让 fans 和 now 保持一致的灰色低调质感 -->
+                            <div
+                                class="mt-1 grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-[8px] md:text-[10px] tracking-wide text-gray-400">
+
+                                <!-- 第二行：fans (现在是低调的灰色啦) -->
+                                <div class="text-left">fans:</div>
+                                <div class="text-left">
+                                    <!-- 强制阻止脚本隐藏兜底的... -->
+                                    <span id="busuanzi_container_site_uv" style="display: inline !important;">
+                                        <!-- 数字部分：单独应用 text-green-400(绿色) 和 animate-pulse(呼吸闪烁) 破局而出！ -->
+                                        <span id="busuanzi_value_site_uv"
+                                            class="text-green-400 font-bold animate-pulse inline-block">...</span>
+                                    </span>
+                                </div>
+
+                                <!-- 第三行：now (同样是灰色) -->
+                                <div class="text-left">now:</div>
+                                <div class="text-left">smoking</div>
+
+                            </div>
                         </div>
                     </div>
 
@@ -345,7 +357,9 @@
                                 who is utterly useless</span>
                         </div>
                         <div class="glass-card p-6">
-                            <span class="leading-loose text-gray-300 text-xs md:text-sm text-center font-bold tracking-widest block">To all that I once loved.</span>
+                            <span
+                                class="leading-loose text-gray-300 text-xs md:text-sm text-center font-bold tracking-widest block">To
+                                all that I once loved.</span>
                         </div>
                     </div>
 
@@ -481,7 +495,7 @@
                                 class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
                                 启动 BOOT ]</a>
                         </div>
-                         <div
+                        <div
                             class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                             <div class="flex flex-col space-y-2">
                                 <span class="text-gray-100 font-bold text-sm">12. 哈苏奖</span>
@@ -491,7 +505,7 @@
                                 class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
                                 启动 BOOT ]</a>
                         </div>
-                         <div
+                        <div
                             class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                             <div class="flex flex-col space-y-2">
                                 <span class="text-gray-100 font-bold text-sm">13. 荷赛奖</span>
@@ -501,7 +515,7 @@
                                 class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
                                 启动 BOOT ]</a>
                         </div>
-                         <div
+                        <div
                             class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                             <div class="flex flex-col space-y-2">
                                 <span class="text-gray-100 font-bold text-sm">14. GoogleArts</span>
@@ -511,7 +525,7 @@
                                 class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
                                 启动 BOOT ]</a>
                         </div>
-                         <div
+                        <div
                             class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                             <div class="flex flex-col space-y-2">
                                 <span class="text-gray-100 font-bold text-sm">15. WikiArt</span>
@@ -521,7 +535,7 @@
                                 class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
                                 启动 BOOT ]</a>
                         </div>
-                         <div
+                        <div
                             class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                             <div class="flex flex-col space-y-2">
                                 <span class="text-gray-100 font-bold text-sm">16. supabase</span>
@@ -531,7 +545,7 @@
                                 class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
                                 启动 BOOT ]</a>
                         </div>
-                         <div
+                        <div
                             class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                             <div class="flex flex-col space-y-2">
                                 <span class="text-gray-100 font-bold text-sm">17. cleanup</span>
@@ -541,7 +555,7 @@
                                 class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
                                 启动 BOOT ]</a>
                         </div>
-                          <div
+                        <div
                             class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                             <div class="flex flex-col space-y-2">
                                 <span class="text-gray-100 font-bold text-sm">18. 清华大学资源镜像</span>
@@ -551,7 +565,7 @@
                                 class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
                                 启动 BOOT ]</a>
                         </div>
-                         <div
+                        <div
                             class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                             <div class="flex flex-col space-y-2">
                                 <span class="text-gray-100 font-bold text-sm">19. 飞鸟云</span>
@@ -561,7 +575,7 @@
                                 class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
                                 启动 BOOT ]</a>
                         </div>
-                         <div
+                        <div
                             class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                             <div class="flex flex-col space-y-2">
                                 <span class="text-gray-100 font-bold text-sm">20. unsplash</span>
@@ -571,7 +585,7 @@
                                 class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
                                 启动 BOOT ]</a>
                         </div>
-                         <div
+                        <div
                             class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                             <div class="flex flex-col space-y-2">
                                 <span class="text-gray-100 font-bold text-sm">21. cloudflare</span>
@@ -768,7 +782,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🐷</span></div>
+                                        <span class="text-xl">🐷</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">拯救公猪
@@ -786,7 +801,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🐉</span></div>
+                                        <span class="text-xl">🐉</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">口袋妖怪：绿宝石</span>
@@ -803,7 +819,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">⭐</span></div>
+                                        <span class="text-xl">⭐</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">星之卡比：镜之大迷宫</span>
@@ -820,7 +837,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🐄</span></div>
+                                        <span class="text-xl">🐄</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">牧场物语：矿石镇的伙伴们</span>
@@ -837,7 +855,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🍄</span></div>
+                                        <span class="text-xl">🍄</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">超级马里奥A4</span>
@@ -855,7 +874,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🦇</span></div>
+                                        <span class="text-xl">🦇</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">恶魔城晓月圆舞曲</span>
@@ -873,7 +893,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🪖</span></div>
+                                        <span class="text-xl">🪖</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">高级战争</span>
@@ -891,7 +912,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">✨</span></div>
+                                        <span class="text-xl">✨</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">光明之魂2</span>
@@ -909,7 +931,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">☀️</span></div>
+                                        <span class="text-xl">☀️</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">黄金太阳1开启的封印</span>
@@ -927,7 +950,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🌞</span></div>
+                                        <span class="text-xl">🌞</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">黄金太阳2失落的时代</span>
@@ -945,7 +969,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🔥</span></div>
+                                        <span class="text-xl">🔥</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">火炎之纹章封印之剑</span>
@@ -963,7 +988,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🟠</span></div>
+                                        <span class="text-xl">🟠</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">龙珠Z舞空斗剧</span>
@@ -981,7 +1007,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">☁️</span></div>
+                                        <span class="text-xl">☁️</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">龙珠大冒险</span>
@@ -999,7 +1026,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🔧</span></div>
+                                        <span class="text-xl">🔧</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">马里奥与路易吉RPG</span>
@@ -1017,7 +1045,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">⚖️</span></div>
+                                        <span class="text-xl">⚖️</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">逆转裁判</span>
@@ -1035,7 +1064,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">⚖️</span></div>
+                                        <span class="text-xl">⚖️</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">逆转裁判2</span>
@@ -1053,7 +1083,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">⚖️</span></div>
+                                        <span class="text-xl">⚖️</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">逆转裁判3</span>
@@ -1071,7 +1102,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🧢</span></div>
+                                        <span class="text-xl">🧢</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">塞尔达传说缩小帽</span>
@@ -1089,7 +1121,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🔺</span></div>
+                                        <span class="text-xl">🔺</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">塞尔达传说众神的三角力量与四人之剑</span>
@@ -1107,7 +1140,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🔮</span></div>
+                                        <span class="text-xl">🔮</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">最终幻想6A</span>
@@ -1125,7 +1159,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🧞</span></div>
+                                        <span class="text-xl">🧞</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">阿拉丁</span>
@@ -1144,7 +1179,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🦕</span></div>
+                                        <span class="text-xl">🦕</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">超级马里奥世界2耀西岛</span>
@@ -1163,7 +1199,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🚀</span></div>
+                                        <span class="text-xl">🚀</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">超级银河战士</span>
@@ -1182,7 +1219,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">⏳</span></div>
+                                        <span class="text-xl">⏳</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">超时空之轮</span>
@@ -1201,7 +1239,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🦸‍♂️</span></div>
+                                        <span class="text-xl">🦸‍♂️</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">恐龙战队</span>
@@ -1220,7 +1259,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🌍</span></div>
+                                        <span class="text-xl">🌍</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">天地创造</span>
@@ -1239,7 +1279,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🛡️</span></div>
+                                        <span class="text-xl">🛡️</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">勇者斗恶龙3</span>
@@ -1258,7 +1299,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">💍</span></div>
+                                        <span class="text-xl">💍</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">勇者斗恶龙5</span>
@@ -1277,7 +1319,8 @@
                                 <div class="flex items-center space-x-4 overflow-hidden">
                                     <div
                                         class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                        <span class="text-xl">🛸</span></div>
+                                        <span class="text-xl">🛸</span>
+                                    </div>
                                     <div class="flex flex-col truncate">
                                         <span
                                             class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">宇宙巡航机3</span>
@@ -1303,34 +1346,42 @@
                             <!-- B站视频示例 1 -->
                             <!-- 注意：只需将 bvid= 后面的值替换为你想播放的 BV 号即可 -->
                             <div @click="openGame('Holdfast', 'https://www.bilibili.com/video/BV1zHBBBKEXH/?spm_id_from=333.1387.homepage.video_card.click&vd_source=682ba3ab5d7967ad8807d92aa049c887')"
-                                 class="glass-card p-3 md:p-4 flex justify-between items-center cursor-pointer hover:bg-white/10 group transition-all">
+                                class="glass-card p-3 md:p-4 flex justify-between items-center cursor-pointer hover:bg-white/10 group transition-all">
                                 <div class="flex items-center space-x-4 overflow-hidden">
-                                    <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
+                                    <div
+                                        class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
                                         <span class="text-xl">⚔️</span>
                                     </div>
                                     <div class="flex flex-col truncate">
-                                        <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Holdfast</span>
-                                        <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">坚守国家战争</span>
+                                        <span
+                                            class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Holdfast</span>
+                                        <span
+                                            class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">坚守国家战争</span>
                                     </div>
                                 </div>
-                                <span class="text-[#fb7299] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
-                播放 PLAY ]</span>
+                                <span
+                                    class="text-[#fb7299] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
+                                    播放 PLAY ]</span>
                             </div>
 
                             <!-- B站视频示例 2 -->
                             <div @click="openGame('ToolKit软件使用教程', 'https://www.bilibili.com/video/BV1U2K36wET4/?spm_id_from=333.1387.homepage.video_card.click&vd_source=682ba3ab5d7967ad8807d92aa049c887')"
-                                 class="glass-card p-3 md:p-4 flex justify-between items-center cursor-pointer hover:bg-white/10 group transition-all">
+                                class="glass-card p-3 md:p-4 flex justify-between items-center cursor-pointer hover:bg-white/10 group transition-all">
                                 <div class="flex items-center space-x-4 overflow-hidden">
-                                    <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
+                                    <div
+                                        class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
                                         <span class="text-xl">💿️</span>
                                     </div>
                                     <div class="flex flex-col truncate">
-                                        <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Toolkit</span>
-                                        <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">工具箱使用教程</span>
+                                        <span
+                                            class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Toolkit</span>
+                                        <span
+                                            class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">工具箱使用教程</span>
                                     </div>
                                 </div>
-                                <span class="text-[#fb7299] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
-                播放 PLAY ]</span>
+                                <span
+                                    class="text-[#fb7299] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
+                                    播放 PLAY ]</span>
                             </div>
 
                         </div>
@@ -1599,10 +1650,10 @@
 
                 onMounted(() => {
                     initParticleSystem();
-					
-					// 👉 必须在这里动态加载，等待 DOM 渲染完毕！
+
+                    // 👉 必须换成这个防拦截的社区镜像版本，把原本的 ibruce 删掉！
                     const script = document.createElement('script');
-                    script.src = 'https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js';
+                    script.src = 'https://vercount.one/js';
                     script.async = true;
                     document.body.appendChild(script);
 
