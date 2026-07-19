@@ -294,27 +294,27 @@
                                 <rect x="7" y="12" width="2" height="4" fill="#334155" />
                             </svg>
                         </div>
+                        <!-- 删除了 text-gray-400，加入了 style="color: var(--theme-color); opacity: 0.8;" -->
                         <div class="flex flex-col">
                             <!-- 第一行：名字，绝对左对齐 -->
                             <span class="text-base tracking-widest tab-title font-bold text-left">土块</span>
 
-                            <!-- 外层统一设为 text-gray-400，让 fans 和 now 保持一致的灰色低调质感 -->
+                            <!-- 外层替换为 text-white/80 冰白色，并调整了 gap-x-1 缩小间距 -->
                             <div
-                                class="mt-1 grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-[8px] md:text-[10px] tracking-wide text-gray-400">
+                                class="mt-1 grid grid-cols-[auto_1fr] gap-x-1 gap-y-1 items-center text-[8px] md:text-[10px] tracking-wide text-white/80">
 
-                                <!-- 第二行：fans (现在是低调的灰色啦) -->
+                                <!-- 第二行：fans -->
                                 <div class="text-left">fans:</div>
-                                <div class="text-left">
-                                    <!-- 强制阻止脚本隐藏兜底的... -->
-                                    <span id="busuanzi_container_site_uv" style="display: inline !important;">
-                                        <!-- 数字部分：单独应用 text-green-400(绿色) 和 animate-pulse(呼吸闪烁) 破局而出！ -->
+                                <div class="text-left flex items-center">
+                                    <span id="busuanzi_container_site_uv"
+                                        style="display: inline-flex !important; align-items: center;">
                                         <span id="busuanzi_value_site_uv"
-                                            class="text-green-400 font-bold animate-pulse inline-block">...</span>
+                                            class="text-green-400 font-bold animate-pulse">...</span>
                                     </span>
                                 </div>
 
-                                <!-- 第三行：now (同样是灰色) -->
-                                <div class="text-left">now:</div>
+                                <!-- 第三行：free -->
+                                <div class="text-left">free:</div>
                                 <div class="text-left">smoking</div>
 
                             </div>
