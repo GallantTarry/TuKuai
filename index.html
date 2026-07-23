@@ -214,17 +214,20 @@
         }
 
         /* ====== 新增：跳舞小电视动画 ====== */
+        /* 修改：跳舞小电视动画 - 左右摇摆 */
         .tv-character {
-            animation: dance 0.5s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+            /* 如果想让摇摆更快，可以把 0.5s 改为 0.3s */
+            animation: dance 0.4s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes dance {
             0% {
-                transform: translateY(2px) rotate(-4deg) scale(0.95);
+                /* 向左偏移并向左倾斜 */
+                transform: translateX(-6px) rotate(-12deg) scale(0.95);
             }
-
             100% {
-                transform: translateY(-3px) rotate(4deg) scale(1.05);
+                /* 向右偏移并向右倾斜 */
+                transform: translateX(6px) rotate(12deg) scale(1.05);
             }
         }
     </style>
@@ -1543,7 +1546,12 @@
             };
 
             // --- 新增：跳舞小电视颜文字控制 ---
-            const tvFaces = ['^_^', '>_<', '0_0', 'T_T', '$_$', '@_@', 'OuO', '*_*', 'Q_Q', 'x_x'];
+            // ====== 新增：更庞大的随机颜文字库 ======
+            const tvFaces = [
+                '^_^', '>_<', '0_0', 'T_T', '$_$', '@_@', 'OuO', '*_*', 'Q_Q', 'x_x',
+                'QAQ', 'QwQ', 'TAT', '=_=', 'O_O', '¬_¬', '¯_¯', 'ಠ_ಠ', '✪_✪', '♥_♥',
+                '+_+', '0v0', '•_•', '._.', '^o^', 'U_U', '>o<', '030', '~_~', 'T^T'
+            ];
             const currentTvFace = ref('^_^');
             let faceInterval = null;
 
@@ -1551,8 +1559,9 @@
                 if (newVal) {
                     // 音乐播放时，小电视随机变换表情
                     faceInterval = setInterval(() => {
+                        // 这里已经是 Math.random() 随机抽取了，数组变大后随机性会更明显
                         currentTvFace.value = tvFaces[Math.floor(Math.random() * tvFaces.length)];
-                    }, 800);
+                    }, 800); // 如果想让表情切换更快，可以将 800 (毫秒) 调小，比如 500
                 } else {
                     // 暂停时清除计时器，强制睡眠表情
                     if (faceInterval) clearInterval(faceInterval);
