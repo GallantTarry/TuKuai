@@ -8,23 +8,50 @@
     <title>少侠别走</title>
 
 
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="icon" href="./imgs/favicon.ico" type="image/x-icon">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+
+
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { pixel: ['"Press Start 2P"', 'cursive'] }
+                    fontFamily: { pixel: ['"Silkscreen"', '"ChinesePixel"', 'cursive'] }
                 }
             }
         }
     </script>
 
     <style>
+            /* 1. 引入本地 Silkscreen (英数常规) */
+        @font-face {
+            font-family: 'Silkscreen';
+            src: url('./font/Silkscreen-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-display: swap;
+        }
+
+        /* 2. 引入本地 Silkscreen (英数加粗) */
+        @font-face {
+            font-family: 'Silkscreen';
+            src: url('./font/Silkscreen-Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-display: swap;
+        }
+
+        /* 3. 新增：引入本地 中文像素字体 */
+        @font-face {
+            font-family: 'ChinesePixel'; /* 这里的名字你可以随便起 */
+            src: url('./font/zpix.ttf') format('truetype'); /* 确保文件名对应 */
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
         /* ---------------- 核心毛玻璃与动态主题 CSS ---------------- */
         body {
             background-color: #050505;
@@ -314,7 +341,7 @@
                                 </div>
 
                                 <!-- 第三行：free -->
-                                <div class="text-left">free:</div>
+                                <div class="text-left">fans:</div>
                                 <div class="text-left">smoking</div>
 
                             </div>
@@ -341,9 +368,9 @@
 
             <main
                 class="flex-1 min-h-0 relative bg-[#050505] flex items-center justify-center overflow-hidden h-full p-3 md:p-8">
-                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2000&auto=format&fit=crop"
-                    alt="Pixel Room Background"
-                    class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen" />
+                <img src="./imgs/bg.avif"
+                     alt="Pixel Room Background"
+                     class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen" />
                 <div class="absolute inset-0 scanlines"></div>
 
                 <div
@@ -627,6 +654,16 @@
                                 <span class="text-[9px] md:text-[10px] text-gray-400">阿里巴巴矢量图标库</span>
                             </div>
                             <a href="https://www.iconfont.cn/" target="_self"
+                               class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
+                                访问 VISIT ]</a>
+                        </div>
+                        <div
+                                class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
+                            <div class="flex flex-col space-y-2">
+                                <span class="text-gray-100 font-bold text-sm">23. Google Fonts</span>
+                                <span class="text-[9px] md:text-[10px] text-gray-400">谷歌字体</span>
+                            </div>
+                            <a href="https://fonts.google.com/" target="_self"
                                class="text-green-400 text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
                                 访问 VISIT ]</a>
                         </div>
