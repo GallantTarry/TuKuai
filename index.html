@@ -1561,19 +1561,12 @@
             });
 
             const playlist = ref([
-                {title: '燃起来吧!', file: './music/燃起来吧!.mp3'},
-                {title: '勇者斗恶龙序曲', file: './music/勇者斗恶龙序曲.mp3'},
-                {title: 'Travelers', file: './music/Travelers.mp3'},
-                {title: 'Minecraft', file: './music/Minecraft.mp3'},
-                {title: 'Dota2', file: './music/Dota2.mp3'},
-                {title: 'Mount & Blade Original Soundtrack ', file: './music/Mount & Blade Original Soundtrack .mp3'},
-                {title: 'Thats The Way It Is', file: './music/Thats The Way It Is.mp3'},
-                {title: 'The Last of Us', file: './music/The Last of Us.mp3'},
-                {title: 'Theme From San', file: './music/Theme From San.mp3'},
-                {title: 'Return Of The Ancients', file: './music/Return Of The Ancients.mp3'},
-                {title: '牧场物语：矿石镇的伙伴们', file: './music/牧场物语：矿石镇的伙伴们.mp3'},
                 {title: 'To the moon', file: './music/To the moon.mp3'},
-                {title: '勇敢的心：世界大战', file: './music/勇敢的心：世界大战.mp3'}
+                {title: 'Travelers', file: './music/Travelers.mp3'},
+                {title: '牧场物语矿石镇的伙伴们', file: './music/牧场物语矿石镇的伙伴们.mp3'},
+                {title: '勇者斗恶龙序曲', file: './music/勇者斗恶龙序曲.mp3'},
+                {title: 'Minecraft', file: './music/Minecraft.mp3'},
+                {title: '燃起来吧!', file: './music/燃起来吧!.mp3'},
             ]);
 
             const currentTrack = computed(() => playlist.value[currentTrackIndex.value] || null);
