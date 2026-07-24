@@ -354,6 +354,42 @@
             from { opacity: 0; transform: translateY(-50px); filter: blur(10px); } 
             to { opacity: 1; transform: translateY(0); filter: blur(0); } 
         }
+
+        /* ==========================================================================
+           [08] 交互折叠系统 (Collapsible Panels)
+           ========================================================================== */
+        .collapsible-trigger {
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            user-select: none;
+            transition: color 0.3s;
+        }
+        .collapsible-trigger:hover {
+            color: var(--text-accent-glow);
+        }
+        .chevron {
+            transition: transform 0.4s var(--ease-out-expo);
+        }
+        .is-collapsed .chevron {
+            transform: rotate(-90deg);
+        }
+        .collapsible-container {
+            display: grid;
+            grid-template-rows: 1fr;
+            transition: grid-template-rows 0.6s var(--ease-out-expo), opacity 0.4s ease;
+            opacity: 1;
+        }
+        .is-collapsed .collapsible-container {
+            grid-template-rows: 0fr;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .collapsible-inner {
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
@@ -537,50 +573,64 @@
             </div>
         </section>
 
-        <!-- 面板二：技术阵列 (带圆角与 3D Hover) -->
-        <section class="ui-panel info-panel tilt-element">
-            <h2 class="block-heading">依赖与开源组件鸣谢</h2>
-            <ul class="grid-list">
-                <li>FlatLaf (3.0)：感谢 FlatLaf 提供现代化的深色毛玻璃跨平台 UI 视觉支撑。</li>
-                <li>iTextPDF (5.5.13.3)：感谢 iTextPDF 提供极其稳定的动态 PDF 生成与深度操作支持。</li>
-                <li>Apache PDFBox (2.0.31)：感谢 Apache PDFBox 强大的底层 PDF 纯文本与元数据解析能力。</li>
-                <li>Apache POI (5.2.3)：感谢 Apache POI 筑牢处理老版 XLS 办公文档的底层基石。</li>
-                <li>Apache POI OOXML (5.2.3)：感谢 Apache POI OOXML 实现 XLSX/DOCX 等新版复杂办公数据的完美自动化清洗与比对。</li>
-                <li>Apache POI Scratchpad (5.2.3)：感谢 Apache POI Scratchpad 提供更丰富的复杂 Office 格式扩展支持。</li>
-                <li>Log4j API (2.17.1)：感谢 Log4j API 提供标准化的高效并发日志记录接口。</li>
-                <li>Log4j Core (2.17.1)：感谢 Log4j Core 为系统状态追踪与异常排查提供坚实的日志输出引擎。</li>
-                <li>Google Gson (2.10.1)：感谢 Google Gson 带来极度丝滑的 Java 对象与复杂 JSON 互转体验。</li>
-                <li>JLayer (1.0.1)：感谢 JLayer 引擎赋予工具灵动的 MP3 复古音效与跨线程音频解码能力。</li>
-                <li>org.json (20240303)：感谢 org.json 提供极简优雅的树状节点解析，精准解构网络 API 返回数据。</li>
-                <li>Maven Compiler Plugin (3.11.0)：感谢 Maven Compiler 插件保驾护航，完美锁定并顺滑编译前沿的 Java 21 代码。</li>
-                <li>Maven Shade Plugin (3.5.1)：感谢 Maven Shade 超级插件完美融合错综复杂的依赖并剥离冲突签名，凝练出纯粹的独立可执行程序。</li>
-                <li>Java 21 (JDK 21)：感谢 Java 21 强大的核心底座，提供最前沿的语法特性与极速性能，支撑 ToolKit 的稳定运行。</li>
-                <li>UTF-8 Encoding：感谢 UTF-8 字符集标准作为项目的全局编译编码，消除一切乱码困扰。</li>
-                <li>Apache Maven (4.0.0 Model)：感谢 Maven 构建工具体系，将散落的代码与错综复杂的组件完美融。</li>
-                <li>Google ZXing (3.5.2 Core)：感谢 ZXing 二维码核心引擎，将冗长的数据链接化作物理设备极速交互的桥梁。</li>
-            </ul>
+        <!-- 面板二：技术阵列 (带圆角与 3D Hover，新增折叠包裹器) -->
+        <section class="ui-panel info-panel tilt-element collapsible-wrapper is-collapsed">
+            <h2 class="block-heading collapsible-trigger">
+                依赖与开源组件鸣谢
+                <svg class="chevron" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </h2>
+            <div class="collapsible-container">
+                <div class="collapsible-inner">
+                    <ul class="grid-list">
+                        <li>FlatLaf (3.0)：感谢 FlatLaf 提供现代化的深色毛玻璃跨平台 UI 视觉支撑。</li>
+                        <li>iTextPDF (5.5.13.3)：感谢 iTextPDF 提供极其稳定的动态 PDF 生成与深度操作支持。</li>
+                        <li>Apache PDFBox (2.0.31)：感谢 Apache PDFBox 强大的底层 PDF 纯文本与元数据解析能力。</li>
+                        <li>Apache POI (5.2.3)：感谢 Apache POI 筑牢处理老版 XLS 办公文档的底层基石。</li>
+                        <li>Apache POI OOXML (5.2.3)：感谢 Apache POI OOXML 实现 XLSX/DOCX 等新版复杂办公数据的完美自动化清洗与比对。</li>
+                        <li>Apache POI Scratchpad (5.2.3)：感谢 Apache POI Scratchpad 提供更丰富的复杂 Office 格式扩展支持。</li>
+                        <li>Log4j API (2.17.1)：感谢 Log4j API 提供标准化的高效并发日志记录接口。</li>
+                        <li>Log4j Core (2.17.1)：感谢 Log4j Core 为系统状态追踪与异常排查提供坚实的日志输出引擎。</li>
+                        <li>Google Gson (2.10.1)：感谢 Google Gson 带来极度丝滑的 Java 对象与复杂 JSON 互转体验。</li>
+                        <li>JLayer (1.0.1)：感谢 JLayer 引擎赋予工具灵动的 MP3 复古音效与跨线程音频解码能力。</li>
+                        <li>org.json (20240303)：感谢 org.json 提供极简优雅的树状节点解析，精准解构网络 API 返回数据。</li>
+                        <li>Maven Compiler Plugin (3.11.0)：感谢 Maven Compiler 插件保驾护航，完美锁定并顺滑编译前沿的 Java 21 代码。</li>
+                        <li>Maven Shade Plugin (3.5.1)：感谢 Maven Shade 超级插件完美融合错综复杂的依赖并剥离冲突签名，凝练出纯粹的独立可执行程序。</li>
+                        <li>Java 21 (JDK 21)：感谢 Java 21 强大的核心底座，提供最前沿的语法特性与极速性能，支撑 ToolKit 的稳定运行。</li>
+                        <li>UTF-8 Encoding：感谢 UTF-8 字符集标准作为项目的全局编译编码，消除一切乱码困扰。</li>
+                        <li>Apache Maven (4.0.0 Model)：感谢 Maven 构建工具体系，将散落的代码与错综复杂的组件完美融。</li>
+                        <li>Google ZXing (3.5.2 Core)：感谢 ZXing 二维码核心引擎，将冗长的数据链接化作物理设备极速交互的桥梁。</li>
+                    </ul>
+                </div>
+            </div>
         </section>
 
-        <!-- 面板三：矩阵鸣谢 -->
-        <section class="ui-panel info-panel tilt-element">
-            <h2 class="block-heading">特别鸣谢</h2>
-            <div class="tag-matrix">
-                <div class="matrix-node">感谢 <strong>Gemini</strong> 对开发提供的巨大帮助与支持</div>
-                <div class="matrix-node">感谢 <strong>supabase</strong> 提供了数据库</div>
-                <div class="matrix-node">感谢 <strong>智谱Ai</strong> 提供了Api接口</div>
-                <div class="matrix-node">感谢 <strong>Removebg</strong> 裁剪了阿尔法通道</div>
-                <div class="matrix-node">感谢 <strong>Wallhaven</strong> 提供了壁纸的使用</div>
-                <div class="matrix-node">感谢 <strong>Convertio</strong> 提供了图标的转换功能</div>
-                <div class="matrix-node">感谢 <strong>iconfont</strong> 提供了主菜单图标库源文件</div>
-                <div class="matrix-node">感谢 <strong>github</strong> 提供了避风港和开源发布页</div>
-                <div class="matrix-node">感谢 <strong>@tombcato</strong> 提供了地区数据与开发灵感</div>
-                <div class="matrix-node">感谢 <strong>ChatGPT</strong> 提供的额外Ai辅助</div>
-                <div class="matrix-node">感谢 <strong>loading.io</strong> 提供的启动闪图源文件</div>
-                <div class="matrix-node">感谢 <strong>诸多up主</strong> 提供的音乐文件</div>
-                <div class="matrix-node">感谢 <strong>唧唧down</strong> 提供的文件下载功能</div>
-                <div class="matrix-node">感谢 <strong>PDF24</strong> 提供的线上文档处理功能</div>
-                <div class="matrix-node">感谢 <strong>高德导航</strong> 提供的Adcode api接口</div>
-                <div class="matrix-node">感谢 <strong>南瑞工程招标代理一部All</strong></div>
+        <!-- 面板三：矩阵鸣谢 (带圆角与 3D Hover，新增折叠包裹器) -->
+        <section class="ui-panel info-panel tilt-element collapsible-wrapper is-collapsed">
+            <h2 class="block-heading collapsible-trigger">
+                特别鸣谢
+                <svg class="chevron" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </h2>
+            <div class="collapsible-container">
+                <div class="collapsible-inner">
+                    <div class="tag-matrix">
+                        <div class="matrix-node">感谢 <strong>Gemini</strong> 对开发提供的巨大帮助与支持</div>
+                        <div class="matrix-node">感谢 <strong>supabase</strong> 提供了数据库</div>
+                        <div class="matrix-node">感谢 <strong>智谱Ai</strong> 提供了Api接口</div>
+                        <div class="matrix-node">感谢 <strong>Removebg</strong> 裁剪了阿尔法通道</div>
+                        <div class="matrix-node">感谢 <strong>Wallhaven</strong> 提供了壁纸的使用</div>
+                        <div class="matrix-node">感谢 <strong>Convertio</strong> 提供了图标的转换功能</div>
+                        <div class="matrix-node">感谢 <strong>iconfont</strong> 提供了主菜单图标库源文件</div>
+                        <div class="matrix-node">感谢 <strong>github</strong> 提供了避风港和开源发布页</div>
+                        <div class="matrix-node">感谢 <strong>@tombcato</strong> 提供了地区数据与开发灵感</div>
+                        <div class="matrix-node">感谢 <strong>ChatGPT</strong> 提供的额外Ai辅助</div>
+                        <div class="matrix-node">感谢 <strong>loading.io</strong> 提供的启动闪图源文件</div>
+                        <div class="matrix-node">感谢 <strong>诸多up主</strong> 提供的音乐文件</div>
+                        <div class="matrix-node">感谢 <strong>唧唧down</strong> 提供的文件下载功能</div>
+                        <div class="matrix-node">感谢 <strong>PDF24</strong> 提供的线上文档处理功能</div>
+                        <div class="matrix-node">感谢 <strong>高德导航</strong> 提供的Adcode api接口</div>
+                        <div class="matrix-node">感谢 <strong>南瑞工程招标代理一部All</strong></div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -605,21 +655,16 @@
          ========================================================================== -->
     <script>
         /**
-         * [System 1] 工业级 Canvas 星云粒子引擎
-         * 动态速度已降低一半，呈现更沉稳的星空视差
+         * [System 1] 精细动态粒子网络引擎 (独立自治，无鼠标绑定)
          */
-        class CosmicEngine {
+        class FineParticleEngine {
             constructor(canvasId) {
                 this.canvas = document.getElementById(canvasId);
                 this.ctx = this.canvas.getContext('2d', { alpha: false });
-                this.stars = [];
-                this.meteors = [];
-                this.parallax = { targetX: 0, targetY: 0, currentX: 0, currentY: 0 };
-                this.center = { x: 0, y: 0 };
+                this.particles = [];
                 this.config = {
-                    count: Math.min(Math.floor(window.innerWidth / 1.5), 800),
-                    meteorRate: 0.005, 
-                    colors: ['#ffffff', '#a0aec0', '#4facfe', '#e0e7ff', '#f8d9b1']
+                    linkDistance: 110,
+                    colors: ['#ffffff', '#00f2fe', '#4facfe', '#8ab4f8']
                 };
                 this.init();
             }
@@ -627,11 +672,6 @@
             init() {
                 this.resize();
                 window.addEventListener('resize', this.debounce(this.resize.bind(this), 250));
-                window.addEventListener('mousemove', (e) => {
-                    this.parallax.targetX = (e.clientX - this.center.x) * 0.00015;
-                    this.parallax.targetY = (e.clientY - this.center.y) * 0.00015;
-                }, { passive: true });
-                
                 this.populate();
                 this.render();
             }
@@ -647,102 +687,77 @@
             resize() {
                 this.canvas.width = window.innerWidth;
                 this.canvas.height = window.innerHeight;
-                this.center.x = this.canvas.width / 2;
-                this.center.y = this.canvas.height / 2;
                 
-                // 增加移动端视差高度变更时的安全更新(防止重置时地址栏引发高度问题)
+                // 移动端安全更新
                 setTimeout(() => {
                     this.canvas.width = window.innerWidth;
                     this.canvas.height = window.innerHeight;
-                    this.center.x = this.canvas.width / 2;
-                    this.center.y = this.canvas.height / 2;
+                    this.populate();
                 }, 150);
             }
 
             populate() {
-                this.stars = [];
-                for (let i = 0; i < this.config.count; i++) {
-                    this.stars.push({
+                this.particles = [];
+                // 动态根据屏幕面积计算粒子数量，保证密度极佳且性能稳定
+                const area = this.canvas.width * this.canvas.height;
+                const count = Math.min(Math.floor(area / 7500), 280); 
+                
+                for (let i = 0; i < count; i++) {
+                    this.particles.push({
                         x: Math.random() * this.canvas.width,
                         y: Math.random() * this.canvas.height,
-                        z: Math.random() * 2.8 + 0.5,
-                        size: Math.random() * 2.4,
-                        color: this.config.colors[Math.floor(Math.random() * this.config.colors.length)],
-                        alpha: Math.random(),
-                        flicker: (Math.random() * 0.02) - 0.01
+                        vx: (Math.random() - 0.5) * 0.45,
+                        vy: (Math.random() - 0.5) * 0.45,
+                        size: Math.random() * 1.5 + 0.2,
+                        color: this.config.colors[Math.floor(Math.random() * this.config.colors.length)]
                     });
                 }
             }
 
-            spawnMeteor() {
-                this.meteors.push({
-                    x: Math.random() * this.canvas.width * 1.5,
-                    y: -100,
-                    length: Math.random() * 120 + 50,
-                    speed: Math.random() * 20 + 15,
-                    angle: Math.PI / 4, 
-                    alpha: 1
-                });
-            }
-
             physics() {
-                this.parallax.currentX += (this.parallax.targetX - this.parallax.currentX) * 0.08;
-                this.parallax.currentY += (this.parallax.targetY - this.parallax.currentY) * 0.08;
+                for (let p of this.particles) {
+                    p.x += p.vx;
+                    p.y += p.vy;
 
-                for (let star of this.stars) {
-                    star.x -= this.parallax.currentX * star.z * 18;
-                    star.y -= this.parallax.currentY * star.z * 18;
-
-                    if (star.x < 0) star.x = this.canvas.width;
-                    if (star.x > this.canvas.width) star.x = 0;
-                    if (star.y < 0) star.y = this.canvas.height;
-                    if (star.y > this.canvas.height) star.y = 0;
-
-                    star.alpha += star.flicker;
-                    if (star.alpha <= 0.1 || star.alpha >= 1) {
-                        star.flicker = -star.flicker;
-                    }
-                }
-
-                if (Math.random() < this.config.meteorRate) this.spawnMeteor();
-
-                for (let i = this.meteors.length - 1; i >= 0; i--) {
-                    let m = this.meteors[i];
-                    m.x -= m.speed * Math.cos(m.angle);
-                    m.y += m.speed * Math.sin(m.angle);
-                    m.alpha -= 0.015;
-
-                    if (m.alpha <= 0 || m.y > this.canvas.height || m.x < 0) {
-                        this.meteors.splice(i, 1);
-                    }
+                    // 边缘平滑反弹
+                    if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
                 }
             }
 
             draw() {
+                // 深空背景绘制
                 this.ctx.fillStyle = '#000103';
                 this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-                for (let star of this.stars) {
+                // 绘制极细的粒子连接网
+                this.ctx.lineWidth = 0.5;
+                for (let i = 0; i < this.particles.length; i++) {
+                    let p1 = this.particles[i];
+                    for (let j = i + 1; j < this.particles.length; j++) {
+                        let p2 = this.particles[j];
+                        let dx = p1.x - p2.x;
+                        let dy = p1.y - p2.y;
+                        let dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < this.config.linkDistance) {
+                            let alpha = (1 - (dist / this.config.linkDistance)) * 0.35;
+                            this.ctx.strokeStyle = `rgba(79, 172, 254, ${alpha})`;
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(p1.x, p1.y);
+                            this.ctx.lineTo(p2.x, p2.y);
+                            this.ctx.stroke();
+                        }
+                    }
+                }
+
+                // 绘制独立粒子点
+                for (let p of this.particles) {
+                    this.ctx.fillStyle = p.color;
                     this.ctx.beginPath();
-                    this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-                    this.ctx.fillStyle = this.hexToRgba(star.color, star.alpha);
+                    this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                     this.ctx.fill();
                 }
-
-                for (let m of this.meteors) {
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(m.x, m.y);
-                    this.ctx.lineTo(m.x + m.length * Math.cos(m.angle), m.y - m.length * Math.sin(m.angle));
-                    this.ctx.strokeStyle = `rgba(255, 255, 255, ${m.alpha})`;
-                    this.ctx.lineWidth = 2.5;
-                    this.ctx.lineCap = 'round';
-                    this.ctx.stroke();
-                }
-            }
-
-            hexToRgba(hex, alpha) {
-                const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                return r ? `rgba(${parseInt(r[1],16)}, ${parseInt(r[2],16)}, ${parseInt(r[3],16)}, ${alpha})` : `rgba(255,255,255,${alpha})`;
             }
 
             render() {
@@ -751,7 +766,7 @@
                 requestAnimationFrame(this.render.bind(this));
             }
         }
-        new CosmicEngine('space-engine');
+        new FineParticleEngine('space-engine');
 
         /**
          * [System 2] 百分比绝对居中流体轮播引擎
@@ -900,6 +915,16 @@
             }
         }
         new MagneticTilt('.tilt-element');
+
+        /**
+         * [System 4] 折叠面板交互控制器
+         */
+        document.querySelectorAll('.collapsible-trigger').forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const wrapper = trigger.closest('.collapsible-wrapper');
+                wrapper.classList.toggle('is-collapsed');
+            });
+        });
 
     </script>
 </body>
