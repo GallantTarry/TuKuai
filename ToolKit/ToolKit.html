@@ -2,612 +2,905 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ToolKit - 招标代理辅助软件 | by 土块</title>
-    <link rel="icon" href="imgs/toolkit.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ToolKit</title>
+    <!-- 精确指定的网页图标路径 -->
+    <link rel="icon" href="imgs/ToolKit.ico" type="image/x-icon">
     <style>
+        /* ==========================================================================
+           [01] 核心系统环境与变量字典 (Core Environment & Variables)
+           ========================================================================== */
         :root {
-            /* 根据插画背景提取的复古暖调卧室配色 */
-            --bg-base: #2a2522; /* 较深的暖灰底色 */
-            --card-bg: rgba(43, 74, 111, 0.6); /* 呼应插画人物外套的深蓝色毛玻璃 */
-            --text-main: #f2ebe5; /* 奶油白 */
-            --text-muted: #d6c1ad; /* 偏暖的米灰色 */
-            --accent-color: #c95234; /* 呼应被子与唱片的橘红 */
-            --accent-hover: #e06d4f; /* 明亮的橘红 */
-            --border-color: rgba(255, 255, 255, 0.1);
-            --hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            /* 宇宙深空环境光色系 - 纯粹的全景星云渐变 */
+            --space-abyss: #000103;
+            --space-nebula: #0a1128;
+            
+            /* UI 界面色彩矩阵 */
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-accent: #4facfe;
+            --text-accent-glow: #00f2fe;
+            
+            /* 毛玻璃光学系统 (Advanced Glassmorphism) */
+            --glass-bg-base: rgba(10, 15, 30, 0.45);
+            --glass-bg-hover: rgba(15, 22, 45, 0.6);
+            --glass-border-light: rgba(255, 255, 255, 0.08);
+            --glass-border-strong: rgba(79, 172, 254, 0.3);
+            --glass-shadow-soft: 0 15px 35px rgba(0, 0, 0, 0.4);
+            --glass-shadow-deep: 0 30px 60px rgba(0, 0, 0, 0.8);
+            
+            /* 全局平滑圆角规范 (Smooth Corners) */
+            --radius-sm: 12px;
+            --radius-md: 18px;
+            --radius-lg: 28px;
+            --radius-pill: 50px;
+            
+            /* 动力学过渡曲线 (Kinetic Transitions) */
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --bounce-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --transition-base: all 0.5s var(--ease-out-expo);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        /* --------------------------------------------------------------------------
+           [02] 浏览器默认重置与排版引擎 (CSS Reset & Typography Engine)
+           -------------------------------------------------------------------------- */
+        *, *::before, *::after { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            -webkit-tap-highlight-color: transparent; 
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg-base);
-            color: var(--text-main);
+            font-family: "SF Pro Display", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif;
+            background-color: var(--space-abyss);
+            color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
-            position: relative;
-        }
-
-        /* ========================================= */
-        /* 动态极简流光背景 */
-        /* ========================================= */
-        .ambient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            overflow: hidden;
-            background: radial-gradient(circle at top right, #3a302c, #2a2522);
-        }
-
-        .blob {
-            position: absolute;
-            filter: blur(120px);
-            opacity: 0.6;
-            border-radius: 50%;
-            animation: float 20s infinite alternate ease-in-out;
-        }
-
-        .blob-1 {
-            width: 500px;
-            height: 500px;
-            background: rgba(201, 82, 52, 0.35); /* 橘红色光晕 */
-            top: -150px;
-            left: -100px;
-            animation-delay: 0s;
-        }
-
-        .blob-2 {
-            width: 400px;
-            height: 400px;
-            background: rgba(43, 74, 111, 0.4); /* 深蓝色光晕 */
-            bottom: -100px;
-            right: -50px;
-            animation-delay: -5s;
-        }
-
-        .blob-3 {
-            width: 600px;
-            height: 600px;
-            background: rgba(214, 193, 173, 0.15); /* 米色光晕 */
-            top: 40%;
-            left: 30%;
-            animation-delay: -10s;
-        }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(5vw, -10vh) scale(1.1); }
-            66% { transform: translate(-5vw, 10vh) scale(0.9); }
-            100% { transform: translate(0, 0) scale(1); }
-        }
-
-        /* ========================================= */
-        /* 顶部导航与Hero区域 */
-        /* ========================================= */
-        header {
-            text-align: center;
-            padding: 80px 20px 50px;
-            position: relative;
-        }
-
-        header h1 {
-            font-size: 3.8rem;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-            color: #ffffff;
-            font-weight: 800;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-
-        header p {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            margin-bottom: 25px;
-            padding: 0 15px;
-        }
-
-        .author {
-            display: inline-block;
-            background: rgba(28, 25, 23, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 6px 18px;
-            border-radius: 30px;
-            font-size: 0.95rem;
-            border: 1px solid var(--border-color);
-            margin-bottom: 30px;
-            box-shadow: var(--card-shadow);
-        }
-
-        .author strong {
-            color: var(--accent-hover);
-        }
-
-        .hero-img-container {
-            margin: 30px auto;
-            max-width: 850px;
-            padding: 0 15px;
-            position: relative;
-        }
-
-        .hero-img {
-            width: 100%;
+            min-height: 100%;
             height: auto;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 40px rgba(201, 82, 52, 0.1);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* 定制化极简滚动条 */
+            scrollbar-width: thin;
+            scrollbar-color: var(--text-accent) var(--space-abyss);
+            /* 开启 GPU 硬件加速字体渲染 */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            perspective: 1000px;
         }
 
-        .hero-img:hover {
-            transform: translateY(-5px) scale(1.02);
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(79, 172, 254, 0.4); border-radius: 10px; transition: var(--transition-base); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-accent-glow); }
+
+        /* ==========================================================================
+           [03] 全景深空背景架构 (Panoramic Deep Space Background)
+           ========================================================================== */
+        /* 修复：将 100vw/100vh 替换为 100%，避免移动端地址栏滚动时的裁切与横向滚动条 */
+        #space-engine { 
+            position: fixed; inset: 0; width: 100%; height: 100%; 
+            z-index: -3; pointer-events: none; 
         }
 
-        .hero-actions {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-            flex-wrap: wrap; 
+        /* 极致的星云气态铺满遮罩 */
+        .nebula-environment { 
+            position: fixed; inset: 0; width: 100%; height: 100%; 
+            background: 
+                radial-gradient(ellipse at 85% 15%, rgba(13, 35, 80, 0.8) 0%, transparent 60%),
+                radial-gradient(circle at 15% 85%, rgba(20, 10, 50, 0.7) 0%, transparent 65%),
+                radial-gradient(ellipse at 50% 50%, rgba(5, 10, 25, 0.6) 0%, var(--space-abyss) 100%);
+            z-index: -2; pointer-events: none; 
+            mix-blend-mode: screen;
         }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 14px 32px;
-            border-radius: 12px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-
-        .btn-primary {
-            background-color: var(--accent-color);
-            color: #ffffff;
-            box-shadow: 0 8px 20px rgba(201, 82, 52, 0.3);
-            border: 1px solid transparent;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(201, 82, 52, 0.5);
-            background-color: var(--accent-hover);
-        }
-
-        /* ========================================= */
-        /* 核心功能网格 */
-        /* ========================================= */
-        .container {
-            max-width: 1250px;
-            margin: 0 auto;
-            padding: 60px 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.2rem;
-            margin-bottom: 50px;
-            color: #ffffff;
-            font-weight: 800;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-        }
-
-        /* 极暗毛玻璃卡片 */
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 25px;
-            transition: all 0.4s ease;
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--card-shadow);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--hover-shadow);
-            background: rgba(43, 74, 111, 0.8);
-            border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .card:hover::before {
-            opacity: 1;
-        }
-
-        .card-img {
-            width: 100%;
-            height: auto;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.05);
-            margin-bottom: 20px;
-            background-color: #1a1716;
-            object-fit: cover;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        .card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            line-height: 1.4;
-            color: #ffffff;
-        }
-
-        .card p {
-            color: var(--text-muted);
-            font-size: 0.98rem;
-            flex-grow: 1;
-        }
-
-        /* ========================================= */
-        /* 鸣谢与Footer */
-        /* ========================================= */
-        .credits {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 40px;
-            margin-top: 80px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--card-shadow);
-        }
-
-        .credits h3 {
-            margin-bottom: 25px;
-            text-align: center;
-            color: #ffffff;
-            font-size: 1.6rem;
-        }
-
-        .credits-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-        }
-
-        .credits-grid div {
-            padding: 20px;
-            background: rgba(28, 25, 23, 0.4);
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s ease;
+        /* ==========================================================================
+           [04] 顶层 UI 交互框架 (Top-level UI Framework)
+           ========================================================================== */
+        .core-layout { 
+            position: relative; z-index: 10; 
+            max-width: 1350px; margin: 0 auto; 
+            padding: 60px 25px 120px; 
         }
         
-        .credits-grid div:hover {
-            background: rgba(28, 25, 23, 0.8);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            transform: translateY(-2px);
-            border-color: rgba(255,255,255,0.1);
+        /* ----- 头部标题模块 ----- */
+        .sys-header { 
+            text-align: center; margin-bottom: 60px; 
+            animation: slide-fade-down 1.2s var(--ease-out-expo) forwards; 
+        }
+        
+        .sys-title { 
+            font-size: 5rem; font-weight: 900; letter-spacing: 3px; 
+            background: linear-gradient(135deg, #ffffff 0%, #b0c4de 50%, #4facfe 100%); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            text-shadow: 0 10px 40px rgba(79, 172, 254, 0.4); 
+            margin-bottom: 18px; 
+        }
+        
+        .creator-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.15);
+            padding: 10px 28px; border-radius: var(--radius-pill); font-size: 1.1rem;
+            color: var(--text-secondary); backdrop-filter: blur(15px);
+            text-decoration: none; transition: var(--bounce-spring);
+        }
+        .creator-badge:hover { 
+            background: rgba(79, 172, 254, 0.15); border-color: var(--text-accent); 
+            color: #fff; transform: translateY(-4px) scale(1.05); 
+            box-shadow: 0 12px 25px rgba(79, 172, 254, 0.35); 
+        }
+        .creator-badge strong { color: var(--text-primary); font-weight: 800; }
+
+        /* ----- 核心下载引擎 ----- */
+        .download-engine { display: flex; justify-content: center; align-items: center; margin-top: 40px; }
+        
+        .btn-download-core {
+            position: relative; display: inline-flex; align-items: center; justify-content: center;
+            padding: 18px 45px; background: linear-gradient(135deg, #1e90ff 0%, #00f2fe 100%);
+            color: #ffffff; text-decoration: none; font-size: 1.2rem; font-weight: 800;
+            border-radius: var(--radius-md); overflow: hidden; transition: var(--transition-base);
+            box-shadow: 0 12px 30px rgba(30, 144, 255, 0.4);
+            letter-spacing: 1.5px;
+            transform: translateZ(0);
+        }
+        .btn-download-core::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transform: skewX(-25deg); transition: 0.7s var(--ease-out-expo);
+        }
+        .btn-download-core:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 20px 45px rgba(30, 144, 255, 0.65); 
+        }
+        .btn-download-core:hover::before { left: 150%; }
+
+        /* ==========================================================================
+           [05] 面向对象的 3D 轮播图模块 (3D Interactive Carousel)
+           ========================================================================== */
+        .ui-panel { 
+            background: var(--glass-bg-base); 
+            backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); 
+            border: 1px solid var(--glass-border-light); 
+            border-radius: var(--radius-lg); 
+            box-shadow: var(--glass-shadow-deep); 
+            margin-bottom: 55px; 
+            position: relative; 
+            transform-style: preserve-3d;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        .panel-mask { overflow: hidden; border-radius: var(--radius-lg); }
+
+        .panel-header-title { 
+            text-align: center; padding: 28px 20px; font-size: 1.7rem; font-weight: 900; 
+            letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.06); 
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 100%);
         }
 
-        .credits-grid strong {
-            color: var(--accent-hover);
-            display: block;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
+        .slider-viewport { 
+            position: relative; width: 100%; 
+            touch-action: pan-y; user-select: none; padding: 50px 0 80px;
+        }
+        
+        .slider-track { display: flex; width: 100%; align-items: center; will-change: transform; }
+        
+        .slider-frame { 
+            flex: 0 0 100%; width: 100%; max-width: 100%; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            opacity: 0.2; transform: scale(0.85); 
+            transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo); 
+        }
+        .slider-frame.is-focused { opacity: 1; transform: scale(1); }
+
+        /* 📸 图片展示区 - 完美居中且带圆角 */
+        .visual-container {
+            width: 100%; max-width: 880px; 
+            height: 55vh; min-height: 380px; max-height: 650px;
+            margin: 0 auto 40px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        
+        .visual-img {
+            max-width: 100%; max-height: 100%; width: auto; height: auto;
+            object-fit: contain; 
+            border-radius: var(--radius-md); 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.7);
+            border: 1px solid rgba(255,255,255,0.09);
+            pointer-events: none;
         }
 
-        /* 特别鸣谢样式 */
-        .special-thanks-container {
-            margin-top: 60px;
-            text-align: center;
+        .frame-description { text-align: center; max-width: 800px; padding: 0 25px; }
+        .frame-description h3 { font-size: 2.2rem; color: #ffffff; margin-bottom: 15px; font-weight: 900; letter-spacing: 1px; }
+        .frame-description p { font-size: 1.2rem; color: var(--text-secondary); line-height: 1.8; }
+
+        /* 悬浮导航按钮 */
+        .nav-control { 
+            position: absolute; top: 50%; transform: translateY(-50%); 
+            width: 70px; height: 70px; background: rgba(0,0,0,0.4); 
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 50%; 
+            color: var(--text-secondary); font-size: 2rem; 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; z-index: 10; backdrop-filter: blur(20px); 
+            transition: var(--bounce-spring); 
         }
-        .special-thanks-container h4 {
-            color: #ffffff;
-            font-size: 1.4rem;
-            margin-bottom: 30px;
-            letter-spacing: 2px;
+        .nav-control:hover { 
+            background: var(--text-accent); color: #fff; border-color: var(--text-accent); 
+            box-shadow: 0 0 30px rgba(79, 172, 254, 0.4); transform: translateY(-50%) scale(1.15); 
         }
-        .thanks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            max-width: 1000px;
-            margin: 0 auto;
+        .ctrl-prev { left: 30px; } .ctrl-next { right: 30px; }
+        
+        .track-dots { display: flex; justify-content: center; gap: 16px; position: absolute; bottom: 35px; width: 100%; }
+        .point { width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.15); cursor: pointer; transition: var(--bounce-spring); }
+        .point:hover { background: rgba(255,255,255,0.8); transform: scale(1.2); }
+        .point.active-point { background: var(--text-accent); transform: scale(1.6); box-shadow: 0 0 15px var(--text-accent); }
+
+        /* ==========================================================================
+           [06] 静态信息流与动态协议框 (Info Matrix & Dynamic License)
+           ========================================================================== */
+        .info-panel { 
+            padding: 50px 60px; 
+            transition: transform 0.2s ease-out, box-shadow 0.4s ease; 
         }
-        .thanks-item {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 12px 20px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
+        .info-panel:hover { border-color: var(--glass-border-strong); box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 40px rgba(79, 172, 254, 0.1); }
+        
+        .block-heading { 
+            text-align: center; font-size: 1.8rem; color: #fff; margin-bottom: 40px; 
+            letter-spacing: 3px; padding-bottom: 25px; font-weight: 800;
+            border-bottom: 1px dashed rgba(255,255,255,0.15); 
         }
-        .thanks-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.15);
-            color: var(--text-main);
+        
+        /* 网格列表 */
+        .grid-list { list-style: none; column-count: 2; column-gap: 60px; }
+        @media (max-width: 992px) { .grid-list { column-count: 1; } }
+        
+        .grid-list li { 
+            padding: 20px 25px; background: rgba(255,255,255,0.02); 
+            border-radius: var(--radius-sm); margin-bottom: 18px; 
+            border: 1px solid rgba(255,255,255,0.03); color: var(--text-secondary); 
+            font-size: 1.1rem; transition: var(--transition-base); 
+            break-inside: avoid; display: flex; align-items: flex-start; 
         }
-        .thanks-item strong {
-            color: var(--accent-hover);
-            font-weight: 600;
+        .grid-list li::before { content: '◈'; color: var(--text-accent); margin-right: 15px; font-size: 1.2rem; line-height: 1.3; }
+        .grid-list li:hover { 
+            background: rgba(255,255,255,0.06); border-color: var(--glass-border-strong); 
+            color: #fff; transform: translateX(10px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); 
         }
 
-        /* MIT 许可证样式 */
-        .license-box {
-            margin-top: 60px;
-            background: rgba(20, 18, 17, 0.6);
-            padding: 30px;
-            border-radius: 12px;
-            border: 1px dashed rgba(255, 255, 255, 0.15);
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            text-align: left;
-            line-height: 1.8;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+        /* 标签矩阵 */
+        .tag-matrix { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; }
+        .matrix-node { 
+            padding: 14px 30px; background: rgba(0,0,0,0.5); 
+            border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-pill); 
+            color: var(--text-secondary); font-size: 1.05rem; transition: var(--transition-base); 
+            position: relative; overflow: hidden; cursor: default;
         }
-        .license-box h4 {
-            text-align: center;
-            color: #fff;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
+        .matrix-node strong { color: #fff; font-weight: 800; }
+        .matrix-node::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transition: 0.6s; }
+        .matrix-node:hover { border-color: var(--text-accent); color: #fff; box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3); transform: translateY(-4px); }
+        .matrix-node:hover::before { left: 100%; }
 
-        footer {
-            text-align: center;
-            padding: 50px 20px;
-            color: var(--text-muted);
-            margin-top: 20px;
+        /* 💎 MIT 许可证高亮互动框 */
+        .protocol-box { 
+            background: rgba(0,0,0,0.5); 
+            border-left: 6px solid var(--text-secondary); 
+            border-right: 1px solid transparent;
+            border-top: 1px solid transparent;
+            border-bottom: 1px solid transparent;
+            padding: 40px; 
+            border-radius: var(--radius-md); 
+            color: var(--text-secondary); 
+            font-size: 1.1rem; line-height: 2; 
+            transition: var(--transition-base);
             position: relative;
-            z-index: 1;
+            overflow: hidden;
         }
-
-        footer a {
-            color: var(--accent-hover);
-            text-decoration: none;
-            font-weight: 600;
+        .protocol-box strong { color: #fff; font-size: 1.4rem; display: block; margin-bottom: 20px; font-weight: 900; transition: color 0.4s ease; }
+        
+        .protocol-box:hover {
+            background: rgba(10, 25, 45, 0.8); 
+            border-left-color: var(--text-accent-glow);
+            border-right-color: rgba(79, 172, 254, 0.2);
+            border-top-color: rgba(79, 172, 254, 0.2);
+            border-bottom-color: rgba(79, 172, 254, 0.2);
+            color: #e2e8f0;
+            transform: translateX(12px) scale(1.01); 
+            box-shadow: 
+                -10px 0 30px rgba(79, 172, 254, 0.2), 
+                0 20px 40px rgba(0, 0, 0, 0.6); 
         }
+        .protocol-box:hover strong { color: var(--text-accent-glow); text-shadow: 0 0 15px rgba(0, 242, 254, 0.5); }
 
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* ========================================= */
-        /* 移动端完美适配 */
-        /* ========================================= */
+        /* ==========================================================================
+           [07] 移动端全面适配增强 (Advanced Responsive Breakpoints)
+           ========================================================================== */
         @media (max-width: 768px) {
-            header { padding: 50px 15px 30px; }
-            header h1 { font-size: 2.5rem; letter-spacing: 1px; }
-            header p { font-size: 1.05rem; }
+            .core-layout { padding: 30px 15px 80px; }
+            .sys-header { margin-bottom: 40px; }
+            .sys-title { font-size: 2.8rem; }
+            .creator-badge { padding: 8px 20px; font-size: 1rem; }
             
-            .hero-img-container { margin: 20px auto; padding: 0 10px; }
+            .btn-download-core { padding: 14px 30px; font-size: 1.1rem; margin-top: 25px; }
             
-            .hero-actions {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 15px;
-                padding: 0 20px;
+            /* 轮播图面板移动端深度优化 */
+            .panel-header-title { font-size: 1.3rem; padding: 18px 15px; }
+            .slider-viewport { padding: 20px 0 60px; }
+            .visual-container { 
+                min-height: 220px; height: 35vh; 
+                margin-bottom: 20px; 
             }
+            .slider-frame { padding: 0 10px; }
+            .frame-description h3 { font-size: 1.6rem; margin-bottom: 10px; }
+            .frame-description p { font-size: 1rem; padding: 0 10px; line-height: 1.5; }
             
-            .btn { width: 100%; font-size: 1.05rem; padding: 14px 20px; }
+            /* 导航控制按钮缩小并调整位置 */
+            .nav-control { width: 45px; height: 45px; font-size: 1.2rem; }
+            .ctrl-prev { left: 5px; } 
+            .ctrl-next { right: 5px; }
+            .track-dots { bottom: 20px; gap: 12px; }
             
-            .container { padding: 30px 15px; }
-            .section-title { font-size: 1.8rem; margin-bottom: 30px; }
+            /* 列表与矩阵块适配 */
+            .info-panel { padding: 30px 20px; margin-bottom: 30px; }
+            .block-heading { font-size: 1.5rem; margin-bottom: 25px; }
             
-            .grid { grid-template-columns: 1fr; gap: 25px; }
+            .grid-list { gap: 15px; }
+            .grid-list li { margin-bottom: 10px; padding: 15px; font-size: 1rem; }
             
-            .card { padding: 20px; }
-            .card h3 { font-size: 1.25rem; }
+            .tag-matrix { gap: 12px; }
+            .matrix-node { padding: 10px 15px; font-size: 0.95rem; }
             
-            .credits { padding: 30px 20px; margin-top: 50px; }
-            .credits h3 { font-size: 1.4rem; }
-            
-            .credits-grid { grid-template-columns: 1fr; gap: 15px; }
-            .thanks-grid { grid-template-columns: 1fr; }
-            
-            footer { padding: 30px 15px; }
-            
-            .blob-1 { width: 300px; height: 300px; }
-            .blob-2 { width: 250px; height: 250px; }
-            .blob-3 { width: 350px; height: 350px; }
+            .protocol-box { padding: 20px; font-size: 0.95rem; line-height: 1.8; }
+            .protocol-box strong { font-size: 1.2rem; margin-bottom: 15px; }
         }
-
-        @media (max-width: 400px) {
-            header h1 { font-size: 2rem; }
-            .author { font-size: 0.85rem; padding: 6px 14px; margin-bottom: 20px; }
-            .section-title { font-size: 1.6rem; }
+        
+        @keyframes slide-fade-down { 
+            from { opacity: 0; transform: translateY(-50px); filter: blur(10px); } 
+            to { opacity: 1; transform: translateY(0); filter: blur(0); } 
         }
     </style>
 </head>
 <body>
 
-    <div class="ambient-bg">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
+    <!-- ==========================================================================
+         [01] 引擎底座：WebGL 级 Canvas 深空粒子阵列
+         ========================================================================== -->
+    <canvas id="space-engine"></canvas>
+    
+    <!-- 纯粹的全景星云遮罩层 -->
+    <div class="nebula-environment"></div>
 
-    <header>
-        <h1>ToolKit</h1>
-        <p>招标代理辅助办公软件</p>
-        <div class="author">Creator: <strong>土块</strong></div>
+    <!-- ==========================================================================
+         [02] 应用展现层：全玻璃化 UI 面板
+         ========================================================================== -->
+    <div class="core-layout">
         
-        <div class="hero-img-container">
-            <img src="imgs/main.png" alt="ToolKit 主界面预览" class="hero-img">
-        </div>
-
-        <div class="hero-actions">
-            <a href="https://github.com/GallantTarry/javaswing-toolkit-app/releases/download/ToolKitv1.6.0/ToolKit1.6.exe" class="btn btn-primary" download>
-                ⬇️ 下载 ToolKit 1.6 (Windows)
-            </a>
-        </div>
-    </header>
-
-    <div class="container">
-        <h2 class="section-title">核心功能一览</h2>
-        
-        <div class="grid">
-            <div class="card">
-                <img src="imgs/renamerpanel.png" alt="改名助手" class="card-img">
-                <h3>🏷️ 改名助手</h3>
-                <p>实现了拖入文件自动改文件名的功能。</p>
-            </div>
-
-            <div class="card">
-                <img src="imgs/checkerpanel.png" alt="数据审核" class="card-img">
-                <h3>📊 数据审核</h3>
-                <p>对信息协同数据表进行审核。</p>
-            </div>
-
-            <div class="card">
-                <img src="imgs/finderpanel.png" alt="文件检索" class="card-img">
-                <h3>🔍 文件检索</h3>
-                <p>扫描文件夹，在逐行匹配中输入名称，点击提取关键项即可检索出来。</p>
-            </div>
-
-            <div class="card">
-                <img src="imgs/scoringpanel.png" alt="评分读表" class="card-img">
-                <h3>📝 评分读表</h3>
-                <p>拖入采购文件即可生成已经合并且加上单元格方框的.xlsx表格文件到桌面上。</p>
-            </div>
-
-            <div class="card">
-                <img src="imgs/replacerpanel.png" alt="文档替换" class="card-img">
-                <h3>🔄 文档替换</h3>
-                <p>将需要修改的文档内容输入，然后拖入整个文件夹或单/多个文件全局内容修改。</p>
-            </div>
-
-            <div class="card">
-                <img src="imgs/comparisonpanel.png" alt="公告比对" class="card-img">
-                <h3>⚖️ 公告比对</h3>
-                <p>提供采购公告word和ECP电工交易专区采购公告导出的pdf文件进行数据比对。</p>
-            </div>
-
-            <div class="card">
-                <img src="imgs/regionfetcherpanel.png" alt="地区查询" class="card-img">
-                <h3>🌍 地区查询</h3>
-                <p>输入地址自动检索出省市县和邮政编码，并提供横板导出txt。</p>
-            </div>
-
-            <div class="card">
-                <img src="imgs/converterpanel.png" alt="文档转换" class="card-img">
-                <h3>🔀 文档转换</h3>
-                <p>调用office2013及以上版本的引擎对文档进行转换。</p>
-            </div>
-
-            <div class="card">
-                <img src="imgs/cloudsharepanel.png" alt="极速云传" class="card-img">
-                <h3>☁️ 极速云传</h3>
-                <p>支持在局域网内实现文件的高速直连传输，并提供临时内网穿透服务，轻松跨越公网共享数据。</p>
-            </div>
-
-            <div class="card">
-                <img src="imgs/savepigpanel.png" alt="拯救公猪" class="card-img">
-                <h3>🎮 拯救公猪</h3>
-                <p>主页面按G呼出按E退出，为纪念一个有趣的灵魂。</p>
-            </div>
-
-            <div class="card">
-                <img src="imgs/miti.png" alt="智能AIMITI" class="card-img">
-                <h3>🤖 智能AIMITI</h3>
-                <p>您可以右键问他问题，虽然他可能比较高冷。右键取消对话框。</p>
-            </div>
-
-            <div class="card">
-                <img src="imgs/settingsdialog.png" alt="系统设置与帮助" class="card-img">
-                <h3>⚙️ 系统设置与帮助</h3>
-                <p>自定义主窗口关闭行为与启动尺寸，支持更改全局背景壁纸及明暗调节，并可在此灵活控制桌面小猫(MITI)的启用状态。</p>
-            </div>
-        </div>
-
-        <div class="credits">
-            <h3>依赖与开源组件鸣谢</h3>
-            <div class="credits-grid">
-                <div><strong>FlatLaf (3.0)</strong>：感谢 FlatLaf 提供现代化的深色毛玻璃跨平台 UI 视觉支撑。</div>
-                <div><strong>iTextPDF (5.5.13.3)</strong>：感谢 iTextPDF 提供极其稳定的动态 PDF 生成与深度操作支持。</div>
-                <div><strong>Apache PDFBox (2.0.31)</strong>：感谢 Apache PDFBox 强大的底层 PDF 纯文本与元数据解析能力。</div>
-                <div><strong>Apache POI (5.2.3)</strong>：感谢 Apache POI 筑牢处理老版 XLS 办公文档的底层基石。</div>
-                <div><strong>Apache POI OOXML (5.2.3)</strong>：感谢 Apache POI OOXML 实现 XLSX/DOCX 等新版复杂办公数据的完美自动化清洗与比对。</div>
-                <div><strong>Apache POI Scratchpad (5.2.3)</strong>：感谢 Apache POI Scratchpad 提供更丰富的复杂 Office 格式扩展支持。</div>
-                <div><strong>Log4j API (2.17.1)</strong>：感谢 Log4j API 提供标准化的高效并发日志记录接口。</div>
-                <div><strong>Log4j Core (2.17.1)</strong>：感谢 Log4j Core 为系统状态追踪与异常排查提供坚实的日志输出引擎。</div>
-                <div><strong>Google Gson (2.10.1)</strong>：感谢 Google Gson 带来极度丝滑的 Java 对象与复杂 JSON 互转体验。</div>
-                <div><strong>JLayer (1.0.1)</strong>：感谢 JLayer 引擎赋予工具灵动的 MP3 复古音效与跨线程音频解码能力。</div>
-                <div><strong>org.json (20240303)</strong>：感谢 org.json 提供极简优雅的树状节点解析，精准解构网络 API 返回数据。</div>
-                <div><strong>Maven Compiler Plugin (3.11.0)</strong>：感谢 Maven Compiler 插件保驾护航，完美锁定并顺滑编译前沿的 Java 21 代码。</div>
-                <div><strong>Maven Shade Plugin (3.5.1)</strong>：感谢 Maven Shade 超级插件完美融合错综复杂的依赖并剥离冲突签名，凝练出纯粹的独立可执行程序。</div>
-                <div><strong>Java 21 (JDK 21)</strong>：感谢 Java 21 强大的核心底座，提供最前沿的语法特性与极速性能，支撑 ToolKit v1.5 的稳定跨平台运行。</div>
-                <div><strong>UTF-8 Encoding</strong>：感谢 UTF-8 字符集标准作为项目的全局编译编码，为底层文本数据和跨平台编译提供统一的规范，消除一切乱码困扰。</div>
-                <div><strong>Apache Maven (4.0.0 Model)</strong>：感谢 Maven 构建工具体系，以严谨的生命周期和依赖管理，将散落的代码与错综复杂的组件完美融。</div>
-                <div><strong>Google ZXing (3.5.2 Core)</strong>：感谢 ZXing 二维码核心引擎，以精密的矩阵算法与卓越的容错机制，将冗长的数据链接化作方寸之间的黑白像素，在数字世界与物理设备间架设起极速交互的桥梁。</div>
-            </div>
+        <!-- 核心控制台头部 -->
+        <header class="sys-header">
+            <h1 class="sys-title">ToolKit</h1>
             
-            <div class="special-thanks-container">
-                <h4>===================== 特别鸣谢 =====================</h4>
-                <div class="thanks-grid">
-                    <div class="thanks-item">感谢 <strong>Gemini</strong> 对开发提供的巨大帮助与支持。</div>
-                    <div class="thanks-item">感谢 <strong>supabase</strong> 提供了数据库。</div>
-                    <div class="thanks-item">感谢 <strong>智谱Ai</strong> 提供了Api接口。</div>
-                    <div class="thanks-item">感谢 <strong>Removebg</strong> 裁剪了阿尔法通道。</div>
-                    <div class="thanks-item">感谢 <strong>Wallhaven</strong> 提供了壁纸的使用。</div>
-                    <div class="thanks-item">感谢 <strong>Convertio</strong> 提供了图标的转换功能。</div>
-                    <div class="thanks-item">感谢 <strong>iconfont</strong> 提供了主菜单图标库源文件。</div>
-                    <div class="thanks-item">感谢 <strong>github</strong> 提供了避风港和开源发布页。</div>
-                    <div class="thanks-item">感谢 <strong>@tombcato</strong> 提供了地区数据与开发灵感。</div>
-                    <div class="thanks-item">感谢 <strong>ChatGPT</strong> 提供的额外Ai辅助。</div>
-                    <div class="thanks-item">感谢 <strong>loading.io</strong> 提供的启动闪图源文件。</div>
-                    <div class="thanks-item">感谢 <strong>诸多up主</strong> 提供的音乐文件。</div>
-                    <div class="thanks-item">感谢 <strong>唧唧down</strong> 提供的文件下载功能。</div>
-                    <div class="thanks-item">感谢 <strong>南瑞工程招标代理一部All</strong>。</div>
-                </div>
-                <p style="margin-top: 30px; font-weight: bold; color: var(--accent-hover); font-size: 1.05rem;">代码已上传至github并开源！再次感谢您的使用。</p>
+            <a href="https://gallanttarry.github.io/TuKuai/" target="_blank" class="creator-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Created by <strong>土块</strong>
+            </a>
+            
+            <div class="download-engine">
+                <a href="https://github.com/GallantTarry/javaswing-toolkit-app/releases/download/ToolKitv1.7.0/ToolKit1.7.exe" class="btn-download-core" download>
+                    <svg style="margin-right:12px;" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    下载 ToolKit 1.7
+                </a>
             </div>
+        </header>
 
-            <div class="license-box">
-                <h4>MIT 许可证</h4>
-                <p>版权所有 (c) 2026 TuKuai</p>
-                <p style="margin-top: 10px;">特此免费授予任何获得本软件及相关文档文件（以下简称“软件”）副本的人，不受限制地处理本软件的权利，包括但不限于使用、复制、修改、合并、发布、分发、再许可和/或出售本软件副本的权利，并允许向其提供本软件的人这样做，但须符合以下条件：</p>
-                <p style="margin-top: 10px;">上述版权声明和本许可声明应包含在本软件的所有副本或主要部分中。</p>
-                <p style="margin-top: 10px;">本软件按“原样”提供，没有任何形式的明示或暗示的保证，包括但不限于对适销性、特定用途适用性和非侵权性的保证。在任何情况下，无论是在合同、侵权或其他诉讼中，作者或版权持有人均不对因本软件或本软件的使用或其他交易而产生、引起或与之相关的任何索赔、损害或其他责任负责。</p>
+        <!-- 🚀 面板一：基于绝对居中算法的手势 3D 轮播图 -->
+        <section class="ui-panel tilt-element" id="main-carousel">
+            <div class="panel-mask">
+                <div class="panel-header-title">【ToolKit 全模块说明书】</div>
+                
+                <div class="slider-viewport" id="slider-viewport">
+                    <div class="slider-track" id="slider-track">
+                        
+                        <!-- 帧：主界面 -->
+                        <div class="slider-frame">
+                            <div class="visual-container">
+                                <img src="imgs/main.png" class="visual-img" alt="核心主界面" loading="eager" draggable="false">
+                            </div>
+                            <div class="frame-description">
+                                <h3>核心主界面</h3>
+                                <p>欢迎使用 ToolKit 综合辅助办公软件。界面焕新，性能跃升。</p>
+                            </div>
+                        </div>
+
+                        <!-- 帧：改名助手 -->
+                        <div class="slider-frame">
+                            <div class="visual-container">
+                                <img src="imgs/renamerpanel.png" class="visual-img" alt="改名助手" loading="lazy" draggable="false">
+                            </div>
+                            <div class="frame-description">
+                                <h3>改名助手</h3>
+                                <p>实现了拖入文件自动改文件名的功能。</p>
+                            </div>
+                        </div>
+
+                        <!-- 帧：数据审核 -->
+                        <div class="slider-frame">
+                            <div class="visual-container">
+                                <img src="imgs/checkerpanel.png" class="visual-img" alt="数据审核" loading="lazy" draggable="false">
+                            </div>
+                            <div class="frame-description">
+                                <h3>数据审核</h3>
+                                <p>对信息协同数据表进行审核。</p>
+                            </div>
+                        </div>
+
+                        <!-- 帧：文件检索 -->
+                        <div class="slider-frame">
+                            <div class="visual-container">
+                                <img src="imgs/finderpanel.png" class="visual-img" alt="文件检索" loading="lazy" draggable="false">
+                            </div>
+                            <div class="frame-description">
+                                <h3>文件检索</h3>
+                                <p>扫描文件夹，在逐行匹配中输入名称，点击提取关键项即可检索出来。</p>
+                            </div>
+                        </div>
+
+                        <!-- 帧：评分读表 -->
+                        <div class="slider-frame">
+                            <div class="visual-container">
+                                <img src="imgs/scoringpanel.png" class="visual-img" alt="评分读表" loading="lazy" draggable="false">
+                            </div>
+                            <div class="frame-description">
+                                <h3>评分读表</h3>
+                                <p>拖入采购文件即可生成已经合并且加上方框的.xlsx表格文件到桌面上。</p>
+                            </div>
+                        </div>
+
+                        <!-- 帧：文档替换 -->
+                        <div class="slider-frame">
+                            <div class="visual-container">
+                                <img src="imgs/replacerpanel.png" class="visual-img" alt="文档替换" loading="lazy" draggable="false">
+                            </div>
+                            <div class="frame-description">
+                                <h3>文档替换</h3>
+                                <p>将需要修改的文档内容输入，然后拖入整个文件夹或单/多个文件全局内容修改。</p>
+                            </div>
+                        </div>
+
+                        <!-- 帧：公告比对 -->
+                        <div class="slider-frame">
+                            <div class="visual-container">
+                                <img src="imgs/comparisonpanel.png" class="visual-img" alt="公告比对" loading="lazy" draggable="false">
+                            </div>
+                            <div class="frame-description">
+                                <h3>公告比对</h3>
+                                <p>提供采购公告word和ECP电工交易专区采购公告导出的pdf文件进行数据比对。</p>
+                            </div>
+                        </div>
+
+                        <!-- 帧：地区查询 -->
+                        <div class="slider-frame">
+                            <div class="visual-container">
+                                <img src="imgs/regionfetcherpanel.png" class="visual-img" alt="地区查询" loading="lazy" draggable="false">
+                            </div>
+                            <div class="frame-description">
+                                <h3>地区查询</h3>
+                                <p>输入地址自动检索出省市县和邮政编码，并提供横板导出txt。</p>
+                            </div>
+                        </div>
+
+                        <!-- 帧：文档转换 -->
+                        <div class="slider-frame">
+                            <div class="visual-container">
+                                <img src="imgs/converterpanel.png" class="visual-img" alt="文档转换" loading="lazy" draggable="false">
+                            </div>
+                            <div class="frame-description">
+                                <h3>文档转换</h3>
+                                <p>调用office2013及以上版本的引擎对文档进行转换。</p>
+                            </div>
+                        </div>
+
+                        <!-- 帧：极速云传 -->
+                        <div class="slider-frame">
+                            <div class="visual-container">
+                                <img src="imgs/cloudsharepanel.png" class="visual-img" alt="极速云传" loading="lazy" draggable="false">
+                            </div>
+                            <div class="frame-description">
+                                <h3>极速云传</h3>
+                                <p>可以在局域网快速传输文件，也可以暂时穿透到公网。</p>
+                            </div>
+                        </div>
+
+                        <!-- 帧：拯救公猪 -->
+                        <div class="slider-frame">
+                            <div class="visual-container">
+                                <img src="imgs/savepigpanel.png" class="visual-img" alt="拯救公猪" loading="lazy" draggable="false">
+                            </div>
+                            <div class="frame-description">
+                                <h3>拯救公猪</h3>
+                                <p>主页面按G呼出按E退出。</p>
+                            </div>
+                        </div>
+
+                        <!-- 帧：MITI -->
+                        <div class="slider-frame">
+                            <div class="visual-container">
+                                <img src="imgs/miti.png" class="visual-img" alt="MITI" loading="lazy" draggable="false">
+                            </div>
+                            <div class="frame-description">
+                                <h3>MITI</h3>
+                                <p>右键和他互动。</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="nav-control ctrl-prev" id="btn-prev">&#10094;</div>
+                <div class="nav-control ctrl-next" id="btn-next">&#10095;</div>
+                <div class="track-dots" id="track-dots"></div>
             </div>
-        </div>
+        </section>
+
+        <!-- 面板二：技术阵列 (带圆角与 3D Hover) -->
+        <section class="ui-panel info-panel tilt-element">
+            <h2 class="block-heading">依赖与开源组件鸣谢</h2>
+            <ul class="grid-list">
+                <li>FlatLaf (3.0)：感谢 FlatLaf 提供现代化的深色毛玻璃跨平台 UI 视觉支撑。</li>
+                <li>iTextPDF (5.5.13.3)：感谢 iTextPDF 提供极其稳定的动态 PDF 生成与深度操作支持。</li>
+                <li>Apache PDFBox (2.0.31)：感谢 Apache PDFBox 强大的底层 PDF 纯文本与元数据解析能力。</li>
+                <li>Apache POI (5.2.3)：感谢 Apache POI 筑牢处理老版 XLS 办公文档的底层基石。</li>
+                <li>Apache POI OOXML (5.2.3)：感谢 Apache POI OOXML 实现 XLSX/DOCX 等新版复杂办公数据的完美自动化清洗与比对。</li>
+                <li>Apache POI Scratchpad (5.2.3)：感谢 Apache POI Scratchpad 提供更丰富的复杂 Office 格式扩展支持。</li>
+                <li>Log4j API (2.17.1)：感谢 Log4j API 提供标准化的高效并发日志记录接口。</li>
+                <li>Log4j Core (2.17.1)：感谢 Log4j Core 为系统状态追踪与异常排查提供坚实的日志输出引擎。</li>
+                <li>Google Gson (2.10.1)：感谢 Google Gson 带来极度丝滑的 Java 对象与复杂 JSON 互转体验。</li>
+                <li>JLayer (1.0.1)：感谢 JLayer 引擎赋予工具灵动的 MP3 复古音效与跨线程音频解码能力。</li>
+                <li>org.json (20240303)：感谢 org.json 提供极简优雅的树状节点解析，精准解构网络 API 返回数据。</li>
+                <li>Maven Compiler Plugin (3.11.0)：感谢 Maven Compiler 插件保驾护航，完美锁定并顺滑编译前沿的 Java 21 代码。</li>
+                <li>Maven Shade Plugin (3.5.1)：感谢 Maven Shade 超级插件完美融合错综复杂的依赖并剥离冲突签名，凝练出纯粹的独立可执行程序。</li>
+                <li>Java 21 (JDK 21)：感谢 Java 21 强大的核心底座，提供最前沿的语法特性与极速性能，支撑 ToolKit 的稳定运行。</li>
+                <li>UTF-8 Encoding：感谢 UTF-8 字符集标准作为项目的全局编译编码，消除一切乱码困扰。</li>
+                <li>Apache Maven (4.0.0 Model)：感谢 Maven 构建工具体系，将散落的代码与错综复杂的组件完美融。</li>
+                <li>Google ZXing (3.5.2 Core)：感谢 ZXing 二维码核心引擎，将冗长的数据链接化作物理设备极速交互的桥梁。</li>
+            </ul>
+        </section>
+
+        <!-- 面板三：矩阵鸣谢 -->
+        <section class="ui-panel info-panel tilt-element">
+            <h2 class="block-heading">特别鸣谢</h2>
+            <div class="tag-matrix">
+                <div class="matrix-node">感谢 <strong>Gemini</strong> 对开发提供的巨大帮助与支持</div>
+                <div class="matrix-node">感谢 <strong>supabase</strong> 提供了数据库</div>
+                <div class="matrix-node">感谢 <strong>智谱Ai</strong> 提供了Api接口</div>
+                <div class="matrix-node">感谢 <strong>Removebg</strong> 裁剪了阿尔法通道</div>
+                <div class="matrix-node">感谢 <strong>Wallhaven</strong> 提供了壁纸的使用</div>
+                <div class="matrix-node">感谢 <strong>Convertio</strong> 提供了图标的转换功能</div>
+                <div class="matrix-node">感谢 <strong>iconfont</strong> 提供了主菜单图标库源文件</div>
+                <div class="matrix-node">感谢 <strong>github</strong> 提供了避风港和开源发布页</div>
+                <div class="matrix-node">感谢 <strong>@tombcato</strong> 提供了地区数据与开发灵感</div>
+                <div class="matrix-node">感谢 <strong>ChatGPT</strong> 提供的额外Ai辅助</div>
+                <div class="matrix-node">感谢 <strong>loading.io</strong> 提供的启动闪图源文件</div>
+                <div class="matrix-node">感谢 <strong>诸多up主</strong> 提供的音乐文件</div>
+                <div class="matrix-node">感谢 <strong>唧唧down</strong> 提供的文件下载功能</div>
+                <div class="matrix-node">感谢 <strong>PDF24</strong> 提供的线上文档处理功能</div>
+                <div class="matrix-node">感谢 <strong>高德导航</strong> 提供的Adcode api接口</div>
+                <div class="matrix-node">感谢 <strong>南瑞工程招标代理一部All</strong></div>
+            </div>
+        </section>
+
+        <!-- 面板四：MIT 协议 (带动态高亮特效) -->
+        <section class="ui-panel info-panel tilt-element">
+            <h2 class="block-heading">MIT License</h2>
+            <!-- 执行圆角且具有流光特效的独立盒子 -->
+            <div class="protocol-box">
+                <strong>MIT 许可证</strong>
+                <p>版权所有 (c) 2026 TuKuai</p><br>
+                <p>特此免费授予任何获得本软件及相关文档文件（以下简称“软件”）副本的人，不受限制地处理本软件的权利，包括但不限于使用、复制、修改、合并、发布、分发、再许可和/或出售本软件副本的权利，并允许向其提供本软件的人这样做，但须符合以下条件：</p><br>
+                <p>上述版权声明和本许可声明应包含在本软件的所有副本或主要部分中。</p><br>
+                <p>本软件按“原样”提供，没有任何形式的明示或暗示的保证，包括但不限于对适销性、特定用途适用性和非侵权性的保证。在任何情况下，无论是在合同、侵权或其他诉讼中，作者或版权持有人均不对因本软件或本软件的使用或其他交易而产生、引起或与之相关的任何索赔、损害或其他责任负责。</p>
+            </div>
+        </section>
+
     </div>
 
-    <footer>
-        <p>为世界不断的变好，为支持代码世界的不断更新，代码已开源至 GitHub！</p>
-        <p>访问项目主页获取最新版本：<a href="https://gallanttarry.github.io/TuKuai/" target="_blank">https://gallanttarry.github.io/TuKuai/</a></p>
-        <p style="margin-top: 15px; font-size: 0.85rem;">© 2026 ToolKit by 土块. All rights reserved.</p>
-    </footer>
+    <!-- ==========================================================================
+         [03] JavaScript 核心逻辑控制器 (Logic Controllers)
+         包含：深空粒子渲染、OOP滑动引擎、UI 3D 磁性倾斜物理学
+         ========================================================================== -->
+    <script>
+        /**
+         * [System 1] 工业级 Canvas 星云粒子引擎
+         * 动态速度已降低一半，呈现更沉稳的星空视差
+         */
+        class CosmicEngine {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d', { alpha: false });
+                this.stars = [];
+                this.meteors = [];
+                this.parallax = { targetX: 0, targetY: 0, currentX: 0, currentY: 0 };
+                this.center = { x: 0, y: 0 };
+                this.config = {
+                    count: Math.min(Math.floor(window.innerWidth / 1.5), 800),
+                    meteorRate: 0.005, 
+                    colors: ['#ffffff', '#a0aec0', '#4facfe', '#e0e7ff', '#f8d9b1']
+                };
+                this.init();
+            }
 
+            init() {
+                this.resize();
+                window.addEventListener('resize', this.debounce(this.resize.bind(this), 250));
+                window.addEventListener('mousemove', (e) => {
+                    this.parallax.targetX = (e.clientX - this.center.x) * 0.00015;
+                    this.parallax.targetY = (e.clientY - this.center.y) * 0.00015;
+                }, { passive: true });
+                
+                this.populate();
+                this.render();
+            }
+
+            debounce(func, wait) {
+                let timeout;
+                return function (...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.center.x = this.canvas.width / 2;
+                this.center.y = this.canvas.height / 2;
+                
+                // 增加移动端视差高度变更时的安全更新(防止重置时地址栏引发高度问题)
+                setTimeout(() => {
+                    this.canvas.width = window.innerWidth;
+                    this.canvas.height = window.innerHeight;
+                    this.center.x = this.canvas.width / 2;
+                    this.center.y = this.canvas.height / 2;
+                }, 150);
+            }
+
+            populate() {
+                this.stars = [];
+                for (let i = 0; i < this.config.count; i++) {
+                    this.stars.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        z: Math.random() * 2.8 + 0.5,
+                        size: Math.random() * 2.4,
+                        color: this.config.colors[Math.floor(Math.random() * this.config.colors.length)],
+                        alpha: Math.random(),
+                        flicker: (Math.random() * 0.02) - 0.01
+                    });
+                }
+            }
+
+            spawnMeteor() {
+                this.meteors.push({
+                    x: Math.random() * this.canvas.width * 1.5,
+                    y: -100,
+                    length: Math.random() * 120 + 50,
+                    speed: Math.random() * 20 + 15,
+                    angle: Math.PI / 4, 
+                    alpha: 1
+                });
+            }
+
+            physics() {
+                this.parallax.currentX += (this.parallax.targetX - this.parallax.currentX) * 0.08;
+                this.parallax.currentY += (this.parallax.targetY - this.parallax.currentY) * 0.08;
+
+                for (let star of this.stars) {
+                    star.x -= this.parallax.currentX * star.z * 18;
+                    star.y -= this.parallax.currentY * star.z * 18;
+
+                    if (star.x < 0) star.x = this.canvas.width;
+                    if (star.x > this.canvas.width) star.x = 0;
+                    if (star.y < 0) star.y = this.canvas.height;
+                    if (star.y > this.canvas.height) star.y = 0;
+
+                    star.alpha += star.flicker;
+                    if (star.alpha <= 0.1 || star.alpha >= 1) {
+                        star.flicker = -star.flicker;
+                    }
+                }
+
+                if (Math.random() < this.config.meteorRate) this.spawnMeteor();
+
+                for (let i = this.meteors.length - 1; i >= 0; i--) {
+                    let m = this.meteors[i];
+                    m.x -= m.speed * Math.cos(m.angle);
+                    m.y += m.speed * Math.sin(m.angle);
+                    m.alpha -= 0.015;
+
+                    if (m.alpha <= 0 || m.y > this.canvas.height || m.x < 0) {
+                        this.meteors.splice(i, 1);
+                    }
+                }
+            }
+
+            draw() {
+                this.ctx.fillStyle = '#000103';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                for (let star of this.stars) {
+                    this.ctx.beginPath();
+                    this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = this.hexToRgba(star.color, star.alpha);
+                    this.ctx.fill();
+                }
+
+                for (let m of this.meteors) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(m.x, m.y);
+                    this.ctx.lineTo(m.x + m.length * Math.cos(m.angle), m.y - m.length * Math.sin(m.angle));
+                    this.ctx.strokeStyle = `rgba(255, 255, 255, ${m.alpha})`;
+                    this.ctx.lineWidth = 2.5;
+                    this.ctx.lineCap = 'round';
+                    this.ctx.stroke();
+                }
+            }
+
+            hexToRgba(hex, alpha) {
+                const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return r ? `rgba(${parseInt(r[1],16)}, ${parseInt(r[2],16)}, ${parseInt(r[3],16)}, ${alpha})` : `rgba(255,255,255,${alpha})`;
+            }
+
+            render() {
+                this.physics();
+                this.draw();
+                requestAnimationFrame(this.render.bind(this));
+            }
+        }
+        new CosmicEngine('space-engine');
+
+        /**
+         * [System 2] 百分比绝对居中流体轮播引擎
+         */
+        class PrecisionCarousel {
+            constructor() {
+                this.track = document.getElementById('slider-track');
+                this.frames = Array.from(document.querySelectorAll('.slider-frame'));
+                this.dotsContainer = document.getElementById('track-dots');
+                this.currentIndex = 0;
+                this.totalFrames = this.frames.length;
+                this.drag = { isDragging: false, startX: 0, currentDelta: 0 };
+                this.rafID = null;
+                this.viewportWidth = 0;
+                
+                if(this.track) this.init();
+            }
+
+            init() {
+                this.buildDots();
+                this.viewportWidth = this.track.parentElement.clientWidth;
+                this.applyTransform(0);
+                this.updateUI();
+                this.bindEvents();
+            }
+
+            buildDots() {
+                this.frames.forEach((_, idx) => {
+                    const point = document.createElement('div');
+                    point.classList.add('point');
+                    if (idx === 0) point.classList.add('active-point');
+                    point.addEventListener('click', () => this.goTo(idx));
+                    this.dotsContainer.appendChild(point);
+                });
+                this.points = Array.from(this.dotsContainer.children);
+            }
+
+            bindEvents() {
+                window.addEventListener('resize', () => {
+                    this.viewportWidth = this.track.parentElement.clientWidth;
+                    this.goTo(this.currentIndex);
+                });
+                document.getElementById('btn-prev').addEventListener('click', () => this.shift(-1));
+                document.getElementById('btn-next').addEventListener('click', () => this.shift(1));
+
+                const vp = document.getElementById('slider-viewport');
+                vp.addEventListener('mousedown', this.startDrag.bind(this));
+                vp.addEventListener('touchstart', this.startDrag.bind(this), { passive: true });
+                vp.addEventListener('mousemove', this.moveDrag.bind(this));
+                vp.addEventListener('touchmove', this.moveDrag.bind(this), { passive: true });
+                ['mouseup', 'touchend', 'mouseleave'].forEach(e => vp.addEventListener(e, this.endDrag.bind(this)));
+            }
+
+            getPointer(e) { return e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; }
+
+            startDrag(e) {
+                this.drag.isDragging = true;
+                this.drag.startX = this.getPointer(e);
+                this.drag.currentDelta = 0;
+                this.track.style.transition = 'none';
+                this.rafID = requestAnimationFrame(this.renderDrag.bind(this));
+            }
+
+            moveDrag(e) {
+                if (!this.drag.isDragging) return;
+                this.drag.currentDelta = this.getPointer(e) - this.drag.startX;
+            }
+
+            endDrag() {
+                if (!this.drag.isDragging) return;
+                this.drag.isDragging = false;
+                cancelAnimationFrame(this.rafID);
+                
+                const threshold = this.viewportWidth * 0.12;
+                if (this.drag.currentDelta < -threshold && this.currentIndex < this.totalFrames - 1) this.currentIndex++;
+                else if (this.drag.currentDelta > threshold && this.currentIndex > 0) this.currentIndex--;
+                
+                this.goTo(this.currentIndex);
+            }
+
+            renderDrag() {
+                if (this.drag.isDragging) {
+                    this.applyTransform(this.drag.currentDelta);
+                    this.rafID = requestAnimationFrame(this.renderDrag.bind(this));
+                }
+            }
+
+            shift(dir) {
+                let target = this.currentIndex + dir;
+                if (target < 0) target = this.totalFrames - 1;
+                if (target >= this.totalFrames) target = 0;
+                this.goTo(target);
+            }
+
+            goTo(idx) {
+                this.currentIndex = idx;
+                this.track.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
+                this.applyTransform(0);
+                this.updateUI();
+            }
+
+            applyTransform(pxOffset) {
+                const base = -(this.currentIndex * 100);
+                this.track.style.transform = `translateX(calc(${base}% + ${pxOffset}px))`;
+            }
+
+            updateUI() {
+                this.frames.forEach((f, i) => f.classList.toggle('is-focused', i === this.currentIndex));
+                this.points.forEach((p, i) => p.classList.toggle('active-point', i === this.currentIndex));
+            }
+        }
+        new PrecisionCarousel();
+
+        /**
+         * [System 3] UI 3D 磁性倾斜物理引擎 (Magnetic 3D Tilt)
+         */
+        class MagneticTilt {
+            constructor(selector) {
+                this.elements = document.querySelectorAll(selector);
+                this.init();
+            }
+            init() {
+                if(window.matchMedia("(pointer: coarse)").matches) return;
+                
+                this.elements.forEach(el => {
+                    el.addEventListener('mousemove', (e) => this.tilt(e, el));
+                    el.addEventListener('mouseleave', () => this.reset(el));
+                });
+            }
+            tilt(e, el) {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left; 
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const tiltX = ((y - centerY) / centerY) * -1;
+                const tiltY = ((x - centerX) / centerX) * 1;
+                
+                el.style.transform = `perspective(2000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.01)`;
+                el.style.transition = 'transform 0.1s linear';
+            }
+            reset(el) {
+                el.style.transform = `perspective(2000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+                el.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
+            }
+        }
+        new MagneticTilt('.tilt-element');
+
+    </script>
 </body>
 </html>
