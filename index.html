@@ -1572,30 +1572,23 @@
             };
 
             const playTrack = async (index) => {
-                // 如果点击的不是当前已经选中的歌曲
-                if (currentTrackIndex.value !== index) {
-                    // 第一步：只切换选中状态，不高亮播放（先暂停当前可能在播放的音乐）
-                    currentTrackIndex.value = index;
-                    isPlaying.value = false;
-                    if (audioRef.value) {
-                        audioRef.value.pause();
-                        audioRef.value.load();
-                    }
-                    return; // 拦截执行，不往下走播放逻辑
-                }
+                // 1. 无论是不是当前歌曲，都直接更新选中的歌曲索引
+                currentTrackIndex.value = index;
 
-                // 第二次点击（点击的正是当前高亮的歌曲）：开始播放
+                // 2. 先将播放状态置为 false
+                isPlaying.value = false;
+
+                // 3. 等待 Vue 完成 DOM 更新（确保 audio 标签成功加载了新歌曲的 src）
                 await nextTick();
+
                 if (audioRef.value) {
-                    // 如果正在播放，就不用重新播；如果没有播放，则开始播放
-                    if (!isPlaying.value) {
-                        audioRef.value.play().then(() => {
-                            isPlaying.value = true;
-                        }).catch(e => {
-                            console.error('音频播放失败', e);
-                            isPlaying.value = false;
-                        });
-                    }
+                    // 4. 立即触发播放逻辑
+                    audioRef.value.play().then(() => {
+                        isPlaying.value = true;
+                    }).catch(e => {
+                        console.error('音频播放失败', e);
+                        isPlaying.value = false;
+                    });
                 }
             };
 
