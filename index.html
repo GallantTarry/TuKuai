@@ -1573,6 +1573,21 @@
 
             const currentTrack = computed(() => playlist.value[currentTrackIndex.value] || null);
 
+            // 👇 -------- 强制接管苹果灵动岛/锁屏媒体控制台 -------- 👇
+            watch(currentTrack, (newTrack) => {
+                if (newTrack && 'mediaSession' in navigator) {
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        title: newTrack.title,   // 动态显示当前播放的歌曲名
+                        artist: 'TuKuai OS',     // 显示作者/系统名（你可以随便改）
+                        artwork: [
+                            // 核心修复：强制指定灵动岛只准抓取这张实心黑底图片！
+                            { src: 'imgs/applefavicon.png', sizes: '180x180', type: 'image/png' }
+                        ]
+                    });
+                }
+            }, { immediate: true }); // 确保一开机就初始化接管
+// 👆 ---------------------------------------------------- 👆
+
             const formatTime = (time) => {
                 if (isNaN(time)) return '00:00';
                 const min = Math.floor(time / 60).toString().padStart(2, '0');
