@@ -8,8 +8,13 @@
     <title>少侠别走</title>
 
 
-    <link href="./imgs/favicon.ico" rel="icon" type="image/x-icon">
+    <link rel="icon" type="image/png" href="imgs/favicon.png">
 
+    <!-- 2. 作为备用，兼容旧版浏览器的 ICO 格式 -->
+    <link rel="icon" type="image/x-icon" href="imgs/favicon.ico">
+
+    <!-- 3. 针对苹果 iOS 设备（iPhone/iPad）保存到桌面时的图标 -->
+    <link rel="apple-touch-icon" href="imgs/applefavicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
@@ -1528,6 +1533,7 @@
             });
 
             const playlist = ref([
+                {title: 'Track in Time', file: './music/Track in Time.mp3'},
                 {title: '飞越疯人院电影片尾曲', file: './music/飞越疯人院电影片尾曲.mp3'},
                 {title: 'For River', file: './music/For River.mp3'},
                 {title: 'Travelers', file: './music/Travelers.mp3'},
