@@ -386,19 +386,41 @@
 
                 <div class="space-y-6" v-if="currentTab === 'about'">
                     <h2 class="text-lg md:text-xl tab-title mb-6 font-bold">> 身份档案</h2>
-                    <div
-                            class="glass-card p-6 flex flex-wrap gap-y-4 gap-x-4 text-gray-100 text-[10px] md:text-xs leading-relaxed">
-                        <span class="bg-black/30 px-4 py-2 text-lg rounded-full border border-white/10 shadow-sm">Hodophile</span>
-                        <span class="bg-black/30 px-4 py-2 text-lg rounded-full border border-white/10 shadow-sm">Philocalist</span>
-                        <span class="bg-black/30 px-4 py-2 text-lg rounded-full border border-white/10 shadow-sm">Ludophile</span>
-                        <span class="bg-black/30 px-4 py-2 text-lg rounded-full border border-white/10 shadow-sm">Aquaphile</span>
-                        <span class="bg-black/30 px-4 py-2 text-lg rounded-full border border-white/10 shadow-sm">Technophile</span>
+
+                    <!-- 优化后的动态色彩与居中排版 -->
+                    <div class="glass-card p-5 md:p-8 flex flex-wrap justify-center items-center gap-3 md:gap-4">
+
+                        <!-- 蓝：寻际者 -->
+                        <span class="bg-[#38bdf8]/10 text-[#38bdf8] border border-[#38bdf8]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(56,189,248,0.1)] hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:bg-[#38bdf8]/20 hover:-translate-y-1 transition-all duration-300 cursor-default backdrop-blur-md">
+            Hodophile
+        </span>
+
+                        <!-- 绿：逐美者 -->
+                        <span class="bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(74,222,128,0.1)] hover:shadow-[0_0_20px_rgba(74,222,128,0.4)] hover:bg-[#4ade80]/20 hover:-translate-y-1 transition-all duration-300 cursor-default backdrop-blur-md">
+            Philocalist
+        </span>
+
+                        <!-- 黄：游玩者 -->
+                        <span class="bg-[#facc15]/10 text-[#facc15] border border-[#facc15]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(250,204,21,0.1)] hover:shadow-[0_0_20px_rgba(250,204,21,0.4)] hover:bg-[#facc15]/20 hover:-translate-y-1 transition-all duration-300 cursor-default backdrop-blur-md">
+            Ludophile
+        </span>
+
+                        <!-- 紫：亲水者 -->
+                        <span class="bg-[#a855f7]/10 text-[#a855f7] border border-[#a855f7]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(168,85,247,0.1)] hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:bg-[#a855f7]/20 hover:-translate-y-1 transition-all duration-300 cursor-default backdrop-blur-md">
+            Aquaphile
+        </span>
+
+                        <!-- 红：极客 -->
+                        <span class="bg-[#ef4444]/10 text-[#ef4444] border border-[#ef4444]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(239,68,68,0.1)] hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] hover:bg-[#ef4444]/20 hover:-translate-y-1 transition-all duration-300 cursor-default backdrop-blur-md">
+            Technophile
+        </span>
+
                     </div>
+
                     <div class="glass-card p-6">
                         <a class="leading-loose text-gray-300 hover:text-white hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] transition-all duration-300 text-xs md:text-sm text-center font-bold tracking-widest block cursor-pointer"
                            href="https://gallanttarry.github.io/GallantTarry/"
-                           target="_self">Not
-                            all those who wander are lost.</a>
+                           target="_self">Not all those who wander are lost.</a>
                     </div>
                 </div>
 
