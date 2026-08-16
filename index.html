@@ -427,10 +427,20 @@
                 <div class="space-y-6" v-if="currentTab === 'online'">
                     <h2 class="text-lg md:text-xl tab-title mb-6 font-bold">> 在线工具</h2>
 
-                    <!-- 1. Google Gemini -->
+                    <!-- 1. Google map -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">1. Gemini</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">1. Google Maps</span>
+                            <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">谷歌地图</span>
+                        </div>
+                        <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
+                           href="https://www.google.com/maps"
+                           target="_self">[ 访问 VISIT ]</a>
+                    </div>
+                    <!-- 2. Google Gemini -->
+                    <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
+                        <div class="flex flex-col space-y-2">
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">2. Gemini</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">智能AI助手</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -438,10 +448,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 2. GitHub -->
+                    <!-- 3. GitHub -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">2. GitHub</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">3. GitHub</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">代码界的社交网络</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -449,10 +459,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 3. Wallhaven -->
+                    <!-- 4. Wallhaven -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">3. Wallhaven</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">4. Wallhaven</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">高质量壁纸</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -460,10 +470,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 4. wikiart -->
+                    <!-- 5. wikiart -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">4. wikiart</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">5. wikiart</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">维基百科的“艺术图库”</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -471,10 +481,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 5. GIPHY -->
+                    <!-- 6. GIPHY -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">5. GIPHY</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">6. GIPHY</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">gif动图网址</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -482,10 +492,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 6. MongoDB -->
+                    <!-- 7. MongoDB -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">6. MongoDB</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">7. MongoDB</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">Atlas云数据库管理平台</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -493,10 +503,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 7. vercel -->
+                    <!-- 8. vercel -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">7. vercel</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">8. vercel</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">云端部署平台</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -505,10 +515,10 @@
                     </div>
 
 
-                    <!-- 8. Songsterr -->
+                    <!-- 9. Songsterr -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">8. Songsterr</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">9. Songsterr</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">吉他谱</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -516,10 +526,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 9. 荷赛奖 -->
+                    <!-- 10. 荷赛奖 -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">9. World Press Photo</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">10. World Press Photo</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">荷赛艺术奖</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -527,10 +537,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 10. GoogleArts -->
+                    <!-- 11. GoogleArts -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">10. GoogleArts</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">11. GoogleArts</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">谷歌艺术</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -538,10 +548,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 11. Dezoomify -->
+                    <!-- 12. Dezoomify -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">11. Dezoomify</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">12. Dezoomify</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">抓取合并瓦片图</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -549,10 +559,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 12. supabase -->
+                    <!-- 13. supabase -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">12. supabase</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">13. supabase</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">云端数据库</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -561,10 +571,10 @@
                     </div>
 
 
-                    <!-- 13. NEXITALLY -->
+                    <!-- 14. FlyBit -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">13. FlyBit</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">14. FlyBit</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">机场起飞</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -572,10 +582,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 14. unsplash -->
+                    <!-- 15. unsplash -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">14. unsplash</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">15. unsplash</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">个人艺术</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -583,10 +593,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 15. cloudflare -->
+                    <!-- 16. cloudflare -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">15. cloudflare</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">16. cloudflare</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">全球网络基础设施服务</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -594,10 +604,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 16. iconfont -->
+                    <!-- 17. iconfont -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">16. iconfont</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">17. iconfont</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">矢量图标库</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -605,10 +615,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 17. Google Fonts -->
+                    <!-- 18. Google Fonts -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">17. Google Fonts</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">18. Google Fonts</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">谷歌字体</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
@@ -616,10 +626,10 @@
                            target="_self">[ 访问 VISIT ]</a>
                     </div>
 
-                    <!-- 18. Google Fonts -->
+                    <!-- 19.  z-library -->
                     <div class="glass-card p-5 md:p-6 flex items-center justify-between group hover:bg-white/10 transition-all">
                         <div class="flex flex-col space-y-2">
-                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">18. z-library</span>
+                            <span class="text-gray-100 font-bold text-sm group-hover:text-white transition-colors">19. z-library</span>
                             <span class="text-[9px] md:text-[10px] text-gray-400 group-hover:text-white transition-colors">图书库</span>
                         </div>
                         <a class="text-green-400 hover:text-white text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3"
