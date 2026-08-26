@@ -15,9 +15,9 @@
 
     <!-- 3. 针对苹果 iOS 设备（iPhone/iPad）保存到桌面时的图标 -->
     <link href="imgs/applefavicon.png" rel="apple-touch-icon">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
+    <script src="./js/tailwindcss.js"></script>
+    <script src="./js/vue.global.js"></script>
 
     <script>
         tailwind.config = {
@@ -1756,7 +1756,7 @@
 
                 // 👉 必须换成这个防拦截的社区镜像版本，把原本的 ibruce 删掉！
                 const script = document.createElement('script');
-                script.src = 'https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js';
+                script.src = './js/busuanzi.min.js';
                 script.defer = true;
                 document.body.appendChild(script);
 
