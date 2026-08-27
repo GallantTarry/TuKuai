@@ -235,6 +235,7 @@
                 transform: translateX(6px) rotate(12deg) scale(1.05);
             }
         }
+
         /* ========================================= */
         /* ====== 新增：优雅滚动渐显专用类 ====== */
         /* ========================================= */
@@ -846,21 +847,55 @@
                     <h2 class="text-lg md:text-xl tab-title mb-4 font-bold shrink-0">> 引擎启动</h2>
                     <div class="flex flex-col space-y-4 overflow-y-auto hide-scrollbar flex-1 pb-6 pt-2 px-2 -mx-2">
 
-                        <!-- 全球共享涂鸦墙 卡片 -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all mt-3">
                             <div class="flex items-center space-x-4 overflow-hidden">
-                                <!-- 换成了画板图标 -->
+                                <!-- 保留画板图标 -->
                                 <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
                                     <span class="text-xl">🎨</span>
                                 </div>
                                 <div class="flex flex-col truncate">
-                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">土块的涂鸦墙</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">Excalidraw</span>
+                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Pixel Canvas</span>
+                                    <!-- 副标题更新为 PixelCanvas -->
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">全球共享像素画板</span>
                                 </div>
                             </div>
-                            <span @click="openGame('土块的涂鸦墙', 'https://excalidraw.com/#room=6af7d21660b2eda6a40b,BjJjGljW8CmOyicZUTzsmg')"
+                            <!-- 链接已替换 -->
+                            <span @click="openGame('Pixel Canvas', 'https://pixelcanvas.io/')"
                                   class="cursor-pointer hover:text-white text-[#ef4444] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
-                                    启动 START ]</span>
+            启动 START ]</span>
+                        </div>
+                        <!-- 贪吃蛇大作战 卡片 -->
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all mt-3">
+                            <div class="flex items-center space-x-4 overflow-hidden">
+                                <!-- 换成了蛇的图标 -->
+                                <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
+                                    <span class="text-xl">🐍</span>
+                                </div>
+                                <div class="flex flex-col truncate">
+                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">贪吃蛇大作战</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">Slither.io - 多人在线同屏</span>
+                                </div>
+                            </div>
+                            <span @click="openGame('贪吃蛇大作战', 'https://slither.io/')"
+                                  class="cursor-pointer hover:text-white text-[#ef4444] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
+            启动 START ]</span>
+                        </div>
+
+                        <!-- Krunker.io 像素射击 卡片 -->
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all mt-3">
+                            <div class="flex items-center space-x-4 overflow-hidden">
+                                <!-- 换成了靶子图标 -->
+                                <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
+                                    <span class="text-xl">🎯</span>
+                                </div>
+                                <div class="flex flex-col truncate">
+                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">像素射击突围</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">Krunker.io - 网页 3D FPS</span>
+                                </div>
+                            </div>
+                            <span @click="openGame('像素射击突围', 'https://krunker.io/')"
+                                  class="cursor-pointer hover:text-white text-[#ef4444] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
+            启动 START ]</span>
                         </div>
 
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
@@ -1847,7 +1882,7 @@
                     await nextTick(); // 必须等待 Vue 将新页面的 DOM 完全渲染完毕
                     initScrollReveal();
                 }
-            }, { immediate: true });
+            }, {immediate: true});
             // 👆 ---------------------------------------- 👆
             return {
                 menuItems, currentTab, cssVars, activeColor, activeGlow,
