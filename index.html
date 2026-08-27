@@ -259,10 +259,12 @@
         /* ========================================= */
         /* ====== 新增：优雅滚动渐显专用类 ====== */
         /* ========================================= */
+
         .reveal-init {
             /* 初始状态：完全透明，向下位移 30px，并强制覆盖以防止闪烁 */
             opacity: 0 !important;
-            transform: translateY(30px) !important;
+            /* 将 30px 改为 10px，依然保留向上的浮动感，但不会导致底部判定死锁 */
+            transform: translateY(10px) !important;
         }
 
         .reveal-transition {
@@ -1795,8 +1797,10 @@
                         }
                     });
                 }, {
-                    rootMargin: "0px 0px -20px 0px", // 元素离底部还有 20px 时就开始渐显，避免太迟钝
-                    threshold: 0.1
+                    // 提前 150px 就开始触发预加载，绝对不让用户在边缘死等
+                    rootMargin: "150px 0px 150px 0px",
+                    // 只要有 0.001% 进入范围就立刻执行
+                    threshold: 0
                 });
 
                 // 获取当前页面的 毛玻璃卡片 和 小节标题
