@@ -235,6 +235,19 @@
                 transform: translateX(6px) rotate(12deg) scale(1.05);
             }
         }
+        /* ========================================= */
+        /* ====== 新增：优雅滚动渐显专用类 ====== */
+        /* ========================================= */
+        .reveal-init {
+            /* 初始状态：完全透明，向下位移 30px，并强制覆盖以防止闪烁 */
+            opacity: 0 !important;
+            transform: translateY(30px) !important;
+        }
+
+        .reveal-transition {
+            /* 专用的进入动画：0.6s 的高级阻尼曲线 */
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+        }
     </style>
 </head>
 
@@ -1790,7 +1803,50 @@
                     }
                 });
             });
+// 👇 -------- 新增：高级滚动渐显逻辑 -------- 👇
+            let observer = null;
 
+            const initScrollReveal = () => {
+                if (observer) observer.disconnect(); // 切页时清理旧的观察器，保证内存不溢出
+
+                observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            // 1. 元素进入视口，移除隐藏状态，触发向上浮现的动画
+                            entry.target.classList.remove('reveal-init');
+
+                            // 2. 触发一次后停止观察该元素，节省性能
+                            observer.unobserve(entry.target);
+
+                            // 3. 动画结束(600ms)后，移除强化的渐变类，把控制权还给卡片原本自带的 hover 特效
+                            setTimeout(() => {
+                                entry.target.classList.remove('reveal-transition');
+                            }, 600);
+                        }
+                    });
+                }, {
+                    rootMargin: "0px 0px -20px 0px", // 元素离底部还有 20px 时就开始渐显，避免太迟钝
+                    threshold: 0.1
+                });
+
+                // 获取当前页面的 毛玻璃卡片 和 小节标题
+                const elements = document.querySelectorAll('.glass-card, h2.tab-title');
+
+                elements.forEach(el => {
+                    // 初始化状态：为新元素套上“隐身斗篷”和动画引擎
+                    el.classList.add('reveal-init', 'reveal-transition');
+                    observer.observe(el);
+                });
+            };
+
+            // 核心精髓：同时监听标签页切换 (currentTab) 和 系统开机动画状态 (isBooted)
+            watch([currentTab, isBooted], async ([newTab, newBooted]) => {
+                if (newBooted) {
+                    await nextTick(); // 必须等待 Vue 将新页面的 DOM 完全渲染完毕
+                    initScrollReveal();
+                }
+            }, { immediate: true });
+            // 👆 ---------------------------------------- 👆
             return {
                 menuItems, currentTab, cssVars, activeColor, activeGlow,
                 isBooted, typedText, particleCanvas,
