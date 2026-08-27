@@ -846,19 +846,22 @@
                     <h2 class="text-lg md:text-xl tab-title mb-4 font-bold shrink-0">> 引擎启动</h2>
                     <div class="flex flex-col space-y-4 overflow-y-auto hide-scrollbar flex-1 pb-6 pt-2 px-2 -mx-2">
 
-                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                        <!-- 全球共享涂鸦墙 卡片 -->
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all mt-3">
                             <div class="flex items-center space-x-4 overflow-hidden">
+                                <!-- 换成了画板图标 -->
                                 <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                    <span class="text-xl">🐷</span>
+                                    <span class="text-xl">🎨</span>
                                 </div>
                                 <div class="flex flex-col truncate">
-                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">拯救公猪(Saving Pigs)</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">Java 引擎移植 / 本地运行</span>
+                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">土块的涂鸦墙 (Global Canvas)</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">Excalidraw 实时协作 / 全球同步保存</span>
                                 </div>
                             </div>
-                            <span @click="openGame('拯救公猪', './game/saving-pigs.html')"
-                                  class="cursor-pointer hover:text-white text-[#ef4444] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
-                                    启动 START ]</span>
+                            <!-- 替换了你的专属房间链接，按钮颜色改为了绿色系的 #10b981 -->
+                            <span @click="openGame('土块的涂鸦墙', 'https://excalidraw.com/#room=6af7d21660b2eda6a40b,BjJjGljW8CmOyicZUTzsmg')"
+                                  class="cursor-pointer hover:text-white text-[#10b981] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-opacity font-mono shrink-0 whitespace-nowrap pl-3">[
+            一起画 DRAW ]</span>
                         </div>
 
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
