@@ -320,6 +320,7 @@
 
     <div class="flex flex-col md:flex-row h-full w-full z-10 relative" v-show="isBooted">
 
+
         <aside
                 :class="['w-full md:w-80 h-auto md:h-full glass-sidebar flex flex-col shrink-0 rounded-b-3xl md:rounded-b-none md:rounded-r-[32px] shadow-2xl transition-all duration-700 ease-in-out z-30', activeGame ? 'md:-translate-x-[150%] opacity-0 md:opacity-100' : 'translate-x-0']">
 
@@ -397,7 +398,15 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- ================= 新增：手机端专属时钟 (PC端自动隐藏) ================= -->
+                <div class="md:hidden flex flex-col items-end justify-center select-none">
+                    <span class="text-white/40 text-[8px] tracking-widest mb-0.5">SYS_TIME</span>
+                    <span :style="{ color: activeColor, textShadow: `0 0 10px ${activeGlow}` }"
+                          class="font-bold text-xs tracking-widest transition-colors duration-500">
+                        {{ currentTime }}
+                    </span>
+                </div>
+                <!-- ==================================================================== -->
             </div>
 
             <nav
@@ -419,7 +428,16 @@
 
         <main
                 class="flex-1 min-h-0 relative flex items-center justify-center overflow-hidden h-full p-3 md:p-8">
-
+            <!-- ================= 新增：PC端专属时钟 (手机端自动隐藏，打开游戏时隐藏) ================= -->
+            <div v-show="!activeGame"
+                 class="hidden md:flex absolute top-6 right-8 z-40 items-center space-x-2 pointer-events-none select-none transition-opacity duration-300">
+                <span class="text-white/40 text-[10px] tracking-widest">SYS_TIME</span>
+                <span :style="{ color: activeColor, textShadow: `0 0 10px ${activeGlow}` }"
+                      class="font-bold text-base tracking-widest transition-colors duration-500">
+                    {{ currentTime }}
+                </span>
+            </div>
+            <!-- ================================================================================ -->
             <div
                     class="relative z-20 w-full md:w-4/5 max-w-3xl max-h-full overflow-y-auto hide-scrollbar glass-panel p-5 md:p-10 flex flex-col">
 
@@ -1418,6 +1436,19 @@
 
     createApp({
         setup() {
+
+            // 新增：实时时钟状态
+            const currentTime = ref('00:00:00');
+
+            // 新增：更新时钟的函数
+            const updateClock = () => {
+                const now = new Date();
+                const h = String(now.getHours()).padStart(2, '0');
+                const m = String(now.getMinutes()).padStart(2, '0');
+                const s = String(now.getSeconds()).padStart(2, '0');
+                currentTime.value = `${h}:${m}:${s}`;
+            };
+
             const menuItems = ref([
                 {id: 'about', title: '我的简介', icon: '👾', color: '#38bdf8'},
                 {id: 'online', title: '在线使用', icon: '🌐', color: '#4ade80'},
@@ -1756,6 +1787,8 @@
             onMounted(() => {
                 initParticleSystem();
 
+                updateClock();
+                setInterval(updateClock, 1000);
 
                 // 👉 必须换成这个防拦截的社区镜像版本，把原本的 ibruce 删掉！
                 const script = document.createElement('script');
@@ -1842,6 +1875,7 @@
             return {
                 menuItems, currentTab, cssVars, activeColor, activeGlow,
                 isBooted, typedText, particleCanvas,
+                currentTime, // <--- 新增暴露给视图
                 audioRef, isPlaying, playlist, currentTrack, currentTrackIndex,
                 currentTimeDisplay, durationDisplay, seekProgress, durationSec,currentVolume, onVolumeChange,
                 togglePlay, playTrack, nextTrack, prevTrack, onTimeUpdate, onLoadedMetadata, onSeek, onEnded,
