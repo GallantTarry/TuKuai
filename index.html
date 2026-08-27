@@ -726,6 +726,7 @@
                     </div>
                 </div>
 
+
                 <!-- 电子音乐终端 -->
                 <div class="space-y-4 flex flex-col h-full max-h-full" v-if="currentTab === 'music'">
                     <h2 class="text-lg md:text-xl tab-title mb-4 font-bold shrink-0">> 电子音乐终端</h2>
@@ -778,9 +779,12 @@
                             <!-- 播放模式 (左侧) -->
                             <button @click="togglePlayMode" class="absolute left-0 text-gray-400 hover:text-white transition-all text-xs font-bold flex flex-col items-center group w-10">
                                 <div class="mb-1 drop-shadow-md">
+                                    <!-- 顺序播放 -->
                                     <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" v-if="playModeText === '顺序播放'" viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0020 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+                                    <!-- 随机播放 -->
                                     <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" v-else-if="playModeText === '随机播放'" viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
-                                    <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" v-else viewBox="0 0 24 24"><path d="M13 15v-3h-2v4h3v-1zm-1-11V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0020 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+                                    <!-- 👑 修复后的：单曲循环 (更锐利清晰) -->
+                                    <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" v-else viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
                                 </div>
                                 <span class="text-[8px] opacity-0 group-hover:opacity-100 absolute -bottom-4 whitespace-nowrap">{{ playModeText }}</span>
                             </button>
@@ -799,8 +803,8 @@
                                 </button>
                             </div>
 
-                            <!-- 音量调整 (右侧) -->
-                            <div class="absolute right-0 flex items-center space-x-2 w-16 md:w-20 group text-gray-400 hover:text-white transition-all">
+                            <!-- 👑 修复：手机端隐藏 (hidden md:flex) -->
+                            <div class="absolute right-0 hidden md:flex items-center space-x-2 w-16 md:w-20 group text-gray-400 hover:text-white transition-all">
                                 <svg class="w-4 h-4 md:w-5 md:h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                                 </svg>
@@ -809,19 +813,14 @@
                         </div>
                     </div>
 
-                    <!-- 歌单列表 (修复吸顶条错位：使用 overflow-hidden 完美无缝裁切) -->
+                    <!-- 歌单列表 -->
                     <div class="glass-card overflow-hidden flex-1 relative flex flex-col">
-
-                        <!-- 内部独立滚动区域 -->
                         <div class="overflow-y-auto hide-scrollbar flex-1">
-
-                            <!-- 👑 修复后的吸顶指示条：暗黑冰透毛玻璃，完美贴合边缘 -->
                             <div class="sticky top-0 z-10 px-5 py-3.5 border-b border-white/10 bg-[#050505]/60 backdrop-blur-xl flex items-center space-x-2 shadow-md">
                                 <span class="w-1.5 h-1.5 rounded-full bg-[#a855f7] animate-pulse shadow-[0_0_8px_#a855f7]"></span>
                                 <span class="text-[9px] text-gray-300 font-bold tracking-widest">LOCAL DISK > /music/</span>
                             </div>
 
-                            <!-- 列表容器 (将原本外层的 padding 移到这里) -->
                             <div class="p-3">
                                 <div :class="['p-3 mb-2 cursor-pointer flex justify-between items-center text-[10px] md:text-xs rounded-xl transition-all', currentTrackIndex === index ? 'bg-white/10 text-white font-bold shadow-md' : 'text-gray-400 hover:bg-white/5']"
                                      :key="index"
