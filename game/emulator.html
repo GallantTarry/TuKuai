@@ -41,71 +41,11 @@
         @keyframes fadeout {
             to { opacity: 0; visibility: hidden; }
         }
-        /* ======================================================= */
-        /* 手机端专属：掌机分屏布局 (官方最稳定做法，绝对不黑屏) */
-        /* ======================================================= */
-        @media screen and (max-width: 768px) {
-            /* 1. 将整体布局改成上下排列 */
-            body {
-                flex-direction: column !important;
-                justify-content: flex-start !important;
-            }
-
-            /* 2. 游戏画面严格锁定在上半屏 */
-            #game-container {
-                height: 50vh !important;
-                width: 100vw !important;
-                border-bottom: 2px solid #222;
-                box-sizing: border-box;
-            }
-
-            /* 3. 拦截官方的按键容器，强行塞到下半屏 */
-            .ejs-controller-container {
-                position: relative !important;
-                height: 50vh !important;
-                width: 100vw !important;
-                bottom: 0 !important;
-                left: 0 !important;
-
-                /* 💡 核心外壳：默认给你配了一个高级暗黑磨砂灰的机器外壳 */
-                background-color: #1e1e1e !important;
-                box-shadow: inset 0 10px 20px rgba(0,0,0,0.5) !important;
-
-                /* ⬇️ 如果你以后找到了心仪的 GBA 手柄图片，把图片放到 imgs 文件夹，取消下面两行的注释即可 ⬇️ */
-                /* background-image: url('../imgs/gba-skin.png') !important; */
-                /* background-size: 100% 100% !important; */
-            }
-
-            /* 4. 把官方原本看不清的按键，变成有质感的实体磨砂按键 */
-            .ejs-btn {
-                background-color: rgba(255, 255, 255, 0.15) !important;
-                border: 1px solid rgba(255, 255, 255, 0.3) !important;
-                border-radius: 50% !important;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.1) !important;
-                color: rgba(255,255,255,0.6) !important; /* 显示 A B 字母 */
-                font-weight: bold !important;
-            }
-
-            /* 让十字键变成圆角方块 */
-            #ejs-dpad {
-                border-radius: 12px !important;
-                background-color: rgba(0, 0, 0, 0.5) !important;
-                border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            }
-
-            /* 修正顶部菜单按钮，防止它掉下来 */
-            .ejs-menu-btn {
-                position: fixed !important;
-                top: 10px !important;
-                right: 10px !important;
-                background-color: rgba(0,0,0,0.6) !important;
-            }
-        }
     </style>
 </head>
 <body>
 
-    <div id="focus-hint">💡 提示：按键无反应请先【点击游戏画面】。点击底部图标可呼出原生菜单。</div>
+    <div id="focus-hint">💡 提示：按键无反应请先【点击游戏画面】。</div>
 
     <div id="game-container">
         <div id="game"></div>
