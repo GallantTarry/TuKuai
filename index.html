@@ -61,6 +61,8 @@
             color: #f8fafc;
             margin: 0;
             overflow: hidden;
+            /* 新增：通知浏览器不要处理双击放大手势 */
+            touch-action: manipulation;
         }
 
         .scanlines {
@@ -1541,10 +1543,11 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 bg-black relative flex items-center justify-center border-t border-white/5 overflow-hidden">
+                    <div class="flex-1 bg-black relative flex border-t border-white/5 overflow-hidden w-full h-full">
                         <iframe :src="activeGame.url" allow="autoplay; fullscreen"
                                 :class="isGameVisible ? 'pointer-events-auto' : 'pointer-events-none'"
-                                class="w-full h-full border-none bg-black"
+                                class="absolute top-0 left-0 w-full h-full border-none bg-black block"
+                                style="min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
                                 v-if="activeGame && activeGame.url"></iframe>
                         <div class="text-center space-y-6" v-else>
                             <div class="text-5xl animate-bounce">⚠️</div>
@@ -1567,6 +1570,27 @@
 </div>
 
 <script>
+    // 👇 -------- 新增：强行拦截移动端所有的缩放手势 -------- 👇
+    document.addEventListener('touchstart', function (event) {
+        if (event.touches.length > 1) {
+            event.preventDefault(); // 阻止双指或多指触控
+        }
+    }, { passive: false });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+        let now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault(); // 阻止快速双击放大
+        }
+        lastTouchEnd = now;
+    }, { passive: false });
+
+    document.addEventListener('gesturestart', function (event) {
+        event.preventDefault(); // 阻止 Safari 原生的捏合缩放手势
+    });
+    // 👆 --------------------------------------------------- 👆
+
     // 引入了 Vue 的 watch 功能用于小电视的动画控制
     const {createApp, ref, computed, onMounted, nextTick, watch} = Vue;
 
