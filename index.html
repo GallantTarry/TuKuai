@@ -1398,12 +1398,18 @@
                      :class="isGameVisible ? 'pointer-events-auto scale-100 translate-y-0' : 'pointer-events-none scale-85 translate-y-8'"
                      ref="gameWindowRef">
 
-                    <div class="flex items-center justify-between p-3 md:p-4 border-b border-white/10 bg-white/5 select-none">
-                        <div class="flex items-center space-x-3">
-                            <span class="animate-pulse text-green-400 text-[10px]">●</span>
-                            <span class="font-bold text-white tracking-widest text-xs md:text-sm">{{ activeGame.title }}</span>
+                    <!-- 游戏窗口头部控制栏 -->
+                    <div class="flex items-center justify-between p-3 md:p-4 border-b border-white/10 bg-white/5 select-none overflow-hidden">
+
+                        <!-- 左侧标题区：增加 flex-1 overflow-hidden 让它自适应宽度，避免挤爆 -->
+                        <div class="flex items-center space-x-2 md:space-x-3 overflow-hidden flex-1 pr-4">
+                            <span class="animate-pulse text-green-400 text-[10px] shrink-0">●</span>
+                            <!-- 增加 truncate 强制单行显示，超长用省略号... -->
+                            <span class="font-bold text-white tracking-widest text-xs md:text-sm truncate">{{ activeGame.title }}</span>
                         </div>
-                        <div class="flex space-x-5 text-gray-400 text-xs md:text-sm font-bold font-mono">
+
+                        <!-- 右侧按钮区：增加 shrink-0 霸体属性，绝对不许被左边挤小或挤出去 -->
+                        <div class="flex space-x-4 md:space-x-5 text-gray-400 text-xs md:text-sm font-bold font-mono shrink-0">
                             <button @click="minimizeGame" title="最小化到后台"
                                     class="hover:text-yellow-400 transition-colors tracking-widest">➖
                             </button>
