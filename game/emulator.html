@@ -11,7 +11,6 @@
 
     <style>
         :root {
-            /* 主题色，对应主系统的绿色 */
             --ejs-green: #4ade80;
         }
 
@@ -20,13 +19,9 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: #000; /* 纯黑背景，突出掌机感 */
+            background-color: #000;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             font-family: monospace;
-            /* 移除非必要的 touch 行动，由 EmulatorJS 处理 */
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -34,143 +29,200 @@
             width: 100%;
             height: 100%;
             position: relative;
-            display: flex;
-            flex-direction: column; /* Changed to column to separate game and controls */
         }
 
         #game {
             width: 100%;
             height: 100%;
-            z-index: 1; /* 游戏画面在最底层 */
+            z-index: 1;
         }
 
         /* ============================================================ */
-        /* ====== 核心：手机端复古掌机皮肤 (Mobile Only Skin) ====== */
+        /* ====== 核心：强制划定地盘，谁也别想越界 ====== */
         /* ============================================================ */
 
-        .is-mobile #game-container {
-            /* 移动端，游戏画面占据上半部分，留出下半部分给按键 */
-            height: 100%;
+        /* 1. 强制游戏画面只准占上半屏 (打败 EmulatorJS 的内联样式) */
+        #emulator-app.is-mobile #game {
+            height: 50vh !important;
+            width: 100vw !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
         }
 
-        /* 模拟器生成的 Canvas 样式优化 */
-        .is-mobile #game {
-            height: 50%; /* Top half for game */
-            position: relative;
+        #emulator-app.is-mobile #game canvas {
+            object-fit: contain !important;
+            border-bottom: 2px solid #222;
         }
 
-        .is-mobile #game canvas {
-            object-fit: contain !important; /* 保持比例 */
-            box-shadow: 0 0 20px rgba(74, 222, 128, 0.2);
-            border-bottom: 4px solid #333; /* 模拟屏幕边框 */
-        }
-
-        /* 复古按键遮罩层 (在 Canvas 之下半部分) */
-        #retro-skin-overlay {
-            display: none; /* 默认隐藏 */
-        }
-
-        .is-mobile #retro-skin-overlay {
+        /* ============================================================ */
+        /* ====== 纯 CSS 绘制的暗黑复古 GBA 下半部机身 ====== */
+        /* ============================================================ */
+        #emulator-app.is-mobile #retro-skin-overlay {
             display: block;
-            position: relative;
-            width: 100%;
-            height: 50%; /* Bottom half for controls */
-            z-index: 10; /* 挡在其他元素之上 */
-            pointer-events: none; /* 自身不拦截点击，让点击穿透到下面的 EJS 按键 */
-
-            /* ====== SVG GBA Skin ====== */
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400'%3E%3Cdefs%3E%3CradialGradient id='btnGrad' cx='50%25' cy='50%25' r='50%25' fx='30%25' fy='30%25'%3E%3Cstop offset='0%25' stop-color='%23666'/%3E%3Cstop offset='100%25' stop-color='%23222'/%3E%3C/radialGradient%3E%3ClinearGradient id='bgGrad' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23333'/%3E%3Cstop offset='100%25' stop-color='%231a1a1a'/%3E%3C/linearGradient%3E%3Cfilter id='dropShadow' x='-20%25' y='-20%25' width='140%25' height='140%25'%3E%3CfeDropShadow dx='2' dy='4' stdDeviation='4' flood-opacity='0.5'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23bgGrad)'/%3E%3C!-- Screen Bezel Curve (Decorative) --%3E%3Cpath d='M0,0 Q400,20 800,0 L800,400 L0,400 Z' fill='rgba(0,0,0,0.2)'/%3E%3C!-- D-Pad Base --%3E%3Cpath d='M110,170 h60 v-60 a10,10 0 0 1 10,-10 h40 a10,10 0 0 1 10,10 v60 h60 a10,10 0 0 1 10,10 v40 a10,10 0 0 1 -10,10 h-60 v60 a10,10 0 0 1 -10,10 h-40 a10,10 0 0 1 -10,-10 v-60 h-60 a10,10 0 0 1 -10,-10 v-40 a10,10 0 0 1 10,-10 z' fill='%23111' filter='url(%23dropShadow)'/%3E%3C!-- D-Pad Buttons --%3E%3Cpath d='M115,175 h55 v-55 a5,5 0 0 1 5,-5 h30 a5,5 0 0 1 5,5 v55 h55 a5,5 0 0 1 5,5 v30 a5,5 0 0 1 -5,5 h-55 v55 a5,5 0 0 1 -5,5 h-30 a5,5 0 0 1 -5,-5 v-55 h-55 a5,5 0 0 1 -5,-5 v-30 a5,5 0 0 1 5,-5 z' fill='url(%23btnGrad)'/%3E%3C!-- D-Pad Ridges --%3E%3Crect x='130' y='185' width='30' height='10' rx='2' fill='rgba(0,0,0,0.5)'/%3E%3Crect x='240' y='185' width='30' height='10' rx='2' fill='rgba(0,0,0,0.5)'/%3E%3Crect x='190' y='125' width='10' height='30' rx='2' fill='rgba(0,0,0,0.5)'/%3E%3Crect x='190' y='225' width='10' height='30' rx='2' fill='rgba(0,0,0,0.5)'/%3E%3Ccircle cx='195' cy='190' r='15' fill='rgba(0,0,0,0.3)'/%3E%3C!-- B Button --%3E%3Ccircle cx='580' cy='220' r='40' fill='%23111' filter='url(%23dropShadow)'/%3E%3Ccircle cx='580' cy='220' r='35' fill='url(%23btnGrad)'/%3E%3Ctext x='640' y='275' fill='rgba(255,255,255,0.7)' font-family='sans-serif' font-size='24' font-weight='bold' font-style='italic' letter-spacing='2'%3EB%3C/text%3E%3C!-- A Button --%3E%3Ccircle cx='700' cy='160' r='40' fill='%23111' filter='url(%23dropShadow)'/%3E%3Ccircle cx='700' cy='160' r='35' fill='url(%23btnGrad)'/%3E%3Ctext x='760' y='215' fill='rgba(255,255,255,0.7)' font-family='sans-serif' font-size='24' font-weight='bold' font-style='italic' letter-spacing='2'%3EA%3C/text%3E%3C!-- Select --%3E%3Cg transform='translate(330, 320) rotate(-20)'%3E%3Crect x='0' y='0' width='60' height='18' rx='9' fill='%23111' filter='url(%23dropShadow)'/%3E%3Crect x='2' y='2' width='56' height='14' rx='7' fill='url(%23btnGrad)'/%3E%3Ctext x='30' y='40' fill='rgba(255,255,255,0.7)' font-family='sans-serif' font-size='16' font-weight='bold' text-anchor='middle' letter-spacing='1'%3ESELECT%3C/text%3E%3C/g%3E%3C!-- Start --%3E%3Cg transform='translate(430, 320) rotate(-20)'%3E%3Crect x='0' y='0' width='60' height='18' rx='9' fill='%23111' filter='url(%23dropShadow)'/%3E%3Crect x='2' y='2' width='56' height='14' rx='7' fill='url(%23btnGrad)'/%3E%3Ctext x='30' y='40' fill='rgba(255,255,255,0.7)' font-family='sans-serif' font-size='16' font-weight='bold' text-anchor='middle' letter-spacing='1'%3ESTART%3C/text%3E%3C/g%3E%3C!-- Speaker Grills --%3E%3Cg transform='translate(60, 280)'%3E%3Crect x='0' y='0' width='8' height='40' rx='4' fill='rgba(0,0,0,0.6)'/%3E%3Crect x='15' y='10' width='8' height='40' rx='4' fill='rgba(0,0,0,0.6)'/%3E%3Crect x='30' y='20' width='8' height='40' rx='4' fill='rgba(0,0,0,0.6)'/%3E%3Crect x='45' y='30' width='8' height='40' rx='4' fill='rgba(0,0,0,0.6)'/%3E%3C/g%3E%3C/svg%3E");
-
-            background-size: 100% 100%;
-            background-position: bottom;
-            background-repeat: no-repeat;
-
-            /* 加上毛玻璃效果，让它更有质感 */
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
-            border-top: 2px solid rgba(255,255,255,0.1);
-        }
-
-        /* ============================================================ */
-        /* ====== 核心：强行修改 EmulatorJS 默认按键样式 ====== */
-        /* ============================================================ */
-
-        /* 1. 移出不需要的元素 */
-        .is-mobile .ejs-controller-container {
-            background: transparent !important; /* 移除默认的黑色背景 */
-            background-image: none !important;
-            height: 50% !important; /* Match the overlay height */
-            top: auto !important;
+            position: fixed !important;
             bottom: 0 !important;
-            position: absolute !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 50vh !important;
+            z-index: 10;
+            pointer-events: none; /* 让点击事件穿透到下面的隐形按键 */
+
+            /* 机身暗黑塑料质感 */
+            background: radial-gradient(circle at center, #2a2a2b 0%, #111112 100%);
+            border-top: 3px solid #333;
+            box-shadow: inset 0 10px 20px rgba(0,0,0,0.5);
         }
 
-        /* 2. 把 EmulatorJS 的原生按键变透明，但保留点击区域 */
-        /* D-Pad, A, B, X, Y, Start, Select 等 */
-        .is-mobile .ejs-btn {
-            background: rgba(255, 0, 0, 0.0) !important; /* 设为完全透明 (调试时可设为 0.2 看位置) */
+        /* 十字方向键 (D-Pad) */
+        .skin-dpad {
+            position: absolute;
+            top: 25%;
+            left: 10%;
+            width: 110px;
+            height: 110px;
+            background:
+                    linear-gradient(to right, transparent 33%, #1a1a1a 33%, #1a1a1a 66%, transparent 66%),
+                    linear-gradient(to bottom, transparent 33%, #1a1a1a 33%, #1a1a1a 66%, transparent 66%);
+            filter: drop-shadow(0 5px 6px rgba(0,0,0,0.9));
+            border-radius: 4px;
+        }
+        /* 十字键防滑中心点 */
+        .skin-dpad::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px; height: 16px;
+            background: #111;
+            border-radius: 50%;
+        }
+
+        /* A 和 B 键 (复古红宝石质感) */
+        .skin-btn-b, .skin-btn-a {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            background: radial-gradient(circle at 30% 30%, #f43f5e, #991b1b);
+            border-radius: 50%;
+            box-shadow: 2px 5px 8px rgba(0,0,0,0.8), inset -2px -2px 5px rgba(0,0,0,0.4);
+        }
+        .skin-btn-b { top: 40%; right: 26%; }
+        .skin-btn-a { top: 20%; right: 8%; }
+
+        /* A/B 键的字母刻印 */
+        .skin-btn-b::after { content: 'B'; position: absolute; bottom: -25px; left: 16px; color: rgba(255,255,255,0.4); font-weight: bold; font-style: italic; font-family: sans-serif; }
+        .skin-btn-a::after { content: 'A'; position: absolute; bottom: -25px; left: 16px; color: rgba(255,255,255,0.4); font-weight: bold; font-style: italic; font-family: sans-serif; }
+
+        /* Select 和 Start 键 (倾斜胶囊状) */
+        .skin-btn-select, .skin-btn-start {
+            position: absolute;
+            bottom: 20%;
+            width: 45px;
+            height: 12px;
+            background: #151515;
+            border-radius: 6px;
+            transform: rotate(-20deg);
+            box-shadow: 1px 3px 5px rgba(0,0,0,0.8);
+        }
+        .skin-btn-select { left: 35%; }
+        .skin-btn-start { left: 52%; }
+
+        .skin-btn-select::after { content: 'SELECT'; position: absolute; bottom: -18px; left: 0; color: rgba(255,255,255,0.4); font-size: 10px; font-weight: bold; letter-spacing: 1px; font-family: sans-serif; }
+        .skin-btn-start::after { content: 'START'; position: absolute; bottom: -18px; left: 5px; color: rgba(255,255,255,0.4); font-size: 10px; font-weight: bold; letter-spacing: 1px; font-family: sans-serif; }
+
+        /* 右下角扬声器细节开孔 */
+        .skin-speaker {
+            position: absolute;
+            bottom: 15%;
+            right: 10%;
+            width: 40px;
+            height: 40px;
+            background:
+                    repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(0,0,0,0.6) 4px, rgba(0,0,0,0.6) 8px);
+            border-radius: 50%;
+            opacity: 0.5;
+            transform: rotate(45deg);
+        }
+
+        /* ============================================================ */
+        /* ====== 核心：把原生的虚拟按键变成“隐形触摸区”套上去 ====== */
+        /* ============================================================ */
+
+        /* 强制覆盖底层虚拟手柄容器 */
+        #emulator-app.is-mobile .ejs-controller-container {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 50vh !important;
+            background: transparent !important;
+            z-index: 20 !important; /* 必须高于 skin，保证能被摸到 */
+        }
+
+        /* 所有按键变成透明人 */
+        #emulator-app.is-mobile .ejs-btn {
+            opacity: 0 !important;
             border: none !important;
             box-shadow: none !important;
-            color: transparent !important; /* 隐藏按键上的文字 */
-            border-radius: 50% !important; /* Ensure touch targets are somewhat circular */
+            background: rgba(0,0,0,0) !important;
         }
 
-        /* 强制调整各按键位置以匹配 #retro-skin-overlay 中的 SVG 图片位置 */
-        /* The SVG viewBox is 800x400. We map percentages based on that. */
-
-        /* 方向键 (D-Pad) area roughly 110,110 to 290,290 in SVG */
-        .is-mobile #ejs-dpad {
-            left: 13.75% !important; /* 110/800 */
-            top: 27.5% !important; /* 110/400 */
-            width: 22.5% !important; /* 180/800 */
-            height: 45% !important; /* 180/400 */
+        /* 将隐形触摸区精准覆盖在咱们画的 CSS 图形上 */
+        /* 使用属性模糊匹配 [id*=""] 应对不同内核的命名变化 */
+        #emulator-app.is-mobile [id*="dpad"] {
+            position: absolute !important;
+            top: 25% !important; left: 10% !important;
+            width: 110px !important; height: 110px !important;
         }
 
-        /* B Button area roughly 540,180 to 620,260 in SVG */
-        .is-mobile #ejs-b {
-            left: 67.5% !important; /* 540/800 */
-            top: 45% !important; /* 180/400 */
-            width: 10% !important; /* 80/800 */
-            height: 20% !important; /* 80/400 */
+        #emulator-app.is-mobile [id$="-b"] {
+            position: absolute !important;
+            top: 40% !important; right: 26% !important;
+            width: 48px !important; height: 48px !important;
         }
 
-        /* A Button area roughly 660,120 to 740,200 in SVG */
-        .is-mobile #ejs-a {
-            left: 82.5% !important; /* 660/800 */
-            top: 30% !important; /* 120/400 */
-            width: 10% !important; /* 80/800 */
-            height: 20% !important; /* 80/400 */
+        #emulator-app.is-mobile [id$="-a"] {
+            position: absolute !important;
+            top: 20% !important; right: 8% !important;
+            width: 48px !important; height: 48px !important;
         }
 
-        /* Select Button area roughly 330,320 to 390,340 in SVG */
-        .is-mobile #ejs-select {
-            left: 41.25% !important; /* 330/800 */
-            top: 80% !important; /* 320/400 */
-            width: 7.5% !important; /* 60/800 */
-            height: 10% !important; /* 40/400 */
+        #emulator-app.is-mobile [id*="select"] {
+            position: absolute !important;
+            bottom: 15% !important; left: 32% !important;
+            width: 55px !important; height: 40px !important; /* 触摸范围稍微放大 */
         }
 
-        /* Start Button area roughly 430,320 to 490,340 in SVG */
-        .is-mobile #ejs-start {
-            left: 53.75% !important; /* 430/800 */
-            top: 80% !important; /* 320/400 */
-            width: 7.5% !important; /* 60/800 */
-            height: 10% !important; /* 40/400 */
+        #emulator-app.is-mobile [id*="start"] {
+            position: absolute !important;
+            bottom: 15% !important; left: 49% !important;
+            width: 55px !important; height: 40px !important; /* 触摸范围稍微放大 */
         }
 
-        /* 原生菜单呼出按钮 (通常在顶部，保持可见) */
-        .is-mobile .ejs-menu-btn {
-            background: rgba(0,0,0,0.5) !important;
+        /* 暴力隐藏多余按键 (L, R, X, Y) 让画面干净纯粹 */
+        #emulator-app.is-mobile [id*="ejs-l"],
+        #emulator-app.is-mobile [id*="ejs-r"],
+        #emulator-app.is-mobile [id$="-x"],
+        #emulator-app.is-mobile [id$="-y"] {
+            display: none !important;
+            pointer-events: none !important;
+        }
+
+        /* 顶部系统原生菜单按钮优化 */
+        #emulator-app.is-mobile .ejs-menu-btn {
+            background: rgba(0,0,0,0.6) !important;
             color: var(--ejs-green) !important;
-            opacity: 0.8;
-            top: 10px !important;
-            right: 10px !important;
-            z-index: 100 !important;
+            position: fixed !important;
+            top: 10px !important; right: 10px !important;
+            z-index: 9999 !important;
+            opacity: 1 !important;
         }
 
-        /* Hide L and R buttons if they exist for GBA, or position them if needed */
-        .is-mobile #ejs-l, .is-mobile #ejs-r {
-            display: none !important; /* Hiding for now to keep the UI clean like the image */
+        /* 修复你在截图里的菜单问题：让菜单被限制在上半屏，不挡手柄 */
+        #emulator-app.is-mobile .ejs-menu {
+            height: 50vh !important;
+            top: 0 !important;
         }
 
     </style>
@@ -182,8 +234,16 @@
 
     <div id="game-container">
         <div id="game"></div>
-        <!-- 手机端专属的掌机外壳遮罩层 -->
-        <div id="retro-skin-overlay" v-if="isMobile"></div>
+
+        <!-- 手机端专属：纯 CSS 渲染的物理掌机质感外壳 -->
+        <div id="retro-skin-overlay" v-if="isMobile">
+            <div class="skin-dpad"></div>
+            <div class="skin-btn-b"></div>
+            <div class="skin-btn-a"></div>
+            <div class="skin-btn-select"></div>
+            <div class="skin-btn-start"></div>
+            <div class="skin-speaker"></div>
+        </div>
     </div>
 
 </div>
@@ -195,7 +255,6 @@
         setup() {
             const isMobile = ref(false);
 
-            // 检测是否为移动端
             const checkDevice = () => {
                 isMobile.value = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth < 768);
                 console.log(`[Emulator] Device: ${isMobile.value ? 'Mobile' : 'PC'}`);
@@ -204,8 +263,6 @@
             onMounted(() => {
                 checkDevice();
                 window.addEventListener('resize', checkDevice);
-
-                // 启动模拟器核心逻辑
                 initEmulator();
             });
 
@@ -226,7 +283,6 @@
 
                 window.EJS_player = '#game';
 
-                // 动态判断模拟器核心
                 let core = 'gba';
                 if (coreParam) {
                     core = coreParam;
@@ -252,25 +308,19 @@
                     fullscreen: false
                 };
 
-                // 移动端特有配置
                 if (isMobile.value) {
-                    // 强制开启虚拟手柄
                     window.EJS_vkEnabled = true;
                 }
 
-                // 加载 loader.js
                 const script = document.createElement('script');
                 script.src = '../emulator_data/loader.js';
                 document.body.appendChild(script);
 
                 window.EJS_onGameStart = function() {
-                    console.log("[Emulator Core] Started.");
                     window.focus();
                     setTimeout(() => {
                         const canvas = document.querySelector('#game canvas');
-                        if(canvas) {
-                            canvas.focus();
-                        }
+                        if(canvas) canvas.focus();
                     }, 500);
                 };
             };
@@ -279,7 +329,6 @@
         }
     }).mount('#emulator-app');
 
-    // 跨窗口通信监听 (针对 iframe 嵌套优化)
     window.addEventListener('message', (event) => {
         if (event.data === 'focus-emulator') {
             const canvas = document.querySelector('canvas');
@@ -290,7 +339,6 @@
         }
     });
 
-    // 页面加载完成后，告诉父级 iframe 窗口自己准备好了
     window.addEventListener('load', () => {
         if (window.parent) {
             window.parent.postMessage('emulator-ready', '*');
