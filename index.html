@@ -1500,9 +1500,9 @@
             <!-- 删除了 template 和 transition，改用 CSS 控制隐身，绝不触发 display: none -->
             <div
                     :class="isGameVisible
-        ? 'opacity-100 pointer-events-auto'
-        : 'opacity-0 pointer-events-none'"
-                    class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 transition-opacity duration-500"
+        ? 'opacity-100 pointer-events-auto visible'
+        : 'opacity-0 pointer-events-none invisible'"
+                    class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 transition-all duration-500"
                     v-if="activeGame"
             >
                 <!-- 遮罩层：可见时恢复点击事件 -->
@@ -1543,6 +1543,7 @@
 
                     <div class="flex-1 bg-black relative flex items-center justify-center border-t border-white/5 overflow-hidden">
                         <iframe :src="activeGame.url" allow="autoplay; fullscreen"
+                                :class="isGameVisible ? 'pointer-events-auto' : 'pointer-events-none'"
                                 class="w-full h-full border-none bg-black"
                                 v-if="activeGame && activeGame.url"></iframe>
                         <div class="text-center space-y-6" v-else>
