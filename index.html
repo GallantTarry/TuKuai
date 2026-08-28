@@ -1543,13 +1543,13 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 bg-black relative flex border-t border-white/5 overflow-hidden w-full h-full">
+                    <!-- 修改核心：去除包裹层的 h-full，加入 min-h-0，去掉死板的 inline-style -->
+                    <div class="flex-1 min-h-0 w-full bg-black relative flex items-center justify-center border-t border-white/5 overflow-hidden">
                         <iframe :src="activeGame.url" allow="autoplay; fullscreen"
                                 :class="isGameVisible ? 'pointer-events-auto' : 'pointer-events-none'"
-                                class="absolute top-0 left-0 w-full h-full border-none bg-black block"
-                                style="min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;"
+                                class="absolute inset-0 w-full h-full border-none bg-black"
                                 v-if="activeGame && activeGame.url"></iframe>
-                        <div class="text-center space-y-6" v-else>
+                        <div class="text-center space-y-6 z-10" v-else>
                             <div class="text-5xl animate-bounce">⚠️</div>
                             <div class="text-gray-400 font-mono tracking-widest text-xs animate-pulse">NO URL
                                 DETECTED...
