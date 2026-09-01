@@ -348,47 +348,89 @@
                 <div class="flex items-center space-x-3 md:space-x-4">
                     <div :style="{ borderColor: activeColor, boxShadow: `0 8px 20px ${activeGlow}` }"
                          class="w-12 h-12 md:w-16 md:h-16 bg-black/40 rounded-2xl border-[3px] flex items-center justify-center shrink-0 overflow-hidden transition-all duration-500 shadow-lg">
-                        <svg class="w-full h-full scale-110" style="image-rendering: pixelated;"
-                             viewBox="0 0 16 16">
-                            <rect fill="#292524" height="5" width="1" x="3" y="4"/>
-                            <rect fill="#292524" height="5" width="1" x="12" y="4"/>
-                            <rect fill="#fed7aa" height="5" width="8" x="4" y="5"/>
-                            <rect fill="#fdba74" height="1" width="8" x="4" y="9"/>
-                            <rect fill="#f97316" height="1" width="2" x="6" y="9"/>
-                            <rect fill="#1c1917" height="1" width="2" x="5" y="7"/>
-                            <rect fill="#1c1917" height="1" width="2" x="9" y="7"/>
-                            <rect fill="#292524" height="3" width="8" x="4" y="2"/>
-                            <rect fill="#292524" height="1" width="2" x="5" y="1"/>
-                            <rect fill="#292524" height="1" width="3" x="8" y="1"/>
-                            <rect fill="#292524" height="1" width="2" x="4" y="5"/>
-                            <rect fill="#292524" height="1" width="2" x="7" y="5"/>
-                            <rect fill="#292524" height="1" width="1" x="11" y="5"/>
-                            <rect fill="#f8fafc" height="1" width="2" x="2" y="9"/>
-                            <rect fill="#ef4444" height="1" width="1" x="1" y="9"/>
-                            <g>
-                                <rect fill="#a1a1aa" height="1" opacity="0" width="1" x="1.5" y="8">
-                                    <animate attributeName="y" calcMode="linear" dur="2s" from="8"
-                                             repeatCount="indefinite"
-                                             to="5"/>
-                                    <animate attributeName="opacity" calcMode="linear" dur="2s" from="0.8"
-                                             repeatCount="indefinite" to="0"/>
+                        <svg class="w-full h-full scale-110" style="image-rendering: pixelated;" viewBox="0 0 16 16">
+                            <!-- 1. 原汁原味的基础身体 (修复了嘴巴偏左的问题) -->
+                            <g id="base-avatar">
+                                <!-- 头发/脸部轮廓/墨镜 -->
+                                <rect fill="#292524" height="5" width="1" x="3" y="4"/>
+                                <rect fill="#292524" height="5" width="1" x="12" y="4"/>
+                                <rect fill="#fed7aa" height="5" width="8" x="4" y="5"/>
+                                <rect fill="#fdba74" height="1" width="8" x="4" y="9"/> <!-- 下巴阴影 -->
+
+                                <!-- 修复：原版嘴巴是 x=6，现修正为 x=7，完美居中于脸部 (4到11的中心) -->
+                                <rect fill="#f97316" height="1" width="2" x="7" y="9"/>
+
+                                <rect fill="#1c1917" height="1" width="2" x="5" y="7"/>
+                                <rect fill="#1c1917" height="1" width="2" x="9" y="7"/>
+                                <rect fill="#292524" height="3" width="8" x="4" y="2"/>
+                                <rect fill="#292524" height="1" width="2" x="5" y="1"/>
+                                <rect fill="#292524" height="1" width="3" x="8" y="1"/>
+                                <rect fill="#292524" height="1" width="2" x="4" y="5"/>
+                                <rect fill="#292524" height="1" width="2" x="7" y="5"/>
+                                <rect fill="#292524" height="1" width="1" x="11" y="5"/>
+                                <!-- 原版衣服 -->
+                                <rect fill="#475569" height="5" width="12" x="2" y="11"/>
+                                <rect fill="#475569" height="1" width="10" x="3" y="10"/>
+                                <rect fill="#fdba74" height="1" width="4" x="6" y="10"/> <!-- 脖子 -->
+                                <rect fill="#334155" height="2" width="2" x="4" y="10"/>
+                                <rect fill="#334155" height="2" width="2" x="10" y="10"/>
+                                <rect fill="#94a3b8" height="3" width="1" x="5" y="11"/>
+                                <rect fill="#94a3b8" height="3" width="1" x="10" y="11"/>
+                                <rect fill="#334155" height="4" width="2" x="7" y="12"/>
+                            </g>
+
+                            <!-- 2. 动画动作A：抬手深吸 (整体向右移 1px 匹配新嘴巴位置) -->
+                            <g id="arm-up" opacity="1">
+                                <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.98; 1" repeatCount="indefinite" values="1; 1; 0; 0; 1"/>
+                                <!-- 手臂 (深灰色与衣服阴影融合) -->
+                                <rect fill="#334155" height="2" width="2" x="2" y="11"/>
+                                <rect fill="#334155" height="1" width="2" x="3" y="10"/>
+                                <!-- 较长的烟身 (精准穿插到修正后的嘴巴坐标 x=7) -->
+                                <rect fill="#f8fafc" height="1" width="3" x="5" y="9"/>
+                                <!-- 烟头红火 -->
+                                <rect fill="#ef4444" height="1" width="1" x="4" y="9">
+                                    <animate attributeName="fill" dur="1s" repeatCount="indefinite" values="#f97316; #ef4444; #fde047; #ef4444; #f97316"/>
                                 </rect>
-                                <rect fill="#a1a1aa" height="1" opacity="0" width="1" x="1" y="7.5">
-                                    <animate attributeName="y" calcMode="linear" dur="2.5s" from="7.5"
-                                             repeatCount="indefinite"
-                                             to="4"/>
-                                    <animate attributeName="opacity" calcMode="linear" dur="2.5s" from="0.6"
-                                             repeatCount="indefinite" to="0"/>
+                                <!-- 拿烟的手 (皮肤色)，向右移 1px -->
+                                <rect fill="#fed7aa" height="1" width="2" x="5" y="10"/>
+                                <rect fill="#fed7aa" height="1" width="1" x="6" y="9"/>
+                            </g>
+
+                            <!-- 3. 动画动作B：手放下、拿开香烟 -->
+                            <g id="arm-down" opacity="0">
+                                <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.98; 1" repeatCount="indefinite" values="0; 0; 1; 1; 0"/>
+                                <!-- 垂下的手臂 -->
+                                <rect fill="#334155" height="3" width="2" x="2" y="11"/>
+                                <!-- 手部 -->
+                                <rect fill="#fed7aa" height="2" width="2" x="2" y="14"/>
+                                <!-- 移开的香烟 -->
+                                <rect fill="#f8fafc" height="1" width="1" x="1" y="14"/>
+                                <rect fill="#ef4444" height="1" width="1" x="0" y="14"/>
+                                <!-- 垂下时指尖升起的轻烟 -->
+                                <rect fill="#cbd5e1" height="1" opacity="0" width="1" x="0" y="13">
+                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.42; 0.45; 0.95; 1" repeatCount="indefinite" values="0; 0; 0.6; 0; 0"/>
+                                    <animate attributeName="y" dur="4s" keyTimes="0; 0.42; 0.95; 1" repeatCount="indefinite" values="13; 13; 9; 9"/>
                                 </rect>
                             </g>
-                            <rect fill="#475569" height="5" width="12" x="2" y="11"/>
-                            <rect fill="#475569" height="1" width="10" x="3" y="10"/>
-                            <rect fill="#fdba74" height="1" width="4" x="6" y="10"/>
-                            <rect fill="#334155" height="2" width="2" x="4" y="10"/>
-                            <rect fill="#334155" height="2" width="2" x="10" y="10"/>
-                            <rect fill="#94a3b8" height="3" width="1" x="5" y="11"/>
-                            <rect fill="#94a3b8" height="3" width="1" x="10" y="11"/>
-                            <rect fill="#334155" height="4" width="2" x="7" y="12"/>
+
+                            <!-- 4. 动画动作C：吐出的动态大团烟雾 (原点也向右移 1px 匹配 x=7) -->
+                            <g id="exhale-smoke">
+                                <!-- 主浓烟雾 -->
+                                <rect fill="#a1a1aa" height="1" opacity="0" width="1" x="7" y="9">
+                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="0; 0; 0; 0.8; 0; 0"/>
+                                    <animate attributeName="y" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="9; 9; 9; 5; 1; 0"/>
+                                    <animate attributeName="x" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="7; 7; 7; 5; 1; 0"/>
+                                    <animate attributeName="width" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="1; 1; 1; 2; 3; 3"/>
+                                    <animate attributeName="height" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="1; 1; 1; 2; 2; 2"/>
+                                </rect>
+                                <!-- 辅扩散烟雾 -->
+                                <rect fill="#cbd5e1" height="1" opacity="0" width="1" x="8" y="8">
+                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite" values="0; 0; 0; 0.6; 0; 0"/>
+                                    <animate attributeName="y" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite" values="9; 9; 9; 4; 0; -1"/>
+                                    <animate attributeName="x" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite" values="8; 8; 8; 7; 5; 4"/>
+                                    <animate attributeName="width" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite" values="1; 1; 1; 2; 3; 3"/>
+                                </rect>
+                            </g>
                         </svg>
                     </div>
                     <!-- 删除了 text-gray-400，加入了 style="color: var(--theme-color); opacity: 0.8;" -->
