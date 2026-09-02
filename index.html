@@ -53,6 +53,12 @@
     </script>
 
     <style>
+        /* ========================================= */
+        /* 核心修复：防止 Vue 加载前出现大括号模板闪烁 */
+        /* ========================================= */
+        [v-cloak] {
+            display: none !important;
+        }
         /* 1. 引入本地 Silkscreen (英数常规) */
         @font-face {
             font-family: 'Silkscreen';
@@ -369,8 +375,8 @@
 
 <body class="font-pixel text-xs md:text-sm">
 
-<!-- 👇 使用动态视口高度，交给浏览器自适应 -->
-<div :style="cssVars" class="bg-black flex flex-col" id="app">
+<!-- 👇 修改为加上 v-cloak 👇 -->
+<div v-cloak :style="cssVars" class="bg-black flex flex-col" id="app">
 
     <!-- 新增：将背景图和扫描线移到全局，并加上 z-0 防止遮挡 -->
     <img class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen z-0" :src="currentBg"/>
