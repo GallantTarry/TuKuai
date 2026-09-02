@@ -1704,24 +1704,30 @@
 <script>
 
 
-    // 👇 -------- 新增：强行拦截移动端所有的缩放手势 -------- 👇
+    // 👇 -------- 修复：防止全局拦截导致模拟器无法多点触控和连发 -------- 👇
     document.addEventListener('touchstart', function (event) {
+        // 【关键修复】如果触摸的是 iframe (游戏窗口)，绝对不拦截，放权给模拟器处理游戏操作
+        if (event.target.tagName === 'IFRAME') return;
+
         if (event.touches.length > 1) {
-            event.preventDefault(); // 阻止双指或多指触控
+            event.preventDefault(); // 仅在非游戏区域阻止双指缩放
         }
     }, {passive: false});
 
     let lastTouchEnd = 0;
     document.addEventListener('touchend', function (event) {
+        // 【关键修复】如果是游戏窗口内的操作，绝对不拦截
+        if (event.target.tagName === 'IFRAME') return;
+
         let now = (new Date()).getTime();
         if (now - lastTouchEnd <= 300) {
-            event.preventDefault(); // 阻止快速双击放大
+            event.preventDefault(); // 仅在非游戏区域阻止快速双击放大
         }
         lastTouchEnd = now;
     }, {passive: false});
 
     document.addEventListener('gesturestart', function (event) {
-        event.preventDefault(); // 阻止 Safari 原生的捏合缩放手势
+        event.preventDefault();
     });
     // 👆 --------------------------------------------------- 👆
 

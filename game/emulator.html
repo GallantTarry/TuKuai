@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tukuai Emulator Core</title>
     <style>
+
         body, html {
             margin: 0;
             padding: 0;
@@ -40,6 +41,19 @@
         }
         @keyframes fadeout {
             to { opacity: 0; visibility: hidden; }
+        }
+
+        /* ===================================================
+       🚀 核心修复：彻底解决手机端虚拟按键遮挡菜单、无法存档/读档
+       =================================================== */
+        /* 1. 强制提升所有 EmulatorJS 菜单、弹窗和底部控制栏 */
+        .ejs-menu-container, .ejs-ui, .ejs-bottombar, div[class*="ejs-"] {
+            z-index: 999999 !important;
+        }
+
+        /* 2. 专门压制虚拟摇杆/按键层的层级 (它们通常带有 touch-action: none) */
+        #game > div[style*="touch-action: none"] {
+            z-index: 99 !important;
         }
     </style>
 </head>
@@ -130,7 +144,24 @@
                 }
             }
         });
-
+        // 🚀 核心修复2：利用 MutationObserver 实时监控，一旦菜单生成立刻护航
+        const uiObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === 1 && node.tagName === 'DIV') {
+                        // 发现带 ejs- 前缀的菜单层，强行拉满层级
+                        if (node.className.includes('ejs-') || node.id.includes('ejs-')) {
+                            node.style.setProperty('z-index', '999999', 'important');
+                        }
+                    }
+                });
+            });
+        });
+        // 监听游戏容器的动态 UI 渲染
+        const gameContainer = document.getElementById('game-container');
+        if (gameContainer) {
+            uiObserver.observe(gameContainer, { childList: true, subtree: true });
+        }
         // 页面加载完成后，告诉父级 iframe 窗口自己准备好了
         window.addEventListener('load', () => {
             if (window.parent) {
