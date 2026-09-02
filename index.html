@@ -61,14 +61,17 @@
             color: #f8fafc;
             margin: 0;
             padding: 0;
-            width: 100%;
+            /* 👇 新增这 4 行，将底板绝对锁死在屏幕左上角 👇 */
+            width: 100vw;
+            height: 100dvh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            /* 👆 --------------------------------------- 👆 */
             overflow: hidden;
 
-            /* 核心修复：彻底禁用移动端的系统级橡皮筋回弹 */
             overscroll-behavior-y: none;
             -webkit-overflow-scrolling: none;
-
-            /* 通知浏览器不要处理双击放大手势 */
             touch-action: manipulation;
         }
 
@@ -292,7 +295,7 @@
 <body class="font-pixel text-xs md:text-sm">
 
 <!-- 👇 使用动态视口高度，交给浏览器自适应 -->
-<div :style="cssVars" class="fixed inset-0 w-full bg-black overflow-hidden flex flex-col" id="app">
+<div :style="cssVars" class="fixed inset-0 w-full h-[100dvh] bg-black overflow-hidden flex flex-col" id="app">
 
     <!-- 新增：将背景图和扫描线移到全局，并加上 z-0 防止遮挡 -->
     <img class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen z-0" src="./imgs/bg.avif"/>
@@ -300,8 +303,7 @@
 
     <canvas class="absolute inset-0 pointer-events-none z-50" ref="particleCanvas"></canvas>
 
-    <div class="absolute inset-0 w-full h-full p-4 flex items-center justify-center z-50 bg-black/95 backdrop-blur-md select-none"
-         v-if="!isBooted">
+    <div :class="['absolute inset-0 w-full h-full p-4 flex items-center justify-center z-50 bg-black/95 backdrop-blur-md select-none transition-opacity duration-700', isBooted ? 'opacity-0 pointer-events-none' : 'opacity-100']">
         <div
                 class="w-full max-w-2xl bg-black border border-[#333] rounded-md shadow-2xl overflow-hidden flex flex-col font-mono text-[11px] md:text-sm">
             <div class="bg-[#ccc] px-3 py-1 flex items-center justify-between text-black select-none">
@@ -331,7 +333,7 @@
         </div>
     </div>
 
-    <div class="flex flex-col md:flex-row h-full w-full z-10 relative" v-show="isBooted">
+    <div :class="['flex flex-col md:flex-row h-full w-full z-10 relative transition-opacity duration-700 delay-200', isBooted ? 'opacity-100 visible' : 'opacity-0 invisible']">
 
 
         <!-- 把 activeGame 替换为 isGameVisible -->
