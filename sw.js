@@ -2,9 +2,9 @@
 // 1. 定义双缓存池与版本号
 // =========================================================
 // 核心金库：存放网页骨架。每次你修改了 index.html 或静态资源，就把 v1 改成 v2, v3...
-const CORE_CACHE_NAME = 'tukuai-core-v1';
+const CORE_CACHE_NAME = 'tukuai-core-v2';
 // 媒体金库：存放按需加载的大文件。
-const MEDIA_CACHE_NAME = 'tukuai-media-v1';
+const MEDIA_CACHE_NAME = 'tukuai-media-v2';
 
 // 你需要离线秒开的“核心物资清单”（严格核对你的文件路径）
 const CORE_ASSETS = [
@@ -75,7 +75,15 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const url = event.request.url;
 
-    // 只拦截 GET 请求，其他请求（如 POST）直接放行
+    // 👇 核心修复 1：绝对放行非 HTTP 请求 (如 blob:, data:, file:)
+    // 手机端模拟器读取存档时通常会生成 blob: 本地链接，SW 拦截会导致直接无响应
+    if (!url.startsWith('http')) return;
+
+    // 👇 核心修复 2：绝不拦截带有 Range 的流式分片请求
+    // 手机端（尤其是 iOS/Safari）加载游戏 ROM 或读写内存时依赖 206 分片响应，SW 强行返回 200 会导致读写失效
+    if (event.request.headers.has('range')) return;
+
+    // 只拦截 GET 请求，其他请求（如 POST、PUT，包含某些云存档操作）直接放行
     if (event.request.method !== 'GET') return;
 
     const isMediaOrRom = CACHE_URL_KEYWORDS.some(keyword => url.includes(keyword));
