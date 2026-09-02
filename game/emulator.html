@@ -169,5 +169,28 @@
             }
         });
     </script>
+    <script>
+        // ==========================================
+        // 🚀 终极层级守护者：专治虚拟方向键遮挡菜单
+        // ==========================================
+        setInterval(() => {
+            // 1. 把所有带有 ejs-menu (主菜单) 或 ejs-dialog (弹窗) 的容器，顶到大气层
+            document.querySelectorAll('div[class*="ejs-menu"], div[class*="ejs-dialog"]').forEach(el => {
+                el.style.setProperty('z-index', '999999', 'important');
+            });
+
+            // 2. 把底部工具栏 (存档/读档快捷条) 放在稍微低一点的地方，但依然极高
+            document.querySelectorAll('div[class*="ejs-bottombar"]').forEach(el => {
+                el.style.setProperty('z-index', '999990', 'important');
+            });
+
+            // 3. 【核心绝杀】：把导致遮挡的虚拟方向键/操作按钮（它们带有 touch-action: none），强行压制在底层！
+            document.querySelectorAll('div[style*="touch-action: none"]').forEach(el => {
+                el.style.setProperty('z-index', '999980', 'important');
+            });
+        }, 500); // 每 500 毫秒巡查一次，绝杀所有乱跳层级的元素
+    </script>
+</body>
+</html>
 </body>
 </html>

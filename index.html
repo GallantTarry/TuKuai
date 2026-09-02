@@ -1629,11 +1629,11 @@
 
             </div>
 
-            <!-- 删除了 template 和 transition，改用 CSS 控制隐身，绝不触发 display: none -->
+            <!-- 🚀 终极修复：彻底抛弃 invisible 和缩放。改用"物理位移"，防止移动端强杀数据库连接 -->
             <div
                     :class="isGameVisible
-        ? 'opacity-100 pointer-events-auto visible'
-        : 'opacity-0 pointer-events-none invisible'"
+        ? 'opacity-100 pointer-events-auto translate-x-0'
+        : 'opacity-0 pointer-events-none -translate-x-[200vw]'"
                     class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 transition-all duration-500"
                     v-if="activeGame"
             >
@@ -1642,11 +1642,10 @@
                      @click="minimizeGame"
                      class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity duration-500"></div>
 
-                <!-- 游戏窗口：自带贝塞尔曲线动画，隐身时缩小并下沉 -->
-                <div :class="isGameVisible ? 'pointer-events-auto scale-100 translate-y-0' : 'pointer-events-none scale-85 translate-y-8'"
-                     class="w-full max-w-5xl h-full max-h-[85vh] glass-panel flex flex-col overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] relative transition-transform duration-500"
-                     ref="gameWindowRef"
-                     style="transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);">
+                <!-- 游戏窗口：移除一切 scale 缩放（缩放会导致复原时触控坐标永远错位） -->
+                <div :class="isGameVisible ? 'pointer-events-auto' : 'pointer-events-none'"
+                     class="w-full max-w-5xl h-full max-h-[85vh] glass-panel flex flex-col overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] relative transition-all duration-500"
+                     ref="gameWindowRef">
 
                     <!-- 游戏窗口头部控制栏 -->
                     <div class="flex items-center justify-between p-3 md:p-4 border-b border-white/10 bg-white/5 select-none overflow-hidden">
