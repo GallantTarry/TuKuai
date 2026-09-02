@@ -20,6 +20,20 @@
     <script src="./js/vue.global.js"></script>
 
     <script>
+        function fixHeight() {
+            document.documentElement.style.setProperty(
+                '--real-height',
+                window.innerHeight + 'px'
+            );
+        }
+
+        window.addEventListener('resize', fixHeight);
+        window.addEventListener('pageshow', fixHeight);
+
+        fixHeight();
+    </script>
+
+    <script>
         // 必须在所有 DOM 和 Vue 渲染前执行，彻底掐断浏览器的自动滚动恢复！
         if ('scrollRestoration' in history) {
             history.scrollRestoration = 'manual';
@@ -69,9 +83,6 @@
 
     /* ---------------- 核心毛玻璃与动态主题 CSS ---------------- */
         html, body {
-            /* 👇 新增这两行，彻底锁死整个物理视口，神仙也推不动 */
-            position: fixed;
-            inset: 0;
 
             /* 👇 下面是你原本的代码，保持不变 */
             background-color: #050505;
@@ -89,13 +100,9 @@
         /* 👇 新增：让 #app 成为真正的全屏终极霸主 👇 */
         #app {
             position: fixed;
-            top: 0;
-            left: 0;
+            inset: 0;
             width: 100%;
-            height: 100vh;
-            /* 杀手锏：专治 iOS Safari 和 Steam WKWebView 底部黑块/上移 */
-            height: -webkit-fill-available;
-            height: 100dvh;
+            height: var(--real-height);
             overflow: hidden;
         }
 
