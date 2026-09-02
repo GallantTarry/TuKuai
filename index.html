@@ -321,6 +321,37 @@
                 width: 100%;
             }
         }
+        /* ========================================= */
+        /* ====== 新增：Wander Jump 坍缩特效 ====== */
+        /* ========================================= */
+
+        /* 1. 能量过载：剧烈随机抖动与 RGB 色相偏移 */
+        @keyframes overload-shake {
+            0%, 100% { transform: translate(0, 0) scale(1); filter: hue-rotate(0deg) brightness(1); }
+            20% { transform: translate(-4px, 4px) scale(1.01); filter: hue-rotate(90deg) brightness(1.2); }
+            40% { transform: translate(4px, -4px) scale(0.99); filter: hue-rotate(-90deg) brightness(1.5); }
+            60% { transform: translate(-4px, -4px) scale(1.02); filter: hue-rotate(45deg) brightness(1.2); }
+            80% { transform: translate(4px, 4px) scale(0.98); filter: hue-rotate(-45deg) brightness(1.5); }
+        }
+
+        /* 2. 空间坍缩：CRT老电视关机式向内吸入 */
+        @keyframes crt-implode {
+            0% { transform: scale(1); opacity: 1; filter: brightness(1) blur(0px); }
+            30% { transform: scale(1, 0.01); opacity: 1; filter: brightness(2) blur(2px); } /* 上下压扁成一条亮线 */
+            60% { transform: scale(0, 0.01); opacity: 0; filter: brightness(3) blur(5px); } /* 亮线向中间聚集成一个点消失 */
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        /* 绑定到类名，使用 !important 确保覆盖常规的 transition */
+        .animate-overload {
+            animation: overload-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite !important;
+        }
+
+        .animate-implode {
+            /* 停留在最后一帧 (forwards) */
+            animation: crt-implode 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+            transform-origin: center center;
+        }
     </style>
 </head>
 
@@ -334,17 +365,16 @@
     <div class="absolute inset-0 scanlines z-0"></div>
 
     <canvas class="absolute inset-0 pointer-events-none z-50" ref="particleCanvas"></canvas>
-    <!-- 新增：神秘跃迁专用的黑屏遮罩层 -->
+    <!-- 找到这个专用的黑屏遮罩层 -->
     <div :class="['fixed inset-0 bg-black z-[9999] pointer-events-none transition-all duration-1000 ease-in-out',
-                 isWanderJumping ? 'opacity-100' : 'opacity-0']">
-        <!-- 里面放一个居中的故障风文本 -->
+         isCollapsing ? 'opacity-100 delay-300' : 'opacity-0']">
         <div class="absolute inset-0 flex items-center justify-center flex-col space-y-4">
-            <div :class="['text-white font-pixel text-xl tracking-widest transition-opacity duration-300', isWanderJumping ? 'opacity-100 animate-pulse' : 'opacity-0']">
+            <div :class="['text-white font-pixel text-xl tracking-widest transition-opacity duration-300', isCollapsing ? 'opacity-100 animate-pulse' : 'opacity-0']">
                 INITIATING WANDER JUMP...
             </div>
-            <!-- 进度条 -->
-            <div :class="['w-64 h-1 bg-white/20 rounded-full overflow-hidden transition-opacity duration-300 delay-300', isWanderJumping ? 'opacity-100' : 'opacity-0']">
-                <div class="h-full bg-white animate-[loading_1s_ease-in-out_forwards]"></div>
+            <div :class="['w-64 h-1 bg-white/20 rounded-full overflow-hidden transition-opacity duration-300 delay-300', isCollapsing ? 'opacity-100' : 'opacity-0']">
+                <!-- 👇 新增 :key="jumpKey" 👇 -->
+                <div v-if="isCollapsing" :key="jumpKey" class="h-full bg-white" style="animation: loading 2.5s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;"></div>
             </div>
         </div>
     </div>
@@ -380,7 +410,12 @@
         </div>
     </div>
 
-    <div :class="['flex flex-col md:flex-row h-full w-full z-10 relative transition-opacity duration-700 delay-200', isBooted ? 'opacity-100' : 'opacity-0 pointer-events-none']">
+    <div :class="[
+    'flex flex-col md:flex-row h-full w-full z-10 relative transition-opacity duration-700 delay-200',
+    isBooted ? 'opacity-100' : 'opacity-0 pointer-events-none',
+    (isWanderJumping && !isCollapsing) ? 'animate-overload' : '',
+    isCollapsing ? 'animate-implode pointer-events-none' : ''
+]">
 
 
         <!-- 把 activeGame 替换为 isGameVisible -->
@@ -2095,12 +2130,21 @@
                     });
                 }
             };
-// 新增：触发神秘跃迁的方法
+// 在原有 const isWanderJumping = ref(false); 下方新增：
+            // 在原有 const isWanderJumping = ref(false); 下方新增：
+            const isCollapsing = ref(false);
+            const jumpKey = ref(0); // 核心1：强制刷新 DOM 的钥匙
+            let collapseTimer = null;
+            let jumpTimer = null;
+
             const triggerWanderJump = () => {
-                // 1. 开启黑屏遮罩
+                // 防止狂点重复触发
+                if (isWanderJumping.value) return;
+
+                jumpKey.value++; // 每次触发换一把新钥匙，确保进度条是纯血新的
                 isWanderJumping.value = true;
 
-                // 2. 如果当前有音乐在播放，让它渐渐变小声（更有电影感）
+                // 音乐产生“断电”式的渐弱效果
                 if (audioRef.value && isPlaying.value) {
                     let vol = audioRef.value.volume;
                     const fadeOut = setInterval(() => {
@@ -2110,14 +2154,25 @@
                             clearInterval(fadeOut);
                         }
                         audioRef.value.volume = vol;
-                    }, 50);
+                    }, 30);
                 }
 
-                // 3. 延迟 1.2 秒（等待黑屏和进度条动画放完）后，真正执行跳转
-                setTimeout(() => {
+                // 清理可能残留的旧定时器，防止逻辑叠加错乱
+                if (collapseTimer) clearTimeout(collapseTimer);
+                if (jumpTimer) clearTimeout(jumpTimer);
+
+                // 第二阶段：400ms 后，UI 界面开始向中心坍缩，黑屏降临
+                collapseTimer = setTimeout(() => {
+                    isCollapsing.value = true;
+                }, 400);
+
+                // 第三阶段：4500ms 后，真正执行网页跳转
+                jumpTimer = setTimeout(() => {
                     window.location.href = 'https://gallanttarry.github.io/GallantTarry/';
-                }, 1200);
+                }, 4500);
             };
+
+// 别忘了在 return 里面把 isCollapsing 暴露出去：
 // 修改：彻底关闭逻辑（先隐藏窗口，然后延时彻底清空数据）
             const closeGame = () => {
                 isGameVisible.value = false;
@@ -2155,6 +2210,27 @@
 
                 updateClock();
                 setInterval(updateClock, 1000);
+
+                // 👇 新增这块：强行拦截 BFCache，解决后退时动画失效的问题 👇
+                // 👇 替换掉你原本的 pageshow 监听器 👇
+                window.addEventListener('pageshow', (event) => {
+                    if (event.persisted) {
+                        isWanderJumping.value = false;
+                        isCollapsing.value = false;
+
+                        // 恢复刚才被渐渐关掉的音量
+                        if (audioRef.value) {
+                            audioRef.value.volume = currentVolume.value;
+                        }
+
+                        // 终极绝招：让 DOM 隐身 0.1 毫秒并强迫浏览器计算高度 (Reflow回流)
+                        // 这样能彻底撕碎浏览器对 CSS 动画 100% 状态的缓存死锁！
+                        document.body.style.display = 'none';
+                        void document.body.offsetHeight;
+                        document.body.style.display = '';
+                    }
+                });
+                // 👆 ======================================================= 👆
 
                 // 👉 必须换成这个防拦截的社区镜像版本，把原本的 ibruce 删掉！
                 const script = document.createElement('script');
@@ -2249,7 +2325,7 @@
                 activeGame, gameWindowRef, openGame, closeGame, toggleFullscreen, isGameVisible, minimizeGame,
                 playModeIcon, playModeText, togglePlayMode, currentTvFace,
                 // 新增暴漏下面这两个：
-                isWanderJumping, triggerWanderJump
+                isWanderJumping, isCollapsing, triggerWanderJump
             };
         }
     }).mount('#app');
