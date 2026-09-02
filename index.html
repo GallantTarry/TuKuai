@@ -20,6 +20,18 @@
     <script src="./js/vue.global.js"></script>
 
     <script>
+        // 必须在所有 DOM 和 Vue 渲染前执行，彻底掐断浏览器的自动滚动恢复！
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        // 强制每次加载都把页面拉回最顶部
+        window.scrollTo(0, 0);
+    </script>
+
+
+
+
+    <script>
         tailwind.config = {
             theme: {
                 extend: {
@@ -57,6 +69,11 @@
 
     /* ---------------- 核心毛玻璃与动态主题 CSS ---------------- */
         html, body {
+            /* 👇 新增这两行，彻底锁死整个物理视口，神仙也推不动 */
+            position: fixed;
+            inset: 0;
+
+            /* 👇 下面是你原本的代码，保持不变 */
             background-color: #050505;
             color: #f8fafc;
             margin: 0;
@@ -1675,7 +1692,7 @@
             }));
 
 // 核心修复：同步读取缓存，绝不给浏览器闪烁的机会
-            const isBooted = ref(sessionStorage.getItem('os_booted') === 'true');
+            const isBooted = ref(localStorage.getItem('os_booted') === 'true');
             const typedText = ref(isBooted.value ? 'HelloWorld' : '');
             const targetText = 'HelloWorld';
 
@@ -2031,9 +2048,12 @@
                             i++;
                         } else {
                             clearInterval(typeInterval);
+                            // 找到 setInterval 里面的这部分：
                             setTimeout(() => {
                                 isBooted.value = true;
-                                sessionStorage.setItem('os_booted', 'true'); // 记录开机状态
+                                // 修改前：sessionStorage.setItem('os_booted', 'true');
+                                // 修改后 👇：
+                                localStorage.setItem('os_booted', 'true');
                             }, 600);
                         }
                     }, 3000 / targetText.length);
