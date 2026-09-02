@@ -292,7 +292,7 @@
 <body class="font-pixel text-xs md:text-sm">
 
 <!-- 👇 使用动态视口高度，交给浏览器自适应 -->
-<div :style="cssVars" class="relative w-full h-[100dvh] bg-black overflow-hidden flex flex-col" id="app">
+<div :style="cssVars" class="fixed inset-0 w-full bg-black overflow-hidden flex flex-col" id="app">
 
     <!-- 新增：将背景图和扫描线移到全局，并加上 z-0 防止遮挡 -->
     <img class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen z-0" src="./imgs/bg.avif"/>
@@ -1594,18 +1594,6 @@
         event.preventDefault(); // 阻止 Safari 原生的捏合缩放手势
     });
     // 👆 --------------------------------------------------- 👆
-
-    // 👇 -------- 新增：切回页面时强行重置视口位置 -------- 👇
-    window.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'visible') {
-            // 当用户从后台切回前台时，强制把整个窗口拽回顶部
-            window.scrollTo(0, 0);
-            document.body.scrollTop = 0;
-            document.documentElement.scrollTop = 0;
-        }
-    });
-    // 👆 --------------------------------------------------- 👆
-
 
 
     // 引入了 Vue 的 watch 功能用于小电视的动画控制
