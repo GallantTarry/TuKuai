@@ -344,6 +344,7 @@
         </div>
     </div>
 
+
     <div :class="['absolute inset-0 w-full h-full p-4 flex items-center justify-center z-50 bg-black/95 backdrop-blur-md select-none transition-opacity duration-700', isBooted ? 'opacity-0 pointer-events-none' : 'opacity-100']">
         <div
                 class="w-full max-w-2xl bg-black border border-[#333] rounded-md shadow-2xl overflow-hidden flex flex-col font-mono text-[11px] md:text-sm">
@@ -577,6 +578,7 @@
                             Not all those who wander are lost.
                         </a>
                     </div>
+                </div>
 
                 <!--在线使用-->
                 <div class="space-y-4 flex flex-col h-full max-h-full" v-if="currentTab === 'online'">
@@ -1608,6 +1610,7 @@
             </div>
 
         </main>
+
     </div>
 
     <audio :src="currentTrack ? currentTrack.file : ''" @ended="onEnded" @loadedmetadata="onLoadedMetadata"
