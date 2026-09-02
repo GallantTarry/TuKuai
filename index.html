@@ -1683,8 +1683,9 @@
                 '--theme-bg': activeBg.value
             }));
 
-            const isBooted = ref(false);
-            const typedText = ref('');
+// 核心修复：同步读取缓存，绝不给浏览器闪烁的机会
+            const isBooted = ref(sessionStorage.getItem('os_booted') === 'true');
+            const typedText = ref(isBooted.value ? 'HelloWorld' : '');
             const targetText = 'HelloWorld';
 
             const particleCanvas = ref(null);
@@ -2026,10 +2027,7 @@
                 document.body.appendChild(script);
 
                 // 新增：通过 sessionStorage 记住是否已经播放过开机动画
-                if (sessionStorage.getItem('os_booted') === 'true') {
-                    isBooted.value = true;
-                    typedText.value = targetText;
-                } else {
+                if (!isBooted.value) {
                     let i = 0;
                     const typeInterval = setInterval(() => {
                         if (i < targetText.length) {
