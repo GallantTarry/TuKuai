@@ -1670,7 +1670,13 @@
                 {id: 'video', title: '视频播放', icon: '📺', color: '#fb7299'}
             ]);
 
-            const currentTab = ref('about');
+            // 读取上次离开时的页面，如果没有则默认留在 'about'
+            const currentTab = ref(localStorage.getItem('tukuai_current_tab') || 'about');
+
+// 监听 tab 变化，实时存入本地
+            watch(currentTab, (newVal) => {
+                localStorage.setItem('tukuai_current_tab', newVal);
+            });
 
             const activeColor = computed(() => {
                 const item = menuItems.value.find(i => i.id === currentTab.value);
@@ -1764,13 +1770,23 @@
 
             const audioRef = ref(null);
             const isPlaying = ref(false);
-            const currentTrackIndex = ref(0);
+            // --- 记忆：歌曲序号 ---
+            const savedTrackIndex = localStorage.getItem('tukuai_track_index');
+            const currentTrackIndex = ref(savedTrackIndex ? parseInt(savedTrackIndex) : 0);
+            watch(currentTrackIndex, (newVal) => {
+                localStorage.setItem('tukuai_track_index', newVal);
+            });
             const currentTimeDisplay = ref('00:00');
             const durationDisplay = ref('00:00');
             const seekProgress = ref(0);
             const durationSec = ref(0);
             // --- 新增：音量状态与方法 ---
-            const currentVolume = ref(1.0); // 默认音量 100%
+            // --- 记忆：音量大小 ---
+            const savedVolume = localStorage.getItem('tukuai_volume');
+            const currentVolume = ref(savedVolume !== null ? parseFloat(savedVolume) : 1.0);
+            watch(currentVolume, (newVal) => {
+                localStorage.setItem('tukuai_volume', newVal);
+            });
             const onVolumeChange = () => {
                 if (audioRef.value) {
                     audioRef.value.volume = currentVolume.value;
@@ -1779,7 +1795,12 @@
 
             // --- 新增：播放模式控制 ---
             const playModes = ['sequence', 'random', 'loop'];
-            const currentPlayModeIndex = ref(0);
+            // --- 记忆：播放模式 (顺序/随机/单曲循环) ---
+            const savedPlayMode = localStorage.getItem('tukuai_play_mode_index');
+            const currentPlayModeIndex = ref(savedPlayMode ? parseInt(savedPlayMode) : 0);
+            watch(currentPlayModeIndex, (newVal) => {
+                localStorage.setItem('tukuai_play_mode_index', newVal);
+            });
             const playMode = computed(() => playModes[currentPlayModeIndex.value]);
 
             const playModeIcon = computed(() => {
@@ -1964,9 +1985,27 @@
                 }
             };
 // ====== 替换开始 ======
-            const activeGame = ref(null);
+            // --- 记忆：当前加载的游戏数据 ---
+            const savedGame = localStorage.getItem('tukuai_active_game');
+            const activeGame = ref(savedGame ? JSON.parse(savedGame) : null);
+
+            // 监听游戏变化，存为 JSON 字符串
+            watch(activeGame, (newVal) => {
+                if (newVal) {
+                    localStorage.setItem('tukuai_active_game', JSON.stringify(newVal));
+                } else {
+                    localStorage.removeItem('tukuai_active_game');
+                }
+            });
+
             const gameWindowRef = ref(null);
-            const isGameVisible = ref(false); // 新增：专门控制窗口显示/隐藏
+            // --- 记忆：游戏窗口是打开还是隐藏状态 ---
+            const savedGameVisible = localStorage.getItem('tukuai_game_visible');
+            const isGameVisible = ref(savedGameVisible === 'true');
+
+            watch(isGameVisible, (newVal) => {
+                localStorage.setItem('tukuai_game_visible', newVal);
+            });
 
             const openGame = (gameTitle, targetUrl) => {
                 // 只有当打开的是新游戏，或者游戏已经被彻底关闭时，才重新赋值 activeGame
