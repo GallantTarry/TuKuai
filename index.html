@@ -310,6 +310,12 @@
             /* 2. 核心大招：呼叫 GPU 硬件加速！提前为这些卡片分配独立图层，专治各种掉帧卡顿 */
             will-change: opacity, transform;
         }
+        /* 新增：跃迁进度条动画 */
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
     </style>
 </head>
 
@@ -323,6 +329,20 @@
     <div class="absolute inset-0 scanlines z-0"></div>
 
     <canvas class="absolute inset-0 pointer-events-none z-50" ref="particleCanvas"></canvas>
+    <!-- 新增：神秘跃迁专用的黑屏遮罩层 -->
+    <div :class="['fixed inset-0 bg-black z-[9999] pointer-events-none transition-all duration-1000 ease-in-out',
+                 isWanderJumping ? 'opacity-100' : 'opacity-0']">
+        <!-- 里面放一个居中的故障风文本 -->
+        <div class="absolute inset-0 flex items-center justify-center flex-col space-y-4">
+            <div :class="['text-white font-pixel text-xl tracking-widest transition-opacity duration-300', isWanderJumping ? 'opacity-100 animate-pulse' : 'opacity-0']">
+                INITIATING WANDER JUMP...
+            </div>
+            <!-- 进度条 -->
+            <div :class="['w-64 h-1 bg-white/20 rounded-full overflow-hidden transition-opacity duration-300 delay-300', isWanderJumping ? 'opacity-100' : 'opacity-0']">
+                <div class="h-full bg-white animate-[loading_1s_ease-in-out_forwards]"></div>
+            </div>
+        </div>
+    </div>
 
     <div :class="['absolute inset-0 w-full h-full p-4 flex items-center justify-center z-50 bg-black/95 backdrop-blur-md select-none transition-opacity duration-700', isBooted ? 'opacity-0 pointer-events-none' : 'opacity-100']">
         <div
@@ -552,11 +572,11 @@
                     </div>
 
                     <div class="glass-card p-6">
-                        <a class="leading-loose text-gray-300 hover:text-white hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] transition-all duration-300 text-xs md:text-sm text-center font-bold tracking-widest block cursor-pointer"
-                           href="https://gallanttarry.github.io/GallantTarry/"
-                           target="_self">Not all those who wander are lost.</a>
+                        <a class="leading-loose text-gray-300 hover:text-white hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] transition-all duration-300 text-xs md:text-sm text-center font-bold tracking-widest block cursor-pointer select-none"
+                           @click.prevent="triggerWanderJump">
+                            Not all those who wander are lost.
+                        </a>
                     </div>
-                </div>
 
                 <!--在线使用-->
                 <div class="space-y-4 flex flex-col h-full max-h-full" v-if="currentTab === 'online'">
@@ -1596,6 +1616,8 @@
 </div>
 
 <script>
+
+
     // 👇 -------- 新增：强行拦截移动端所有的缩放手势 -------- 👇
     document.addEventListener('touchstart', function (event) {
         if (event.touches.length > 1) {
@@ -1697,6 +1719,10 @@
 // 核心修复：同步读取缓存，绝不给浏览器闪烁的机会
             const isBooted = ref(localStorage.getItem('os_booted') === 'true');
             const typedText = ref(isBooted.value ? 'HelloWorld' : '');
+            // 新增：控制跃迁黑屏状态的变量
+            const isWanderJumping = ref(false);
+
+
             const targetText = 'HelloWorld';
 
             const particleCanvas = ref(null);
@@ -2030,7 +2056,29 @@
                     });
                 }
             };
+// 新增：触发神秘跃迁的方法
+            const triggerWanderJump = () => {
+                // 1. 开启黑屏遮罩
+                isWanderJumping.value = true;
 
+                // 2. 如果当前有音乐在播放，让它渐渐变小声（更有电影感）
+                if (audioRef.value && isPlaying.value) {
+                    let vol = audioRef.value.volume;
+                    const fadeOut = setInterval(() => {
+                        vol -= 0.05;
+                        if (vol <= 0) {
+                            vol = 0;
+                            clearInterval(fadeOut);
+                        }
+                        audioRef.value.volume = vol;
+                    }, 50);
+                }
+
+                // 3. 延迟 1.2 秒（等待黑屏和进度条动画放完）后，真正执行跳转
+                setTimeout(() => {
+                    window.location.href = 'https://gallanttarry.github.io/GallantTarry/';
+                }, 1200);
+            };
 // 修改：彻底关闭逻辑（先隐藏窗口，然后延时彻底清空数据）
             const closeGame = () => {
                 isGameVisible.value = false;
@@ -2159,7 +2207,9 @@
                 currentTimeDisplay, durationDisplay, seekProgress, durationSec, currentVolume, onVolumeChange,
                 togglePlay, playTrack, nextTrack, prevTrack, onTimeUpdate, onLoadedMetadata, onSeek, onEnded,
                 activeGame, gameWindowRef, openGame, closeGame, toggleFullscreen, isGameVisible, minimizeGame,
-                playModeIcon, playModeText, togglePlayMode, currentTvFace
+                playModeIcon, playModeText, togglePlayMode, currentTvFace,
+                // 新增暴漏下面这两个：
+                isWanderJumping, triggerWanderJump
             };
         }
     }).mount('#app');
