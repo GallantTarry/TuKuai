@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tukuai Emulator Core</title>
     <style>
-
         body, html {
             margin: 0;
             padding: 0;
@@ -42,155 +41,102 @@
         @keyframes fadeout {
             to { opacity: 0; visibility: hidden; }
         }
-
-        /* ===================================================
-       🚀 核心修复：彻底解决手机端虚拟按键遮挡菜单、无法存档/读档
-       =================================================== */
-        /* 1. 强制提升所有 EmulatorJS 菜单、弹窗和底部控制栏 */
-        .ejs-menu-container, .ejs-ui, .ejs-bottombar, div[class*="ejs-"] {
-            z-index: 999999 !important;
-        }
-
-        /* 2. 专门压制虚拟摇杆/按键层的层级 (它们通常带有 touch-action: none) */
-        #game > div[style*="touch-action: none"] {
-            z-index: 99 !important;
-        }
     </style>
 </head>
 <body>
 
-    <div id="focus-hint">💡 提示：按键无反应请先【点击游戏画面】。</div>
+<div id="focus-hint">💡 提示：按键无反应请先【点击游戏画面】。</div>
 
-    <div id="game-container">
-        <div id="game"></div>
-    </div>
+<div id="game-container">
+    <div id="game"></div>
+</div>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const romFile = urlParams.get('rom');
-        const coreParam = urlParams.get('core');
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const romFile = urlParams.get('rom');
+    const coreParam = urlParams.get('core');
 
-        if (!romFile) {
-            document.body.innerHTML = `
+    if (!romFile) {
+        document.body.innerHTML = `
                 <div style="text-align:center; line-height: 2;">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
                     <h3>SYSTEM ERROR: NO ROM DETECTED</h3>
                     <p style="color: #64748b; font-size: 12px;">Missing "?rom=filename" parameter in URL.</p>
                 </div>
             `;
+    } else {
+        window.EJS_player = '#game';
+
+        // 动态判断模拟器核心
+        let core = 'gba';
+        if (coreParam) {
+            core = coreParam;
         } else {
-            window.EJS_player = '#game';
-
-            // 动态判断模拟器核心
-            let core = 'gba';
-            if (coreParam) {
-                core = coreParam;
-            } else {
-                const ext = romFile.split('.').pop().toLowerCase();
-                if (ext === 'sfc' || ext === 'smc') {
-                    core = 'snes';
-                } else if (ext === 'nes') {
-                    core = 'nes';
-                } else if (ext === 'gb' || ext === 'gbc') {
-                    core = 'gb';
-                }
+            const ext = romFile.split('.').pop().toLowerCase();
+            if (ext === 'sfc' || ext === 'smc') {
+                core = 'snes';
+            } else if (ext === 'nes') {
+                core = 'nes';
+            } else if (ext === 'gb' || ext === 'gbc') {
+                core = 'gb';
             }
-            window.EJS_core = core;
-            window.EJS_gameName = romFile;
-            window.EJS_language = 'en';
-
-            // 确保你的 GitHub 仓库中有对应的 rom 文件夹和文件
-            window.EJS_gameUrl = '../rom/' + romFile;
-            window.EJS_pathtodata = '../emulator_data/';
-
-            window.EJS_color = '#000000';
-            window.EJS_startOnLoaded = true;
-
-            // 确保开启了 settings，这样才能呼出原生菜单进行存档管理
-            window.EJS_Buttons = {
-                playPause: false,
-                restart: true,
-                mute: true,
-                settings: true,
-                fullscreen: false,
-                saveState: true, // ➕ 加上这一行：底部显示即时保存按钮
-                loadState: true  // ➕ 加上这一行：底部显示即时读取按钮
-            };
-
-            // 游戏启动完毕后，强制抢夺系统键盘焦点
-            window.EJS_onGameStart = function() {
-                console.log("[Emulator Core] 游戏已启动，正在获取焦点...");
-                window.focus();
-                setTimeout(() => {
-                    const canvas = document.querySelector('#game canvas');
-                    if(canvas) {
-                        canvas.focus();
-                    }
-                }, 500);
-            };
         }
-    </script>
+        window.EJS_core = core;
+        window.EJS_gameName = romFile;
+        window.EJS_language = 'en';
 
-    <script src="../emulator_data/loader.js"></script>
+        // 确保你的 GitHub 仓库中有对应的 rom 文件夹和文件
+        window.EJS_gameUrl = '../rom/' + romFile;
+        window.EJS_pathtodata = '../emulator_data/';
 
-    <script>
-        // 跨窗口通信监听 (针对 iframe 嵌套优化)
-        window.addEventListener('message', (event) => {
-            if (event.data === 'focus-emulator') {
-                const canvas = document.querySelector('canvas');
-                if (canvas) {
-                    canvas.setAttribute('tabindex', '0');
+        window.EJS_color = '#000000';
+        window.EJS_startOnLoaded = true;
+
+        // 确保开启了 settings，这样才能呼出原生菜单进行存档管理
+        window.EJS_Buttons = {
+            playPause: false,
+            restart: true,
+            mute: true,
+            settings: true,
+            fullscreen: false,
+            saveState: true, // ➕ 加上这一行：底部显示即时保存按钮
+            loadState: true  // ➕ 加上这一行：底部显示即时读取按钮
+        };
+
+        // 游戏启动完毕后，强制抢夺系统键盘焦点
+        window.EJS_onGameStart = function() {
+            console.log("[Emulator Core] 游戏已启动，正在获取焦点...");
+            window.focus();
+            setTimeout(() => {
+                const canvas = document.querySelector('#game canvas');
+                if(canvas) {
                     canvas.focus();
                 }
+            }, 500);
+        };
+    }
+</script>
+
+<script src="../emulator_data/loader.js"></script>
+
+<script>
+    // 跨窗口通信监听 (针对 iframe 嵌套优化)
+    window.addEventListener('message', (event) => {
+        if (event.data === 'focus-emulator') {
+            const canvas = document.querySelector('canvas');
+            if (canvas) {
+                canvas.setAttribute('tabindex', '0');
+                canvas.focus();
             }
-        });
-        // 🚀 核心修复2：利用 MutationObserver 实时监控，一旦菜单生成立刻护航
-        const uiObserver = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                mutation.addedNodes.forEach((node) => {
-                    if (node.nodeType === 1 && node.tagName === 'DIV') {
-                        // 发现带 ejs- 前缀的菜单层，强行拉满层级
-                        if (node.className.includes('ejs-') || node.id.includes('ejs-')) {
-                            node.style.setProperty('z-index', '999999', 'important');
-                        }
-                    }
-                });
-            });
-        });
-        // 监听游戏容器的动态 UI 渲染
-        const gameContainer = document.getElementById('game-container');
-        if (gameContainer) {
-            uiObserver.observe(gameContainer, { childList: true, subtree: true });
         }
-        // 页面加载完成后，告诉父级 iframe 窗口自己准备好了
-        window.addEventListener('load', () => {
-            if (window.parent) {
-                window.parent.postMessage('emulator-ready', '*');
-            }
-        });
-    </script>
-    <script>
-        // ==========================================
-        // 🚀 终极层级守护者：专治虚拟方向键遮挡菜单
-        // ==========================================
-        setInterval(() => {
-            // 1. 把所有带有 ejs-menu (主菜单) 或 ejs-dialog (弹窗) 的容器，顶到大气层
-            document.querySelectorAll('div[class*="ejs-menu"], div[class*="ejs-dialog"]').forEach(el => {
-                el.style.setProperty('z-index', '999999', 'important');
-            });
+    });
 
-            // 2. 把底部工具栏 (存档/读档快捷条) 放在稍微低一点的地方，但依然极高
-            document.querySelectorAll('div[class*="ejs-bottombar"]').forEach(el => {
-                el.style.setProperty('z-index', '999990', 'important');
-            });
-
-            // 3. 【核心绝杀】：把导致遮挡的虚拟方向键/操作按钮（它们带有 touch-action: none），强行压制在底层！
-            document.querySelectorAll('div[style*="touch-action: none"]').forEach(el => {
-                el.style.setProperty('z-index', '999980', 'important');
-            });
-        }, 500); // 每 500 毫秒巡查一次，绝杀所有乱跳层级的元素
-    </script>
-</body>
-</html>
+    // 页面加载完成后，告诉父级 iframe 窗口自己准备好了
+    window.addEventListener('load', () => {
+        if (window.parent) {
+            window.parent.postMessage('emulator-ready', '*');
+        }
+    });
+</script>
 </body>
 </html>
