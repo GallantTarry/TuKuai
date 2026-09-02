@@ -29,6 +29,19 @@
         }
     </script>
 
+    <!-- 👇 核心修复1：专治手机端外部唤起时的视口跳动 Bug 👇 -->
+    <script>
+        function resetViewportHeight() {
+            // 获取浏览器真实的内部像素高度，并赋值给 CSS 全局变量
+            document.documentElement.style.setProperty('--app-height', window.innerHeight + 'px');
+        }
+        window.addEventListener('resize', resetViewportHeight);
+        window.addEventListener('orientationchange', resetViewportHeight);
+        resetViewportHeight();
+    </script>
+    <!-- 👆 核心修复1结束 👆 -->
+
+    <style>
     <style>
         /* 1. 引入本地 Silkscreen (英数常规) */
         @font-face {
@@ -55,22 +68,33 @@
             font-display: swap;
         }
 
-        /* ---------------- 核心毛玻璃与动态主题 CSS ---------------- */
-        html, body {
-            background-color: #050505;
-            color: #f8fafc;
-            margin: 0;
-            padding: 0;
-            width: 100%;
+    /* ---------------- 核心毛玻璃与动态主题 CSS ---------------- */
+    html, body {
+        background-color: #050505;
+        color: #f8fafc;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%; /* 放弃容易跳动的 dvh，直接用 100% */
 
-            /* 1. 回退方案：兼容极少数不支持 dvh 的老设备 */
-            height: 100vh;
-            /* 2. 现代方案：使用动态视口高度，完美解决地址栏造成的底部黑边 */
-            height: 100dvh;
+        /* 👇 核心修复2：让 body 绝对定位在左上角，不准乱跑 */
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
 
-            /* 删除了这里的 position: fixed; top: 0; left: 0; */
+        /* 核心修复：彻底禁用移动端的系统级橡皮筋回弹 */
+        overscroll-behavior-y: none;
+        -webkit-overflow-scrolling: none;
 
-            overflow: hidden;
+        /* 通知浏览器不要处理双击放大手势 */
+        touch-action: manipulation;
+    }
+
+    /* 👇 核心修复3：用 CSS 变量强制钉死容器的高度 */
+    #app {
+        height: var(--app-height, 100%) !important;
+    }
 
             /* 核心修复：彻底禁用移动端的系统级橡皮筋回弹 */
             overscroll-behavior-y: none;
@@ -299,7 +323,8 @@
 
 <body class="font-pixel text-xs md:text-sm">
 
-<div :style="cssVars" class="fixed inset-0 w-full h-full bg-black overflow-hidden flex flex-col" id="app">
+<!-- 👇 核心修复4：改用 absolute top-0 left-0，剥夺浏览器的自动排版权 -->
+<div :style="cssVars" class="absolute top-0 left-0 w-full bg-black overflow-hidden flex flex-col" id="app">
 
     <!-- 新增：将背景图和扫描线移到全局，并加上 z-0 防止遮挡 -->
     <img class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen z-0" src="./imgs/bg.avif"/>
