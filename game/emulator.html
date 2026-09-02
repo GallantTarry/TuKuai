@@ -41,6 +41,21 @@
         @keyframes fadeout {
             to { opacity: 0; visibility: hidden; }
         }
+        /* ========================================== */
+        /* 核心修复：破解手机端触屏穿透与点击失效 Bug */
+        /* ========================================== */
+
+        /* 1. 强制唤醒移动端的 click 事件（迫使手机浏览器把模拟器的 UI 认作按钮） */
+        #game div {
+            cursor: pointer !important;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 2. 强制将弹出菜单和控制栏拉到最顶层，彻底摆脱透明虚拟摇杆的遮挡 */
+        #game > div:not(:first-child) {
+            z-index: 999999 !important;
+            pointer-events: auto !important;
+        }
     </style>
 </head>
 <body>
@@ -135,6 +150,16 @@
                 window.parent.postMessage('emulator-ready', '*');
             }
         });
+
+        // 👇 新增这部分：移动端“触屏转物理点击”强制唤醒器 👇
+        document.addEventListener('touchend', function(e) {
+            // 如果手指点击的不是游戏画面 (canvas)，说明点在了存档 UI 或菜单上
+            if (e.target && e.target.tagName && e.target.tagName.toLowerCase() !== 'canvas') {
+                // 强行派发真实点击事件，专治手机端死活点不动的毛病
+                e.target.click();
+            }
+        }, { passive: true });
+        // 👆 ==================================================== 👆
     </script>
 </body>
 </html>
