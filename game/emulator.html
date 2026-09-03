@@ -57,59 +57,58 @@
 </div>
 
 <script>
+    // =========================================================================
+    // Tukuai Emulator Core - 底层引擎注入脚本 (原生无感版)
+    // =========================================================================
+
     const urlParams = new URLSearchParams(window.location.search);
     const romFile = urlParams.get('rom');
     const coreParam = urlParams.get('core');
 
     if (!romFile) {
         document.body.innerHTML = `
-            <div style="text-align:center; line-height: 2;">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
-                <h3>SYSTEM ERROR: NO ROM DETECTED</h3>
-                <p style="color: #64748b; font-size: 12px;">Missing "?rom=filename" parameter in URL.</p>
-            </div>
-        `;
+        <div style="text-align:center; line-height: 2;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+            <h3>SYSTEM ERROR: NO ROM DETECTED</h3>
+            <p style="color: #64748b; font-size: 12px;">Missing "?rom=filename" parameter in URL.</p>
+        </div>
+    `;
     } else {
+        // ---------------------------------------------------------
+        // 1. 初始化模拟器基础配置
+        // ---------------------------------------------------------
         window.EJS_player = '#game';
-
         let core = 'gba';
         if (coreParam) {
             core = coreParam;
         } else {
             const ext = romFile.split('.').pop().toLowerCase();
-            if (ext === 'sfc' || ext === 'smc') {
-                core = 'snes';
-            } else if (ext === 'nes') {
-                core = 'nes';
-            } else if (ext === 'gb' || ext === 'gbc') {
-                core = 'gb';
-            }
+            if (ext === 'sfc' || ext === 'smc') core = 'snes';
+            else if (ext === 'nes') core = 'nes';
+            else if (ext === 'gb' || ext === 'gbc') core = 'gb';
         }
+
         window.EJS_core = core;
         window.EJS_gameName = romFile;
         window.EJS_language = 'zh-CN';
-
         window.EJS_gameUrl = '../rom/' + romFile;
         window.EJS_pathtodata = '../emulator_data/';
 
+        // 动态生成唯一的游戏 ID 防冲突
         let uniqueGameID = 0;
         for (let i = 0; i < romFile.length; i++) {
             uniqueGameID = ((uniqueGameID << 5) - uniqueGameID) + romFile.charCodeAt(i);
             uniqueGameID |= 0;
         }
         window.EJS_gameID = Math.abs(uniqueGameID);
-
         window.EJS_color = '#000000';
         window.EJS_startOnLoaded = true;
 
+        // 移动端体验优化
+        window.EJS_VirtualGamepadSettings = { alpha: 0.5, scale: 1.1 };
         window.EJS_Buttons = {
-            playPause: true,
-            restart: true,
-            mute: true,
-            settings: true,
-            fullscreen: true,
-            saveState: true,
-            loadState: true
+            playPause: true, restart: true, mute: true,
+            settings: true, fullscreen: true, saveState: true, loadState: true
         };
 
         window.EJS_onGameStart = function() {
@@ -119,240 +118,230 @@
                 if (canvas) canvas.focus();
             }, 500);
         };
-    }
 
-    // =========================================================================
-    // 1. IndexedDB 物理存储底座
-    // =========================================================================
-    const SAVE_KEY_BATTERY = 'battery_sav_' + romFile;
+        // ---------------------------------------------------------
+        // 2. 本地物理存储底座 (IndexedDB)
+        // ---------------------------------------------------------
+        const SAVE_KEY_BATTERY = 'battery_sav_' + romFile;
 
-    function getSavesDB() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open('tukuai_game_saves_db', 1);
-            request.onupgradeneeded = (e) => {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains('saves')) {
-                    db.createObjectStore('saves');
-                }
-            };
-            request.onsuccess = (e) => resolve(e.target.result);
-            request.onerror = (e) => reject(e);
-        });
-    }
-
-    async function setSaveToDB(key, data) {
-        const db = await getSavesDB();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction('saves', 'readwrite');
-            tx.objectStore('saves').put(data, key);
-            tx.oncomplete = () => resolve();
-            tx.onerror = () => reject(tx.error);
-        });
-    }
-
-    async function getSaveFromDB(key) {
-        const db = await getSavesDB();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction('saves', 'readonly');
-            const req = tx.objectStore('saves').get(key);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => reject(req.error);
-        });
-    }
-
-    // =========================================================================
-    // 2. 内存 SRAM 探测与主动落盘引擎
-    // =========================================================================
-    function getCore() {
-        const mod = (window.EJS_emulator && window.EJS_emulator.gameManager && window.EJS_emulator.gameManager.Module)
-            || window.Module
-            || (typeof Module !== 'undefined' ? Module : null);
-        const fs = (mod && mod.FS)
-            || window.FS
-            || (window.EJS_emulator && window.EJS_emulator.FS)
-            || (typeof FS !== 'undefined' ? FS : null);
-        return { mod, fs };
-    }
-
-    function extractSRAMData() {
-        const { mod, fs } = getCore();
-        if (!fs) return null;
-
-        // 强行命令 RetroArch 将内存里的 SRAM 刷入虚拟磁盘
-        if (mod && typeof mod._cmd_save_files === 'function') {
-            try { mod._cmd_save_files(); } catch(e) {}
-        }
-        if (mod && mod.ccall) {
-            try { mod.ccall('cmd_save_files', 'void', [], []); } catch(e) {}
+        function getSavesDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('tukuai_game_saves_db', 1);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains('saves')) db.createObjectStore('saves');
+                };
+                request.onsuccess = (e) => resolve(e.target.result);
+                request.onerror = (e) => reject(e);
+            });
         }
 
-        // 抓取 RetroArch 默认生成的 .srm 电池文件
-        const saveDir = '/home/web_user/retroarch/userdata/saves';
-        try {
-            const files = fs.readdir(saveDir);
-            for (const f of files) {
-                if (f === '.' || f === '..') continue;
-                if (f.endsWith('.srm') || f.endsWith('.sav')) {
-                    const data = fs.readFile(saveDir + '/' + f);
-                    if (data && data.length > 0) return data;
-                }
+        async function setSaveToDB(key, data) {
+            const db = await getSavesDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction('saves', 'readwrite');
+                tx.objectStore('saves').put(data, key);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        }
+
+        async function getSaveFromDB(key) {
+            const db = await getSavesDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction('saves', 'readonly');
+                const req = tx.objectStore('saves').get(key);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        // ---------------------------------------------------------
+        // 3. 内存 SRAM 探测与主动落盘引擎
+        // ---------------------------------------------------------
+        function getCore() {
+            const mod = (window.EJS_emulator && window.EJS_emulator.gameManager && window.EJS_emulator.gameManager.Module)
+                || window.Module || (typeof Module !== 'undefined' ? Module : null);
+            const fs = (mod && mod.FS) || window.FS || (window.EJS_emulator && window.EJS_emulator.FS) || (typeof FS !== 'undefined' ? FS : null);
+            return { mod, fs };
+        }
+
+        function extractSRAMData() {
+            const { mod, fs } = getCore();
+            if (!fs) return null;
+
+            // 强制 RetroArch 把内存缓冲输出到 Emscripten 虚拟文件系统
+            if (mod && typeof mod._cmd_save_files === 'function') {
+                try { mod._cmd_save_files(); } catch(e) {}
             }
-        } catch(e) {}
+            if (mod && mod.ccall) {
+                try { mod.ccall('cmd_save_files', 'void', [], []); } catch(e) {}
+            }
 
-        const base = romFile.replace(/\.[^/.]+$/, "");
-        const fallbacks = [`/${base}.srm`, `/${base}.sav`, `/${romFile}.srm`, `/${romFile}.sav`];
-        for (const p of fallbacks) {
+            // 精准抓取生成的 .srm 电池文件
+            const saveDir = '/home/web_user/retroarch/userdata/saves';
             try {
-                const data = fs.readFile(p);
-                if (data && data.length > 0) return data;
+                const files = fs.readdir(saveDir);
+                for (const f of files) {
+                    if (f === '.' || f === '..') continue;
+                    if (f.endsWith('.srm') || f.endsWith('.sav')) {
+                        const data = fs.readFile(saveDir + '/' + f);
+                        if (data && data.length > 0) return data;
+                    }
+                }
             } catch(e) {}
-        }
 
-        return null;
-    }
-
-    function calculateChecksum(buffer) {
-        let sum = 0;
-        const step = Math.max(1, Math.floor(buffer.length / 1000));
-        for (let i = 0; i < buffer.length; i += step) {
-            sum = (sum + buffer[i]) | 0;
-        }
-        return sum;
-    }
-
-    let lastSaveChecksum = 0;
-    async function syncSaveToStorage() {
-        try {
-            const sram = extractSRAMData();
-            if (!sram || sram.length === 0) return;
-
-            const checksum = calculateChecksum(sram);
-            if (checksum !== 0 && checksum !== lastSaveChecksum) {
-                lastSaveChecksum = checksum;
-                await setSaveToDB(SAVE_KEY_BATTERY, sram);
-                console.log('%c[AutoSave] 游戏卡带存档已成功刷入手机持久化磁盘！大小: ' + sram.length + ' 字节', 'color:#4ade80; font-weight:bold;');
+            const base = romFile.replace(/\.[^/.]+$/, "");
+            const fallbacks = [`/${base}.srm`, `/${base}.sav`, `/${romFile}.srm`, `/${romFile}.sav`];
+            for (const p of fallbacks) {
+                try {
+                    const data = fs.readFile(p);
+                    if (data && data.length > 0) return data;
+                } catch(e) {}
             }
-        } catch(e) {
-            console.warn('[AutoSave] 存档写入异常:', e);
+            return null;
         }
-    }
 
-    // =========================================================================
-    // 3. 守护定时器与生命周期钩子
-    // =========================================================================
-    setInterval(syncSaveToStorage, 3000);
+        function calculateChecksum(buffer) {
+            let sum = 0;
+            const step = Math.max(1, Math.floor(buffer.length / 1000));
+            for (let i = 0; i < buffer.length; i += step) sum = (sum + buffer[i]) | 0;
+            return sum;
+        }
 
-    document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === 'hidden') syncSaveToStorage();
-    });
-    window.addEventListener("pagehide", syncSaveToStorage);
-    window.addEventListener('beforeunload', syncSaveToStorage);
+        let lastSaveChecksum = 0;
+        async function syncSaveToStorage() {
+            try {
+                const sram = extractSRAMData();
+                if (!sram || sram.length === 0) return;
 
-    window.addEventListener('message', async (event) => {
-        if (event.data === 'focus-emulator') {
-            const canvas = document.querySelector('canvas');
-            if (canvas) {
-                canvas.setAttribute('tabindex', '0');
-                canvas.focus();
+                const checksum = calculateChecksum(sram);
+                if (checksum !== 0 && checksum !== lastSaveChecksum) {
+                    lastSaveChecksum = checksum;
+                    await setSaveToDB(SAVE_KEY_BATTERY, sram);
+                    console.log('%c[AutoSave] 游戏卡带存档已成功刷入手机持久化磁盘！大小: ' + sram.length + ' 字节', 'color:#4ade80; font-weight:bold;');
+                }
+            } catch(e) {
+                console.warn('[AutoSave] 存档写入异常:', e);
             }
         }
-        if (event.data === 'save-before-close') {
-            await syncSaveToStorage();
-        }
-    });
 
-    function unlockAudio() {
-        if (window.EJS_emulator && window.EJS_emulator.audioContext) {
-            if (window.EJS_emulator.audioContext.state === 'suspended') {
+        // ---------------------------------------------------------
+        // 4. 守护定时器与生命周期挂钩
+        // ---------------------------------------------------------
+        setInterval(syncSaveToStorage, 3000);
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === 'hidden') syncSaveToStorage();
+        });
+        window.addEventListener("pagehide", syncSaveToStorage);
+        window.addEventListener('beforeunload', syncSaveToStorage);
+
+        window.addEventListener('message', async (event) => {
+            if (event.data === 'focus-emulator') {
+                const canvas = document.querySelector('canvas');
+                if (canvas) { canvas.setAttribute('tabindex', '0'); canvas.focus(); }
+            }
+            if (event.data === 'save-before-close') await syncSaveToStorage();
+        });
+
+        // 解决手机端切出后媒体引擎假死
+        function unlockAudio() {
+            if (window.EJS_emulator && window.EJS_emulator.audioContext && window.EJS_emulator.audioContext.state === 'suspended') {
                 window.EJS_emulator.audioContext.resume();
             }
         }
-    }
-    window.addEventListener('touchstart', unlockAudio, { passive: true });
-    window.addEventListener('touchend', unlockAudio, { passive: true });
+        window.addEventListener('touchstart', unlockAudio, { passive: true });
+        window.addEventListener('touchend', unlockAudio, { passive: true });
 
-    // 原生文件选择器劫持（选完文件防假死 + 自动兼容 .sav）
-    function hookFileInput(input) {
-        if (input._hooked) return;
-        input._hooked = true;
-        input.setAttribute('accept', '.state,.sav,.srm,*/*');
+        // ---------------------------------------------------------
+        // 5. 劫持原生底层菜单：绑定 Load State 文件选择器
+        // ---------------------------------------------------------
+        function hookFileInput(input) {
+            if (input._hooked) return;
+            input._hooked = true;
+            input.setAttribute('accept', '.state,.sav,.srm,*/*');
 
-        input.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = async function(evt) {
-                try {
-                    const buffer = new Uint8Array(evt.target.result);
-                    const fileName = file.name.toLowerCase();
+                const reader = new FileReader();
+                reader.onload = async function(evt) {
+                    try {
+                        const buffer = new Uint8Array(evt.target.result);
+                        const fileName = file.name.toLowerCase();
 
-                    if (fileName.endsWith('.sav') || fileName.endsWith('.srm') || buffer.length <= 262144) {
-                        await setSaveToDB(SAVE_KEY_BATTERY, buffer);
-                        alert('已成功将外部电池存档导入缓存！游戏即将重启以装载进度。');
-                        window.location.reload();
-                    } else {
-                        if (window.EJS_emulator && window.EJS_emulator.gameManager) {
-                            if (typeof window.EJS_emulator.gameManager.loadState === 'function') {
-                                window.EJS_emulator.gameManager.loadState(buffer);
+                        // 判断并分发：电池存档 vs 即使快照
+                        if (fileName.endsWith('.sav') || fileName.endsWith('.srm') || buffer.length <= 262144) {
+                            await setSaveToDB(SAVE_KEY_BATTERY, buffer);
+                            alert('已成功将外部电池存档导入缓存！游戏即将重启以装载进度。');
+                            window.location.reload();
+                        } else {
+                            if (window.EJS_emulator && window.EJS_emulator.gameManager) {
+                                if (typeof window.EJS_emulator.gameManager.loadState === 'function') {
+                                    window.EJS_emulator.gameManager.loadState(buffer);
+                                }
                             }
                         }
+
+                        // 解除移动端文件选择器引发的渲染暂停死锁
+                        setTimeout(() => {
+                            unlockAudio();
+                            if (window.EJS_emulator && window.EJS_emulator.gameManager) {
+                                if (typeof window.EJS_emulator.gameManager.resume === 'function') {
+                                    window.EJS_emulator.gameManager.resume();
+                                }
+                            }
+                        }, 200);
+                    } catch(err) {
+                        console.error('[Hook] 导入出错:', err);
                     }
-                    setTimeout(() => {
-                        unlockAudio();
-                        if (window.EJS_emulator && window.EJS_emulator.gameManager) {
-                            if (typeof window.EJS_emulator.gameManager.resume === 'function') {
-                                window.EJS_emulator.gameManager.resume();
-                            }
-                        }
-                    }, 200);
-                } catch(err) {
-                    console.error('[Hook] 导入出错:', err);
+                };
+                reader.readAsArrayBuffer(file);
+            }, true);
+        }
+
+        const domObserver = new MutationObserver((mutations) => {
+            for (let m of mutations) {
+                for (let node of m.addedNodes) {
+                    if (node.tagName === 'INPUT' && node.type === 'file') hookFileInput(node);
+                    else if (node.querySelectorAll) node.querySelectorAll('input[type="file"]').forEach(hookFileInput);
                 }
+            }
+        });
+        domObserver.observe(document.documentElement, { childList: true, subtree: true });
+
+        // ---------------------------------------------------------
+        // 6. 核心点火序列：异步挂载存档，再启动引擎
+        // ---------------------------------------------------------
+        async function bootEngine() {
+            try {
+                // 异步等待获取电池数据
+                const cachedSave = await getSaveFromDB(SAVE_KEY_BATTERY);
+                if (cachedSave && cachedSave.length > 0) {
+                    // 利用 Blob URL 让 EmulatorJS 在开机第一时间无缝加载存档
+                    const blob = new Blob([cachedSave], { type: 'application/octet-stream' });
+                    window.EJS_loadSaveURL = URL.createObjectURL(blob);
+                    console.log('%c[AutoLoad] 成功从手机 IndexedDB 预挂载卡带存档，大小: ' + cachedSave.length + ' 字节', 'color:#38bdf8; font-weight:bold;');
+                }
+            } catch(e) {
+                console.warn('[AutoLoad] 历史存档装载失败:', e);
+            }
+
+            // ！！！核心变动！！！
+            // 数据准备完毕后，动态挂载 loader.js，确保顺序绝对安全
+            const loaderScript = document.createElement('script');
+            loaderScript.src = '../emulator_data/loader.js';
+            loaderScript.onload = () => {
+                if (window.parent) window.parent.postMessage('emulator-ready', '*');
             };
-            reader.readAsArrayBuffer(file);
-        }, true);
-    }
-
-    const domObserver = new MutationObserver((mutations) => {
-        for (let m of mutations) {
-            for (let node of m.addedNodes) {
-                if (node.tagName === 'INPUT' && node.type === 'file') {
-                    hookFileInput(node);
-                } else if (node.querySelectorAll) {
-                    node.querySelectorAll('input[type="file"]').forEach(hookFileInput);
-                }
-            }
-        }
-    });
-    domObserver.observe(document.documentElement, { childList: true, subtree: true });
-
-    // =========================================================================
-    // 4. 关键执行顺序：先查 IndexedDB 注入 EJS_loadSaveURL，再动态启动 loader.js
-    // =========================================================================
-    async function bootEngine() {
-        try {
-            const cachedSave = await getSaveFromDB(SAVE_KEY_BATTERY);
-            if (cachedSave && cachedSave.length > 0) {
-                // 核心关键点：开机第一帧前生成 Blob URL 塞给引擎，直通卡带电池硬件地址
-                const blob = new Blob([cachedSave], { type: 'application/octet-stream' });
-                window.EJS_loadSaveURL = URL.createObjectURL(blob);
-                console.log('%c[AutoLoad] 成功从手机 IndexedDB 预挂载卡带存档至 EJS_loadSaveURL，大小: ' + cachedSave.length + ' 字节', 'color:#38bdf8; font-weight:bold;');
-            }
-        } catch(e) {
-            console.warn('[AutoLoad] 历史存档装载失败:', e);
+            document.body.appendChild(loaderScript);
         }
 
-        // 动态加载执行模拟器脚本
-        const loader = document.createElement('script');
-        loader.src = '../emulator_data/loader.js';
-        loader.onload = () => {
-            if (window.parent) window.parent.postMessage('emulator-ready', '*');
-        };
-        document.body.appendChild(loader);
+        // 启动系统
+        bootEngine();
     }
-
-    bootEngine();
 </script>
 </body>
 </html>
