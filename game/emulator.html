@@ -102,11 +102,6 @@
         window.EJS_color = '#000000';
         window.EJS_startOnLoaded = true;
 
-        window.EJS_VirtualGamepadSettings = {
-            alpha: 0.5,
-            scale: 1.1
-        };
-
         window.EJS_Buttons = {
             playPause: true,
             restart: true,
@@ -127,7 +122,7 @@
     }
 
     // =========================================================================
-    // 1. 本地存储底座 (IndexedDB)
+    // 1. IndexedDB 物理存储底座
     // =========================================================================
     const SAVE_KEY_BATTERY = 'battery_sav_' + romFile;
 
@@ -166,7 +161,7 @@
     }
 
     // =========================================================================
-    // 2. 底层 WASM 核心与虚拟文件系统探测器
+    // 2. 内存 SRAM 探测与主动落盘引擎
     // =========================================================================
     function getCore() {
         const mod = (window.EJS_emulator && window.EJS_emulator.gameManager && window.EJS_emulator.gameManager.Module)
@@ -179,19 +174,19 @@
         return { mod, fs };
     }
 
-    function getSRAMData() {
+    function extractSRAMData() {
         const { mod, fs } = getCore();
         if (!fs) return null;
 
-        // 强迫 RetroArch 将内存里的 SRAM 刷入虚拟磁盘
+        // 强行命令 RetroArch 将内存里的 SRAM 刷入虚拟磁盘
         if (mod && typeof mod._cmd_save_files === 'function') {
             try { mod._cmd_save_files(); } catch(e) {}
         }
-        if (window.EJS_emulator && typeof window.EJS_emulator.saveSave === 'function') {
-            try { window.EJS_emulator.saveSave(); } catch(e) {}
+        if (mod && mod.ccall) {
+            try { mod.ccall('cmd_save_files', 'void', [], []); } catch(e) {}
         }
 
-        // 检索 RetroArch 默认存储路径下的 .srm 与 .sav 文件
+        // 抓取 RetroArch 默认生成的 .srm 电池文件
         const saveDir = '/home/web_user/retroarch/userdata/saves';
         try {
             const files = fs.readdir(saveDir);
@@ -204,7 +199,6 @@
             }
         } catch(e) {}
 
-        // 兜底：检索根目录
         const base = romFile.replace(/\.[^/.]+$/, "");
         const fallbacks = [`/${base}.srm`, `/${base}.sav`, `/${romFile}.srm`, `/${romFile}.sav`];
         for (const p of fallbacks) {
@@ -229,23 +223,22 @@
     let lastSaveChecksum = 0;
     async function syncSaveToStorage() {
         try {
-            const sram = getSRAMData();
+            const sram = extractSRAMData();
             if (!sram || sram.length === 0) return;
 
             const checksum = calculateChecksum(sram);
-            // 校验到真实数据变化时才写入本地持久库
             if (checksum !== 0 && checksum !== lastSaveChecksum) {
                 lastSaveChecksum = checksum;
                 await setSaveToDB(SAVE_KEY_BATTERY, sram);
-                console.log('[AutoSave] 游戏内部卡带存档已持久化至手机本地，大小:', sram.length);
+                console.log('%c[AutoSave] 游戏卡带存档已成功刷入手机持久化磁盘！大小: ' + sram.length + ' 字节', 'color:#4ade80; font-weight:bold;');
             }
         } catch(e) {
-            console.warn('[AutoSave] 存盘异常:', e);
+            console.warn('[AutoSave] 存档写入异常:', e);
         }
     }
 
     // =========================================================================
-    // 3. 守护定时器与生命周期挂钩
+    // 3. 守护定时器与生命周期钩子
     // =========================================================================
     setInterval(syncSaveToStorage, 3000);
 
@@ -278,7 +271,7 @@
     window.addEventListener('touchstart', unlockAudio, { passive: true });
     window.addEventListener('touchend', unlockAudio, { passive: true });
 
-    // 原生文件导入劫持 (自动兼容 .sav 并解决移动端选完文件假死)
+    // 原生文件选择器劫持（选完文件防假死 + 自动兼容 .sav）
     function hookFileInput(input) {
         if (input._hooked) return;
         input._hooked = true;
@@ -296,7 +289,7 @@
 
                     if (fileName.endsWith('.sav') || fileName.endsWith('.srm') || buffer.length <= 262144) {
                         await setSaveToDB(SAVE_KEY_BATTERY, buffer);
-                        alert('已成功将外部电池存档导入缓存！页面即将重新加载以载入进度。');
+                        alert('已成功将外部电池存档导入缓存！游戏即将重启以装载进度。');
                         window.location.reload();
                     } else {
                         if (window.EJS_emulator && window.EJS_emulator.gameManager) {
@@ -335,22 +328,22 @@
     domObserver.observe(document.documentElement, { childList: true, subtree: true });
 
     // =========================================================================
-    // 4. 核心执行入口：开机前从 IndexedDB 取档并注入 EJS_loadSaveURL
+    // 4. 关键执行顺序：先查 IndexedDB 注入 EJS_loadSaveURL，再动态启动 loader.js
     // =========================================================================
-    async function bootSystem() {
+    async function bootEngine() {
         try {
             const cachedSave = await getSaveFromDB(SAVE_KEY_BATTERY);
             if (cachedSave && cachedSave.length > 0) {
-                // 关键点：在 loader.js 执行前挂载原生读档地址，开机直接识别到 CONTINUE
+                // 核心关键点：开机第一帧前生成 Blob URL 塞给引擎，直通卡带电池硬件地址
                 const blob = new Blob([cachedSave], { type: 'application/octet-stream' });
                 window.EJS_loadSaveURL = URL.createObjectURL(blob);
-                console.log('[AutoLoad] 成功从 IndexedDB 装载历史电池存档至 EJS_loadSaveURL，大小:', cachedSave.length);
+                console.log('%c[AutoLoad] 成功从手机 IndexedDB 预挂载卡带存档至 EJS_loadSaveURL，大小: ' + cachedSave.length + ' 字节', 'color:#38bdf8; font-weight:bold;');
             }
         } catch(e) {
-            console.warn('[AutoLoad] 预读存档失败:', e);
+            console.warn('[AutoLoad] 历史存档装载失败:', e);
         }
 
-        // 动态加载模拟器引擎
+        // 动态加载执行模拟器脚本
         const loader = document.createElement('script');
         loader.src = '../emulator_data/loader.js';
         loader.onload = () => {
@@ -359,7 +352,7 @@
         document.body.appendChild(loader);
     }
 
-    bootSystem();
+    bootEngine();
 </script>
 </body>
 </html>
