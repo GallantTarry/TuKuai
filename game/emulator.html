@@ -20,7 +20,8 @@
             font-family: monospace;
             /* 升级 2：CSS 层级彻底封杀移动端的下拉刷新、侧滑返回和双击放大 */
             overscroll-behavior: none;
-            touch-action: none;
+            /* 👇 改这里：从 none 改为 manipulation，允许正常的指针交互 👇 */
+            touch-action: manipulation;
             -webkit-user-select: none;
             user-select: none;
         }
@@ -160,9 +161,9 @@
     });
 
     // 升级 6：阻止 iOS Safari 的多余手势事件冒泡到外层 iframe
-    document.addEventListener('touchmove', function (event) {
-        event.preventDefault();
-    }, { passive: false });
+    // document.addEventListener('touchmove', function (event) {
+    //     event.preventDefault();
+    // }, { passive: false });
 
     // 页面加载完成后，告诉父级 iframe 窗口自己准备好了
     window.addEventListener('load', () => {
