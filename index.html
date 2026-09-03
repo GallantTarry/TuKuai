@@ -51,7 +51,7 @@
             }
         }
     </script>
-    
+
     <style>
         /* ========================================= */
         /* 核心修复：防止 Vue 加载前出现大括号模板闪烁 */
@@ -2200,18 +2200,24 @@
                 }, 4500);
             };
 
-// 别忘了在 return 里面把 isCollapsing 暴露出去：
-// 修改：彻底关闭逻辑（先隐藏窗口，然后延时彻底清空数据）
+
+// 修改：彻底关闭逻辑（通知 iframe 存盘完成后再销毁节点）
             const closeGame = () => {
                 isGameVisible.value = false;
                 if (document.fullscreenElement) {
-                    document.exitFullscreen().catch(() => {
-                    });
+                    document.exitFullscreen().catch(() => {});
                 }
-                // 延迟 500ms，等 CSS 关闭动画播完再销毁 iframe，防止画面瞬间黑掉变硬
+
+                // 👇【新增】：先通知子窗口把内存存档刷入手机本地磁盘
+                const frame = document.querySelector('iframe');
+                if (frame && frame.contentWindow) {
+                    frame.contentWindow.postMessage('save-before-close', '*');
+                }
+
+                // 缓冲时间调整到 700ms，确保移动端 IndexedDB IO 写入完成后再移除 iframe 节点
                 setTimeout(() => {
                     activeGame.value = null;
-                }, 500);
+                }, 700);
             };
 
             const toggleFullscreen = () => {
