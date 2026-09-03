@@ -68,36 +68,33 @@ self.addEventListener('activate', event => {
         })
     );
 });
-
 // =========================================================
-// 4. 拦截请求：调度交通 (Fetch) - 终极优化版
+// 4. 拦截请求：调度交通 (Fetch) - 终极修复版
 // =========================================================
 self.addEventListener('fetch', event => {
     const url = event.request.url;
 
-    // 1. 放行非 HTTP (如 blob:, data:, chrome-extension:)
+    // 1. 放行非 HTTP 请求
     if (!url.startsWith('http')) return;
 
     // 2. 只拦截 GET 请求
     if (event.request.method !== 'GET') return;
 
-    // 3. 【修复 iOS 音乐离线Bug】：只放行模拟器核心代码的 Range 请求，不拦截音乐
-    if (event.request.headers.has('range') && url.includes('/emulator_data/')) {
-        return;
+    // 💥 核心救命修复：绝对不能让缓存触碰模拟器！
+    // WebAssembly 引擎和 ROM 必须使用浏览器原生流式传输，否则底层文件系统会瘫痪，导致无法读写存档！
+    if (event.request.headers.has('range') || url.includes('/emulator_data/') || url.includes('/rom/')) {
+        return; // 直接放行，交给浏览器原生处理
     }
 
-    // 4. 精确的正则匹配媒体大文件 (不再模糊匹配包含路径，防止误伤 html)
-    const isMediaOrRom = /\.(mp3|mp4|gba|sfc|smc|nes|gb|gbc|zip)$/i.test(url);
+    // 4. 媒体大文件缓存（注意：这里已经删除了 gba、sfc 等游戏后缀）
+    const isMediaOrRom = /\.(mp3|mp4|zip)$/i.test(url);
 
     if (isMediaOrRom) {
-        // -----------------------------------------------------
-        // 策略 A：媒体大文件 -> 纯缓存优先 (Cache First)
-        // -----------------------------------------------------
+        // 策略 A：媒体大文件 -> 纯缓存优先
         event.respondWith(
             caches.open(MEDIA_CACHE_NAME).then(async (cache) => {
                 const cachedResponse = await cache.match(event.request);
                 if (cachedResponse) return cachedResponse;
-
                 try {
                     const networkResponse = await fetch(event.request);
                     if (networkResponse && networkResponse.status === 200) {
@@ -105,30 +102,21 @@ self.addEventListener('fetch', event => {
                     }
                     return networkResponse;
                 } catch (error) {
-                    console.error('[媒体大文件] 断网拉取失败:', error);
+                    console.error('[媒体断网]:', error);
                 }
             })
         );
     } else {
-        // -----------------------------------------------------
-        // 策略 B：核心框架页面 (HTML/JS/CSS) -> 异步校验刷新 (Stale-While-Revalidate)
-        // 好处：断网秒开，且每次联网时后台自动拉取最新版覆盖旧缓存，不再需要手动改版本号！
-        // -----------------------------------------------------
+        // 策略 B：核心框架页面 -> 异步校验刷新
         event.respondWith(
             caches.open(CORE_CACHE_NAME).then(async (cache) => {
                 const cachedResponse = await cache.match(event.request);
-
-                // 发起网络请求拉取最新数据（后台静默进行）
                 const networkFetchPromise = fetch(event.request).then(networkResponse => {
                     if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-                        cache.put(event.request, networkResponse.clone()); // 偷偷把最新版存进金库
+                        cache.put(event.request, networkResponse.clone());
                     }
                     return networkResponse;
-                }).catch(() => {
-                    // 断网情况，静默失败，由下面的 cachedResponse 兜底
-                });
-
-                // 如果本地有旧缓存，立刻返回旧缓存给用户看；如果没有，就老老实实等网络请求回来
+                }).catch(() => {});
                 return cachedResponse || networkFetchPromise;
             })
         );
