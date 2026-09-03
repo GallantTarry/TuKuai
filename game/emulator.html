@@ -118,22 +118,43 @@
     <script src="../emulator_data/loader.js"></script>
 
     <script>
-        // 跨窗口通信监听 (针对 iframe 嵌套优化)
-        window.addEventListener('message', (event) => {
-            if (event.data === 'focus-emulator') {
-                const canvas = document.querySelector('canvas');
-                if (canvas) {
-                    canvas.setAttribute('tabindex', '0');
-                    canvas.focus();
-                }
-            }
-        });
+        document.getElementById('state-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
 
-        // 页面加载完成后，告诉父级 iframe 窗口自己准备好了
-        window.addEventListener('load', () => {
-            if (window.parent) {
-                window.parent.postMessage('emulator-ready', '*');
-            }
+            console.log("[Emulator] 准备解析即时存档 (State):", file.name);
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const stateData = new Uint8Array(event.target.result);
+
+                if (window.EJS_emulator) {
+                    // 1. 强制抢夺焦点，唤醒 iframe 引擎
+                    window.focus();
+
+                    // 2. 如果模拟器内部处于暂停状态，强制让它先跑起来
+                    if (window.EJS_emulator.gameManager && typeof window.EJS_emulator.gameManager.resume === 'function') {
+                        window.EJS_emulator.gameManager.resume();
+                    }
+
+                    // 3. 延时 100 毫秒，等引擎的主循环 (Loop) 跑通一帧后，再灌入庞大的快照数据
+                    setTimeout(() => {
+                        try {
+                            if (window.EJS_emulator.gameManager && typeof window.EJS_emulator.gameManager.loadState === 'function') {
+                                window.EJS_emulator.gameManager.loadState(stateData);
+                            } else if (typeof window.EJS_emulator.loadState === 'function') {
+                                window.EJS_emulator.loadState(stateData);
+                            }
+                            console.log("[Emulator] State 注入成功，引擎恢复运转！");
+                        } catch (err) {
+                            console.error("[Emulator] State 注入失败:", err);
+                        }
+                    }, 100);
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
+            e.target.value = ''; // 防死锁：允许连续导入同一个文件
         });
     </script>
 </body>
