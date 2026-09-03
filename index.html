@@ -2372,17 +2372,24 @@
     }).mount('#app');
 </script>
 <script>
-    // 检查浏览器是否支持 Service Worker
+    // 1. 强制注销所有残留的 Service Worker
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            // 注册我们刚才写的 sw.js
-            navigator.serviceWorker.register('./sw.js')
-                .then(registration => {
-                    console.log('保安(ServiceWorker)已就位，作用域为: ', registration.scope);
-                })
-                .catch(error => {
-                    console.log('保安(ServiceWorker)注册失败: ', error);
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister().then(function(boolean) {
+                    console.log('ServiceWorker 彻底注销成功');
                 });
+            }
+        });
+    }
+
+    // 2. 暴力炸毁之前留下的所有本地金库（tukuai-core, tukuai-media 等）
+    if ('caches' in window) {
+        caches.keys().then(function(keyList) {
+            return Promise.all(keyList.map(function(key) {
+                console.log('销毁缓存金库: ', key);
+                return caches.delete(key);
+            }));
         });
     }
 </script>
