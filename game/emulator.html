@@ -61,15 +61,7 @@
     <div id="game"></div>
 </div>
 
-<!-- 👇 新增：移动端一键即时存档/读档悬浮按钮 👇 -->
-<div id="quick-state-dock" style="position: absolute; top: 12px; right: 12px; z-index: 99999; display: flex; gap: 8px; font-family: monospace;">
-    <button id="quick-save-btn" style="background: rgba(34, 197, 94, 0.85); color: #000; border: none; padding: 6px 12px; border-radius: 9999px; font-size: 11px; font-weight: bold; cursor: pointer; backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0,0,0,0.4); touch-action: manipulation;">
-        ⚡ 临时存档
-    </button>
-    <button id="quick-load-btn" style="background: rgba(234, 179, 8, 0.85); color: #000; border: none; padding: 6px 12px; border-radius: 9999px; font-size: 11px; font-weight: bold; cursor: pointer; backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0,0,0,0.4); touch-action: manipulation;">
-        🔄 临时读档
-    </button>
-</div>
+
 
 
 <script>
@@ -232,110 +224,7 @@
     // document.addEventListener('touchmove', function (event) {
     //     event.preventDefault();
     // }, { passive: false });
-    // =========================================================
-    // 👇 新增：移动端专用直读直写 IndexedDB 即时快照引擎 👇
-    // =========================================================
-    function getStateDB() {
-        return new Promise((resolve, reject) => {
-            const req = indexedDB.open('tukuai_quick_state_db', 1);
-            req.onupgradeneeded = (e) => {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains('states')) {
-                    db.createObjectStore('states');
-                }
-            };
-            req.onsuccess = (e) => resolve(e.target.result);
-            req.onerror = (e) => reject(e);
-        });
-    }
 
-    async function dbSaveState(key, data) {
-        const db = await getStateDB();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction('states', 'readwrite');
-            tx.objectStore('states').put(data, key);
-            tx.oncomplete = () => resolve();
-            tx.onerror = () => reject(tx.error);
-        });
-    }
-
-    async function dbLoadState(key) {
-        const db = await getStateDB();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction('states', 'readonly');
-            const req = tx.objectStore('states').get(key);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => reject(req.error);
-        });
-    }
-
-    const quickSaveBtn = document.getElementById('quick-save-btn');
-    const quickLoadBtn = document.getElementById('quick-load-btn');
-    const STATE_KEY = 'quick_state_' + (window.EJS_gameID || 'default');
-
-    // 1. 临时存档
-    if (quickSaveBtn) {
-        quickSaveBtn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            try {
-                if (!window.EJS_emulator || !window.EJS_emulator.gameManager) {
-                    alert('游戏引擎尚未加载完毕，请稍候...');
-                    return;
-                }
-                if (typeof window.EJS_emulator.gameManager.getState === 'function') {
-                    const stateData = window.EJS_emulator.gameManager.getState();
-                    if (stateData && stateData.length > 0) {
-                        await dbSaveState(STATE_KEY, stateData);
-                        quickSaveBtn.innerText = '✅ 已存档';
-                        setTimeout(() => { quickSaveBtn.innerText = '⚡ 临时存档'; }, 1500);
-                    } else {
-                        alert('当前帧未准备好，请再试一次');
-                    }
-                }
-            } catch (err) {
-                console.error('[State] 保存失败:', err);
-                alert('存档失败: ' + err.message);
-            }
-        });
-    }
-
-    // 2. 临时读档（带移动端防卡死唤醒）
-    if (quickLoadBtn) {
-        quickLoadBtn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            try {
-                if (!window.EJS_emulator || !window.EJS_emulator.gameManager) {
-                    alert('游戏引擎尚未加载完毕，请稍候...');
-                    return;
-                }
-                const stateData = await dbLoadState(STATE_KEY);
-                if (!stateData) {
-                    alert('未检测到临时存档！请先点击【⚡ 临时存档】');
-                    return;
-                }
-
-                if (typeof window.EJS_emulator.gameManager.loadState === 'function') {
-                    window.EJS_emulator.gameManager.loadState(stateData);
-
-                    // 读档后强制唤醒音频与渲染时钟
-                    setTimeout(() => {
-                        if (window.EJS_emulator.audioContext && window.EJS_emulator.audioContext.state === 'suspended') {
-                            window.EJS_emulator.audioContext.resume();
-                        }
-                        if (typeof window.EJS_emulator.gameManager.resume === 'function') {
-                            window.EJS_emulator.gameManager.resume();
-                        }
-                    }, 100);
-
-                    quickLoadBtn.innerText = '✅ 已载入';
-                    setTimeout(() => { quickLoadBtn.innerText = '🔄 临时读档'; }, 1500);
-                }
-            } catch (err) {
-                console.error('[State] 载入失败:', err);
-                alert('读档失败: ' + err.message);
-            }
-        });
-    }
     // 页面加载完成后，告诉父级 iframe 窗口自己准备好了
     window.addEventListener('load', () => {
         if (window.parent) {
