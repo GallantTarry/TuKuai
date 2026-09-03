@@ -70,79 +70,66 @@ self.addEventListener('activate', event => {
 });
 
 // =========================================================
-// 4. 拦截请求：调度交通 (Fetch)
+// 4. 拦截请求：调度交通 (Fetch) - 终极优化版
 // =========================================================
 self.addEventListener('fetch', event => {
     const url = event.request.url;
 
-    // 👇 核心修复 1：绝对放行非 HTTP 请求 (如 blob:, data:, file:)
-    // 手机端模拟器读取存档时通常会生成 blob: 本地链接，SW 拦截会导致直接无响应
+    // 1. 放行非 HTTP (如 blob:, data:, chrome-extension:)
     if (!url.startsWith('http')) return;
 
-    // 👇 核心修复 2：绝不拦截带有 Range 的流式分片请求
-    // 手机端（尤其是 iOS/Safari）加载游戏 ROM 或读写内存时依赖 206 分片响应，SW 强行返回 200 会导致读写失效
-    if (event.request.headers.has('range')) return;
-
-    // 只拦截 GET 请求，其他请求（如 POST、PUT，包含某些云存档操作）直接放行
+    // 2. 只拦截 GET 请求
     if (event.request.method !== 'GET') return;
 
-    const isMediaOrRom = CACHE_URL_KEYWORDS.some(keyword => url.includes(keyword));
+    // 3. 【修复 iOS 音乐离线Bug】：只放行模拟器核心代码的 Range 请求，不拦截音乐
+    if (event.request.headers.has('range') && url.includes('/emulator_data/')) {
+        return;
+    }
+
+    // 4. 精确的正则匹配媒体大文件 (不再模糊匹配包含路径，防止误伤 html)
+    const isMediaOrRom = /\.(mp3|mp4|gba|sfc|smc|nes|gb|gbc|zip)$/i.test(url);
 
     if (isMediaOrRom) {
         // -----------------------------------------------------
-        // 策略 A：大文件按需加载（缓存优先，没有再下载）
+        // 策略 A：媒体大文件 -> 纯缓存优先 (Cache First)
         // -----------------------------------------------------
         event.respondWith(
             caches.open(MEDIA_CACHE_NAME).then(async (cache) => {
                 const cachedResponse = await cache.match(event.request);
-                if (cachedResponse) {
-                    console.log('[按需缓存] 命中本地大文件 🚀:', url);
-                    return cachedResponse;
-                }
+                if (cachedResponse) return cachedResponse;
 
-                console.log('[按需缓存] 下载并存入本地 ⬇️:', url);
                 try {
                     const networkResponse = await fetch(event.request);
-                    // 确保请求成功再缓存
                     if (networkResponse && networkResponse.status === 200) {
                         cache.put(event.request, networkResponse.clone());
                     }
                     return networkResponse;
                 } catch (error) {
-                    console.error('[按需缓存] 媒体请求断网失败:', error);
+                    console.error('[媒体大文件] 断网拉取失败:', error);
                 }
             })
         );
     } else {
         // -----------------------------------------------------
-        // 策略 B：核心框架及其他文件（缓存优先，离线保底）
+        // 策略 B：核心框架页面 (HTML/JS/CSS) -> 异步校验刷新 (Stale-While-Revalidate)
+        // 好处：断网秒开，且每次联网时后台自动拉取最新版覆盖旧缓存，不再需要手动改版本号！
         // -----------------------------------------------------
         event.respondWith(
-            caches.match(event.request).then(cachedResponse => {
-                // 1. 如果金库里有，直接给用户（实现断网秒开）
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
+            caches.open(CORE_CACHE_NAME).then(async (cache) => {
+                const cachedResponse = await cache.match(event.request);
 
-                // 2. 金库里没有，尝试去网上现拉
-                return fetch(event.request).then(networkResponse => {
-                    // 如果拉取失败，或者不是同源的安全请求（比如不蒜子的统计跨域），直接返回，不瞎缓存
-                    if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-                        return networkResponse;
+                // 发起网络请求拉取最新数据（后台静默进行）
+                const networkFetchPromise = fetch(event.request).then(networkResponse => {
+                    if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+                        cache.put(event.request, networkResponse.clone()); // 偷偷把最新版存进金库
                     }
-
-                    // 把新发现的好东西也悄悄塞进核心金库里
-                    const responseToCache = networkResponse.clone();
-                    caches.open(CORE_CACHE_NAME).then(cache => {
-                        cache.put(event.request, responseToCache);
-                    });
-
                     return networkResponse;
                 }).catch(() => {
-                    console.log('[Service Worker] 🌐 完全断网且本地无缓存:', url);
-                    // 在这里，如果是断网状态，所有在 CORE_ASSETS 里的文件早就命中返回了。
-                    // 走到这里的，通常是没缓存的外链，比如不蒜子统计脚本。断了就断了，不影响主体页面运行。
+                    // 断网情况，静默失败，由下面的 cachedResponse 兜底
                 });
+
+                // 如果本地有旧缓存，立刻返回旧缓存给用户看；如果没有，就老老实实等网络请求回来
+                return cachedResponse || networkFetchPromise;
             })
         );
     }

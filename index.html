@@ -2110,10 +2110,16 @@
                     nextTrack();
                 }
             };
-// ====== 替换开始 ======
-            // --- 记忆：当前加载的游戏数据 ---
+// 升级代码：带安全气囊的 JSON 解析
             const savedGame = localStorage.getItem('tukuai_active_game');
-            const activeGame = ref(savedGame ? JSON.parse(savedGame) : null);
+            let parsedGame = null;
+            try {
+                parsedGame = savedGame ? JSON.parse(savedGame) : null;
+            } catch (e) {
+                console.warn('本地游戏缓存数据损坏，已自动清理重置', e);
+                localStorage.removeItem('tukuai_active_game');
+            }
+            const activeGame = ref(parsedGame);
 
             // 监听游戏变化，存为 JSON 字符串
             watch(activeGame, (newVal) => {
