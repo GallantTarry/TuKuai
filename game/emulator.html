@@ -66,25 +66,32 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            if (window.EJS_emulator) {
-                console.log("[Emulator] 正在注入即时存档 (State):", file.name);
+            console.log("[Emulator] 正在解析即时存档 (State):", file.name);
 
-                // 兼容不同版本的 EmulatorJS State 导入 API
-                try {
-                    // 尝试高版本 API
-                    if (window.EJS_emulator.gameManager && typeof window.EJS_emulator.gameManager.loadState === 'function') {
-                        window.EJS_emulator.gameManager.loadState(file);
+            // 核心修复：使用 FileReader 将 File 对象转换为底层认识的 Uint8Array
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const stateData = new Uint8Array(event.target.result);
+
+                if (window.EJS_emulator) {
+                    try {
+                        if (window.EJS_emulator.gameManager && typeof window.EJS_emulator.gameManager.loadState === 'function') {
+                            // 传入转换后的二进制数据
+                            window.EJS_emulator.gameManager.loadState(stateData);
+                        } else if (typeof window.EJS_emulator.loadState === 'function') {
+                            window.EJS_emulator.loadState(stateData);
+                        }
+                        console.log("[Emulator] State 注入成功！");
+                    } catch (err) {
+                        console.error("[Emulator] State 注入执行报错:", err);
                     }
-                    // 尝试基础/旧版 API
-                    else if (typeof window.EJS_emulator.loadState === 'function') {
-                        window.EJS_emulator.loadState(file);
-                    }
-                } catch (err) {
-                    console.error("[Emulator] State 导入失败:", err);
                 }
-            }
+            };
 
-            // 核心细节：清空 input 的值，确保玩家可以连续多次导入同一个 State 文件
+            // 开始以 ArrayBuffer 格式读取文件
+            reader.readAsArrayBuffer(file);
+
+            // 清空 input，允许连续多次点击导入同一个文件
             e.target.value = '';
         });
     </script>
