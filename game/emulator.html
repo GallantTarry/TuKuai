@@ -63,12 +63,12 @@
 
     if (!romFile) {
         document.body.innerHTML = `
-                <div style="text-align:center; line-height: 2;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
-                    <h3>SYSTEM ERROR: NO ROM DETECTED</h3>
-                    <p style="color: #64748b; font-size: 12px;">Missing "?rom=filename" parameter in URL.</p>
-                </div>
-            `;
+            <div style="text-align:center; line-height: 2;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                <h3>SYSTEM ERROR: NO ROM DETECTED</h3>
+                <p style="color: #64748b; font-size: 12px;">Missing "?rom=filename" parameter in URL.</p>
+            </div>
+        `;
     } else {
         window.EJS_player = '#game';
 
@@ -117,84 +117,20 @@
             loadState: true
         };
 
-        function forceSyncSave() {
-            try {
-                if (window.EJS_emulator && window.EJS_emulator.gameManager) {
-                    if (typeof window.EJS_emulator.gameManager.saveSave === 'function') {
-                        window.EJS_emulator.gameManager.saveSave();
-                    }
-                    if (window.EJS_emulator.gameManager.FS && window.EJS_emulator.gameManager.FS.syncfs) {
-                        window.EJS_emulator.gameManager.FS.syncfs(false, function (err) {
-                            if (err) {
-                                console.error("[Emulator Core] 存档写入 IndexedDB 失败:", err);
-                            } else {
-                                console.log("[Emulator Core] 存档已成功持久化至本地 IndexedDB！");
-                            }
-                        });
-                    }
-                }
-            } catch (e) {
-                console.warn("[Emulator Core] 自动存盘异常:", e);
-            }
-        }
-
-        document.addEventListener("visibilitychange", function() {
-            if (document.visibilityState === 'hidden') {
-                forceSyncSave();
-            }
-        });
-
-        window.addEventListener("pagehide", forceSyncSave);
-
-        window.addEventListener('beforeunload', function (e) {
-            forceSyncSave();
-            const confirmationMessage = '游戏可能正在保存进度，确定要强制退出吗？';
-            e.returnValue = confirmationMessage;
-            return confirmationMessage;
-        });
-
         window.EJS_onGameStart = function() {
             window.focus();
             setTimeout(() => {
                 const canvas = document.querySelector('#game canvas');
-                if(canvas) {
-                    canvas.focus();
-                }
+                if (canvas) canvas.focus();
             }, 500);
         };
     }
-</script>
-
-<script src="../emulator_data/loader.js"></script>
-
-<script>
-    // 1. 跨窗口通信与音频防卡死
-    window.addEventListener('message', (event) => {
-        if (event.data === 'focus-emulator') {
-            const canvas = document.querySelector('canvas');
-            if (canvas) {
-                canvas.setAttribute('tabindex', '0');
-                canvas.focus();
-            }
-        }
-        if (event.data === 'save-before-close') {
-            if (typeof forceSyncSave === 'function') forceSyncSave();
-        }
-    });
-
-    function unlockAudio() {
-        if (window.EJS_emulator && window.EJS_emulator.audioContext) {
-            if (window.EJS_emulator.audioContext.state === 'suspended') {
-                window.EJS_emulator.audioContext.resume();
-            }
-        }
-    }
-    window.addEventListener('touchstart', unlockAudio, { passive: true });
-    window.addEventListener('touchend', unlockAudio, { passive: true });
 
     // =========================================================================
-    // 2. 原生底层劫持：绑定原生“加载状态”与文件选择器
+    // 1. 本地存储底座 (IndexedDB)
     // =========================================================================
+    const SAVE_KEY_BATTERY = 'battery_sav_' + romFile;
+
     function getSavesDB() {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open('tukuai_game_saves_db', 1);
@@ -229,14 +165,123 @@
         });
     }
 
-    const SAVE_KEY_BATTERY = 'battery_sav_' + romFile;
+    // =========================================================================
+    // 2. 底层 WASM 核心与虚拟文件系统探测器
+    // =========================================================================
+    function getCore() {
+        const mod = (window.EJS_emulator && window.EJS_emulator.gameManager && window.EJS_emulator.gameManager.Module)
+            || window.Module
+            || (typeof Module !== 'undefined' ? Module : null);
+        const fs = (mod && mod.FS)
+            || window.FS
+            || (window.EJS_emulator && window.EJS_emulator.FS)
+            || (typeof FS !== 'undefined' ? FS : null);
+        return { mod, fs };
+    }
 
-    // 核心拦截：只要原生 EmulatorJS 动态创建 <input type="file">，立刻接管
+    function getSRAMData() {
+        const { mod, fs } = getCore();
+        if (!fs) return null;
+
+        // 强迫 RetroArch 将内存里的 SRAM 刷入虚拟磁盘
+        if (mod && typeof mod._cmd_save_files === 'function') {
+            try { mod._cmd_save_files(); } catch(e) {}
+        }
+        if (window.EJS_emulator && typeof window.EJS_emulator.saveSave === 'function') {
+            try { window.EJS_emulator.saveSave(); } catch(e) {}
+        }
+
+        // 检索 RetroArch 默认存储路径下的 .srm 与 .sav 文件
+        const saveDir = '/home/web_user/retroarch/userdata/saves';
+        try {
+            const files = fs.readdir(saveDir);
+            for (const f of files) {
+                if (f === '.' || f === '..') continue;
+                if (f.endsWith('.srm') || f.endsWith('.sav')) {
+                    const data = fs.readFile(saveDir + '/' + f);
+                    if (data && data.length > 0) return data;
+                }
+            }
+        } catch(e) {}
+
+        // 兜底：检索根目录
+        const base = romFile.replace(/\.[^/.]+$/, "");
+        const fallbacks = [`/${base}.srm`, `/${base}.sav`, `/${romFile}.srm`, `/${romFile}.sav`];
+        for (const p of fallbacks) {
+            try {
+                const data = fs.readFile(p);
+                if (data && data.length > 0) return data;
+            } catch(e) {}
+        }
+
+        return null;
+    }
+
+    function calculateChecksum(buffer) {
+        let sum = 0;
+        const step = Math.max(1, Math.floor(buffer.length / 1000));
+        for (let i = 0; i < buffer.length; i += step) {
+            sum = (sum + buffer[i]) | 0;
+        }
+        return sum;
+    }
+
+    let lastSaveChecksum = 0;
+    async function syncSaveToStorage() {
+        try {
+            const sram = getSRAMData();
+            if (!sram || sram.length === 0) return;
+
+            const checksum = calculateChecksum(sram);
+            // 校验到真实数据变化时才写入本地持久库
+            if (checksum !== 0 && checksum !== lastSaveChecksum) {
+                lastSaveChecksum = checksum;
+                await setSaveToDB(SAVE_KEY_BATTERY, sram);
+                console.log('[AutoSave] 游戏内部卡带存档已持久化至手机本地，大小:', sram.length);
+            }
+        } catch(e) {
+            console.warn('[AutoSave] 存盘异常:', e);
+        }
+    }
+
+    // =========================================================================
+    // 3. 守护定时器与生命周期挂钩
+    // =========================================================================
+    setInterval(syncSaveToStorage, 3000);
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === 'hidden') syncSaveToStorage();
+    });
+    window.addEventListener("pagehide", syncSaveToStorage);
+    window.addEventListener('beforeunload', syncSaveToStorage);
+
+    window.addEventListener('message', async (event) => {
+        if (event.data === 'focus-emulator') {
+            const canvas = document.querySelector('canvas');
+            if (canvas) {
+                canvas.setAttribute('tabindex', '0');
+                canvas.focus();
+            }
+        }
+        if (event.data === 'save-before-close') {
+            await syncSaveToStorage();
+        }
+    });
+
+    function unlockAudio() {
+        if (window.EJS_emulator && window.EJS_emulator.audioContext) {
+            if (window.EJS_emulator.audioContext.state === 'suspended') {
+                window.EJS_emulator.audioContext.resume();
+            }
+        }
+    }
+    window.addEventListener('touchstart', unlockAudio, { passive: true });
+    window.addEventListener('touchend', unlockAudio, { passive: true });
+
+    // 原生文件导入劫持 (自动兼容 .sav 并解决移动端选完文件假死)
     function hookFileInput(input) {
         if (input._hooked) return;
         input._hooked = true;
-
-        // 强行放开限制，让玩家在手机上既能选 .state，也能选 .sav 电池存档
         input.setAttribute('accept', '.state,.sav,.srm,*/*');
 
         input.addEventListener('change', function(e) {
@@ -249,28 +294,17 @@
                     const buffer = new Uint8Array(evt.target.result);
                     const fileName = file.name.toLowerCase();
 
-                    // 判定 A：如果玩家选的是电池存档 (.sav/.srm) 或者小于 256KB 的原始卡带存档
                     if (fileName.endsWith('.sav') || fileName.endsWith('.srm') || buffer.length <= 262144) {
                         await setSaveToDB(SAVE_KEY_BATTERY, buffer);
-                        if (window.EJS_emulator && window.EJS_emulator.gameManager) {
-                            if (typeof window.EJS_emulator.gameManager.loadSave === 'function') {
-                                window.EJS_emulator.gameManager.loadSave(buffer);
-                            }
-                            if (confirm('识别到游戏内存档（.sav），已载入缓存！需重启核心生效，是否立即重启？')) {
-                                window.EJS_emulator.gameManager.restart();
-                            }
-                        }
-                    }
-                    // 判定 B：如果是即时快照 (.state)
-                    else {
+                        alert('已成功将外部电池存档导入缓存！页面即将重新加载以载入进度。');
+                        window.location.reload();
+                    } else {
                         if (window.EJS_emulator && window.EJS_emulator.gameManager) {
                             if (typeof window.EJS_emulator.gameManager.loadState === 'function') {
                                 window.EJS_emulator.gameManager.loadState(buffer);
                             }
                         }
                     }
-
-                    // 核心关键：手机选完文件切回网页后，强行踢醒音频与渲染管线，杜绝卡死
                     setTimeout(() => {
                         unlockAudio();
                         if (window.EJS_emulator && window.EJS_emulator.gameManager) {
@@ -279,16 +313,14 @@
                             }
                         }
                     }, 200);
-
                 } catch(err) {
-                    console.error('[NativeHook] 读取存档出错:', err);
+                    console.error('[Hook] 导入出错:', err);
                 }
             };
             reader.readAsArrayBuffer(file);
         }, true);
     }
 
-    // 监听 DOM 树，自动捕获原生 EmulatorJS 注入的文件选择器
     const domObserver = new MutationObserver((mutations) => {
         for (let m of mutations) {
             for (let node of m.addedNodes) {
@@ -303,58 +335,31 @@
     domObserver.observe(document.documentElement, { childList: true, subtree: true });
 
     // =========================================================================
-    // 3. 游戏内存档无感守护：游戏里按“保存”，后台自动存进手机 IndexedDB
+    // 4. 核心执行入口：开机前从 IndexedDB 取档并注入 EJS_loadSaveURL
     // =========================================================================
-    let lastSaveChecksum = 0;
-    setInterval(() => {
-        if (!window.EJS_emulator || !window.EJS_emulator.gameManager) return;
+    async function bootSystem() {
         try {
-            if (typeof window.EJS_emulator.gameManager.saveSave === 'function') {
-                window.EJS_emulator.gameManager.saveSave();
+            const cachedSave = await getSaveFromDB(SAVE_KEY_BATTERY);
+            if (cachedSave && cachedSave.length > 0) {
+                // 关键点：在 loader.js 执行前挂载原生读档地址，开机直接识别到 CONTINUE
+                const blob = new Blob([cachedSave], { type: 'application/octet-stream' });
+                window.EJS_loadSaveURL = URL.createObjectURL(blob);
+                console.log('[AutoLoad] 成功从 IndexedDB 装载历史电池存档至 EJS_loadSaveURL，大小:', cachedSave.length);
             }
-            if (typeof window.EJS_emulator.gameManager.getSave === 'function') {
-                const currentData = window.EJS_emulator.gameManager.getSave();
-                if (currentData && currentData.length > 0) {
-                    let sum = 0;
-                    for (let i = 0; i < Math.min(currentData.length, 1000); i++) {
-                        sum += currentData[i];
-                    }
-                    // 检测到数据有变化，静默同步到手机永久磁盘
-                    if (sum !== 0 && sum !== lastSaveChecksum) {
-                        lastSaveChecksum = sum;
-                        setSaveToDB(SAVE_KEY_BATTERY, currentData);
-                        console.log('[AutoSave] 游戏内部保存已自动同步至手机缓存');
-                    }
-                }
-            }
-        } catch (e) {}
-    }, 3000);
+        } catch(e) {
+            console.warn('[AutoLoad] 预读存档失败:', e);
+        }
 
-    // =========================================================================
-    // 4. 开机自动注入：只要进游戏，自动加载上次在手机里的存档
-    // =========================================================================
-    const originalOnGameStart = window.EJS_onGameStart;
-    window.EJS_onGameStart = function() {
-        if (typeof originalOnGameStart === 'function') originalOnGameStart();
+        // 动态加载模拟器引擎
+        const loader = document.createElement('script');
+        loader.src = '../emulator_data/loader.js';
+        loader.onload = () => {
+            if (window.parent) window.parent.postMessage('emulator-ready', '*');
+        };
+        document.body.appendChild(loader);
+    }
 
-        setTimeout(async () => {
-            try {
-                const cachedSave = await getSaveFromDB(SAVE_KEY_BATTERY);
-                if (cachedSave && cachedSave.length > 0 && window.EJS_emulator && window.EJS_emulator.gameManager) {
-                    if (typeof window.EJS_emulator.gameManager.loadSave === 'function') {
-                        window.EJS_emulator.gameManager.loadSave(cachedSave);
-                        console.log('[AutoLoad] 已自动从手机缓存还原上次游戏内存档！');
-                    }
-                }
-            } catch (e) {
-                console.warn('[AutoLoad] 自动装载失败:', e);
-            }
-        }, 1000);
-    };
-
-    window.addEventListener('load', () => {
-        if (window.parent) window.parent.postMessage('emulator-ready', '*');
-    });
+    bootSystem();
 </script>
 </body>
 </html>
