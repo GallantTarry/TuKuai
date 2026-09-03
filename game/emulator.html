@@ -50,28 +50,42 @@
     <div id="game-container">
         <div id="game"></div>
     </div>
-    <!-- 在 game-container 同级添加一个原生的导入按钮 -->
-    <div id="native-import-btn" style="position: absolute; bottom: 20px; right: 20px; z-index: 9999;">
-        <!-- 透明的文件选择器盖在按钮上方 -->
-        <input type="file" id="rom-save-upload" accept=".sav,.state" style="opacity: 0; position: absolute; width: 100%; height: 100%; z-index: 2;">
-        <button style="background: rgba(168, 85, 247, 0.8); border: 1px solid #fff; color: #fff; padding: 5px 15px; border-radius: 20px; font-family: monospace;">
-            📁 导入存档
+    <!-- 极简透明版 State 导入按钮 -->
+    <div id="native-import-btn" style="position: absolute; bottom: 10px; right: 10px; z-index: 9999; opacity: 0.6; transition: opacity 0.3s;">
+        <!-- 严格限制只接受 .state 文件 -->
+        <input type="file" id="state-upload" accept=".state" style="opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; cursor: pointer;">
+        <!-- 小巧、透明、无颜色的样式 -->
+        <button style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); color: rgba(255, 255, 255, 0.6); padding: 4px 8px; border-radius: 4px; font-size: 10px; font-family: monospace; pointer-events: none;">
+            LOAD STATE
         </button>
     </div>
 
     <script>
-        // 监听原生文件选择器的变化，将文件喂给模拟器
-        document.getElementById('rom-save-upload').addEventListener('change', function(e) {
+        // 监听原生文件选择器，专用于注入 .state 即时存档
+        document.getElementById('state-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
 
-            // 调用 EmulatorJS 暴露的底层文件处理 API
-            // （需根据具体的 EmulatorJS 版本 API 进行适配，通常内置在 EJS_emulator 对象中）
-            if (window.EJS_emulator && window.EJS_emulator.gameManager) {
-                console.log("正在通过原生 DOM 注入存档文件:", file.name);
-                // 将文件传入模拟器状态管理
-                // window.EJS_emulator.gameManager.loadState(file);
+            if (window.EJS_emulator) {
+                console.log("[Emulator] 正在注入即时存档 (State):", file.name);
+
+                // 兼容不同版本的 EmulatorJS State 导入 API
+                try {
+                    // 尝试高版本 API
+                    if (window.EJS_emulator.gameManager && typeof window.EJS_emulator.gameManager.loadState === 'function') {
+                        window.EJS_emulator.gameManager.loadState(file);
+                    }
+                    // 尝试基础/旧版 API
+                    else if (typeof window.EJS_emulator.loadState === 'function') {
+                        window.EJS_emulator.loadState(file);
+                    }
+                } catch (err) {
+                    console.error("[Emulator] State 导入失败:", err);
+                }
             }
+
+            // 核心细节：清空 input 的值，确保玩家可以连续多次导入同一个 State 文件
+            e.target.value = '';
         });
     </script>
     <script>
