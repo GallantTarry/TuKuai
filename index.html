@@ -438,9 +438,9 @@
 
         <!-- 把 activeGame 替换为 isGameVisible -->
         <aside
-                :class="['w-full md:w-80 h-auto md:h-full glass-sidebar flex flex-col shrink-0 rounded-b-3xl md:rounded-b-none md:rounded-r-[32px] shadow-2xl transition-all duration-700 ease-in-out z-30', isGameVisible ? 'md:-translate-x-[150%] opacity-0 md:opacity-100' : 'translate-x-0']">
+                :class="['w-full md:w-80 h-auto md:h-full glass-sidebar overflow-hidden flex flex-col shrink-0 rounded-b-3xl md:rounded-b-none md:rounded-r-[32px] shadow-2xl transition-all duration-700 ease-in-out z-30', isGameVisible ? 'md:-translate-x-[150%] opacity-0 md:opacity-100' : 'translate-x-0']">
             <div
-                    class="p-4 md:p-8 border-b border-white/5 bg-white/5 flex flex-row md:flex-col justify-between items-center md:items-start">
+                    class="p-4 md:p-8 border-b border-white/5 bg-white/5 md:rounded-tr-[32px] flex flex-row md:flex-col justify-between items-center md:items-start">
 
                 <div class="flex items-center space-x-3 md:space-x-4">
                     <div :style="{ borderColor: activeColor, boxShadow: `0 8px 20px ${activeGlow}` }"
