@@ -97,6 +97,14 @@
         window.EJS_gameUrl = '../rom/' + romFile;
         window.EJS_pathtodata = '../emulator_data/';
 
+        // 👇 核心修复：根据 ROM 文件名动态生成一个唯一的数字 ID，防止多游戏存档冲突
+        let uniqueGameID = 0;
+        for (let i = 0; i < romFile.length; i++) {
+            uniqueGameID = ((uniqueGameID << 5) - uniqueGameID) + romFile.charCodeAt(i);
+            uniqueGameID |= 0;
+        }
+        window.EJS_gameID = Math.abs(uniqueGameID);
+
         window.EJS_color = '#000000';
         window.EJS_startOnLoaded = true;
 
