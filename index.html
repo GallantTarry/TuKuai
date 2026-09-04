@@ -2166,15 +2166,23 @@
             };
 
 
-// 彻底关闭逻辑（无存档等待）
+// 修改：彻底关闭逻辑（通知 iframe 存盘完成后再销毁节点）
             const closeGame = () => {
                 isGameVisible.value = false;
                 if (document.fullscreenElement) {
                     document.exitFullscreen().catch(() => {});
                 }
 
-                // 瞬间彻底销毁游戏节点
-                activeGame.value = null;
+                // 👇【新增】：先通知子窗口把内存存档刷入手机本地磁盘
+                const frame = document.querySelector('iframe');
+                if (frame && frame.contentWindow) {
+                    frame.contentWindow.postMessage('save-before-close', '*');
+                }
+
+                // 缓冲时间调整到 700ms，确保移动端 IndexedDB IO 写入完成后再移除 iframe 节点
+                setTimeout(() => {
+                    activeGame.value = null;
+                }, 700);
             };
 
             const toggleFullscreen = () => {
@@ -2229,7 +2237,7 @@
                 script.defer = true;
                 document.body.appendChild(script);
 
-                // 修改：通过 localStorage 永久记住是否已经播放过开机动画
+                // 新增：通过 sessionStorage 记住是否已经播放过开机动画
                 if (!isBooted.value) {
                     let i = 0;
                     const typeInterval = setInterval(() => {
@@ -2238,14 +2246,15 @@
                             i++;
                         } else {
                             clearInterval(typeInterval);
+                            // 找到 setInterval 里面的这部分：
                             setTimeout(() => {
                                 isBooted.value = true;
-                                // 将开机状态永久写入本地缓存
-                                localStorage.setItem('os_booted', 'true');
+                                // 修改前：sessionStorage.setItem('os_booted', 'true');
                             }, 600);
                         }
                     }, 3000 / targetText.length);
                 }
+
                 window.addEventListener('message', (event) => {
                     if (event.data === 'emulator-ready') {
                         const frame = document.querySelector('iframe');
