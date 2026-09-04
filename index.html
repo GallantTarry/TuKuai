@@ -2166,23 +2166,15 @@
             };
 
 
-// 修改：彻底关闭逻辑（通知 iframe 存盘完成后再销毁节点）
+// 彻底关闭逻辑（无存档等待）
             const closeGame = () => {
                 isGameVisible.value = false;
                 if (document.fullscreenElement) {
                     document.exitFullscreen().catch(() => {});
                 }
 
-                // 👇【新增】：先通知子窗口把内存存档刷入手机本地磁盘
-                const frame = document.querySelector('iframe');
-                if (frame && frame.contentWindow) {
-                    frame.contentWindow.postMessage('save-before-close', '*');
-                }
-
-                // 缓冲时间调整到 700ms，确保移动端 IndexedDB IO 写入完成后再移除 iframe 节点
-                setTimeout(() => {
-                    activeGame.value = null;
-                }, 700);
+                // 瞬间彻底销毁游戏节点
+                activeGame.value = null;
             };
 
             const toggleFullscreen = () => {
