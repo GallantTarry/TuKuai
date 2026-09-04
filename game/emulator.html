@@ -45,7 +45,6 @@
             </div>
         `;
     } else {
-        // 核心参数自动判断
         let core = coreParam || 'gba';
         if (!coreParam) {
             const ext = romFile.split('.').pop().toLowerCase();
@@ -53,6 +52,16 @@
             else if (ext === 'nes') core = 'nes';
             else if (ext === 'gb' || ext === 'gbc') core = 'gb';
         }
+
+        // =========================================================================
+        // 【核心大补丁 1】：为每个游戏计算独立的唯一 ID，彻底杜绝电池存档互相覆盖！
+        // =========================================================================
+        let romHash = 0;
+        for (let i = 0; i < romFile.length; i++) {
+            romHash = (romHash << 5) - romHash + romFile.charCodeAt(i);
+            romHash |= 0;
+        }
+        window.EJS_gameID = Math.abs(romHash); // 为《绿宝石》和《星之卡比》分配绝对独立的房间
 
         // =========================================================================
         // 官方标准配置区
@@ -64,53 +73,75 @@
         window.EJS_color = '#4ade80';
         window.EJS_startOnLoaded = true;
 
-        // 👇 新增这一行：开启启动即自动读档 👇
-        window.EJS_loadStateOnStart = true;
+        // 【核心大补丁 2】：强制所有存档行为必须存入浏览器底层数据库，禁止弹出下载！
+        window.EJS_defaultOptions = {
+            "save-state-location": "browser",
+            "save-file-location": "browser"
+        };
 
+        // 【核心大补丁 3】：开启电池存档（SRAM）保护。每隔 5 秒强制把游戏内保存的数据同步到手机内存。
+        window.EJS_fixedSaveInterval = 5000;
 
-        // 恢复指向你的本地资源目录
         window.EJS_pathtodata = '../emulator_data/';
         window.EJS_gameUrl = '../rom/' + romFile;
 
-        // 官方的按键和手柄配置
-        window.EJS_VirtualGamepadSettings = {
-            alpha: 0.5,
-            scale: 1.1
-        };
-
+        window.EJS_VirtualGamepadSettings = { alpha: 0.5, scale: 1.1 };
         window.EJS_Buttons = {
-            playPause: true,
-            restart: true,
-            mute: true,
-            settings: true,
-            fullscreen: true,
-            saveState: true,
-            loadState: true
+            playPause: true, restart: true, mute: true, settings: true,
+            fullscreen: true, saveState: true, loadState: true
         };
 
-        // 仅在游戏就绪时通知外部框架（若有）
+        // =========================================================================
+        // 【核心大补丁 4】：游戏挂载完毕后的自动化接管
+        // =========================================================================
         window.EJS_onGameStart = function() {
             if (window.parent && window.parent !== window) {
                 window.parent.postMessage('emulator-ready', '*');
             }
+
+            // 1. 开机后延迟 1.5 秒，强制命令内核去数据库调取最后一次的即时存档，实现“秒进上次进度”
+            setTimeout(() => {
+                try {
+                    if (window.EJS_emulator && typeof window.EJS_emulator.loadState === 'function') {
+                        window.EJS_emulator.loadState();
+                        console.log("【系统提示】已自动为您恢复上次的即时存档！");
+                    }
+                } catch (e) {
+                    console.warn("这可能是您第一次运行此游戏，无存档可读", e);
+                }
+            }, 1500);
+
+            // 2. 每隔 60 秒，自动打一个即时快照，防止手滑杀后台丢档
+            setInterval(() => {
+                try {
+                    if (window.EJS_emulator && typeof window.EJS_emulator.saveState === 'function') {
+                        window.EJS_emulator.saveState();
+                    }
+                } catch (e) {}
+            }, 60000);
         };
 
-        // =========================================================================
-        // 触发官方启动序列
-        // =========================================================================
         const loaderScript = document.createElement('script');
         loaderScript.src = window.EJS_pathtodata + 'loader.js';
         document.body.appendChild(loaderScript);
     }
-    // 👇 新增：极限抢救机制。当用户直接关闭整个网页、杀后台或刷新时触发 👇
-    window.addEventListener('beforeunload', function (e) {
+
+    // =========================================================================
+    // 【核心大补丁 5】：响应主页面的安全关机指令，拔电源前极限存盘
+    // =========================================================================
+    const emergencySave = () => {
         try {
             if (window.EJS_emulator && typeof window.EJS_emulator.saveState === 'function') {
                 window.EJS_emulator.saveState();
-                console.log("网页即将被销毁，执行最后一次极限存盘！");
+                console.log("极限关机存盘完毕！");
             }
-        } catch (err) {
-            console.warn("极限存盘失败", err);
+        } catch (err) {}
+    };
+
+    window.addEventListener('beforeunload', emergencySave);
+    window.addEventListener('message', function(event) {
+        if (event.data === 'save-before-close') {
+            emergencySave();
         }
     });
 </script>
