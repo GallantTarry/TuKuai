@@ -54,17 +54,17 @@
         }
 
         // =========================================================================
-        // 【核心大补丁 1】：为每个游戏计算独立的唯一 ID，彻底杜绝电池存档互相覆盖！
+        // 为每个游戏计算独立的唯一 ID，防止存档串区
         // =========================================================================
         let romHash = 0;
         for (let i = 0; i < romFile.length; i++) {
             romHash = (romHash << 5) - romHash + romFile.charCodeAt(i);
             romHash |= 0;
         }
-        window.EJS_gameID = Math.abs(romHash); // 为《绿宝石》和《星之卡比》分配绝对独立的房间
+        window.EJS_gameID = Math.abs(romHash);
 
         // =========================================================================
-        // 官方标准配置区
+        // 极简纯净配置区（剥离所有自动化存档与强制数据库设定）
         // =========================================================================
         window.EJS_player = '#game';
         window.EJS_core = core;
@@ -72,15 +72,6 @@
         window.EJS_language = 'zh-CN';
         window.EJS_color = '#4ade80';
         window.EJS_startOnLoaded = true;
-
-        // 【核心大补丁 2】：强制所有存档行为必须存入浏览器底层数据库，禁止弹出下载！
-        window.EJS_defaultOptions = {
-            "save-state-location": "browser",
-            "save-file-location": "browser"
-        };
-
-        // 【核心大补丁 3】：开启电池存档（SRAM）保护。每隔 5 秒强制把游戏内保存的数据同步到手机内存。
-        window.EJS_fixedSaveInterval = 5000;
 
         window.EJS_pathtodata = '../emulator_data/';
         window.EJS_gameUrl = '../rom/' + romFile;
@@ -91,59 +82,76 @@
             fullscreen: true, saveState: true, loadState: true
         };
 
-        // =========================================================================
-        // 【核心大补丁 4】：游戏挂载完毕后的自动化接管
-        // =========================================================================
+        // 仅保留基础的加载完毕通知逻辑
         window.EJS_onGameStart = function() {
-            if (window.parent && window.parent !== window) {
-                window.parent.postMessage('emulator-ready', '*');
+            // 👇 新增：先为游戏所在的 iframe 独立引入像素字体 👇
+            if (!document.getElementById('pixel-font-style')) {
+                const style = document.createElement('style');
+                style.id = 'pixel-font-style';
+                // 注意相对路径：因为当前在 /game/emulator.html，所以要用 ../ 退回上一级
+                style.innerHTML = `
+                    @font-face {
+                        font-family: 'ChinesePixel';
+                        src: url('../font/zpix.ttf') format('truetype');
+                        font-weight: normal;
+                        font-style: normal;
+                    }
+                `;
+                document.head.appendChild(style);
             }
+            // 👆 字体引入结束 👆
 
-            // 1. 开机后延迟 1.5 秒，强制命令内核去数据库调取最后一次的即时存档，实现“秒进上次进度”
+            const popup = document.createElement('div');
+            popup.innerHTML = '✨ 土块祝您玩的开心！';
+
+            // 为弹窗赋予符合你系统的玻璃拟态和赛博朋克样式
+            popup.style.cssText = `
+                position: absolute;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%) translateY(-20px);
+                background: rgba(15, 20, 30, 0.85);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                color: #4ade80;
+                padding: 12px 24px;
+                border: 1px solid rgba(74, 222, 128, 0.4);
+                border-radius: 12px;
+                /* 👇 字体修改区 👇 */
+                font-family: 'ChinesePixel', monospace;
+                font-size: 16px; /* 像素字体稍微调大点会更清晰 */
+                font-weight: normal; /* 必须去掉 bold，否则像素边缘会发虚变糊 */
+                /* 👆 字体修改结束 👆 */
+                letter-spacing: 2px;
+                z-index: 9999;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8), 0 0 15px rgba(74, 222, 128, 0.2);
+                pointer-events: none; /* 防止遮挡用户点击游戏界面的操作 */
+                opacity: 0;
+                transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            `;
+            document.body.appendChild(popup);
+
+            // 第一阶段：触发动画，让它向下浮现并完全显示
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    popup.style.opacity = '1';
+                    popup.style.transform = 'translateX(-50%) translateY(0)';
+                });
+            });
+
+            // 第二阶段：3.5秒后自动渐隐并销毁 DOM 节点，不留垃圾
             setTimeout(() => {
-                try {
-                    if (window.EJS_emulator && typeof window.EJS_emulator.loadState === 'function') {
-                        window.EJS_emulator.loadState();
-                        console.log("【系统提示】已自动为您恢复上次的即时存档！");
-                    }
-                } catch (e) {
-                    console.warn("这可能是您第一次运行此游戏，无存档可读", e);
-                }
-            }, 1500);
-
-            // 2. 每隔 60 秒，自动打一个即时快照，防止手滑杀后台丢档
-            setInterval(() => {
-                try {
-                    if (window.EJS_emulator && typeof window.EJS_emulator.saveState === 'function') {
-                        window.EJS_emulator.saveState();
-                    }
-                } catch (e) {}
-            }, 60000);
+                popup.style.opacity = '0';
+                popup.style.transform = 'translateX(-50%) translateY(-20px)';
+                setTimeout(() => popup.remove(), 600);
+            }, 3500);
+            // 👆 新增结束 👆
         };
 
         const loaderScript = document.createElement('script');
         loaderScript.src = window.EJS_pathtodata + 'loader.js';
         document.body.appendChild(loaderScript);
     }
-
-    // =========================================================================
-    // 【核心大补丁 5】：响应主页面的安全关机指令，拔电源前极限存盘
-    // =========================================================================
-    const emergencySave = () => {
-        try {
-            if (window.EJS_emulator && typeof window.EJS_emulator.saveState === 'function') {
-                window.EJS_emulator.saveState();
-                console.log("极限关机存盘完毕！");
-            }
-        } catch (err) {}
-    };
-
-    window.addEventListener('beforeunload', emergencySave);
-    window.addEventListener('message', function(event) {
-        if (event.data === 'save-before-close') {
-            emergencySave();
-        }
-    });
 </script>
 </body>
 </html>
