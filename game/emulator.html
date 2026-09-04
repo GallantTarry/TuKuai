@@ -64,6 +64,9 @@
         window.EJS_color = '#4ade80';
         window.EJS_startOnLoaded = true;
 
+        // 👇 新增这一行：开启启动即自动读档 👇
+        window.EJS_loadStateOnStart = true;
+
 
         // 恢复指向你的本地资源目录
         window.EJS_pathtodata = '../emulator_data/';
@@ -99,6 +102,17 @@
         loaderScript.src = window.EJS_pathtodata + 'loader.js';
         document.body.appendChild(loaderScript);
     }
+    // 👇 新增：极限抢救机制。当用户直接关闭整个网页、杀后台或刷新时触发 👇
+    window.addEventListener('beforeunload', function (e) {
+        try {
+            if (window.EJS_emulator && typeof window.EJS_emulator.saveState === 'function') {
+                window.EJS_emulator.saveState();
+                console.log("网页即将被销毁，执行最后一次极限存盘！");
+            }
+        } catch (err) {
+            console.warn("极限存盘失败", err);
+        }
+    });
 </script>
 </body>
 </html>
