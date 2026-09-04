@@ -85,12 +85,56 @@
             loadState: true
         };
 
-        // 仅在游戏就绪时通知外部框架（若有）
+        // 仅在游戏就绪时通知外部框架（若有），并启动自动保存机制
         window.EJS_onGameStart = function() {
             if (window.parent && window.parent !== window) {
                 window.parent.postMessage('emulator-ready', '*');
             }
+
+            // 👇 新增功能 1：开启定时自动保存 (Auto-Save) 👇
+            // 设置每隔 60 秒自动生成一个即时存档写入浏览器缓存
+            setInterval(() => {
+                try {
+                    // 确保模拟器实例已加载完毕再调用
+                    if (window.EJS_emulator && typeof window.EJS_emulator.saveState === 'function') {
+                        window.EJS_emulator.saveState();
+                        console.log("【系统提示】定时自动存档已静默执行！");
+                    }
+                } catch (e) {
+                    console.warn("自动存档异常:", e);
+                }
+            }, 60000); // 60000 毫秒 = 60 秒
+            // 👆 新增结束 👆
         };
+
+        // 👇 新增功能 2：监听主界面的 postMessage 关机与存档指令 👇
+        window.addEventListener('message', function(event) {
+
+            // 收到主界面的 "关闭前保存" 或 "手动保存" 指令
+            if (event.data === 'save-before-close' || event.data === 'save-state') {
+                try {
+                    if (window.EJS_emulator && typeof window.EJS_emulator.saveState === 'function') {
+                        window.EJS_emulator.saveState();
+                        console.log("【系统提示】收到指令，游戏状态已强制写入本地数据库！");
+                    }
+                } catch (e) {
+                    console.error("强制存档失败:", e);
+                }
+            }
+
+            // 收到主界面的 "读取存档" 指令
+            if (event.data === 'load-state') {
+                try {
+                    if (window.EJS_emulator && typeof window.EJS_emulator.loadState === 'function') {
+                        window.EJS_emulator.loadState();
+                        console.log("【系统提示】收到指令，正在从本地数据库读取存档！");
+                    }
+                } catch (e) {
+                    console.error("强制读档失败:", e);
+                }
+            }
+        });
+        // 👆 新增结束 👆
 
         // =========================================================================
         // 触发官方启动序列
