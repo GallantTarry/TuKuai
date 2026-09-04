@@ -48,19 +48,22 @@ self.addEventListener('fetch', event => {
     // 【补丁1】加入了 .wasm 以及 /emulator_data/ 目录的拦截，防止后台疯狂重复下载！
     // 【补丁3提示】如果你更新了同名游戏ROM，记得在HTML里把文件名改一下(如 xx_v2.gba)
     // =========================================================================
-    if (url.pathname.match(/\.(mp3|gba|sfc|smc|ttf|woff2|wasm|zip)$/i) || url.pathname.includes('/emulator_data/')) {
+    if (url.pathname.match(/\.(mp3|gba|sfc|smc|ttf|woff2|wasm|zip)$/i) || url.pathname.includes('/emulator_data/')) { //
         event.respondWith(
             caches.match(req).then(cachedRes => {
-                if (cachedRes) return cachedRes; // 硬盘有，直接秒开
+                if (cachedRes) return cachedRes; // 硬盘有，直接秒开[cite: 1]
 
                 return fetch(req).then(networkRes => {
-                    const clone = networkRes.clone();
-                    caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
-                    return networkRes;
+                    // 【修复核心】：只有在完整响应 (200) 的情况下才写入缓存，忽略 206 Partial Content
+                    if (networkRes && networkRes.status === 200) {
+                        const clone = networkRes.clone(); //[cite: 1]
+                        caches.open(CACHE_NAME).then(cache => cache.put(req, clone)); //[cite: 1]
+                    }
+                    return networkRes; //[cite: 1]
                 });
             })
         );
-        return;
+        return; //[cite: 1]
     }
 
     // =========================================================================
