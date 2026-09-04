@@ -2327,5 +2327,30 @@
         }
     }).mount('#app');
 </script>
+<!-- Service Worker 核心引擎启动 -->
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(registration => {
+                    console.log('Tukuai OS 核心管家已接管系统. 作用域:', registration.scope);
+
+                    // 监听后台版本更新，如果发现新版本，自动强制刷新页面
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'activated' && navigator.serviceWorker.controller) {
+                                console.log('检测到核心引擎更新，系统正在热重载...');
+                                window.location.reload();
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('核心管家唤醒失败:', error);
+                });
+        });
+    }
+</script>
 </body>
 </html>
