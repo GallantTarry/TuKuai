@@ -1814,7 +1814,8 @@
             }));
 
 // 修改后 👇：
-            const isBooted = ref(false);
+            // 检查本地是否已经有开机记录，如果有，直接跳过动画
+            const isBooted = ref(localStorage.getItem('os_booted') === 'true');
             const typedText = ref(isBooted.value ? 'HelloWorld' : '');
             // 新增：控制跃迁黑屏状态的变量
             const isWanderJumping = ref(false);
@@ -2236,7 +2237,7 @@
                 script.defer = true;
                 document.body.appendChild(script);
 
-                // 新增：通过 sessionStorage 记住是否已经播放过开机动画
+                // 修改：通过 localStorage 永久记住是否已经播放过开机动画
                 if (!isBooted.value) {
                     let i = 0;
                     const typeInterval = setInterval(() => {
@@ -2245,15 +2246,14 @@
                             i++;
                         } else {
                             clearInterval(typeInterval);
-                            // 找到 setInterval 里面的这部分：
                             setTimeout(() => {
                                 isBooted.value = true;
-                                // 修改前：sessionStorage.setItem('os_booted', 'true');
+                                // 将开机状态永久写入本地缓存
+                                localStorage.setItem('os_booted', 'true');
                             }, 600);
                         }
                     }, 3000 / targetText.length);
                 }
-
                 window.addEventListener('message', (event) => {
                     if (event.data === 'emulator-ready') {
                         const frame = document.querySelector('iframe');
