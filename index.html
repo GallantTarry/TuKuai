@@ -2367,6 +2367,63 @@
                 });
         });
     }
+    const originTitle = document.title;
+    let titleTimer = null;
+    let worker = null; // 独立线程对象
+
+    // 将全诗拼接成一行，末尾留白
+    const fullVerse = "· ᴛʜᴇ ʟᴏʀᴅ ɪs ᴍʏ sʜᴇᴘʜᴇʀᴅ · ɪ sʜᴀʟʟ ɴᴏᴛ ᴡᴀɴᴛ · ʜᴇ ᴍᴀᴋᴇᴛʜ ᴍᴇ ᴛᴏ ʟɪᴇ ᴅᴏᴡɴ ɪɴ ɢʀᴇᴇɴ ᴘᴀsᴛᴜʀᴇs · ʜᴇ ʟᴇᴀᴅᴇᴛʜ ᴍᴇ ʙᴇsɪᴅᴇ ᴛʜᴇ sᴛɪʟʟ ᴡᴀᴛᴇʀs · ʜᴇ ʀᴇsᴛᴏʀᴇᴛʜ ᴍʏ sᴏᴜʟ · ʜᴇ ʟᴇᴀᴅᴇᴛʜ ᴍᴇ ɪɴ ᴛʜᴇ ᴘᴀᴛʜs ᴏғ ʀɪɢʜᴛᴇᴏᴜsɴᴇss · ʏᴇᴀ, ᴛʜᴏᴜɢʜ ɪ ᴡᴀʟᴋ ᴛʜʀᴏᴜɢʜ ᴛʜᴇ sʜᴀᴅᴏᴡ ᴏғ ᴅᴇᴀᴛʜ · ɪ ᴡɪʟʟ ғᴇᴀʀ ɴᴏ ᴇᴠɪʟ: ғᴏʀ ᴛʜᴏᴜ ᴀʀᴛ ᴡɪᴛʜ ᴍᴇ · ᴛʜʏ ʀᴏᴅ ᴀɴᴅ ᴛʜʏ sᴛᴀғғ ᴛʜᴇʏ ᴄᴏᴍғᴏʀᴛ ᴍᴇ · ᴛʜᴏᴜ ᴀɴᴏɪɴᴛᴇsᴛ ᴍʏ ʜᴇᴀᴅ ᴡɪᴛʜ ᴏɪʟ · ᴍʏ ᴄᴜᴘ ʀᴜɴɴᴇᴛʜ ᴏᴠᴇʀ · ɪ ᴡɪʟʟ ᴅᴡᴇʟʟ ɪɴ ᴛʜᴇ ʜᴏᴜsᴇ ᴏғ ᴛʜᴇ ʟᴏʀᴅ ғᴏʀ ᴇᴠᴇʀ ·                  ";
+
+    let currentText = fullVerse;
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+            clearTimeout(titleTimer);
+            currentText = fullVerse;
+            document.title = currentText;
+
+            // 1. 动态生成一个不受限制的后台 Worker 脚本
+            const blob = new Blob([`
+                let timer;
+                self.onmessage = function(e) {
+                    if (e.data === 'start') {
+                        // 在独立线程中发起高频心跳，200ms 的速度对古典阅读最优雅
+                        timer = setInterval(() => self.postMessage('tick'), 200);
+                    } else if (e.data === 'stop') {
+                        clearInterval(timer);
+                    }
+                };
+            `], { type: 'application/javascript' });
+
+            // 2. 唤醒并连接这个独立线程
+            worker = new Worker(URL.createObjectURL(blob));
+
+            // 3. 主线程每次收到 Worker 的心跳，就向左滚动一个字符
+            worker.onmessage = function() {
+                currentText = currentText.substring(1) + currentText[0];
+                document.title = currentText;
+            };
+
+            // 4. 发送启动指令
+            worker.postMessage('start');
+
+        } else {
+            // 用户切回来时，立刻给独立线程发送停止指令并彻底销毁，释放内存
+            if (worker) {
+                worker.postMessage('stop');
+                worker.terminate();
+                worker = null;
+            }
+
+            // 留下古典字体的祈祷结语
+            document.title = '· ᴀᴍᴇɴ ·';
+
+            // 2.5 秒后平缓恢复为原本的系统名字
+            titleTimer = setTimeout(() => {
+                document.title = originTitle;
+            }, 2500);
+        }
+    });
 </script>
 </body>
 </html>
