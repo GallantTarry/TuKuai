@@ -443,8 +443,10 @@
                     class="p-4 md:p-8 border-b border-white/5 bg-white/5 md:rounded-tr-[32px] flex flex-row md:flex-col justify-between items-center md:items-start">
 
                 <div class="flex items-center space-x-3 md:space-x-4">
-                    <div :style="{ borderColor: activeColor, boxShadow: `0 8px 20px ${activeGlow}` }"
-                         class="w-12 h-12 md:w-16 md:h-16 bg-black/40 rounded-2xl border-[3px] flex items-center justify-center shrink-0 overflow-hidden transition-all duration-500 shadow-lg">
+                    <!-- 修改后 -->
+                    <div @click="showMailModal = true"
+                         :style="{ borderColor: activeColor, boxShadow: `0 8px 20px ${activeGlow}` }"
+                         class="w-12 h-12 md:w-16 md:h-16 bg-black/40 rounded-2xl border-[3px] flex items-center justify-center shrink-0 overflow-hidden transition-all duration-500 shadow-lg cursor-pointer hover:scale-105">
                         <svg class="w-full h-full scale-110" style="image-rendering: pixelated;" viewBox="0 0 16 16">
                             <!-- 1. 原汁原味的基础身体 (修复了嘴巴偏左的问题) -->
                             <g id="base-avatar">
@@ -1739,7 +1741,48 @@
             </div>
 
         </main>
+        <!-- ✉️ 邮件发送弹窗 -->
+        <transition enter-active-class="transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1)"
+                    enter-from-class="opacity-0 scale-75 translate-y-10"
+                    enter-to-class="opacity-100 scale-100 translate-y-0"
+                    leave-active-class="transition-all duration-300 ease-in"
+                    leave-from-class="opacity-100 scale-100 translate-y-0"
+                    leave-to-class="opacity-0 scale-75 translate-y-10">
+            <div v-if="showMailModal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                <!-- 遮罩层 -->
+                <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="showMailModal = false"></div>
 
+                <!-- 弹窗主体 -->
+                <div :style="{ borderColor: activeColor, boxShadow: `0 0 30px ${activeGlow}` }"
+                     class="glass-panel w-full max-w-sm p-6 relative z-10 flex flex-col space-y-4 border-[2px]">
+                    <h3 class="text-white font-bold text-lg tab-title tracking-widest flex items-center">
+                        <span class="mr-2">✉️</span> 密函发送
+                    </h3>
+
+                    <textarea v-model="mailContent"
+                              placeholder="土块等待您的来信~，文本支持emoji哦！"
+                              class="w-full h-32 bg-black/50 border border-white/20 rounded-xl p-3 text-white text-xs md:text-sm font-pixel focus:outline-none transition-colors hide-scrollbar resize-none"
+                              :style="{ outlineColor: activeColor }"></textarea>
+
+                    <div class="flex justify-end space-x-3 text-xs md:text-sm font-bold mt-2">
+                        <button @click="showMailModal = false" class="px-4 py-2 rounded-full border border-gray-500 text-gray-400 hover:text-white hover:border-white transition-all tracking-widest">
+                            取消
+                        </button>
+                        <button @click="sendMail"
+                                :disabled="isSendingMail || !mailContent.trim()"
+                                :class="['px-4 py-2 rounded-full border transition-all text-black tracking-widest',
+                                 (isSendingMail || !mailContent.trim()) ? 'bg-gray-500 border-gray-500 opacity-50 cursor-not-allowed' : 'hover:scale-105']"
+                                :style="{ backgroundColor: (!isSendingMail && mailContent.trim()) ? activeColor : '', borderColor: (!isSendingMail && mailContent.trim()) ? activeColor : '' }">
+                            {{ isSendingMail ? '发送中...' : (mailStatus === 'success' ? '已发送!' : '发送') }}
+                        </button>
+                    </div>
+
+                    <div v-if="mailStatus === 'error'" class="text-red-400 text-[10px] animate-pulse text-center mt-1">
+                        网络异常或接口错误，发送失败。
+                    </div>
+                </div>
+            </div>
+        </transition>
     </div>
 
     <audio :src="currentTrack ? currentTrack.file : ''" @ended="onEnded" @loadedmetadata="onLoadedMetadata"
@@ -1777,6 +1820,45 @@
 
     createApp({
         setup() {
+            // 新增：邮件相关的响应式变量
+            const showMailModal = ref(false);
+            const mailContent = ref('');
+            const isSendingMail = ref(false);
+            const mailStatus = ref(''); // 取值：'', 'success', 'error'
+
+// 新增：发送邮件触发逻辑
+            const sendMail = async () => {
+                if (!mailContent.value.trim()) return;
+                isSendingMail.value = true;
+                mailStatus.value = '';
+
+                try {
+                    // 从你的截图中提取出的 worker 路由
+                    const workerUrl = 'https://tukuai-mail.w1961459892.workers.dev';
+
+                    const response = await fetch(workerUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: mailContent.value })
+                    });
+
+                    if (response.ok) {
+                        mailStatus.value = 'success';
+                        setTimeout(() => {
+                            showMailModal.value = false;
+                            mailContent.value = '';
+                            mailStatus.value = '';
+                        }, 1500); // 1.5秒后自动关闭弹窗
+                    } else {
+                        mailStatus.value = 'error';
+                    }
+                } catch (e) {
+                    console.error('邮件发送失败:', e);
+                    mailStatus.value = 'error';
+                } finally {
+                    isSendingMail.value = false;
+                }
+            };
 // 👇 ======== 新增：随机背景图逻辑 ======== 👇
             // 1. 将你所有的背景图路径写进这个数组。以后有新图，直接在这个数组里加一行就行。
             const bgImages = [
@@ -2356,7 +2438,10 @@
                 togglePlay, playTrack, nextTrack, prevTrack, onTimeUpdate, onLoadedMetadata, onSeek, onEnded,
                 activeGame, gameWindowRef, openGame, closeGame, toggleFullscreen, isGameVisible, minimizeGame,
                 playModeText, togglePlayMode, currentTvFace,
-                isWanderJumping, isCollapsing, triggerWanderJump
+                isWanderJumping, isCollapsing, triggerWanderJump,
+                // ...前面的变量
+                showMailModal, mailContent, isSendingMail, mailStatus, sendMail,
+// ...
             };
         }
     }).mount('#app');
