@@ -443,109 +443,113 @@
                     class="p-4 md:p-8 border-b border-white/5 bg-white/5 md:rounded-tr-[32px] flex flex-row md:flex-col justify-between items-center md:items-start">
 
                 <div class="flex items-center space-x-3 md:space-x-4">
-                    <!-- 修改后 -->
-                    <div @click="showMailModal = true"
-                         :style="{ borderColor: activeColor, boxShadow: `0 8px 20px ${activeGlow}` }"
-                         class="w-12 h-12 md:w-16 md:h-16 bg-black/40 rounded-2xl border-[3px] flex items-center justify-center shrink-0 overflow-hidden transition-all duration-500 shadow-lg cursor-pointer hover:scale-105">
-                        <svg class="w-full h-full scale-110" style="image-rendering: pixelated;" viewBox="0 0 16 16">
-                            <!-- 1. 原汁原味的基础身体 (修复了嘴巴偏左的问题) -->
-                            <g id="base-avatar">
-                                <!-- 头发/脸部轮廓/墨镜 -->
-                                <rect fill="#292524" height="5" width="1" x="3" y="4"/>
-                                <rect fill="#292524" height="5" width="1" x="12" y="4"/>
-                                <rect fill="#fed7aa" height="5" width="8" x="4" y="5"/>
-                                <rect fill="#fdba74" height="1" width="8" x="4" y="9"/> <!-- 下巴阴影 -->
+                    <!-- 👇 新增：给小人外层套一个 relative 容器，专门用来给气泡定位 -->
+                    <!-- 👇 新增：给小人外层套一个 relative 容器，专门用来给气泡定位 -->
+                    <div class="relative shrink-0">
 
-                                <!-- 修复：原版嘴巴是 x=6，现修正为 x=7，完美居中于脸部 (4到11的中心) -->
-                                <rect fill="#f97316" height="1" width="2" x="7" y="9"/>
+                        <!-- 💬 聊天气泡：绝对定位的外层容器，负责【纯右侧居中】而且绝不挤占原本空间 -->
+                        <div class="absolute top-0 bottom-0 left-full flex items-center ml-3 md:ml-4 z-50 pointer-events-none">
+                            <transition
+                                    enter-active-class="transition-all duration-500"
+                                    enter-from-class="opacity-0 scale-50 -translate-x-4"
+                                    enter-to-class="opacity-100 scale-100 translate-x-0"
+                                    leave-active-class="transition-all duration-300 ease-in"
+                                    leave-from-class="opacity-100 scale-100 translate-x-0"
+                                    leave-to-class="opacity-0 scale-50 -translate-x-4">
 
-                                <rect fill="#1c1917" height="1" width="2" x="5" y="7"/>
-                                <rect fill="#1c1917" height="1" width="2" x="9" y="7"/>
-                                <rect fill="#292524" height="3" width="8" x="4" y="2"/>
-                                <rect fill="#292524" height="1" width="2" x="5" y="1"/>
-                                <rect fill="#292524" height="1" width="3" x="8" y="1"/>
-                                <rect fill="#292524" height="1" width="2" x="4" y="5"/>
-                                <rect fill="#292524" height="1" width="2" x="7" y="5"/>
-                                <rect fill="#292524" height="1" width="1" x="11" y="5"/>
-                                <!-- 原版衣服 -->
-                                <rect fill="#475569" height="5" width="12" x="2" y="11"/>
-                                <rect fill="#475569" height="1" width="10" x="3" y="10"/>
-                                <rect fill="#fdba74" height="1" width="4" x="6" y="10"/> <!-- 脖子 -->
-                                <rect fill="#334155" height="2" width="2" x="4" y="10"/>
-                                <rect fill="#334155" height="2" width="2" x="10" y="10"/>
-                                <rect fill="#94a3b8" height="3" width="1" x="5" y="11"/>
-                                <rect fill="#94a3b8" height="3" width="1" x="10" y="11"/>
-                                <rect fill="#334155" height="4" width="2" x="7" y="12"/>
-                            </g>
+                                <div v-if="showBubble"
+                                     class="relative bg-white/90 backdrop-blur-sm text-black px-3 py-1.5 rounded-xl text-[10px] md:text-[11px] font-bold tracking-widest shadow-[0_0_15px_rgba(255,255,255,0.3)] whitespace-nowrap border-2"
+                                     :style="{ borderColor: activeColor }"
+                                     style="transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);">
+                                    {{ bubbleText }}
 
-                            <!-- 2. 动画动作A：抬手深吸 (整体向右移 1px 匹配新嘴巴位置) -->
-                            <g id="arm-up" opacity="1">
-                                <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.98; 1"
-                                         repeatCount="indefinite" values="1; 1; 0; 0; 1"/>
-                                <!-- 手臂 (深灰色与衣服阴影融合) -->
-                                <rect fill="#334155" height="2" width="2" x="2" y="11"/>
-                                <rect fill="#334155" height="1" width="2" x="3" y="10"/>
-                                <!-- 较长的烟身 (精准穿插到修正后的嘴巴坐标 x=7) -->
-                                <rect fill="#f8fafc" height="1" width="3" x="5" y="9"/>
-                                <!-- 烟头红火 -->
-                                <rect fill="#ef4444" height="1" width="1" x="4" y="9">
-                                    <animate attributeName="fill" dur="1s" repeatCount="indefinite"
-                                             values="#f97316; #ef4444; #fde047; #ef4444; #f97316"/>
-                                </rect>
-                                <!-- 拿烟的手 (皮肤色)，向右移 1px -->
-                                <rect fill="#fed7aa" height="1" width="2" x="5" y="10"/>
-                                <rect fill="#fed7aa" height="1" width="1" x="6" y="9"/>
-                            </g>
+                                    <!-- 气泡左侧的尖角小尾巴 -->
+                                    <div class="absolute top-1/2 -translate-y-1/2 -left-[6px] w-2.5 h-2.5 bg-white border-b-2 border-l-2 transform rotate-45 rounded-sm"
+                                         :style="{ borderColor: activeColor }"></div>
+                                </div>
 
-                            <!-- 3. 动画动作B：手放下、拿开香烟 -->
-                            <g id="arm-down" opacity="0">
-                                <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.98; 1"
-                                         repeatCount="indefinite" values="0; 0; 1; 1; 0"/>
-                                <!-- 垂下的手臂 -->
-                                <rect fill="#334155" height="3" width="2" x="2" y="11"/>
-                                <!-- 手部 -->
-                                <rect fill="#fed7aa" height="2" width="2" x="2" y="14"/>
-                                <!-- 移开的香烟 -->
-                                <rect fill="#f8fafc" height="1" width="1" x="1" y="14"/>
-                                <rect fill="#ef4444" height="1" width="1" x="0" y="14"/>
-                                <!-- 垂下时指尖升起的轻烟 -->
-                                <rect fill="#cbd5e1" height="1" opacity="0" width="1" x="0" y="13">
-                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.42; 0.45; 0.95; 1"
-                                             repeatCount="indefinite" values="0; 0; 0.6; 0; 0"/>
-                                    <animate attributeName="y" dur="4s" keyTimes="0; 0.42; 0.95; 1"
-                                             repeatCount="indefinite" values="13; 13; 9; 9"/>
-                                </rect>
-                            </g>
+                            </transition>
+                        </div>
 
-                            <!-- 4. 动画动作C：吐出的动态大团烟雾 (原点也向右移 1px 匹配 x=7) -->
-                            <g id="exhale-smoke">
-                                <!-- 主浓烟雾 -->
-                                <rect fill="#a1a1aa" height="1" opacity="0" width="1" x="7" y="9">
-                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1"
-                                             repeatCount="indefinite" values="0; 0; 0; 0.8; 0; 0"/>
-                                    <animate attributeName="y" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1"
-                                             repeatCount="indefinite" values="9; 9; 9; 5; 1; 0"/>
-                                    <animate attributeName="x" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1"
-                                             repeatCount="indefinite" values="7; 7; 7; 5; 1; 0"/>
-                                    <animate attributeName="width" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1"
-                                             repeatCount="indefinite" values="1; 1; 1; 2; 3; 3"/>
-                                    <animate attributeName="height" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1"
-                                             repeatCount="indefinite" values="1; 1; 1; 2; 2; 2"/>
-                                </rect>
-                                <!-- 辅扩散烟雾 -->
-                                <rect fill="#cbd5e1" height="1" opacity="0" width="1" x="8" y="8">
-                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1"
-                                             repeatCount="indefinite" values="0; 0; 0; 0.6; 0; 0"/>
-                                    <animate attributeName="y" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1"
-                                             repeatCount="indefinite" values="9; 9; 9; 4; 0; -1"/>
-                                    <animate attributeName="x" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1"
-                                             repeatCount="indefinite" values="8; 8; 8; 7; 5; 4"/>
-                                    <animate attributeName="width" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1"
-                                             repeatCount="indefinite" values="1; 1; 1; 2; 3; 3"/>
-                                </rect>
-                            </g>
-                        </svg>
+                        <!-- 抽烟小人本体 -->
+                        <div @click="showMailModal = true"
+                             :style="{ borderColor: activeColor, boxShadow: `0 8px 20px ${activeGlow}` }"
+                             class="w-12 h-12 md:w-16 md:h-16 bg-black/40 rounded-2xl border-[3px] flex items-center justify-center overflow-hidden transition-all duration-500 shadow-lg cursor-pointer hover:scale-105 pointer-events-auto">
+                            <svg class="w-full h-full scale-110" style="image-rendering: pixelated;" viewBox="0 0 16 16">
+                                <!-- 1. 原汁原味的基础身体 -->
+                                <g id="base-avatar">
+                                    <rect fill="#292524" height="5" width="1" x="3" y="4"/>
+                                    <rect fill="#292524" height="5" width="1" x="12" y="4"/>
+                                    <rect fill="#fed7aa" height="5" width="8" x="4" y="5"/>
+                                    <rect fill="#fdba74" height="1" width="8" x="4" y="9"/>
+                                    <rect fill="#f97316" height="1" width="2" x="7" y="9"/>
+                                    <rect fill="#1c1917" height="1" width="2" x="5" y="7"/>
+                                    <rect fill="#1c1917" height="1" width="2" x="9" y="7"/>
+                                    <rect fill="#292524" height="3" width="8" x="4" y="2"/>
+                                    <rect fill="#292524" height="1" width="2" x="5" y="1"/>
+                                    <rect fill="#292524" height="1" width="3" x="8" y="1"/>
+                                    <rect fill="#292524" height="1" width="2" x="4" y="5"/>
+                                    <rect fill="#292524" height="1" width="2" x="7" y="5"/>
+                                    <rect fill="#292524" height="1" width="1" x="11" y="5"/>
+                                    <rect fill="#475569" height="5" width="12" x="2" y="11"/>
+                                    <rect fill="#475569" height="1" width="10" x="3" y="10"/>
+                                    <rect fill="#fdba74" height="1" width="4" x="6" y="10"/>
+                                    <rect fill="#334155" height="2" width="2" x="4" y="10"/>
+                                    <rect fill="#334155" height="2" width="2" x="10" y="10"/>
+                                    <rect fill="#94a3b8" height="3" width="1" x="5" y="11"/>
+                                    <rect fill="#94a3b8" height="3" width="1" x="10" y="11"/>
+                                    <rect fill="#334155" height="4" width="2" x="7" y="12"/>
+                                </g>
+
+                                <!-- 2. 动画动作A：抬手深吸 -->
+                                <g id="arm-up" opacity="1">
+                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.98; 1" repeatCount="indefinite" values="1; 1; 0; 0; 1"/>
+                                    <rect fill="#334155" height="2" width="2" x="2" y="11"/>
+                                    <rect fill="#334155" height="1" width="2" x="3" y="10"/>
+                                    <rect fill="#f8fafc" height="1" width="3" x="5" y="9"/>
+                                    <rect fill="#ef4444" height="1" width="1" x="4" y="9">
+                                        <animate attributeName="fill" dur="1s" repeatCount="indefinite" values="#f97316; #ef4444; #fde047; #ef4444; #f97316"/>
+                                    </rect>
+                                    <rect fill="#fed7aa" height="1" width="2" x="5" y="10"/>
+                                    <rect fill="#fed7aa" height="1" width="1" x="6" y="9"/>
+                                </g>
+
+                                <!-- 3. 动画动作B：手放下、拿开香烟 -->
+                                <g id="arm-down" opacity="0">
+                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.98; 1" repeatCount="indefinite" values="0; 0; 1; 1; 0"/>
+                                    <rect fill="#334155" height="3" width="2" x="2" y="11"/>
+                                    <rect fill="#fed7aa" height="2" width="2" x="2" y="14"/>
+                                    <rect fill="#f8fafc" height="1" width="1" x="1" y="14"/>
+                                    <rect fill="#ef4444" height="1" width="1" x="0" y="14"/>
+                                    <rect fill="#cbd5e1" height="1" opacity="0" width="1" x="0" y="13">
+                                        <animate attributeName="opacity" dur="4s" keyTimes="0; 0.42; 0.45; 0.95; 1" repeatCount="indefinite" values="0; 0; 0.6; 0; 0"/>
+                                        <animate attributeName="y" dur="4s" keyTimes="0; 0.42; 0.95; 1" repeatCount="indefinite" values="13; 13; 9; 9"/>
+                                    </rect>
+                                </g>
+
+                                <!-- 4. 动画动作C：吐出的动态大团烟雾 -->
+                                <g id="exhale-smoke">
+                                    <rect fill="#a1a1aa" height="1" opacity="0" width="1" x="7" y="9">
+                                        <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="0; 0; 0; 0.8; 0; 0"/>
+                                        <animate attributeName="y" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="9; 9; 9; 5; 1; 0"/>
+                                        <animate attributeName="x" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="7; 7; 7; 5; 1; 0"/>
+                                        <animate attributeName="width" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="1; 1; 1; 2; 3; 3"/>
+                                        <animate attributeName="height" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="1; 1; 1; 2; 2; 2"/>
+                                    </rect>
+                                    <rect fill="#cbd5e1" height="1" opacity="0" width="1" x="8" y="8">
+                                        <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite" values="0; 0; 0; 0.6; 0; 0"/>
+                                        <animate attributeName="y" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite" values="9; 9; 9; 4; 0; -1"/>
+                                        <animate attributeName="x" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite" values="8; 8; 8; 7; 5; 4"/>
+                                        <animate attributeName="width" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite" values="1; 1; 1; 2; 3; 3"/>
+                                    </rect>
+                                </g>
+                            </svg>
+                        </div>
+
+                    <!-- 👆 relative 容器结束 -->
+
                     </div>
+                    <!-- 👆 relative 容器结束 -->
                     <!-- 删除了 text-gray-400，加入了 style="color: var(--theme-color); opacity: 0.8;" -->
                     <div class="flex flex-col">
                         <!-- 第一行：名字，绝对左对齐 -->
@@ -1820,6 +1824,21 @@
 
     createApp({
         setup() {
+            // 新增：控制聊天气泡显示
+            const showBubble = ref(false);
+
+            // 👇 新增：聊天气泡的动态文本和词库 👇
+            const bubbleText = ref('Wanna chat?');
+            const bubbleGreetings = [
+                "Wanna chat?",
+                "Hi there!",
+                "What's up?",
+                "Hello!",
+                "Are you there?",
+                "Greetings!",
+                "Hey you!"
+            ];
+            // 👆 新增结束 👆
             // 新增：邮件相关的响应式变量
             const showMailModal = ref(false);
             const mailContent = ref('');
@@ -2327,6 +2346,22 @@
                 updateClock();
                 setInterval(updateClock, 1000);
 
+                // 👇 修改：聊天气泡的定时器逻辑 (15秒一次，随机文本) 👇
+                setInterval(() => {
+                    // 从数组中随机挑一句话赋值给气泡
+                    const randomIdx = Math.floor(Math.random() * bubbleGreetings.length);
+                    bubbleText.value = bubbleGreetings[randomIdx];
+
+                    showBubble.value = true;
+                    // 气泡停留 4 秒后自动消失
+                    setTimeout(() => {
+                        showBubble.value = false;
+                    }, 4000);
+                }, 15000); // 15000 毫秒 = 15 秒
+                // 👆 修改结束 👆
+
+
+
                 // 👇 新增这块：强行拦截 BFCache，解决后退时动画失效的问题 👇
                 // 👇 替换掉你原本的 pageshow 监听器 👇
                 window.addEventListener('pageshow', (event) => {
@@ -2441,6 +2476,7 @@
                 isWanderJumping, isCollapsing, triggerWanderJump,
                 // ...前面的变量
                 showMailModal, mailContent, isSendingMail, mailStatus, sendMail,
+                showBubble,bubbleText // <--- 把这个加进来！
 // ...
             };
         }
