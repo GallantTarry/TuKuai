@@ -174,7 +174,7 @@
             filter: grayscale(100%) sepia(100%) hue-rotate(75deg) brightness(1.2) contrast(1.5);
             transition: all 0.5s ease;
         }
-        
+
         .showcase:hover img {
             filter: grayscale(0%) sepia(0%) hue-rotate(0deg) brightness(1) contrast(1);
         }
@@ -330,7 +330,7 @@
 <body class="crt">
     <!-- 动态矩阵雨背景 -->
     <canvas id="matrix-bg"></canvas>
-    
+
     <div class="container">
         <header>
             <h1 class="glitch" data-text="PyKuai">PyKuai</h1>
@@ -380,34 +380,34 @@
         // Matrix 背景动画逻辑
         const canvas = document.getElementById('matrix-bg');
         const ctx = canvas.getContext('2d');
-        
+
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        
+
         const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロゴゾドボポヴッン';
         const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const nums = '0123456789';
         const alphabet = katakana + latin + nums;
-        
+
         const fontSize = 16;
         let columns = canvas.width / fontSize;
-        
+
         let rainDrops = [];
         for (let x = 0; x < columns; x++) {
             rainDrops[x] = 1;
         }
-        
+
         const draw = () => {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
+
             ctx.fillStyle = '#0F0';
             ctx.font = fontSize + 'px monospace';
-            
+
             for (let i = 0; i < rainDrops.length; i++) {
                 const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
                 ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-                
+
                 if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                     rainDrops[i] = 0;
                 }
@@ -431,12 +431,12 @@
 > 正在初始化 PyKuai 环境... [OK]
 > 正在加载泛用性脚本库... [OK]
 > 正在挂载针对性模块... [OK]
-> 
+>
 > 欢迎来到 PyKuai - 脚本盒子。
 > 这是一个不断更新的集成环境的脚本盒子。
 > 他具有泛用性和针对性。
 > 准备好尝试一下了吗？
-> 
+>
 > Waiting for user action...`;
 
         const typeWriterElement = document.getElementById('typewriter');
@@ -450,7 +450,7 @@
                     typeWriterElement.innerHTML += textToType.charAt(i);
                 }
                 i++;
-                setTimeout(typeWriter, Math.random() * 40 + 20); 
+                setTimeout(typeWriter, Math.random() * 40 + 20);
             }
         }
 
