@@ -2,7 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- 修改后 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ToolKit | 代理助手</title>
     <!-- 精确指定的网页图标路径 -->
     <link rel="icon" href="imgs/ToolKit.ico" type="image/x-icon">
@@ -64,34 +65,45 @@
             scrollbar-color: rgba(79, 172, 254, 0.8) var(--space-abyss);
         }
 
-        /* 轨道定制：稍微给个深空蓝的底色，打破手机浏览器的隐藏机制 */
+        /* ==========================================================================
+            【全局滚动条定制】 亚克力悬浮质感
+            ========================================================================== */
+
+        /* 补全核心缺失部分：定义滚动条的整体尺寸 */
+        ::-webkit-scrollbar {
+            width: 8px;  /* 纵向滚动条更显纤细 */
+            height: 8px; /* 横向滚动条高度 */
+        }
+
+        /* 轨道定制：极致透明，无缝融入深空背景 */
         ::-webkit-scrollbar-track {
-            background: rgba(10, 15, 30, 0.6);
-            border-radius: 10px;
-            border: none;
+            background: rgba(10, 15, 30, 0.15);
+            border-radius: 4px;
         }
 
-        /* 滑块定制：拉高透明度，加点内发光，让它在小屏幕上更有质感 */
+        /* 滑块定制：冰蓝色半透明，带轻微描边 */
         ::-webkit-scrollbar-thumb {
-            background: rgba(79, 172, 254, 0.8);
-            border-radius: 10px;
-            border: none;
-            box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.3);
-        }
-        /* 滑块悬浮态 */
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-accent);
-            box-shadow: 0 0 10px var(--text-accent);
+            background: rgba(79, 172, 254, 0.4);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            /* 添加微弱的内发光保持立体感 */
+            box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.2);
         }
 
-        /* 终极杀招：彻底隐藏滚动条两端的按钮（小箭头） */
+        /* 滑块悬浮态：亮度提升，产生交互感 */
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(79, 172, 254, 0.85);
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.6);
+        }
+
+        /* 隐藏滚动条两端无用的箭头按钮 */
         ::-webkit-scrollbar-button {
             display: none;
             height: 0;
             width: 0;
         }
 
-        /* 终极杀招：清理边角残留 */
+        /* 清理右下角交界处的原生白块 */
         ::-webkit-scrollbar-corner {
             background: transparent;
         }
