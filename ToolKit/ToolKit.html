@@ -44,12 +44,10 @@
         }
 
         html {
-            height: 100%;
+            /* 已经解除高度锁死 */
         }
 
         body {
-            height: 100%;
-            overflow-y: auto;
             overflow-x: hidden;
 
             font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif;
@@ -65,13 +63,6 @@
             scrollbar-width: thin;
             scrollbar-color: rgba(79, 172, 254, 0.8) var(--space-abyss);
         }
-
-        /* 彻底接管 Webkit (Chrome/Safari/Edge) 滚动条，干掉上下小箭头 */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px; /* 横向如果溢出也控制住 */
-        }
-
 
         /* 轨道定制：稍微给个深空蓝的底色，打破手机浏览器的隐藏机制 */
         ::-webkit-scrollbar-track {
