@@ -44,7 +44,7 @@
         /* 针对 BlackHole 的暗物质主题滚动条 */
         body {
             scrollbar-width: thin;
-            scrollbar-color: rgba(139, 92, 246, 0.5) transparent;
+            scrollbar-color: rgba(139, 92, 246, 0.8) var(--bg-color);
         }
 
         /* 彻底接管 Webkit (Chrome/Safari/Edge) 滚动条，干掉上下小箭头 */
@@ -53,15 +53,19 @@
             height: 6px;
         }
 
+        /* 轨道定制：稍微给个暗物质玻璃态底色，打破手机浏览器的隐藏机制 */
         ::-webkit-scrollbar-track {
-            background: transparent;
+            background: rgba(24, 24, 27, 0.6);
+            border-radius: 10px;
             border: none;
         }
 
+        /* 滑块定制：拉高紫色透明度，加一点内发光提升手机端质感 */
         ::-webkit-scrollbar-thumb {
-            background: rgba(139, 92, 246, 0.5); /* 对应 --glow-color，半透明紫色 */
+            background: rgba(139, 92, 246, 0.8);
             border-radius: 10px;
             border: none;
+            box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.2);
         }
 
         ::-webkit-scrollbar-thumb:hover {
