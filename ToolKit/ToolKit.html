@@ -176,11 +176,10 @@
             transform: scale(1.05);
         }
 
-        /* 调整图标大小和圆角，保持原有的方块圆角风格 */
         .logo-container img {
             width: 40px;
             height: 40px;
-            border-radius: 6px;
+            border-radius: 25%; /* 👈 改为 50% 变纯圆 */
             box-shadow: 0 0 15px var(--text-accent);
             transition: transform 0.3s ease;
             object-fit: cover;
