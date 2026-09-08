@@ -2234,11 +2234,6 @@
 // ====== 替换结束 ======
 
             onMounted(() => {
-                if ('scrollRestoration' in history) {
-                    history.scrollRestoration = 'manual';
-                }
-                // (此处已删除 scrollTo 代码)
-
                 initParticleSystem();
 
                 updateClock();
@@ -2354,8 +2349,7 @@
                 currentTimeDisplay, durationDisplay, seekProgress, durationSec, currentVolume, onVolumeChange,
                 togglePlay, playTrack, nextTrack, prevTrack, onTimeUpdate, onLoadedMetadata, onSeek, onEnded,
                 activeGame, gameWindowRef, openGame, closeGame, toggleFullscreen, isGameVisible, minimizeGame,
-                playModeIcon, playModeText, togglePlayMode, currentTvFace,
-                // 新增暴漏下面这两个：
+                playModeText, togglePlayMode, currentTvFace,
                 isWanderJumping, isCollapsing, triggerWanderJump
             };
         }
