@@ -140,6 +140,67 @@
         /* ==========================================================================
            【全局 UI 架构】 Layout & Header Structure
            ========================================================================== */
+        /* ==========================================================================
+           【音乐环境引擎】 Music Player Toggle
+           ========================================================================== */
+        .music-toggle-container {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            z-index: 100;
+            padding: 8px 16px 8px 8px;
+            background: rgba(10, 15, 30, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: var(--transition-bounce);
+        }
+
+        .music-toggle-container:hover {
+            background: rgba(79, 172, 254, 0.15);
+            border-color: var(--text-accent);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.2);
+            transform: scale(1.05);
+        }
+
+        .music-toggle-container img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--text-accent);
+            transition: transform 0.3s ease;
+        }
+
+        .music-toggle-container img.playing {
+            animation: disk-spin 10s linear infinite;
+        }
+
+        .music-text {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .music-toggle-container:hover .music-text {
+            color: var(--text-primary);
+        }
+
+        @keyframes disk-spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .music-toggle-container { top: 15px; left: 15px; padding: 6px 12px 6px 6px; }
+            .music-toggle-container img { width: 28px; height: 28px; }
+            .music-text { font-size: 0.85rem; }
+        }
         .core-layout { 
             position: relative; z-index: 10; 
             max-width: 1300px; margin: 0 auto; 
@@ -396,7 +457,15 @@
     <div class="solar-system">
         <div class="planet-earth"></div>
     </div>
-
+    <!-- ==========================================================================
+             【环境音乐模块】
+             ========================================================================== -->
+    <div class="music-toggle-container" id="music-toggle" title="点击开启/关闭环境音">
+        <img src="imgs/ToolKit.ico" alt="Music Disk" id="music-disk">
+        <span class="music-text">BGM</span>
+        <!-- 指定你要求的音乐文件：去月球.mp3 -->
+        <audio id="bg-music" src="music/去月球.mp3" loop></audio>
+    </div>
     <!-- ==========================================================================
          上层系统：全玻璃化操作交互界面
          ========================================================================== -->
@@ -918,6 +987,22 @@
                 });
             }
         }
+        /**
+         * 模块三：环境音播放器逻辑
+         */
+        const musicToggle = document.getElementById('music-toggle');
+        const bgMusic = document.getElementById('bg-music');
+        const musicDisk = document.getElementById('music-disk');
+
+        musicToggle.addEventListener('click', () => {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                musicDisk.classList.add('playing');
+            } else {
+                bgMusic.pause();
+                musicDisk.classList.remove('playing');
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             new PrecisionCarousel('slider-track', '.slider-frame');

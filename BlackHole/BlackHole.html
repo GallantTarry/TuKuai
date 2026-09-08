@@ -29,6 +29,7 @@
         }
 
         body {
+
             background-color: var(--bg-color);
             background-image: 
                 radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
@@ -37,7 +38,25 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
+        /* 针对 BlackHole 的暗物质主题滚动条 */
+        body {
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) var(--bg-color);
+        }
 
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.5); /* 对应 --glow-color，半透明紫色 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent); /* 悬浮时变为实色紫 */
+        }
         /* 静态星空漂移特效 */
         .stars {
             position: fixed;
@@ -396,8 +415,9 @@
             <audio id="bg-music" src="music/Travelers.mp3" loop></audio>
         </div>
 
-        <a href="https://ghproxy.net/https://github.com/GallantTarry/TuKuai/releases/download/20260907/BlackHole1.0.0.exe" class="buy-btn">
-            获取引擎
+
+        <a href="docs/说明书.pdf" download="BlackHole使用说明书.pdf" class="buy-btn">
+            获取说明
             <span class="price-tag">下载</span>
         </a>
     </header>
@@ -410,7 +430,7 @@
         <p>一款极致轻巧的桌面暗物质引擎。它悬浮于你的视界边缘，自动分类文件、榨干系统冗余、拦截时间碎片。</p>
 
         <a href="https://ghproxy.net/https://github.com/GallantTarry/TuKuai/releases/download/20260907/BlackHole1.0.0.exe" class="buy-btn pulse hero-btn">
-            立即下载宇宙黑洞
+            立下下载1.0版本
         </a>
     </section>
 
@@ -457,12 +477,6 @@
     </section>
 
     <footer id="download">
-        <div class="footer-action">
-            <h2 class="footer-title">准备好开启你的桌面奇点了吗？</h2>
-            <a href="https://ghproxy.net/https://github.com/GallantTarry/TuKuai/releases/download/20260907/BlackHole1.0.0.exe" class="buy-btn pulse footer-btn">
-                立即下载 ( .exe )
-            </a>
-        </div>
         <p style="color: #64748B; font-size: 0.95rem; letter-spacing: 1px;">
             &copy; 2026 Black Hole Desktop Engine. Created by 土块. All rights reserved.
         </p>

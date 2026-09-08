@@ -25,6 +25,26 @@
             font-family: 'Courier New', Courier, monospace;
             overflow-x: hidden;
         }
+        /* 针对 PyKuai 的极客终端主题滚动条 */
+        body {
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) var(--bg-color);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 0, 0.4); /* 极客绿半透明 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color); /* 悬浮时变为实色绿 */
+            box-shadow: 0 0 10px var(--primary-color);
+        }
 
         /* 矩阵背景 */
         #matrix-bg {
