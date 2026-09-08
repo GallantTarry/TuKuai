@@ -43,9 +43,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        html, body {
-            height: 100%;
-        }
 
         body {
             font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif;
@@ -53,10 +50,7 @@
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch; /* 专门为iOS开启顺滑滚动 */
             scrollbar-width: thin;
-            /* ...后面的保持不变 */
             scrollbar-color: var(--text-accent) var(--space-abyss);
             /* 提升 GPU 渲染优先级 */
             -webkit-font-smoothing: antialiased;
