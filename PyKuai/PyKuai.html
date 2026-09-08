@@ -325,6 +325,15 @@
             .download-btn { font-size: 1.2rem; padding: 12px 30px; width: 100%; }
             .features { grid-template-columns: 1fr; }
         }
+        /* 页脚样式 */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            opacity: 0.6;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px var(--primary-color);
+        }
     </style>
 </head>
 <body class="crt">
@@ -343,6 +352,12 @@
                 <img src="imgs/main.png" alt="PyKuai Interface">
             </section>
 
+            <!-- 下载执行区 -->
+            <section class="download-wrapper">
+                <!-- 替换为国内加速直链 -->
+                <a href="https://ghproxy.net/https://github.com/GallantTarry/TuKuai/releases/download/20260907/PyKuaiv1.2.3.exe" class="download-btn">>> DOWNLOAD PyKuai(v1.2.3) <<</a>
+            </section>
+
             <!-- 打字机效果说明区 -->
             <section class="terminal">
                 <div id="typewriter" style="display: inline;"></div><span class="cursor"></span>
@@ -351,28 +366,24 @@
             <!-- 特性大集合网格 -->
             <section class="features">
                 <div class="feature-card">
-                    <h3>[01] 绝对泛用</h3>
-                    <p>涵盖日常自动化、数据处理、系统管理的通用脚本库，即插即用，满足一切基础幻想。</p>
+                    <h3>[01] 泛用针对</h3>
+                    <p>具备泛用性与针对性，涵盖不同领域的不同应用场景。</p>
                 </div>
                 <div class="feature-card">
-                    <h3>[02] 深度针对</h3>
-                    <p>针对特定复杂场景的高阶脚本合集，提供手术刀般的精准打击，解决痛点。</p>
+                    <h3>[02] 大集合生态</h3>
+                    <p>集成生态，windows直接运行。</p>
                 </div>
                 <div class="feature-card">
-                    <h3>[03] 大集合生态</h3>
-                    <p>不止于工具，这是一个不断进化的脚本盒子生态系统，高度整合，包罗万象。</p>
-                </div>
-                <div class="feature-card">
-                    <h3>[04] 极简即极客</h3>
+                    <h3>[03] 极简即极客</h3>
                     <p>摒弃臃肿的UI，回归黑绿终端的浪漫，用最高效的底层代码驱动世界。</p>
                 </div>
             </section>
+            <footer id="download">
+                <p style="color: #64748B; font-size: 0.95rem; letter-spacing: 1px;">
+                    &copy; 2026 Black Hole Desktop Engine. Created by 土块. All rights reserved.
+                </p>
+            </footer>
 
-            <!-- 下载执行区 -->
-            <section class="download-wrapper">
-                <!-- 替换为国内加速直链 -->
-                <a href="https://ghproxy.net/https://github.com/GallantTarry/TuKuai/releases/download/20260907/PyKuaiv1.2.3.exe" class="download-btn">>> DOWNLOAD PyKuai(v1.2.3) <<</a>
-            </section>
         </main>
     </div>
 
