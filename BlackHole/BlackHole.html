@@ -26,9 +26,13 @@
 
         html {
             scroll-behavior: smooth;
+            height: 100%; /* 新增：锁死根节点高度 */
         }
 
         body {
+            height: 100%; /* 新增：锁死 body 高度 */
+            overflow-y: auto; /* 新增：强行触发内部纵向滚动 */
+
             background-color: var(--bg-color);
             background-image:
                     radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
