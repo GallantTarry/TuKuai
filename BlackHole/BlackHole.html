@@ -44,21 +44,41 @@
         /* 针对 BlackHole 的暗物质主题滚动条 */
         body {
             scrollbar-width: thin;
-            scrollbar-color: var(--accent) var(--bg-color);
+            scrollbar-color: rgba(139, 92, 246, 0.5) transparent;
         }
 
+        /* 彻底接管 Webkit (Chrome/Safari/Edge) 滚动条，干掉上下小箭头 */
         ::-webkit-scrollbar {
             width: 6px;
+            height: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: transparent;
+            border: none;
         }
+
         ::-webkit-scrollbar-thumb {
             background: rgba(139, 92, 246, 0.5); /* 对应 --glow-color，半透明紫色 */
             border-radius: 10px;
+            border: none;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: var(--accent); /* 悬浮时变为实色紫 */
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        /* 终极杀招：彻底隐藏滚动条两端的按钮（小箭头） */
+        ::-webkit-scrollbar-button {
+            display: none;
+            height: 0;
+            width: 0;
+        }
+
+        /* 终极杀招：清理边角残留 */
+        ::-webkit-scrollbar-corner {
+            background: transparent;
         }
         /* 静态星空漂移特效 */
         .stars {
