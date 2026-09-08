@@ -162,47 +162,51 @@
         }
 
         /* ==========================================================================
-           【音乐环境引擎】 Music Player Toggle
-           ========================================================================== */
-        .music-toggle-container {
+                  【音乐播放器 Logo 区 与 流光特效】
+                  ========================================================================== */
+        .logo-container {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
             cursor: pointer;
-            padding: 6px 14px 6px 6px;
-            border-radius: 40px;
-            transition: var(--transition-bounce);
+            transition: transform 0.3s ease;
         }
 
-        .music-toggle-container:hover {
-            background: rgba(79, 172, 254, 0.15);
+        .logo-container:hover {
             transform: scale(1.05);
         }
 
-        /* 调整图标大小和圆角，保留方块感但带圆角 */
-        .music-toggle-container img {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px; /* 方块圆角 */
-            box-shadow: 0 0 8px var(--text-accent);
+        /* 调整图标大小和圆角，保持原有的方块圆角风格 */
+        .logo-container img {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            box-shadow: 0 0 15px var(--text-accent);
             transition: transform 0.3s ease;
-            object-fit: cover; /* 防止变形留空 */
+            object-fit: cover;
         }
 
-        .music-toggle-container img.playing {
+        .logo-container img.playing {
+            /* 保持原有的转圈动画名称 */
             animation: disk-spin 10s linear infinite;
         }
 
-        .music-text {
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: var(--text-secondary);
-            letter-spacing: 1px;
-            transition: color 0.3s ease;
+        /* BGM 动态流光文字 - 改为白色/冰蓝色系荧光 */
+        .logo-text {
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: linear-gradient(270deg, #ffffff, #e0f2fe, #7dd3fc, #ffffff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 5s ease infinite;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.4); /* 添加外发光 */
         }
 
-        .music-toggle-container:hover .music-text {
-            color: var(--text-primary);
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* 毛玻璃按钮 */
@@ -219,13 +223,24 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            position: relative; /* 新增相对定位，保持和 BlackHole 一致 */
         }
 
         .buy-btn:hover {
-            background: rgba(79, 172, 254, 0.15);
+            background: rgba(79, 172, 254, 0.2); /* 稍微调高了亮度和颜色以匹配 ToolKit 风格 */
             border-color: var(--text-accent);
-            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.2);
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.5); /* 修改了发光效果 */
             transform: translateY(-2px);
+        }
+
+        /* 新增：下载价格标签样式（适配 ToolKit 蓝色主题） */
+        .price-tag {
+            background: linear-gradient(135deg, #1e90ff, #00f2fe);
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            box-shadow: inset 0 0 5px rgba(255,255,255,0.2);
+            color: #fff;
         }
 
         @keyframes disk-spin {
@@ -234,12 +249,11 @@
 
         @media (max-width: 768px) {
             header.nav-header { padding: 15px 20px; }
-            .music-toggle-container { padding: 5px 10px 5px 5px; }
-            .music-toggle-container img { width: 20px; height: 20px; border-radius: 4px; }
-            .music-text { font-size: 0.8rem; }
+            .logo-text { font-size: 1.2rem; } /* 修改这里 */
+            .logo-container img { width: 32px; height: 32px; } /* 修改这里，并稍微调大手机端图标 */
             .buy-btn { padding: 8px 16px; font-size: 0.95rem; }
+            .price-tag { padding: 2px 8px; font-size: 0.75rem; }
         }
-
         .core-layout {
             position: relative; z-index: 10;
             max-width: 1300px; margin: 0 auto;
@@ -488,20 +502,22 @@
 <div class="solar-system">
     <div class="planet-earth"></div>
 </div>
-
 <!-- ==========================================================================
          导航栏
          ========================================================================== -->
 <header class="nav-header">
-    <div class="music-toggle-container" id="music-toggle" title="点击开启/关闭环境音">
+    <!-- 将 music-toggle-container 改为 logo-container -->
+    <div class="logo-container" id="music-toggle" title="点击开启/关闭环境音">
         <img src="imgs/ToolKit.ico" alt="Music Disk" id="music-disk">
-        <span class="music-text">BGM</span>
+        <!-- 将 span class="music-text" 改为 div class="logo-text" -->
+        <div class="logo-text">BGM</div>
         <!-- 指定你要求的音乐文件：去月球.mp3 -->
         <audio id="bg-music" src="music/去月球.mp3" loop></audio>
     </div>
 
     <a href="docs/ToolKit说明书.pdf" download="ToolKit说明书.pdf" class="buy-btn">
         获取说明
+        <span class="price-tag">下载</span>
     </a>
 </header>
 
