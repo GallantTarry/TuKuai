@@ -281,9 +281,15 @@
         }
 
         .download-btn {
+            /* 替换为自适应排版属性 */
+            font-size: clamp(13px, 4vw, 18px);
+            white-space: nowrap;
+            padding: 15px 5vw;
+            box-sizing: border-box;
+            max-width: 100%;
+
+            /* 保留原有的视觉效果属性 */
             display: inline-block;
-            padding: 15px 40px;
-            font-size: 1.5rem;
             font-weight: bold;
             color: var(--primary-color);
             background: transparent;
@@ -322,7 +328,6 @@
         @media (max-width: 768px) {
             .glitch { font-size: 2.5rem; }
             .terminal { font-size: 1rem; min-height: 180px; }
-            .download-btn { font-size: 1.2rem; padding: 12px 30px; width: 100%; }
             .features { grid-template-columns: 1fr; }
         }
         /* 页脚样式 */
@@ -352,11 +357,11 @@
                 <img src="imgs/main.png" alt="PyKuai Interface">
             </section>
 
-            <!-- 下载执行区 -->
-            <section class="download-wrapper">
-                <!-- 替换为国内加速直链 -->
-                <a href="https://ghproxy.net/https://github.com/GallantTarry/TuKuai/releases/download/20260907/PyKuaiv1.2.3.exe" class="download-btn">>> DOWNLOAD PyKuai(v1.2.3) <<</a>
-            </section>
+                <!-- 下载执行区 -->
+                <section class="download-wrapper">
+                    <!-- 替换为国内加速直链 -->
+                    <a href="https://ghproxy.net/https://github.com/GallantTarry/TuKuai/releases/download/20260907/PyKuaiv1.2.3.exe" class="download-btn">>> DOWNLOAD PyKuai(v1.2.3) <<</a>
+                </section>
 
             <!-- 打字机效果说明区 -->
             <section class="terminal">
