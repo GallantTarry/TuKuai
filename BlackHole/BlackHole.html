@@ -6,6 +6,52 @@
     <title>Black Hole | 多功能归纳桌面</title>
     <link rel="icon" href="imgs/BlackHole.ico" type="image/x-icon">
     <style>
+        /* 宇宙风格标题 */
+        .hero h1.cosmic-title {
+            font-size: 5rem; /* 字体加大，更有冲击力 */
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 8px; /* 增加字间距，营造空旷的宇宙感 */
+            background: linear-gradient(135deg, #ffffff, #a8c0ff, #3B82F6, #8B5CF6);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow:
+                    0 0 20px rgba(139, 92, 246, 0.4),
+                    0 0 40px rgba(59, 130, 246, 0.2);
+            animation: cosmic-shine 4s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        /* 宇宙风格副标题 */
+        .hero p.cosmic-subtitle {
+            font-family: 'Courier New', Courier, monospace; /* 使用等宽字体，更像极客/太空指令 */
+            font-size: 1.1rem;
+            color: #8bb4f6;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+            margin: 0 auto 50px auto;
+        }
+
+        @keyframes cosmic-shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        /* 针对手机端缩小宇宙标题字体 */
+        @media (max-width: 768px) {
+            .hero h1.cosmic-title {
+                font-size: 3rem;
+                letter-spacing: 4px;
+            }
+            .hero p.cosmic-subtitle {
+                font-size: 0.9rem;
+                letter-spacing: 1px;
+            }
+        }
         /* CSS 变量与全局重置 */
         :root {
             --primary: #3B82F6;
@@ -449,8 +495,9 @@
         <div class="hero-img-container">
             <img src="imgs/BlackHole.png" alt="Black Hole 核心">
         </div>
-        <h1>吞噬混乱，重塑秩序</h1>
-        <p>一款极致轻巧的桌面暗物质引擎。它悬浮于你的视界边缘，自动分类文件、榨干系统冗余、拦截时间碎片。</p>
+        <!-- 修改为英文主题，保留原有副标题作修饰 -->
+        <h1 class="cosmic-title">BLACK HOLE</h1>
+        <p class="cosmic-subtitle">Do not go gentle into that good night.</p>
 
         <a href="https://ghproxy.net/https://github.com/GallantTarry/TuKuai/releases/download/20260907/BlackHole1.0.0.exe" class="buy-btn pulse hero-btn">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
