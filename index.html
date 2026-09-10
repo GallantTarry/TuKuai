@@ -2036,7 +2036,18 @@
                 } else {
                     try {
                         const stream = await navigator.mediaDevices.getUserMedia({audio: true});
-                        mediaRecorder = new MediaRecorder(stream);
+
+                        // 👇 核心修复：智能探测浏览器支持的最佳格式 👇
+                        let mimeStr = 'audio/webm';
+                        let extStr = 'webm';
+                        // 探测是否支持苹果原生友好的 mp4 容器
+                        if (MediaRecorder.isTypeSupported('audio/mp4')) {
+                            mimeStr = 'audio/mp4';
+                            extStr = 'm4a';
+                        }
+
+                        // 强制指定格式录制
+                        mediaRecorder = new MediaRecorder(stream, { mimeType: mimeStr });
                         audioChunks = [];
 
                         mediaRecorder.ondataavailable = e => {
@@ -2044,23 +2055,22 @@
                         };
 
                         mediaRecorder.onstop = async () => {
-                            const audioBlob = new Blob(audioChunks, {type: 'audio/webm'});
-                            const file = new File([audioBlob], `语音留言_${Date.now()}.webm`, {type: 'audio/webm'});
+                            // 👇 使用探测到的正确格式和后缀名生成文件
+                            const audioBlob = new Blob(audioChunks, {type: mimeStr});
+                            const file = new File([audioBlob], `语音密函_${Date.now()}.${extStr}`, {type: mimeStr});
 
                             const base64Str = await toBase64(file);
                             const content = base64Str.split(',')[1];
 
-                            // 👇 核心：生成可播放的本地临时 URL
                             const audioUrl = URL.createObjectURL(audioBlob);
 
-                            // 将音频以单独的 type 压入附件列表
                             attachments.value.push({
                                 filename: file.name,
                                 content: content,
-                                type: 'audio', // 标识为音频
-                                url: audioUrl,   // 绑上播放地址
-                                isPlaying: false,  // 👇 新增：默认不在播放
-                                audioElement: null // 👇 新增：用来装音频对象
+                                type: 'audio',
+                                url: audioUrl,
+                                isPlaying: false,
+                                audioElement: null
                             });
 
                             stream.getTracks().forEach(track => track.stop());
