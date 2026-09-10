@@ -11,7 +11,11 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FGG6EYF0HC"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
         gtag('js', new Date());
 
         // 配置你的专属测量 ID
@@ -59,6 +63,7 @@
         [v-cloak] {
             display: none !important;
         }
+
         /* 1. 引入本地 Silkscreen (英数常规) */
         @font-face {
             font-family: 'Silkscreen';
@@ -339,25 +344,58 @@
                 width: 100%;
             }
         }
+
         /* ========================================= */
         /* ====== 新增：Wander Jump 坍缩特效 ====== */
         /* ========================================= */
 
         /* 1. 能量过载：剧烈随机抖动与 RGB 色相偏移 */
         @keyframes overload-shake {
-            0%, 100% { transform: translate(0, 0) scale(1); filter: hue-rotate(0deg) brightness(1); }
-            20% { transform: translate(-4px, 4px) scale(1.01); filter: hue-rotate(90deg) brightness(1.2); }
-            40% { transform: translate(4px, -4px) scale(0.99); filter: hue-rotate(-90deg) brightness(1.5); }
-            60% { transform: translate(-4px, -4px) scale(1.02); filter: hue-rotate(45deg) brightness(1.2); }
-            80% { transform: translate(4px, 4px) scale(0.98); filter: hue-rotate(-45deg) brightness(1.5); }
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                filter: hue-rotate(0deg) brightness(1);
+            }
+            20% {
+                transform: translate(-4px, 4px) scale(1.01);
+                filter: hue-rotate(90deg) brightness(1.2);
+            }
+            40% {
+                transform: translate(4px, -4px) scale(0.99);
+                filter: hue-rotate(-90deg) brightness(1.5);
+            }
+            60% {
+                transform: translate(-4px, -4px) scale(1.02);
+                filter: hue-rotate(45deg) brightness(1.2);
+            }
+            80% {
+                transform: translate(4px, 4px) scale(0.98);
+                filter: hue-rotate(-45deg) brightness(1.5);
+            }
         }
 
         /* 2. 空间坍缩：CRT老电视关机式向内吸入 */
         @keyframes crt-implode {
-            0% { transform: scale(1); opacity: 1; filter: brightness(1) blur(0px); }
-            30% { transform: scale(1, 0.01); opacity: 1; filter: brightness(2) blur(2px); } /* 上下压扁成一条亮线 */
-            60% { transform: scale(0, 0.01); opacity: 0; filter: brightness(3) blur(5px); } /* 亮线向中间聚集成一个点消失 */
-            100% { transform: scale(0); opacity: 0; }
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                filter: brightness(1) blur(0px);
+            }
+            30% {
+                transform: scale(1, 0.01);
+                opacity: 1;
+                filter: brightness(2) blur(2px);
+            }
+            /* 上下压扁成一条亮线 */
+            60% {
+                transform: scale(0, 0.01);
+                opacity: 0;
+                filter: brightness(3) blur(5px);
+            }
+            /* 亮线向中间聚集成一个点消失 */
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
         }
 
         /* 绑定到类名，使用 !important 确保覆盖常规的 transition */
@@ -392,7 +430,8 @@
             </div>
             <div :class="['w-64 h-1 bg-white/20 rounded-full overflow-hidden transition-opacity duration-300 delay-300', isCollapsing ? 'opacity-100' : 'opacity-0']">
                 <!-- 👇 新增 :key="jumpKey" 👇 -->
-                <div v-if="isCollapsing" :key="jumpKey" class="h-full bg-white" style="animation: loading 2.5s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;"></div>
+                <div v-if="isCollapsing" :key="jumpKey" class="h-full bg-white"
+                     style="animation: loading 2.5s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;"></div>
             </div>
         </div>
     </div>
@@ -475,7 +514,8 @@
                         <div @click="showMailModal = true"
                              :style="{ borderColor: activeColor, boxShadow: `0 8px 20px ${activeGlow}` }"
                              class="w-12 h-12 md:w-16 md:h-16 bg-black/40 rounded-2xl border-[3px] flex items-center justify-center overflow-hidden transition-all duration-500 shadow-lg cursor-pointer hover:scale-105 pointer-events-auto">
-                            <svg class="w-full h-full scale-110" style="image-rendering: pixelated;" viewBox="0 0 16 16">
+                            <svg class="w-full h-full scale-110" style="image-rendering: pixelated;"
+                                 viewBox="0 0 16 16">
                                 <!-- 1. 原汁原味的基础身体 -->
                                 <g id="base-avatar">
                                     <rect fill="#292524" height="5" width="1" x="3" y="4"/>
@@ -503,12 +543,14 @@
 
                                 <!-- 2. 动画动作A：抬手深吸 -->
                                 <g id="arm-up" opacity="1">
-                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.98; 1" repeatCount="indefinite" values="1; 1; 0; 0; 1"/>
+                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.98; 1"
+                                             repeatCount="indefinite" values="1; 1; 0; 0; 1"/>
                                     <rect fill="#334155" height="2" width="2" x="2" y="11"/>
                                     <rect fill="#334155" height="1" width="2" x="3" y="10"/>
                                     <rect fill="#f8fafc" height="1" width="3" x="5" y="9"/>
                                     <rect fill="#ef4444" height="1" width="1" x="4" y="9">
-                                        <animate attributeName="fill" dur="1s" repeatCount="indefinite" values="#f97316; #ef4444; #fde047; #ef4444; #f97316"/>
+                                        <animate attributeName="fill" dur="1s" repeatCount="indefinite"
+                                                 values="#f97316; #ef4444; #fde047; #ef4444; #f97316"/>
                                     </rect>
                                     <rect fill="#fed7aa" height="1" width="2" x="5" y="10"/>
                                     <rect fill="#fed7aa" height="1" width="1" x="6" y="9"/>
@@ -516,37 +558,51 @@
 
                                 <!-- 3. 动画动作B：手放下、拿开香烟 -->
                                 <g id="arm-down" opacity="0">
-                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.98; 1" repeatCount="indefinite" values="0; 0; 1; 1; 0"/>
+                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.98; 1"
+                                             repeatCount="indefinite" values="0; 0; 1; 1; 0"/>
                                     <rect fill="#334155" height="3" width="2" x="2" y="11"/>
                                     <rect fill="#fed7aa" height="2" width="2" x="2" y="14"/>
                                     <rect fill="#f8fafc" height="1" width="1" x="1" y="14"/>
                                     <rect fill="#ef4444" height="1" width="1" x="0" y="14"/>
                                     <rect fill="#cbd5e1" height="1" opacity="0" width="1" x="0" y="13">
-                                        <animate attributeName="opacity" dur="4s" keyTimes="0; 0.42; 0.45; 0.95; 1" repeatCount="indefinite" values="0; 0; 0.6; 0; 0"/>
-                                        <animate attributeName="y" dur="4s" keyTimes="0; 0.42; 0.95; 1" repeatCount="indefinite" values="13; 13; 9; 9"/>
+                                        <animate attributeName="opacity" dur="4s" keyTimes="0; 0.42; 0.45; 0.95; 1"
+                                                 repeatCount="indefinite" values="0; 0; 0.6; 0; 0"/>
+                                        <animate attributeName="y" dur="4s" keyTimes="0; 0.42; 0.95; 1"
+                                                 repeatCount="indefinite" values="13; 13; 9; 9"/>
                                     </rect>
                                 </g>
 
                                 <!-- 4. 动画动作C：吐出的动态大团烟雾 -->
                                 <g id="exhale-smoke">
                                     <rect fill="#a1a1aa" height="1" opacity="0" width="1" x="7" y="9">
-                                        <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="0; 0; 0; 0.8; 0; 0"/>
-                                        <animate attributeName="y" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="9; 9; 9; 5; 1; 0"/>
-                                        <animate attributeName="x" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="7; 7; 7; 5; 1; 0"/>
-                                        <animate attributeName="width" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="1; 1; 1; 2; 3; 3"/>
-                                        <animate attributeName="height" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite" values="1; 1; 1; 2; 2; 2"/>
+                                        <animate attributeName="opacity" dur="4s"
+                                                 keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite"
+                                                 values="0; 0; 0; 0.8; 0; 0"/>
+                                        <animate attributeName="y" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1"
+                                                 repeatCount="indefinite" values="9; 9; 9; 5; 1; 0"/>
+                                        <animate attributeName="x" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1"
+                                                 repeatCount="indefinite" values="7; 7; 7; 5; 1; 0"/>
+                                        <animate attributeName="width" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1"
+                                                 repeatCount="indefinite" values="1; 1; 1; 2; 3; 3"/>
+                                        <animate attributeName="height" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1"
+                                                 repeatCount="indefinite" values="1; 1; 1; 2; 2; 2"/>
                                     </rect>
                                     <rect fill="#cbd5e1" height="1" opacity="0" width="1" x="8" y="8">
-                                        <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite" values="0; 0; 0; 0.6; 0; 0"/>
-                                        <animate attributeName="y" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite" values="9; 9; 9; 4; 0; -1"/>
-                                        <animate attributeName="x" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite" values="8; 8; 8; 7; 5; 4"/>
-                                        <animate attributeName="width" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite" values="1; 1; 1; 2; 3; 3"/>
+                                        <animate attributeName="opacity" dur="4s"
+                                                 keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite"
+                                                 values="0; 0; 0; 0.6; 0; 0"/>
+                                        <animate attributeName="y" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1"
+                                                 repeatCount="indefinite" values="9; 9; 9; 4; 0; -1"/>
+                                        <animate attributeName="x" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1"
+                                                 repeatCount="indefinite" values="8; 8; 8; 7; 5; 4"/>
+                                        <animate attributeName="width" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1"
+                                                 repeatCount="indefinite" values="1; 1; 1; 2; 3; 3"/>
                                     </rect>
                                 </g>
                             </svg>
                         </div>
 
-                    <!-- 👆 relative 容器结束 -->
+                        <!-- 👆 relative 容器结束 -->
 
                     </div>
                     <!-- 👆 relative 容器结束 -->
@@ -1755,15 +1811,16 @@
 
         </main>
         <!-- ✉️ 邮件发送弹窗 -->
-        <transition enter-active-class="transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1)"
-                    enter-from-class="opacity-0 scale-75 translate-y-10"
+        <transition enter-active-class="transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+                    enter-from-class="opacity-0 scale-50 translate-y-16"
                     enter-to-class="opacity-100 scale-100 translate-y-0"
-                    leave-active-class="transition-all duration-300 ease-in"
+                    leave-active-class="transition-all duration-300 ease-in-out"
                     leave-from-class="opacity-100 scale-100 translate-y-0"
                     leave-to-class="opacity-0 scale-75 translate-y-10">
             <div v-if="showMailModal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-                <!-- 遮罩层 -->
-                <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="showMailModal = false"></div>
+
+                <!-- 遮罩层：高级毛玻璃质感 -->
+                <div class="absolute inset-0 bg-[#050505]/30 backdrop-blur-md transition-all duration-700" @click="clearMailModal"></div>
 
                 <!-- 弹窗主体 -->
                 <div :style="{ borderColor: activeColor, boxShadow: `0 0 30px ${activeGlow}` }"
@@ -1777,8 +1834,84 @@
                               class="w-full h-32 bg-black/50 border border-white/20 rounded-xl p-3 text-white text-xs md:text-sm font-pixel focus:outline-none transition-colors hide-scrollbar resize-none"
                               :style="{ outlineColor: activeColor }"></textarea>
 
+                    <!-- 👇 新增：多媒体工具栏 👇 -->
+                    <div class="flex items-center space-x-4 mt-2 px-1 text-gray-400">
+                        <!-- 1. Emoji 按钮 -->
+                        <div class="relative">
+                            <button @click="showEmojiPicker = !showEmojiPicker"
+                                    class="hover:text-white transition-colors text-lg" title="插入表情">😀
+                            </button>
+                            <div v-if="showEmojiPicker"
+                                 class="absolute bottom-full left-0 mb-2 w-48 bg-gray-800/95 backdrop-blur-xl border border-white/20 p-2 rounded-xl grid grid-cols-5 gap-2 z-50 shadow-xl">
+                                <span v-for="emoji in emojis" :key="emoji" @click="insertEmoji(emoji)"
+                                      class="cursor-pointer text-xl hover:scale-125 transition-transform text-center">{{ emoji
+                                    }}</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. 附件按钮 -->
+                        <button @click="triggerFileInput" class="hover:text-white transition-colors text-lg"
+                                title="添加附件">📎
+                        </button>
+                        <input type="file" ref="fileInput" @change="handleFileChange" class="hidden" multiple>
+
+                        <!-- 3. 录音按钮 -->
+                        <button @click="toggleRecording"
+                                :class="['text-lg transition-colors', isRecording ? 'text-red-500 animate-pulse' : 'hover:text-white']"
+                                :title="isRecording ? '点击停止录音' : '点击开始录音'">
+                            {{ isRecording ? '⏹️' : '🎤' }}
+                        </button>
+
+                        <!-- 录音中提示 -->
+                        <span v-if="isRecording" class="text-red-500 text-xs animate-pulse font-bold tracking-widest">RECORDING...</span>
+                    </div>
+
+                    <!-- 👇 修改后的：附件预览区 👇 -->
+                    <div v-if="attachments.length > 0"
+                         class="flex flex-col gap-2 mt-1 max-h-32 overflow-y-auto hide-scrollbar">
+                        <div v-for="(file, index) in attachments" :key="index"
+                             class="bg-gray-700/50 text-white text-[10px] px-3 py-2 rounded-lg flex items-center justify-between border border-white/10">
+
+                            <!-- 左侧信息区 -->
+                            <div class="flex items-center space-x-3 overflow-hidden">
+                                <!-- 根据类型显示不同图标 -->
+                                <span class="text-sm shrink-0">{{ file.type === 'audio' ? '🎵' : '📎' }}</span>
+                                <span class="truncate max-w-[120px] md:max-w-[200px]"
+                                      :title="file.filename">{{ file.filename }}</span>
+                            </div>
+
+                            <!-- 👇 右侧按钮区：播放和删除并排，绝对像素化 👇 -->
+                            <div class="flex items-center space-x-2 shrink-0">
+                                <!-- 播放/暂停按钮 -->
+                                <button v-if="file.type === 'audio'" @click="toggleAudioPreview(file)"
+                                        class="text-green-400 hover:text-green-300 bg-black/40 rounded-full w-5 h-5 flex items-center justify-center shadow-inner hover:bg-green-500/20 transition-all">
+                                    <!-- 播放状态的纯手工像素 SVG -->
+                                    <svg v-if="!file.isPlaying" class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 10 10" style="shape-rendering: crispEdges;">
+                                        <path d="M 3 1 h 2 v 1 h 1 v 1 h 1 v 1 h 1 v 2 h -1 v 1 h -1 v 1 h -1 v 1 h -2 Z" />
+                                    </svg>
+                                    <!-- 暂停状态的纯手工像素 SVG -->
+                                    <svg v-else class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 10 10" style="shape-rendering: crispEdges;">
+                                        <path d="M 2 1 h 2 v 8 h -2 Z M 6 1 h 2 v 8 h -2 Z" />
+                                    </svg>
+                                </button>
+
+                                <!-- 删除按钮 -->
+                                <button @click="removeAttachment(index)"
+                                        class="text-red-400 hover:text-red-300 bg-black/40 rounded-full w-5 h-5 flex items-center justify-center shadow-inner hover:bg-red-500/20 transition-all">
+                                    <!-- 叉号的纯手工像素 SVG -->
+                                    <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 10 10" style="shape-rendering: crispEdges;">
+                                        <path d="M 1 1 h 2 v 1 h 1 v 1 h 2 v -1 h 1 v -1 h 2 v 2 h -1 v 1 h -1 v 2 h 1 v 1 h 1 v 2 h -2 v -1 h -1 v -1 h -2 v 1 h -1 v 1 h -2 v -2 h 1 v -1 h 1 v -2 h -1 v -1 h -1 Z" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <!-- 👆 右侧按钮区结束 👆 -->
+                        </div>
+                    </div>
+                    <!-- 👆 修改结束 👆 -->
+
                     <div class="flex justify-end space-x-3 text-xs md:text-sm font-bold mt-2">
-                        <button @click="showMailModal = false" class="px-4 py-2 rounded-full border border-gray-500 text-gray-400 hover:text-white hover:border-white transition-all tracking-widest">
+                        <button @click="clearMailModal"
+                                class="px-4 py-2 rounded-full border border-gray-500 text-gray-400 hover:text-white hover:border-white transition-all tracking-widest">
                             取消
                         </button>
                         <button @click="sendMail"
@@ -1833,6 +1966,113 @@
 
     createApp({
         setup() {
+            // 👇 新增：Emoji 逻辑 👇
+            const showEmojiPicker = ref(false);
+            const emojis = ['😀', '😂', '🥰', '😎', '🥺', '✨', '🔥', '🎉', '👍', '❤️', '😭', '🤝', '☕', '💻', '🎮'];
+            const insertEmoji = (emoji) => {
+                mailContent.value += emoji;
+                showEmojiPicker.value = false;
+            };
+
+            // 👇 修改：附件与文件 Base64 转换逻辑 👇
+            const attachments = ref([]);
+            const fileInput = ref(null);
+
+            const triggerFileInput = () => {
+                fileInput.value.click();
+            };
+
+            const toBase64 = (file) => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+
+            const handleFileChange = async (event) => {
+                const files = event.target.files;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert(`文件 [${file.name}] 超过 5MB 限制，请重新选择！`);
+                        continue;
+                    }
+                    const base64Str = await toBase64(file);
+                    const content = base64Str.split(',')[1];
+
+                    // 👇 增加 type 标识和 url 预览（普通文件可不设 url 或用 objectURL 预览图片，这里简化为通用文件）
+                    attachments.value.push({
+                        filename: file.name,
+                        content: content,
+                        type: 'file',
+                        url: null
+                    });
+                }
+                event.target.value = '';
+            };
+
+            const removeAttachment = (index) => {
+                const att = attachments.value[index];
+
+                // 👇 新增：如果当前录音正在播放，强行让它停止
+                if (att.audioElement) {
+                    att.audioElement.pause();
+                }
+
+                // 如果有本地预览 URL，记得释放内存
+                if (att.url) URL.revokeObjectURL(att.url);
+                attachments.value.splice(index, 1);
+            };
+
+            // 👇 修改：麦克风录音逻辑 👇
+            const isRecording = ref(false);
+            let mediaRecorder = null;
+            let audioChunks = [];
+
+            const toggleRecording = async () => {
+                if (isRecording.value) {
+                    mediaRecorder.stop();
+                    isRecording.value = false;
+                } else {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+                        mediaRecorder = new MediaRecorder(stream);
+                        audioChunks = [];
+
+                        mediaRecorder.ondataavailable = e => {
+                            if (e.data.size > 0) audioChunks.push(e.data);
+                        };
+
+                        mediaRecorder.onstop = async () => {
+                            const audioBlob = new Blob(audioChunks, {type: 'audio/webm'});
+                            const file = new File([audioBlob], `语音留言_${Date.now()}.webm`, {type: 'audio/webm'});
+
+                            const base64Str = await toBase64(file);
+                            const content = base64Str.split(',')[1];
+
+                            // 👇 核心：生成可播放的本地临时 URL
+                            const audioUrl = URL.createObjectURL(audioBlob);
+
+                            // 将音频以单独的 type 压入附件列表
+                            attachments.value.push({
+                                filename: file.name,
+                                content: content,
+                                type: 'audio', // 标识为音频
+                                url: audioUrl,   // 绑上播放地址
+                                isPlaying: false,  // 👇 新增：默认不在播放
+                                audioElement: null // 👇 新增：用来装音频对象
+                            });
+
+                            stream.getTracks().forEach(track => track.stop());
+                        };
+
+                        mediaRecorder.start();
+                        isRecording.value = true;
+                    } catch (err) {
+                        alert('无法访问麦克风，请检查浏览器权限设置！');
+                    }
+                }
+            };
             // 新增：控制聊天气泡显示
             const showBubble = ref(false);
 
@@ -1854,29 +2094,68 @@
             const isSendingMail = ref(false);
             const mailStatus = ref(''); // 取值：'', 'success', 'error'
 
+            // 👇 新增：极简音频播放控制 👇
+            const toggleAudioPreview = (file) => {
+                // 1. 如果是第一次点，就创建一个音频对象
+                if (!file.audioElement) {
+                    file.audioElement = new Audio(file.url);
+                    // 音乐播完后，自动变回播放 ▶️ 图标
+                    file.audioElement.onended = () => {
+                        file.isPlaying = false;
+                    };
+                }
+
+                // 2. 判断当前是在播放还是暂停
+                if (file.isPlaying) {
+                    file.audioElement.pause();
+                    file.isPlaying = false;
+                } else {
+                    file.audioElement.play();
+                    file.isPlaying = true;
+                }
+            };
+
+            // 👇 修改：通用清理函数 👇
+            const clearMailModal = () => {
+                showMailModal.value = false;
+                mailContent.value = '';
+                mailStatus.value = '';
+
+                // 释放所有音频生成的临时 URL，防止浏览器内存泄漏
+                attachments.value.forEach(att => {
+                    // 👇 新增：如果是点“取消”关掉的弹窗，把正在放的音乐全部掐断
+                    if (att.audioElement) {
+                        att.audioElement.pause();
+                    }
+                    if (att.url) URL.revokeObjectURL(att.url);
+                });
+                attachments.value = [];
+            };
 // 新增：发送邮件触发逻辑
             const sendMail = async () => {
-                if (!mailContent.value.trim()) return;
+                // 修改：不仅校验文本，只要有附件，允许文本为空发送
+                if (!mailContent.value.trim() && attachments.value.length === 0) return;
+
                 isSendingMail.value = true;
                 mailStatus.value = '';
 
                 try {
-                    // 从你的截图中提取出的 worker 路由
                     const workerUrl = 'https://api.xn--udsye.art';
 
                     const response = await fetch(workerUrl, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message: mailContent.value })
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            message: mailContent.value || '（仅发送了多媒体附件）',
+                            attachments: attachments.value // 👇 追加传递附件数组
+                        })
                     });
 
                     if (response.ok) {
                         mailStatus.value = 'success';
                         setTimeout(() => {
-                            showMailModal.value = false;
-                            mailContent.value = '';
-                            mailStatus.value = '';
-                        }, 1500); // 1.5秒后自动关闭弹窗
+                            clearMailModal(); // 👇 调用我们刚刚写的清理函数
+                        }, 1500);
                     } else {
                         mailStatus.value = 'error';
                     }
@@ -2326,7 +2605,8 @@
             const closeGame = () => {
                 isGameVisible.value = false;
                 if (document.fullscreenElement) {
-                    document.exitFullscreen().catch(() => {});
+                    document.exitFullscreen().catch(() => {
+                    });
                 }
 
                 // 缓冲时间调整到 700ms，等待收缩动画完毕后卸载 iframe 节点
@@ -2368,7 +2648,6 @@
                     }, 4000);
                 }, 15000); // 15000 毫秒 = 15 秒
                 // 👆 修改结束 👆
-
 
 
                 // 👇 新增这块：强行拦截 BFCache，解决后退时动画失效的问题 👇
@@ -2485,7 +2764,11 @@
                 isWanderJumping, isCollapsing, triggerWanderJump,
                 // ...前面的变量
                 showMailModal, mailContent, isSendingMail, mailStatus, sendMail,
-                showBubble,bubbleText // <--- 把这个加进来！
+                showBubble, bubbleText, // <--- 把这个加进来！
+                showEmojiPicker, emojis, insertEmoji,
+                attachments, fileInput, triggerFileInput, handleFileChange, removeAttachment,
+                isRecording, toggleRecording, clearMailModal,
+                toggleAudioPreview // <--- 把这个加在最后面！
 // ...
             };
         }
@@ -2541,13 +2824,13 @@
                         clearInterval(timer);
                     }
                 };
-            `], { type: 'application/javascript' });
+            `], {type: 'application/javascript'});
 
             // 2. 唤醒并连接这个独立线程
             worker = new Worker(URL.createObjectURL(blob));
 
             // 3. 主线程每次收到 Worker 的心跳，就向左滚动一个字符
-            worker.onmessage = function() {
+            worker.onmessage = function () {
                 currentText = currentText.substring(1) + currentText[0];
                 document.title = currentText;
             };
