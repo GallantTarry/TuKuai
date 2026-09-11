@@ -146,18 +146,20 @@
             width: 70%; height: 70%;
             transform: translate(-50%, -50%);
             border-radius: 50%;
-            /* 叠加真实地貌图与海洋反光 */
             background-color: #05142a;
-            background-image: url('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg');
+            background-image: url('imgs/earth-blue-marble.jpg');
             background-size: 200% 100%;
             box-shadow:
-                /* 内侧昼夜交界线 (Terminator Line) */
+                /* 1. 【新增】极细的深色边缘内阴影，虚化生硬的图片物理边缘，自带抗锯齿感 */
+                    inset 0 0 15px rgba(0, 0, 0, 0.8),
+                        /* 内侧昼夜交界线 (保持原样) */
                     inset -50px -50px 100px var(--earth-terminator),
-                        /* 内侧大气层折射 */
+                        /* 内侧大气层折射 (保持原样) */
                     inset 10px 10px 40px var(--earth-atmos-inner),
-                        /* 外侧大气层散射辉光 */
+                        /* 外侧大气层散射辉光 (保持原样) */
                     0 0 120px var(--earth-atmos-glow),
-                    0 0 40px rgba(255, 255, 255, 0.1);
+                        /* 2. 【微调】将原来 40px 的刺眼白光，扩大到 60px 并调成柔和的微蓝色 */
+                    0 0 60px rgba(79, 172, 254, 0.15);
             animation: planetary-rotation 120s linear infinite;
         }
 
@@ -165,7 +167,8 @@
         .planet-earth::after {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             border-radius: 50%;
-            background-image: url('https://unpkg.com/three-globe/example/img/earth-clouds1024.png');
+            /* 替换为正确的 Three.js 官方云层贴图源 */
+            background-image: url('imgs/earth-topology.png');
             background-size: 200% 100%;
             mix-blend-mode: screen;
             opacity: 0.7;
