@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <!-- 顶部受光面渐变 (亮冰蓝) -->
+    <linearGradient id="cube-top" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4facfe" />
+      <stop offset="100%" stop-color="#00f2fe" />
+    </linearGradient>
+    
+    <!-- 右侧背光面渐变 (深海蓝) -->
+    <linearGradient id="cube-right" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    
+    <!-- 左侧侧光面渐变 (天际蓝) -->
+    <linearGradient id="cube-left" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+  </defs>
+
+  <!-- 左侧面 -->
+  <polygon points="50,55 15,35 15,75 50,95" fill="url(#cube-left)" />
+  
+  <!-- 右侧面 -->
+  <polygon points="50,55 85,35 85,75 50,95" fill="url(#cube-right)" />
+  
+  <!-- 顶部面 -->
+  <polygon points="50,15 85,35 50,55 15,35" fill="url(#cube-top)" />
+
+  <!-- 顶部边缘高光描边 (增加锋利的玻璃质感) -->
+  <polyline points="15,35 50,55 85,35" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- 中心垂直棱线边缘微光 -->
+  <line x1="50" y1="55" x2="50" y2="95" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

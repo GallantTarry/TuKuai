@@ -34,7 +34,7 @@
 
     <script src="./js/tailwindcss.js"></script>
     <script src="./js/vue.global.js"></script>
-
+    <script type="module" src="./js/model-viewer.min.js"></script>
 
     <script>
         // 必须在所有 DOM 和 Vue 渲染前执行，彻底掐断浏览器的自动滚动恢复！
@@ -482,7 +482,6 @@
                     class="p-4 md:p-8 border-b border-white/5 bg-white/5 md:rounded-tr-[32px] flex flex-row md:flex-col justify-between items-center md:items-start">
 
                 <div class="flex items-center space-x-3 md:space-x-4">
-                    <!-- 👇 新增：给小人外层套一个 relative 容器，专门用来给气泡定位 -->
                     <!-- 👇 新增：给小人外层套一个 relative 容器，专门用来给气泡定位 -->
                     <div class="relative shrink-0">
 
@@ -1004,6 +1003,22 @@
                                href="https://resend.com/"
                                target="_blank" rel="noopener noreferrer">VISIT</a>
                         </div>
+
+                        <!-- 27. Sketchfab.com -->
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex flex-col truncate px-2">
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">27. Sketchfab</span>
+                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">官方作品集</span>
+                            </div>
+                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
+                               href="https://sketchfab.com/Sketchfab/collections"
+                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                        </div>
+
+
+
+
+
                     </div>
                 </div>
 
@@ -1688,57 +1703,46 @@
                 </div>
 
                 <!-- 视频放送板块 -->
-                <div class="space-y-4 flex flex-col h-full max-h-full" v-if="currentTab === 'video'">
-                    <h2 class="text-lg md:text-xl tab-title mb-4 font-bold shrink-0">> 纪录视频</h2>
+                <div class="space-y-4 flex  flex-col h-full max-h-full" v-if="currentTab === 'model'">
+                    <h2 class="text-lg md:text-xl tab-title mb-4 font-bold shrink-0">> 3D模型</h2>
                     <div class="flex flex-col space-y-4 overflow-y-auto hide-scrollbar flex-1 pb-6 pt-2 px-2 -mx-2">
 
+                        <!-- 1. 居民街区实景扫描 -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex items-center space-x-4 overflow-hidden">
                                 <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                    <span class="text-xl">🎥</span>
+                                    <!-- 换成 3D 的感觉的图标 -->
+                                    <span class="text-xl">🏙️</span>
                                 </div>
                                 <div class="flex flex-col truncate">
-                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">河殇</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">1988年央视纪录片</span>
+                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">居民街区实景扫描</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">By Air Digital | 加拿大新不伦瑞克省航拍重建</span>
                                 </div>
                             </div>
-                            <button @click="openGame('河殇', 'https://www.youtube.com/embed/wZOcZ1IfJQ4?start=4303')"
-                                    class="cursor-pointer text-[#fb7299] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#fb7299] border border-[#fb7299]/50 hover:border-[#fb7299] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(251,114,153,0)] hover:shadow-[0_0_15px_rgba(251,114,153,0.4)]">
-                                PLAY
-                            </button>
-                        </div>
-                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
-                            <div class="flex items-center space-x-4 overflow-hidden">
-                                <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                    <span class="text-xl">🎥</span>
-                                </div>
-                                <div class="flex flex-col truncate">
-                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">算命</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">徐童 2009 纪录片</span>
-                                </div>
-                            </div>
-                            <button @click="openGame('算命', 'https://www.youtube.com/embed/0rIjJW_kTV4?start=522')"
-                                    class="cursor-pointer text-[#fb7299] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#fb7299] border border-[#fb7299]/50 hover:border-[#fb7299] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(251,114,153,0)] hover:shadow-[0_0_15px_rgba(251,114,153,0.4)]">
-                                PLAY
+                            <!-- 👇 指向对应的 viewer.html 👇 -->
+                            <button @click="openGame('居民街区实景扫描', './models/居民街区/viewer.html')"
+                                    class="cursor-pointer text-[#6366f1] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#6366f1] border border-[#6366f1]/50 hover:border-[#6366f1] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(99,102,241,0)] hover:shadow-[0_0_15px_rgba(99,102,241,0.4)]">
+                                OPEN
                             </button>
                         </div>
 
+                        <!-- 2. 欢乐时光号渔船 -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex items-center space-x-4 overflow-hidden">
                                 <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
-                                    <span class="text-xl">🎥</span>
+                                    <span class="text-xl">🚢</span>
                                 </div>
                                 <div class="flex flex-col truncate">
-                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">女子监区调查</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">20050228 新闻调查</span>
+                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">欢乐时光号渔船</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">By Air Digital | 萨蒙比奇海岸废弃渔船实景扫描</span>
                                 </div>
                             </div>
-                            <button @click="openGame('女子监区调查', 'https://www.youtube.com/embed/XYtccyMNmug?start=6')"
-                                    class="cursor-pointer text-[#fb7299] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#fb7299] border border-[#fb7299]/50 hover:border-[#fb7299] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(251,114,153,0)] hover:shadow-[0_0_15px_rgba(251,114,153,0.4)]">
-                                PLAY
+                            <!-- 👇 指向对应的 viewer.html 👇 -->
+                            <button @click="openGame('欢乐时光号渔船', './models/欢乐时光号/viewer.html')"
+                                    class="cursor-pointer text-[#6366f1] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#6366f1] border border-[#6366f1]/50 hover:border-[#6366f1] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(99,102,241,0)] hover:shadow-[0_0_15px_rgba(99,102,241,0.4)]">
+                                OPEN
                             </button>
                         </div>
-
 
                     </div>
                 </div>
@@ -2234,7 +2238,7 @@
                 {id: 'download', title: '文件下载', icon: '📦', color: '#facc15'},
                 {id: 'music', title: '电子音乐', icon: '🎵', color: '#a855f7'},
                 {id: 'games', title: '复古游戏', icon: '🎮', color: '#ef4444'},
-                {id: 'video', title: '综合视频', icon: '📺', color: '#fb7299'}
+                {id: 'model', title: '模型空间', icon: '🧊', color: '#6366f1'}
             ]);
 
             const currentTab = ref('about');
