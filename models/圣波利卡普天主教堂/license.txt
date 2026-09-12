@@ -1,0 +1,11 @@
+Model Information:
+* title:	Église catholique Saint-Polycarpe
+* source:	https://sketchfab.com/3d-models/eglise-catholique-saint-polycarpe-3c17b4155d7f40448f528cbbb5f14910
+* author:	Air Digital Photogrammetry (https://sketchfab.com/AirDigitalca)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Église catholique Saint-Polycarpe" (https://sketchfab.com/3d-models/eglise-catholique-saint-polycarpe-3c17b4155d7f40448f528cbbb5f14910) by Air Digital Photogrammetry (https://sketchfab.com/AirDigitalca) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
