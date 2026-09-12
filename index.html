@@ -495,7 +495,8 @@
                                     leave-from-class="opacity-100 scale-100 translate-x-0"
                                     leave-to-class="opacity-0 scale-50 -translate-x-4">
 
-                                <div v-if="showBubble"
+                                <!-- 修改后：必须在展示中 且 当前状态是 smoking -->
+                                <div v-if="showBubble && currentStatus === 'smoking'"
                                      class="relative bg-white/90 backdrop-blur-sm text-black px-3 py-1.5 rounded-xl text-[10px] md:text-[11px] font-bold tracking-widest shadow-[0_0_15px_rgba(255,255,255,0.3)] whitespace-nowrap border-2"
                                      :style="{ borderColor: activeColor }"
                                      style="transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);">
@@ -513,92 +514,13 @@
                         <div @click="showMailModal = true"
                              :style="{ borderColor: activeColor, boxShadow: `0 8px 20px ${activeGlow}` }"
                              class="w-12 h-12 md:w-16 md:h-16 bg-black/40 rounded-2xl border-[3px] flex items-center justify-center overflow-hidden transition-all duration-500 shadow-lg cursor-pointer hover:scale-105 pointer-events-auto">
-                            <svg class="w-full h-full scale-110" style="image-rendering: pixelated;"
-                                 viewBox="0 0 16 16">
-                                <!-- 1. 原汁原味的基础身体 -->
-                                <g id="base-avatar">
-                                    <rect fill="#292524" height="5" width="1" x="3" y="4"/>
-                                    <rect fill="#292524" height="5" width="1" x="12" y="4"/>
-                                    <rect fill="#fed7aa" height="5" width="8" x="4" y="5"/>
-                                    <rect fill="#fdba74" height="1" width="8" x="4" y="9"/>
-                                    <rect fill="#f97316" height="1" width="2" x="7" y="9"/>
-                                    <rect fill="#1c1917" height="1" width="2" x="5" y="7"/>
-                                    <rect fill="#1c1917" height="1" width="2" x="9" y="7"/>
-                                    <rect fill="#292524" height="3" width="8" x="4" y="2"/>
-                                    <rect fill="#292524" height="1" width="2" x="5" y="1"/>
-                                    <rect fill="#292524" height="1" width="3" x="8" y="1"/>
-                                    <rect fill="#292524" height="1" width="2" x="4" y="5"/>
-                                    <rect fill="#292524" height="1" width="2" x="7" y="5"/>
-                                    <rect fill="#292524" height="1" width="1" x="11" y="5"/>
-                                    <rect fill="#475569" height="5" width="12" x="2" y="11"/>
-                                    <rect fill="#475569" height="1" width="10" x="3" y="10"/>
-                                    <rect fill="#fdba74" height="1" width="4" x="6" y="10"/>
-                                    <rect fill="#334155" height="2" width="2" x="4" y="10"/>
-                                    <rect fill="#334155" height="2" width="2" x="10" y="10"/>
-                                    <rect fill="#94a3b8" height="3" width="1" x="5" y="11"/>
-                                    <rect fill="#94a3b8" height="3" width="1" x="10" y="11"/>
-                                    <rect fill="#334155" height="4" width="2" x="7" y="12"/>
-                                </g>
 
-                                <!-- 2. 动画动作A：抬手深吸 -->
-                                <g id="arm-up" opacity="1">
-                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.98; 1"
-                                             repeatCount="indefinite" values="1; 1; 0; 0; 1"/>
-                                    <rect fill="#334155" height="2" width="2" x="2" y="11"/>
-                                    <rect fill="#334155" height="1" width="2" x="3" y="10"/>
-                                    <rect fill="#f8fafc" height="1" width="3" x="5" y="9"/>
-                                    <rect fill="#ef4444" height="1" width="1" x="4" y="9">
-                                        <animate attributeName="fill" dur="1s" repeatCount="indefinite"
-                                                 values="#f97316; #ef4444; #fde047; #ef4444; #f97316"/>
-                                    </rect>
-                                    <rect fill="#fed7aa" height="1" width="2" x="5" y="10"/>
-                                    <rect fill="#fed7aa" height="1" width="1" x="6" y="9"/>
-                                </g>
+                            <!-- 修改后 -->
+                            <img :src="currentAvatarSvg"
+                                 class="w-full h-full scale-110"
+                                 style="image-rendering: pixelated;"
+                                 alt="Avatar">
 
-                                <!-- 3. 动画动作B：手放下、拿开香烟 -->
-                                <g id="arm-down" opacity="0">
-                                    <animate attributeName="opacity" dur="4s" keyTimes="0; 0.40; 0.42; 0.98; 1"
-                                             repeatCount="indefinite" values="0; 0; 1; 1; 0"/>
-                                    <rect fill="#334155" height="3" width="2" x="2" y="11"/>
-                                    <rect fill="#fed7aa" height="2" width="2" x="2" y="14"/>
-                                    <rect fill="#f8fafc" height="1" width="1" x="1" y="14"/>
-                                    <rect fill="#ef4444" height="1" width="1" x="0" y="14"/>
-                                    <rect fill="#cbd5e1" height="1" opacity="0" width="1" x="0" y="13">
-                                        <animate attributeName="opacity" dur="4s" keyTimes="0; 0.42; 0.45; 0.95; 1"
-                                                 repeatCount="indefinite" values="0; 0; 0.6; 0; 0"/>
-                                        <animate attributeName="y" dur="4s" keyTimes="0; 0.42; 0.95; 1"
-                                                 repeatCount="indefinite" values="13; 13; 9; 9"/>
-                                    </rect>
-                                </g>
-
-                                <!-- 4. 动画动作C：吐出的动态大团烟雾 -->
-                                <g id="exhale-smoke">
-                                    <rect fill="#a1a1aa" height="1" opacity="0" width="1" x="7" y="9">
-                                        <animate attributeName="opacity" dur="4s"
-                                                 keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1" repeatCount="indefinite"
-                                                 values="0; 0; 0; 0.8; 0; 0"/>
-                                        <animate attributeName="y" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1"
-                                                 repeatCount="indefinite" values="9; 9; 9; 5; 1; 0"/>
-                                        <animate attributeName="x" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1"
-                                                 repeatCount="indefinite" values="7; 7; 7; 5; 1; 0"/>
-                                        <animate attributeName="width" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1"
-                                                 repeatCount="indefinite" values="1; 1; 1; 2; 3; 3"/>
-                                        <animate attributeName="height" dur="4s" keyTimes="0; 0.40; 0.42; 0.55; 0.90; 1"
-                                                 repeatCount="indefinite" values="1; 1; 1; 2; 2; 2"/>
-                                    </rect>
-                                    <rect fill="#cbd5e1" height="1" opacity="0" width="1" x="8" y="8">
-                                        <animate attributeName="opacity" dur="4s"
-                                                 keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1" repeatCount="indefinite"
-                                                 values="0; 0; 0; 0.6; 0; 0"/>
-                                        <animate attributeName="y" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1"
-                                                 repeatCount="indefinite" values="9; 9; 9; 4; 0; -1"/>
-                                        <animate attributeName="x" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1"
-                                                 repeatCount="indefinite" values="8; 8; 8; 7; 5; 4"/>
-                                        <animate attributeName="width" dur="4s" keyTimes="0; 0.40; 0.45; 0.60; 0.95; 1"
-                                                 repeatCount="indefinite" values="1; 1; 1; 2; 3; 3"/>
-                                    </rect>
-                                </g>
-                            </svg>
                         </div>
 
                         <!-- 👆 relative 容器结束 -->
@@ -1008,7 +930,7 @@
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
                                 <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">27. Sketchfab</span>
-                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">官方作品集</span>
+                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">模型官方推荐</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://sketchfab.com/Sketchfab/collections"
@@ -1713,9 +1635,9 @@
                     </div>
                 </div>
 
-                <!-- 视频放送板块 -->
+                <!-- 3D模型板块 -->
                 <div class="space-y-4 flex  flex-col h-full max-h-full" v-if="currentTab === 'model'">
-                    <h2 class="text-lg md:text-xl tab-title mb-4 font-bold shrink-0">> 3D模型</h2>
+                    <h2 class="text-lg md:text-xl tab-title mb-4 font-bold shrink-0">> 综合创意</h2>
                     <div class="flex flex-col space-y-4 overflow-y-auto hide-scrollbar flex-1 pb-6 pt-2 px-2 -mx-2">
 
                         <!-- 1. 居民街区实景扫描 -->
@@ -1767,6 +1689,74 @@
                             </div>
                             <!-- 👇 指向对应的 viewer.html 👇 -->
                             <button @click="openGame('圣波利卡普天主教堂', './models/圣波利卡普天主教堂/viewer.html')"
+                                    class="cursor-pointer text-[#6366f1] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#6366f1] border border-[#6366f1]/50 hover:border-[#6366f1] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(99,102,241,0)] hover:shadow-[0_0_15px_rgba(99,102,241,0.4)]">
+                                OPEN
+                            </button>
+                        </div>
+
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex items-center space-x-4 overflow-hidden">
+                                <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
+                                    <span class="text-xl">🛏️</span>
+                                </div>
+                                <div class="flex flex-col truncate">
+                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">梵高阿尔勒的卧室</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">By ruslans3d</span>
+                                </div>
+                            </div>
+                            <!-- 👇 指向对应的 viewer.html 👇 -->
+                            <button @click="openGame('梵高阿尔勒的卧室', './models/梵高阿尔勒的卧室/viewer.html')"
+                                    class="cursor-pointer text-[#6366f1] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#6366f1] border border-[#6366f1]/50 hover:border-[#6366f1] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(99,102,241,0)] hover:shadow-[0_0_15px_rgba(99,102,241,0.4)]">
+                                OPEN
+                            </button>
+                        </div>
+
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex items-center space-x-4 overflow-hidden">
+                                <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
+                                    <span class="text-xl">💻</span>
+                                </div>
+                                <div class="flex flex-col truncate">
+                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">电脑与虚拟桌面交互</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">By Henry Heffernan</span>
+                                </div>
+                            </div>
+                            <!-- 👇 直接通过 openGame 挂载外部网址 👇 -->
+                            <button @click="openGame('电脑与虚拟桌面交互', 'https://henryheffernan.com/')"
+                                    class="cursor-pointer text-[#6366f1] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#6366f1] border border-[#6366f1]/50 hover:border-[#6366f1] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(99,102,241,0)] hover:shadow-[0_0_15px_rgba(99,102,241,0.4)]">
+                                OPEN
+                            </button>
+                        </div>
+
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex items-center space-x-4 overflow-hidden">
+                                <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
+                                    <span class="text-xl">🏡</span>
+                                </div>
+                                <div class="flex flex-col truncate">
+                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">微缩小房间</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">By 3DECraft</span>
+                                </div>
+                            </div>
+                            <!-- 👇 指向对应的 viewer.html 👇 -->
+                            <button @click="openGame('微缩小房间', './models/微缩小房间/viewer.html')"
+                                    class="cursor-pointer text-[#6366f1] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#6366f1] border border-[#6366f1]/50 hover:border-[#6366f1] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(99,102,241,0)] hover:shadow-[0_0_15px_rgba(99,102,241,0.4)]">
+                                OPEN
+                            </button>
+                        </div>
+
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex items-center space-x-4 overflow-hidden">
+                                <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
+                                    <span class="text-xl">📚</span>
+                                </div>
+                                <div class="flex flex-col truncate">
+                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">无限放大艺术</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">By Nikolaus Baumgarten</span>
+                                </div>
+                            </div>
+                            <!-- 👇 直接通过 openGame 挂载外部网址 👇 -->
+                            <button @click="openGame('无限放大艺术', 'https://zoomquilt.org/')"
                                     class="cursor-pointer text-[#6366f1] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#6366f1] border border-[#6366f1]/50 hover:border-[#6366f1] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(99,102,241,0)] hover:shadow-[0_0_15px_rgba(99,102,241,0.4)]">
                                 OPEN
                             </button>
@@ -1998,6 +1988,22 @@
 
     createApp({
         setup() {
+
+            // 👇 新增：根据当前状态动态匹配对应的 SVG 文件路径
+            const currentAvatarSvg = computed(() => {
+                const statusMap = {
+                    sleeping: './svg/sleeping_avatar.svg',
+                    listening: './svg/listening_avatar.svg',
+                    working: './svg/working_avatar.svg',
+                    'slacking off': './svg/slacking_avatar.svg',
+                    coding: './svg/coding_avatar.svg',
+                    smoking: './svg/smoking_avatar.svg',
+                    swimming: './svg/swimming_avatar.svg',
+                    gaming: './svg/gaming_avatar.svg'
+                };
+                return statusMap[currentStatus.value] || './svg/smoking_avatar.svg';
+            });
+
             // 👇 新增：Emoji 逻辑 👇
             const showEmojiPicker = ref(false);
             const emojis = ['😂', '❤️', '🤣', '👍', '😭', '🙏', '😘', '🥰', '😍', '😊', '🤔', '🔥', '👏', '🎉', '👀'];
@@ -2261,12 +2267,12 @@
             };
 
             const menuItems = ref([
-                {id: 'about', title: '我的简介', icon: '👾', color: '#38bdf8'},
+                {id: 'about', title: '我的简介', icon: '🤪', color: '#38bdf8'},
                 {id: 'online', title: '在线使用', icon: '🌐', color: '#4ade80'},
                 {id: 'download', title: '文件下载', icon: '📦', color: '#facc15'},
                 {id: 'music', title: '电子音乐', icon: '🎵', color: '#a855f7'},
                 {id: 'games', title: '复古游戏', icon: '🎮', color: '#ef4444'},
-                {id: 'model', title: '模型空间', icon: '🧊', color: '#6366f1'}
+                {id: 'model', title: '创意空间', icon: '🧊', color: '#6366f1'}
             ]);
 
             const currentTab = ref('about');
@@ -2678,18 +2684,19 @@
                 setInterval(updateClock, 1000);
 
                 // 👇 修改：聊天气泡的定时器逻辑 (15秒一次，随机文本) 👇
+                // 修改前后的定时器对比
                 setInterval(() => {
-                    // 从数组中随机挑一句话赋值给气泡
-                    const randomIdx = Math.floor(Math.random() * bubbleGreetings.length);
-                    bubbleText.value = bubbleGreetings[randomIdx];
+                    // 👇 新增：只有处于 smoking 状态时才随机挑一句话弹出
+                    if (currentStatus.value === 'smoking') {
+                        const randomIdx = Math.floor(Math.random() * bubbleGreetings.length);
+                        bubbleText.value = bubbleGreetings[randomIdx];
 
-                    showBubble.value = true;
-                    // 气泡停留 4 秒后自动消失
-                    setTimeout(() => {
-                        showBubble.value = false;
-                    }, 4000);
-                }, 15000); // 15000 毫秒 = 15 秒
-                // 👆 修改结束 👆
+                        showBubble.value = true;
+                        setTimeout(() => {
+                            showBubble.value = false;
+                        }, 4000);
+                    }
+                }, 15000);
 
 
                 // 👇 新增这块：强行拦截 BFCache，解决后退时动画失效的问题 👇
@@ -2810,7 +2817,8 @@
                 showEmojiPicker, emojis, insertEmoji,
                 attachments, fileInput, triggerFileInput, handleFileChange, removeAttachment,
                 isRecording, toggleRecording, clearMailModal,
-                toggleAudioPreview // <--- 把这个加在最后面！
+                toggleAudioPreview, // <--- 把这个加在最后面！
+                currentAvatarSvg
 // ...
             };
         }

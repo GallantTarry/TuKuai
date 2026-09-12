@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+    <!-- 0. 背景层：极简的深灰色办公隔断与桌面，防止喧宾夺主 -->
+    <g id="office-bg">
+        <rect width="16" height="12" fill="#1e293b"/> <!-- 深灰色墙面 -->
+        <rect x="0" y="12" width="16" height="4" fill="#334155"/> <!-- 办公桌面 -->
+        <rect x="0" y="12" width="16" height="1" fill="#0f172a"/> <!-- 桌面边缘分割线 -->
+
+        <!-- 左侧仅保留极简的显示器侧边发光点缀 -->
+        <rect x="0" y="4" width="2" height="6" fill="#020617"/>
+        <rect x="1" y="5" width="1" height="4" fill="#38bdf8" opacity="0.3"/>
+        <rect x="0" y="10" width="2" height="1" fill="#475569"/>
+    </g>
+
+    <!-- 1. 绝对原汁原味的基础身体 (一行代码未改，完全复刻原版) -->
+    <g id="base-avatar">
+        <rect fill="#292524" height="5" width="1" x="3" y="4"/>
+        <rect fill="#292524" height="5" width="1" x="12" y="4"/>
+        <rect fill="#fed7aa" height="5" width="8" x="4" y="5"/>
+        <rect fill="#fdba74" height="1" width="8" x="4" y="9"/>
+        <rect fill="#f97316" height="1" width="2" x="7" y="9"/>
+        <rect fill="#1c1917" height="1" width="2" x="5" y="7"/>
+        <rect fill="#1c1917" height="1" width="2" x="9" y="7"/>
+        <rect fill="#292524" height="3" width="8" x="4" y="2"/>
+        <rect fill="#292524" height="1" width="2" x="5" y="1"/>
+        <rect fill="#292524" height="1" width="3" x="8" y="1"/>
+        <rect fill="#292524" height="1" width="2" x="4" y="5"/>
+        <rect fill="#292524" height="1" width="2" x="7" y="5"/>
+        <rect fill="#292524" height="1" width="1" x="11" y="5"/>
+        <rect fill="#475569" height="5" width="12" x="2" y="11"/>
+        <rect fill="#475569" height="1" width="10" x="3" y="10"/>
+        <rect fill="#fdba74" height="1" width="4" x="6" y="10"/>
+        <rect fill="#334155" height="2" width="2" x="4" y="10"/>
+        <rect fill="#334155" height="2" width="2" x="10" y="10"/>
+        <rect fill="#94a3b8" height="3" width="1" x="5" y="11"/>
+        <rect fill="#94a3b8" height="3" width="1" x="10" y="11"/>
+        <rect fill="#334155" height="4" width="2" x="7" y="12"/>
+    </g>
+
+    <!-- 桌面固定彩蛋：Manner 咖啡 (白杯黑底) 放在最右侧不挡人物 -->
+    <g id="manner-coffee">
+        <rect x="13" y="9" width="3" height="3" fill="#f8fafc"/> <!-- 白杯身 -->
+        <rect x="13" y="12" width="3" height="1" fill="#1c1917"/> <!-- 黑底托 -->
+        <rect x="14" y="10" width="1" height="1" fill="#1c1917"/> <!-- 黑色Logo点 -->
+        <!-- 咖啡热气冒出动画 -->
+        <rect x="14" y="6" width="1" height="2" fill="#cbd5e1" opacity="0">
+            <animate attributeName="y" dur="2s" values="7; 5; 7" repeatCount="indefinite"/>
+            <animate attributeName="opacity" dur="2s" values="0; 0.6; 0" repeatCount="indefinite"/>
+        </rect>
+    </g>
+
+    <!-- 2. 状态A：举着手机摸鱼 (前4秒) -->
+    <g id="slacking">
+        <animate attributeName="opacity" dur="6s" keyTimes="0; 0.65; 0.68; 0.97; 1" values="1; 1; 0; 0; 1" repeatCount="indefinite"/>
+
+        <!-- 像素小技巧：用肤色遮住原本的眼睛，在下方画新眼睛，实现“低头看手机”的错觉 -->
+        <rect fill="#fed7aa" height="1" width="2" x="5" y="7"/>
+        <rect fill="#fed7aa" height="1" width="2" x="9" y="7"/>
+        <rect fill="#1c1917" height="1" width="2" x="5" y="8"/>
+        <rect fill="#1c1917" height="1" width="2" x="9" y="8"/>
+
+        <!-- 大大的手机本体 -->
+        <rect x="5" y="10" width="6" height="5" fill="#374151" rx="0.5"/>
+        <rect x="6" y="10" width="4" height="4" fill="#e0f2fe">
+            <animate attributeName="fill" dur="2s" values="#e0f2fe; #bae6fd; #e0f2fe" repeatCount="indefinite"/>
+        </rect>
+
+        <!-- 托着手机的双手 -->
+        <rect x="4" y="11" width="2" height="2" fill="#fed7aa"/>
+        <rect x="10" y="11" width="2" height="2" fill="#fed7aa"/>
+
+        <!-- 动态刷屏幕的大拇指 -->
+        <rect x="8" y="12" width="1" height="1" fill="#fed7aa">
+            <animate attributeName="y" dur="0.4s" values="13; 11; 13" repeatCount="indefinite"/>
+        </rect>
+    </g>
+
+    <!-- 3. 状态B：被老板发现，狂敲键盘 (后2秒) -->
+    <g id="working" opacity="0">
+        <animate attributeName="opacity" dur="6s" keyTimes="0; 0.65; 0.68; 0.97; 1" values="0; 0; 1; 1; 0" repeatCount="indefinite"/>
+
+        <!-- 遮挡住原本微笑的橘色嘴巴，变成紧张的深色“一字嘴” -->
+        <rect fill="#fdba74" height="1" width="2" x="7" y="9"/>
+        <rect fill="#1c1917" height="1" width="2" x="7" y="9"/>
+
+        <!-- 老板预警感叹号，剧烈闪烁 -->
+        <rect x="13" y="2" width="1" height="3" fill="#ef4444">
+            <animate attributeName="opacity" dur="0.2s" values="1; 0.3; 1" repeatCount="indefinite"/>
+        </rect>
+        <rect x="13" y="6" width="1" height="1" fill="#ef4444"/>
+
+        <!-- 额头滑落的冷汗 -->
+        <rect x="12" y="5" width="1" height="1" fill="#7dd3fc">
+            <animate attributeName="y" dur="1s" values="5; 8" repeatCount="indefinite"/>
+            <animate attributeName="opacity" dur="1s" values="1; 0" repeatCount="indefinite"/>
+        </rect>
+
+        <!-- 桌面上的机械键盘：白底，红色ESC键和回车键 -->
+        <rect x="3" y="13" width="10" height="2" fill="#e2e8f0"/>
+        <rect x="3" y="13" width="1" height="1" fill="#ef4444"/>
+        <rect x="11" y="14" width="1" height="1" fill="#ef4444"/>
+        <rect x="5" y="14" width="4" height="1" fill="#94a3b8"/>
+
+        <!-- 在键盘上疯狂左右横移打字的双手 -->
+        <rect x="4" y="12" width="2" height="1" fill="#fed7aa">
+            <animate attributeName="y" dur="0.1s" values="12; 12.5; 12" repeatCount="indefinite"/>
+            <animate attributeName="x" dur="0.2s" values="4; 5; 4" repeatCount="indefinite"/>
+        </rect>
+        <rect x="9" y="12" width="2" height="1" fill="#fed7aa">
+            <animate attributeName="y" dur="0.12s" values="12; 12.5; 12" repeatCount="indefinite"/>
+            <animate attributeName="x" dur="0.25s" values="9; 8; 9" repeatCount="indefinite"/>
+        </rect>
+    </g>
+</svg>

@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+    <defs>
+        <!-- 模拟深夜显示器打在角色身上的动态屏幕光效 -->
+        <radialGradient id="screen-glow" cx="50%" cy="85%" r="100%">
+            <!-- 核心亮部：随着游戏画面切换改变颜色 -->
+            <stop offset="0%" stop-opacity="0.45">
+                <animate attributeName="stop-color" dur="4s" repeatCount="indefinite" values="#38bdf8; #818cf8; #c084fc; #34d399; #38bdf8"/>
+                <animate attributeName="stop-opacity" dur="2s" repeatCount="indefinite" values="0.35; 0.55; 0.35"/>
+            </stop>
+            <!-- 中景过渡 -->
+            <stop offset="50%" stop-color="#1e1b4b" stop-opacity="0.3">
+                <animate attributeName="stop-color" dur="4s" repeatCount="indefinite" values="#1e1b4b; #312e81; #1e1b4b"/>
+            </stop>
+            <!-- 边缘暗角：压暗四周，突出深夜氛围 -->
+            <stop offset="100%" stop-color="#020617" stop-opacity="0.85"/>
+        </radialGradient>
+    </defs>
+
+    <!-- 0. 基础背景：暗黑系深夜砖墙 -->
+    <g id="brick-bg">
+        <rect width="16" height="16" fill="#0f172a"/>
+        <!-- 像素级砖缝，极暗的午夜蓝 -->
+        <path d="M0,2h16v1H0z M0,5h16v1H0z M0,8h16v1H0z M0,11h16v1H0z M0,14h16v1H0z
+                 M3,0h1v2H3z M8,0h1v2H8z M13,0h1v2H13z
+                 M1,3h1v2H1z M6,3h1v2H6z M11,3h1v2H11z
+                 M4,6h1v2H4z M9,6h1v2H9z M14,6h1v2H14z
+                 M2,9h1v2H2z M7,9h1v2H7z M12,9h1v2H12z
+                 M5,12h1v2H5z M10,12h1v2H10z M15,12h1v2H15z
+                 M3,15h1v1H3z M8,15h1v1H8z M13,15h1v1H13z" fill="#020617"/>
+    </g>
+
+    <!-- 1. 基础身体 (打游戏姿态) -->
+    <g id="base-avatar">
+        <!-- 头部与发型 (100%还原原版) -->
+        <rect fill="#292524" height="5" width="1" x="3" y="4"/>
+        <rect fill="#292524" height="5" width="1" x="12" y="4"/>
+        <rect fill="#fed7aa" height="5" width="8" x="4" y="5"/>
+        <rect fill="#fdba74" height="1" width="8" x="4" y="9"/>
+        <rect fill="#f97316" height="1" width="2" x="7" y="9"/> <!-- 经典的橘色嘴巴 -->
+        <rect fill="#1c1917" height="1" width="2" x="5" y="7"/>
+        <rect fill="#1c1917" height="1" width="2" x="9" y="7"/>
+        <rect fill="#292524" height="3" width="8" x="4" y="2"/>
+        <rect fill="#292524" height="1" width="2" x="5" y="1"/>
+        <rect fill="#292524" height="1" width="3" x="8" y="1"/>
+        <rect fill="#292524" height="1" width="2" x="4" y="5"/>
+        <rect fill="#292524" height="1" width="2" x="7" y="5"/>
+        <rect fill="#292524" height="1" width="1" x="11" y="5"/>
+        <!-- 下巴/脖子阴影 -->
+        <rect fill="#fdba74" height="1" width="8" x="4" y="9"/>
+        <rect fill="#fdba74" height="1" width="4" x="6" y="10"/>
+
+        <!-- 黑眼圈 (熬夜打游戏) -->
+        <rect fill="#ea580c" height="1" width="2" x="5" y="8" opacity="0.25"/>
+        <rect fill="#ea580c" height="1" width="2" x="9" y="8" opacity="0.25"/>
+
+        <!-- 眼睛 (专注盯屏幕) -->
+        <rect fill="#1c1917" height="1" width="2" x="5" y="7"/>
+        <rect fill="#1c1917" height="1" width="2" x="9" y="7"/>
+        <!-- 屏幕在瞳孔里的反光 -->
+        <rect fill="#7dd3fc" height="1" width="1" x="5" y="7"/>
+        <rect fill="#7dd3fc" height="1" width="1" x="9" y="7"/>
+
+        <!-- 眨眼动画蒙版 -->
+        <g>
+            <animate attributeName="opacity" dur="5s" keyTimes="0; 0.92; 0.94; 0.96; 1" values="0; 0; 1; 0; 0" repeatCount="indefinite" />
+            <rect x="5" y="7" width="2" height="1" fill="#fed7aa" />
+            <rect x="9" y="7" width="2" height="1" fill="#fed7aa" />
+        </g>
+
+        <!-- 嘴巴 (微微张开) -->
+        <rect fill="#7f1d1d" height="1" width="2" x="7" y="9"/>
+
+        <!-- 身体衣服 (深紫色连帽衫) -->
+        <rect fill="#312e81" height="1" width="2" x="4" y="10"/>
+        <rect fill="#312e81" height="1" width="2" x="10" y="10"/>
+        <rect fill="#3730a3" height="5" width="12" x="2" y="11"/>
+        <rect fill="#3730a3" height="1" width="1" x="3" y="10"/>
+        <rect fill="#3730a3" height="1" width="1" x="12" y="10"/>
+        <rect fill="#312e81" height="5" width="1" x="5" y="11"/>
+        <rect fill="#312e81" height="5" width="1" x="10" y="11"/>
+    </g>
+
+    <!-- 2. 电竞耳机与麦克风 -->
+    <g id="headset">
+        <!-- 头带 -->
+        <rect fill="#0f172a" height="1" width="8" x="4" y="1"/>
+        <rect fill="#0f172a" height="2" width="1" x="3" y="2"/>
+        <rect fill="#0f172a" height="2" width="1" x="12" y="2"/>
+        <!-- 耳罩 -->
+        <rect fill="#1e293b" height="4" width="2" x="2" y="4"/>
+        <rect fill="#1e293b" height="4" width="2" x="12" y="4"/>
+        <!-- 耳罩屏幕反光 -->
+        <rect fill="#7dd3fc" height="2" width="1" x="2" y="5" opacity="0.3"/>
+        <rect fill="#7dd3fc" height="2" width="1" x="13" y="5" opacity="0.3"/>
+        <!-- 麦克风杆与呼吸灯 -->
+        <rect fill="#1e293b" height="2" width="1" x="2" y="7"/>
+        <rect fill="#1e293b" height="1" width="2" x="3" y="8"/>
+        <rect fill="#10b981" height="1" width="1" x="4" y="8">
+            <animate attributeName="fill" dur="2s" repeatCount="indefinite" values="#10b981; #064e3b; #10b981"/>
+        </rect>
+    </g>
+
+    <!-- 3. 游戏动作：双手、手柄与按键动画 -->
+    <g id="gaming-action">
+        <!-- 手柄基础主体 -->
+        <rect fill="#111827" height="2" width="8" x="4" y="12"/>
+        <rect fill="#111827" height="1" width="2" x="4" y="14"/>
+        <rect fill="#111827" height="1" width="2" x="10" y="14"/>
+
+        <!-- 左侧方向键 (十字键) -->
+        <rect fill="#475569" height="1" width="1" x="5" y="12"/>
+        <rect fill="#475569" height="1" width="1" x="4" y="13"/>
+        <rect fill="#475569" height="1" width="1" x="6" y="13"/>
+
+        <!-- 右侧动作按键 (带有高频按压闪烁效果) -->
+        <rect fill="#ef4444" height="1" width="1" x="10" y="12">
+            <animate attributeName="opacity" dur="0.25s" values="1; 0.3; 1" repeatCount="indefinite" />
+        </rect>
+        <rect fill="#3b82f6" height="1" width="1" x="11" y="13">
+            <animate attributeName="opacity" dur="0.35s" values="1; 0.3; 1" repeatCount="indefinite" />
+        </rect>
+        <rect fill="#eab308" height="1" width="1" x="9" y="13">
+            <animate attributeName="opacity" dur="0.4s" values="0.4; 1; 0.4" repeatCount="indefinite" />
+        </rect>
+        <rect fill="#22c55e" height="1" width="1" x="10" y="14">
+            <animate attributeName="opacity" dur="0.5s" values="1; 0.5; 1" repeatCount="indefinite" />
+        </rect>
+
+        <!-- 握持手柄的手掌边缘 -->
+        <rect fill="#fed7aa" height="2" width="1" x="3" y="12"/>
+        <rect fill="#fed7aa" height="2" width="1" x="12" y="12"/>
+        <rect fill="#fed7aa" height="1" width="1" x="4" y="14"/>
+        <rect fill="#fed7aa" height="1" width="1" x="11" y="14"/>
+
+        <!-- 灵魂动画：疯狂操作的大拇指 -->
+        <!-- 左侧大拇指上下位移控制方向 -->
+        <rect fill="#fed7aa" height="1" width="1" x="5" y="11">
+            <animate attributeName="y" dur="0.35s" keyTimes="0; 0.5; 1" values="11; 12; 11" repeatCount="indefinite" />
+        </rect>
+        <!-- 右侧大拇指全方位位移狂按技能 -->
+        <rect fill="#fed7aa" height="1" width="1" x="10" y="11">
+            <animate attributeName="x" dur="0.45s" keyTimes="0; 0.33; 0.66; 1" values="10; 9; 11; 10" repeatCount="indefinite" />
+            <animate attributeName="y" dur="0.45s" keyTimes="0; 0.33; 0.66; 1" values="11; 13; 12; 11" repeatCount="indefinite" />
+        </rect>
+    </g>
+
+    <!-- 4. 全局动态光影遮罩，统一深夜氛围 -->
+    <!-- pointer-events="none" 确保这层遮罩不会影响后续如果有任何交互 -->
+    <rect width="16" height="16" fill="url(#screen-glow)" pointer-events="none"/>
+</svg>

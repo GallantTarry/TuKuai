@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+    <!-- 1. 午夜房间背景墙 -->
+    <rect fill="#0f172a" width="16" height="16" x="0" y="0"/>
+
+    <!-- 2. 左上角夜空窗户 -->
+    <rect fill="#020617" width="4" height="5" x="1" y="1"/>
+    <!-- 窗外的月亮 -->
+    <rect fill="#fef08a" width="1" height="1" x="2" y="2"/>
+    <!-- 窗外闪烁的星星 -->
+    <rect fill="#ffffff" width="1" height="1" x="4" y="4">
+        <animate attributeName="opacity" values="0; 1; 0" dur="2.5s" repeatCount="indefinite"/>
+    </rect>
+    <!-- 窗框 -->
+    <rect fill="none" stroke="#1e293b" stroke-width="1" width="6" height="7" x="0" y="0"/>
+
+    <!-- 3. 右侧床头柜与午夜电子钟 -->
+    <rect fill="#451a03" width="3" height="4" x="13" y="6"/>
+    <!-- 电子钟黑色屏幕 -->
+    <rect fill="#000000" width="2" height="1" x="14" y="7"/>
+    <!-- 电子钟红色闪烁指示灯 -->
+    <rect fill="#ef4444" width="1" height="1" x="14" y="7">
+        <animate attributeName="opacity" values="1; 0.2; 1" dur="1s" repeatCount="indefinite"/>
+    </rect>
+
+    <!-- 4. 灰白色的枕头 -->
+    <rect fill="#e2e8f0" width="14" height="6" rx="1" x="1" y="5"/>
+    <rect fill="#cbd5e1" width="12" height="4" x="2" y="6"/>
+
+    <!-- 5. 修复图层顺序后的灰衣服小人本体 -->
+    <g id="sleeping-avatar">
+        <!-- 先画脸颊皮肤（底层） -->
+        <rect fill="#fed7aa" height="5" width="8" x="4" y="5"/>
+        <rect fill="#fdba74" height="1" width="8" x="4" y="9"/>
+
+        <!-- 再画头发轮廓（覆盖在皮肤上，露出刘海） -->
+        <rect fill="#292524" height="5" width="1" x="3" y="4"/>
+        <rect fill="#292524" height="5" width="1" x="12" y="4"/>
+        <rect fill="#292524" height="3" width="8" x="4" y="2"/>
+        <rect fill="#292524" height="1" width="2" x="5" y="1"/>
+        <rect fill="#292524" height="1" width="3" x="8" y="1"/>
+        <rect fill="#292524" height="1" width="2" x="4" y="5"/> <!-- 刘海1 -->
+        <rect fill="#292524" height="1" width="2" x="7" y="5"/> <!-- 刘海2 -->
+        <rect fill="#292524" height="1" width="1" x="11" y="5"/> <!-- 刘海3 -->
+
+        <!-- 安详闭着的双眼 -->
+        <rect fill="#1c1917" height="1" width="2" x="5" y="8"/>
+        <rect fill="#1c1917" height="1" width="2" x="9" y="8"/>
+
+        <!-- 熟睡微微张开的嘴巴 (模拟轻微打鼾) -->
+        <rect fill="#ea580c" height="1" width="1" x="7" y="9">
+            <animate attributeName="width" values="1; 2; 1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+
+        <!-- 绝对保留的灰色卫衣 (露出被子外的部分) -->
+        <rect fill="#475569" height="5" width="12" x="2" y="11"/>
+        <rect fill="#475569" height="1" width="10" x="3" y="10"/>
+        <rect fill="#fdba74" height="1" width="4" x="6" y="10"/> <!-- 脖颈 -->
+        <rect fill="#334155" height="2" width="2" x="4" y="10"/> <!-- 衣领阴影 -->
+        <rect fill="#334155" height="2" width="2" x="10" y="10"/>
+        <rect fill="#94a3b8" height="3" width="1" x="5" y="11"/> <!-- 标志性帽绳 -->
+        <rect fill="#94a3b8" height="3" width="1" x="10" y="11"/>
+        <rect fill="#334155" height="4" width="2" x="7" y="12"/> <!-- 衣服中线 -->
+    </g>
+
+    <!-- 6. 动漫风熟睡鼻涕泡 -->
+    <g id="snot-bubble" opacity="0.7">
+        <rect fill="#bae6fd" x="7" y="8" width="1" height="1">
+            <animate attributeName="width" values="1; 2; 1" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="height" values="1; 2; 1" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="x" values="7; 6; 7" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="y" values="8; 7; 8" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect fill="#ffffff" x="7" y="8" width="1" height="1">
+            <animate attributeName="x" values="7; 6; 7" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="y" values="8; 7; 8" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0; 1; 0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+    </g>
+
+    <!-- 7. 盖在胸口的被子 (自带呼吸起伏动画) -->
+    <g id="blanket">
+        <!-- 被子主体 -->
+        <rect fill="#3b82f6" width="16" height="4" x="0" y="13">
+            <animate attributeName="y" values="13; 12; 13" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="height" values="3; 4; 3" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- 蓝色的被套折边 -->
+        <rect fill="#60a5fa" width="16" height="1" x="0" y="12">
+            <animate attributeName="y" values="12; 11; 12" dur="3s" repeatCount="indefinite"/>
+        </rect>
+    </g>
+
+    <!-- 8. Zzz 梦境字符升空动画 -->
+    <g id="zzz" fill="#94a3b8">
+        <path d="M0,0 h2 v1 h-1 v1 h1 v1 h-2 v-1 h1 v-1 h-1 z" opacity="0">
+            <animateTransform attributeName="transform" type="translate" values="11,6; 12,3; 13,0" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0; 1; 0" dur="3s" repeatCount="indefinite"/>
+        </path>
+        <path d="M0,0 h2 v1 h-1 v1 h1 v1 h-2 v-1 h1 v-1 h-1 z" opacity="0">
+            <animateTransform attributeName="transform" type="translate" values="10,5; 11,2; 12,-1" dur="3s" begin="1.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0; 1; 0" dur="3s" begin="1.5s" repeatCount="indefinite"/>
+        </path>
+    </g>
+</svg>

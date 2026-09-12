@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>土块3D空间</title>
+
+    <!-- 💡 核心黑科技：直接使用 Emoji 作为网页独立标签的图标 -->
+    <link rel="icon" type="image/svg+xml" href="../../imgs/3d-cube.svg">
+
+    <!-- 引入 3D 渲染核心 -->
+    <script type="module" src="../../js/model-viewer.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            /* 🌌 换成质感拉满的深空径向渐变背景，替代单调的纯黑 */
+            background: radial-gradient(circle at center, #1e293b 0%, #050505 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        model-viewer {
+            width: 100vw;
+            /* 👇 核心修复 1：引入 dvh (动态视口高度)，解决手机端上下工具栏导致的垂直不居中 */
+            height: 100vh;
+            height: 100dvh;
+            outline: none;
+        }
+
+        model-viewer::part(default-progress-bar) {
+            background-color: #6366f1;
+            height: 3px;
+            border-radius: 2px;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.8);
+        }
+
+        .loading-text {
+            position: absolute;
+            top: 50%;
+            /* 👇 核心修复 2：放弃 left:50% 的硬定位，改用全宽容器 + 文本居中 */
+            left: 0;
+            width: 100%;
+            transform: translateY(-50%);
+            text-align: center;
+
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            letter-spacing: 4px;
+            /* 👇 核心修复 3：左侧补齐 4px 的内边距，完美抵消字间距带来的向左视觉偏移 */
+            text-indent: 4px;
+
+            font-weight: bold;
+            pointer-events: none;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 还原原生贴图，恢复默认摇摆提示 -->
+<model-viewer
+        src="./scene.gltf"
+        alt="居民街区实景扫描模型"
+        auto-rotate
+        rotation-per-second="3deg"
+        camera-controls>
+
+    <!-- 利用插槽 (slot) 覆盖加载阶段的空白 -->
+    <div slot="poster" class="loading-text">ENGINE LOADING...</div>
+
+</model-viewer>
+</body>
+</html>

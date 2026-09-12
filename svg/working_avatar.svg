@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+    <!-- 1. 白天办公室背景 (Wall, Window, View, Desk Highlights) -->
+    <!-- 1.1 Office Wall (Base Layer) -->
+    <rect fill="#e2e8f0" height="14" width="16" x="0" y="0"/>
+
+    <!-- 1.2 Large Multi-Paned Window & External View -->
+    <g id="daytime-window">
+        <!-- Window Frame (Dark gray-blue) -->
+        <rect fill="#475569" height="9" width="16" x="0" y="0"/>
+
+        <!-- Bright Sky and View (Inner panes) -->
+        <rect fill="#f8fafc" height="7" width="14" x="1" y="1"/> <!-- Main glass area -->
+
+        <!-- External Pixelated View (Sky, Clouds, Trees, Building) -->
+        <!-- Sky (Light blue) -->
+        <rect fill="#bfdbfe" height="6" width="12" x="2" y="2"/>
+        <!-- Clouds (White) -->
+        <rect fill="#ffffff" height="1" width="3" x="3" y="3"/>
+        <rect fill="#ffffff" height="1" width="2" x="8" y="2"/>
+        <!-- Trees (Green path) -->
+        <path d="M 10 4 L 14 4 L 14 7 L 11 7 L 11 6 L 10 6 Z" fill="#4ade80"/>
+        <!-- Distant Pixelated Building -->
+        <rect fill="#94a3b8" height="4" width="2" x="13" y="4"/>
+
+        <!-- Window Mullions/Panes (Pixel-art dark blue-gray) -->
+        <path d="M 0 4 H 16 M 8 0 V 9 M 4 0 V 4 M 12 0 V 4" fill="none" stroke="#475569" stroke-width="0.5"/>
+    </g>
+
+    <!-- 1.3 Natural Window Light Interaction on Desk -->
+    <rect fill="#fdf2f8" height="2" width="10" x="3" y="12" opacity="0.3"/> <!-- Sunbeam highlight on desk -->
+
+    <!-- 1.4 Simplified Plant on Desk -->
+    <g id="desk-plant">
+        <rect fill="#c2410c" height="2" width="2" x="1.5" y="12"/> <!-- Terracotta pot -->
+        <path d="M 1.5 10 L 3.5 10 L 3.5 12 L 2.5 12 L 2.5 11 L 1.5 11 Z" fill="#22c55e"/> <!-- Cactus -->
+    </g>
+
+    <!-- ********* ORIGINAL SVG ELEMENTS START HERE ********* -->
+
+    <!-- 2. 屏幕幽蓝反光 (模拟显示器光线打在脸上) -->
+    <rect fill="#38bdf8" height="5" width="8" x="4" y="5" opacity="0">
+        <animate attributeName="opacity" values="0.05; 0.15; 0.05; 0.2; 0.05" dur="4s" repeatCount="indefinite"/>
+    </rect>
+
+    <!-- 3. 原汁原味的基础身体与衣服 -->
+    <g id="base-avatar">
+        <!-- 先画脸部基础（放在底层） -->
+        <rect fill="#fed7aa" height="5" width="8" x="4" y="5"/>
+        <rect fill="#fdba74" height="1" width="8" x="4" y="9"/>
+        <rect fill="#ea580c" height="1" width="2" x="7" y="9"/> <!-- 专注抿紧的嘴 -->
+
+        <!-- 再画头发与头部轮廓（盖在脸部上方） -->
+        <rect fill="#292524" height="5" width="1" x="3" y="4"/>
+        <rect fill="#292524" height="5" width="1" x="12" y="4"/>
+        <rect fill="#292524" height="3" width="8" x="4" y="2"/>
+        <rect fill="#292524" height="1" width="2" x="5" y="1"/>
+        <rect fill="#292524" height="1" width="3" x="8" y="1"/>
+        <!-- 修复：以下刘海现在会正确盖在额头皮肤上 -->
+        <rect fill="#292524" height="1" width="2" x="4" y="5"/>
+        <rect fill="#292524" height="1" width="2" x="7" y="5"/>
+        <rect fill="#292524" height="1" width="1" x="11" y="5"/>
+
+        <!-- 身体/连帽衫 -->
+        <rect fill="#475569" height="5" width="12" x="2" y="11"/>
+        <rect fill="#475569" height="1" width="10" x="3" y="10"/>
+        <rect fill="#fdba74" height="1" width="4" x="6" y="10"/>
+        <rect fill="#334155" height="2" width="2" x="4" y="10"/>
+        <rect fill="#334155" height="2" width="2" x="10" y="10"/>
+        <rect fill="#94a3b8" height="3" width="1" x="5" y="11"/>
+        <rect fill="#94a3b8" height="3" width="1" x="10" y="11"/>
+        <rect fill="#334155" height="4" width="2" x="7" y="12"/>
+    </g>
+
+    <!-- 4. 动态眼睛：模拟看代码时的左右扫视 -->
+    <g id="reading-eyes">
+        <rect fill="#1c1917" height="1" width="1" x="5" y="7">
+            <animate attributeName="x" values="5; 6; 6; 5; 5" dur="3.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect fill="#1c1917" height="1" width="1" x="9" y="7">
+            <animate attributeName="x" values="9; 10; 10; 9; 9" dur="3.5s" repeatCount="indefinite"/>
+        </rect>
+    </g>
+
+    <!-- 5. 努力打工的汗滴 -->
+    <g id="sweat">
+        <rect fill="#7dd3fc" height="1" width="1" x="11" y="6" opacity="0">
+            <animate attributeName="y" values="6; 7; 8; 8; 6" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0; 1; 1; 0; 0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+    </g>
+
+    <!-- 6. 办公桌与续命咖啡 -->
+    <g id="desk-coffee">
+        <!-- 办公桌遮挡下半身 -->
+        <rect fill="#1e293b" height="2" width="16" x="0" y="14"/>
+        <rect fill="#0f172a" height="1" width="16" x="0" y="15"/>
+
+        <!-- 红色咖啡杯 -->
+        <rect fill="#ef4444" height="2" width="2" x="13" y="12"/>
+        <rect fill="#f8fafc" height="1" width="1" x="15" y="12"/>
+
+        <!-- 咖啡热气 -->
+        <rect fill="#cbd5e1" height="1" width="1" x="13" y="11" opacity="0">
+            <animate attributeName="y" values="11; 9; 7" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0; 0.8; 0" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="x" values="13; 14; 13" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect fill="#cbd5e1" height="1" width="1" x="14" y="10" opacity="0">
+            <animate attributeName="y" values="10; 8; 6" dur="2.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0; 0.6; 0" dur="2.5s" repeatCount="indefinite"/>
+            <animate attributeName="x" values="14; 13; 14" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+    </g>
+
+    <!-- 7. RGB机械键盘与疯狂敲击的双手 -->
+    <g id="typing">
+        <!-- 键盘底座 -->
+        <rect fill="#475569" height="1" width="10" x="3" y="14"/>
+
+        <!-- RGB 跑马灯按键 -->
+        <rect fill="#38bdf8" height="1" width="2" x="4" y="14">
+            <animate attributeName="fill" values="#38bdf8; #a855f7; #4ade80; #38bdf8" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect fill="#a855f7" height="1" width="3" x="7" y="14">
+            <animate attributeName="fill" values="#a855f7; #4ade80; #38bdf8; #a855f7" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect fill="#4ade80" height="1" width="2" x="11" y="14">
+            <animate attributeName="fill" values="#4ade80; #38bdf8; #a855f7; #4ade80" dur="2s" repeatCount="indefinite"/>
+        </rect>
+
+        <!-- 疯狂打字的左手 -->
+        <rect fill="#fed7aa" height="1" width="2" x="3" y="13">
+            <animate attributeName="y" values="13; 14; 13; 13; 14; 13" dur="0.3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- 疯狂打字的右手 -->
+        <rect fill="#fed7aa" height="1" width="2" x="11" y="13">
+            <animate attributeName="y" values="14; 13; 13; 14; 13; 14" dur="0.4s" repeatCount="indefinite"/>
+        </rect>
+    </g>
+</svg>

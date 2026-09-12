@@ -1,0 +1,11 @@
+Model Information:
+* title:	Camera Limits Demo: Van Gogh - Bedroom in Arles
+* source:	https://sketchfab.com/3d-models/camera-limits-demo-van-gogh-bedroom-in-arles-daefab319a584e559443e39ff05e84fa
+* author:	Sketchfab (https://sketchfab.com/Sketchfab)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Camera Limits Demo: Van Gogh - Bedroom in Arles" (https://sketchfab.com/3d-models/camera-limits-demo-van-gogh-bedroom-in-arles-daefab319a584e559443e39ff05e84fa) by Sketchfab (https://sketchfab.com/Sketchfab) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

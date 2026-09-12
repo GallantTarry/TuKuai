@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+    <defs>
+        <!-- 音乐律动背景光晕渐变 -->
+        <radialGradient id="music-glow" cx="50%" cy="50%" r="70%">
+            <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+            <stop offset="50%" stop-color="#8b5cf6" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+        </radialGradient>
+    </defs>
+
+    <!-- 0. 背景层：暗色调音乐空间 -->
+    <rect width="16" height="16" fill="#0f172a"/>
+    <rect width="16" height="16" fill="url(#music-glow)"/>
+
+    <!-- 1. 动态跳动的音乐音符与波纹特效 -->
+    <g id="music-notes">
+        <!-- 左侧飘动的小音符 -->
+        <rect x="2" y="7" width="1" height="2" fill="#38bdf8" opacity="0">
+            <animate attributeName="y" dur="2s" values="8; 4; 2" repeatCount="indefinite"/>
+            <animate attributeName="opacity" dur="2s" values="0; 0.8; 0" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="6" width="2" height="1" fill="#38bdf8" opacity="0">
+            <animate attributeName="y" dur="2s" values="7; 3; 1" repeatCount="indefinite"/>
+            <animate attributeName="opacity" dur="2s" values="0; 0.8; 0" repeatCount="indefinite"/>
+        </rect>
+
+        <!-- 右侧飘动的高音符 -->
+        <rect x="13" y="6" width="1" height="2" fill="#c084fc" opacity="0">
+            <animate attributeName="y" dur="1.6s" values="7; 3; 1" repeatCount="indefinite"/>
+            <animate attributeName="opacity" dur="1.6s" values="0; 0.9; 0" repeatCount="indefinite"/>
+        </rect>
+        <rect x="13" y="5" width="2" height="1" fill="#c084fc" opacity="0">
+            <animate attributeName="y" dur="1.6s" values="6; 2; 0" repeatCount="indefinite"/>
+            <animate attributeName="opacity" dur="1.6s" values="0; 0.9; 0" repeatCount="indefinite"/>
+        </rect>
+    </g>
+
+    <!-- 2. 小人主体（带有微弱的上下律动动画） -->
+    <g id="avatar-with-beat">
+        <animate attributeName="transform" dur="0.8s" values="translate(0, 0); translate(0, 0.5); translate(0, 0)" repeatCount="indefinite"/>
+
+        <!-- 头部与发型 (100%还原原版) -->
+        <rect fill="#292524" height="5" width="1" x="3" y="4"/>
+        <rect fill="#292524" height="5" width="1" x="12" y="4"/>
+        <rect fill="#fed7aa" height="5" width="8" x="4" y="5"/>
+        <rect fill="#fdba74" height="1" width="8" x="4" y="9"/>
+        <rect fill="#f97316" height="1" width="2" x="7" y="9"/> <!-- 经典的橘色嘴巴 -->
+        <rect fill="#1c1917" height="1" width="2" x="5" y="7"/>
+        <rect fill="#1c1917" height="1" width="2" x="9" y="7"/>
+        <rect fill="#292524" height="3" width="8" x="4" y="2"/>
+        <rect fill="#292524" height="1" width="2" x="5" y="1"/>
+        <rect fill="#292524" height="1" width="3" x="8" y="1"/>
+        <rect fill="#292524" height="1" width="2" x="4" y="5"/>
+        <rect fill="#292524" height="1" width="2" x="7" y="5"/>
+        <rect fill="#292524" height="1" width="1" x="11" y="5"/>
+
+        <!-- 身体衣服 (100%还原原版) -->
+        <rect fill="#475569" height="5" width="12" x="2" y="11"/>
+        <rect fill="#475569" height="1" width="10" x="3" y="10"/>
+        <rect fill="#fdba74" height="1" width="4" x="6" y="10"/>
+        <rect fill="#334155" height="2" width="2" x="4" y="10"/>
+        <rect fill="#334155" height="2" width="2" x="10" y="10"/>
+        <rect fill="#94a3b8" height="3" width="1" x="5" y="11"/>
+        <rect fill="#94a3b8" height="3" width="1" x="10" y="11"/>
+        <rect fill="#334155" height="4" width="2" x="7" y="12"/>
+    </g>
+
+    <!-- 3. 头戴式耳机与律动呼吸灯 -->
+    <g id="headset">
+        <!-- 头带弧线 -->
+        <rect fill="#1e293b" height="1" width="8" x="4" y="1"/>
+        <rect fill="#1e293b" height="2" width="1" x="3" y="2"/>
+        <rect fill="#1e293b" height="2" width="1" x="12" y="2"/>
+
+        <!-- 左右耳罩 -->
+        <rect fill="#334155" height="4" width="2" x="2" y="4"/>
+        <rect fill="#334155" height="4" width="2" x="12" y="4"/>
+
+        <!-- 耳罩上的音乐律动呼吸灯 -->
+        <rect fill="#38bdf8" height="2" width="1" x="2" y="5">
+            <animate attributeName="fill" dur="0.8s" values="#38bdf8; #818cf8; #38bdf8" repeatCount="indefinite"/>
+        </rect>
+        <rect fill="#38bdf8" height="2" width="1" x="13" y="5">
+            <animate attributeName="fill" dur="0.8s" values="#38bdf8; #818cf8; #38bdf8" repeatCount="indefinite"/>
+        </rect>
+    </g>
+</svg>

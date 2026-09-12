@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+    <!-- 1. 深夜极客暗黑背景 -->
+    <rect fill="#020617" width="16" height="16" x="0" y="0"/>
+
+    <!-- 2. Matrix 幽绿矩阵代码雨 -->
+    <g id="matrix-rain" fill="#22c55e">
+        <rect width="1" height="2" x="1" y="-2" opacity="0.5">
+            <animate attributeName="y" values="-2; 16" dur="1.2s" repeatCount="indefinite"/>
+        </rect>
+        <rect width="1" height="1" x="14" y="-1" opacity="0.7">
+            <animate attributeName="y" values="-1; 16" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect width="1" height="3" x="12" y="-3" opacity="0.4">
+            <animate attributeName="y" values="-3; 16" dur="1s" begin="0.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect width="1" height="1" x="2" y="-1" opacity="0.6">
+            <animate attributeName="y" values="-1; 16" dur="1.5s" begin="0.8s" repeatCount="indefinite"/>
+        </rect>
+    </g>
+
+    <!-- 3. 原汁原味的灰衣服小人本体 (已修复发际线危机) -->
+    <g id="coding-avatar">
+        <!-- 头发和头部的底图 -->
+        <rect fill="#292524" height="5" width="1" x="3" y="4"/>
+        <rect fill="#292524" height="5" width="1" x="12" y="4"/>
+        
+        <!-- 【关键修复：必须先画脸庞皮肤】 -->
+        <rect fill="#fed7aa" height="5" width="8" x="4" y="5"/>
+        <rect fill="#fdba74" height="1" width="8" x="4" y="9"/>
+        
+        <!-- 专注且严肃的嘴巴 (一字型) -->
+        <rect fill="#ea580c" height="1" width="2" x="7" y="9"/>
+
+        <!-- 【关键修复：再把刘海画在皮肤的上面，找回灵魂！】 -->
+        <rect fill="#292524" height="3" width="8" x="4" y="2"/>
+        <rect fill="#292524" height="1" width="2" x="5" y="1"/>
+        <rect fill="#292524" height="1" width="3" x="8" y="1"/>
+        <!-- 这里就是你额头上的那三块刘海 -->
+        <rect fill="#292524" height="1" width="2" x="4" y="5"/>
+        <rect fill="#292524" height="1" width="2" x="7" y="5"/>
+        <rect fill="#292524" height="1" width="1" x="11" y="5"/>
+
+        <!-- 屏幕发光反射的蓝光眼镜 -->
+        <g id="cyber-glasses">
+            <rect fill="#0ea5e9" opacity="0.75" height="2" width="3" x="4" y="7">
+                <animate attributeName="fill" values="#0ea5e9; #38bdf8; #0ea5e9" dur="1.5s" repeatCount="indefinite"/>
+            </rect>
+            <rect fill="#0ea5e9" opacity="0.75" height="2" width="3" x="9" y="7">
+                <animate attributeName="fill" values="#0ea5e9; #38bdf8; #0ea5e9" dur="1.5s" repeatCount="indefinite"/>
+            </rect>
+            <!-- 镜架鼻梁 -->
+            <rect fill="#1e293b" height="1" width="2" x="7" y="7"/> 
+            
+            <!-- 镜片上的光标反射 (左右快速闪动，模拟扫视代码) -->
+            <rect fill="#ffffff" opacity="0.8" height="1" width="1" x="4" y="7">
+                <animate attributeName="x" values="4; 6; 4" dur="0.8s" repeatCount="indefinite"/>
+            </rect>
+            <rect fill="#ffffff" opacity="0.8" height="1" width="1" x="9" y="7">
+                <animate attributeName="x" values="9; 11; 9" dur="0.8s" repeatCount="indefinite"/>
+            </rect>
+        </g>
+
+        <!-- 绝对保留的灰色卫衣本体 -->
+        <rect fill="#475569" height="5" width="12" x="2" y="11"/>
+        <rect fill="#475569" height="1" width="10" x="3" y="10"/>
+        <rect fill="#fdba74" height="1" width="4" x="6" y="10"/>
+        <rect fill="#334155" height="2" width="2" x="4" y="10"/>
+        <rect fill="#334155" height="2" width="2" x="10" y="10"/>
+        <rect fill="#94a3b8" height="3" width="1" x="5" y="11"/>
+        <rect fill="#94a3b8" height="3" width="1" x="10" y="11"/>
+        <rect fill="#334155" height="4" width="2" x="7" y="12"/>
+    </g>
+
+    <!-- 4. 办公桌与能量饮料 -->
+    <g id="desk-energy-drink">
+        <rect fill="#1e293b" height="2" width="16" x="0" y="14"/>
+        <rect fill="#0f172a" height="1" width="16" x="0" y="15"/>
+        
+        <rect fill="#16a34a" height="3" width="2" x="13" y="11"/>
+        <rect fill="#e2e8f0" height="1" width="2" x="13" y="10"/>
+        <rect fill="#bbf7d0" height="1" width="1" x="13" y="12">
+            <animate attributeName="opacity" values="1; 0.2; 1" dur="2s" repeatCount="indefinite"/>
+        </rect>
+    </g>
+
+    <!-- 5. 发光键盘与狂暴敲打的手 -->
+    <g id="fast-typing">
+        <rect fill="#334155" height="1" width="10" x="3" y="14"/>
+        <!-- 荧光绿极速闪烁背光 -->
+        <rect fill="#4ade80" height="1" width="8" x="4" y="14">
+            <animate attributeName="fill" values="#22c55e; #4ade80; #166534; #22c55e" dur="0.4s" repeatCount="indefinite"/>
+        </rect>
+
+        <!-- 双手极速鬼畜输入 -->
+        <rect fill="#fed7aa" height="1" width="2" x="3" y="13">
+            <animate attributeName="y" values="13; 14; 13; 13; 14; 13" dur="0.15s" repeatCount="indefinite"/>
+        </rect>
+        <rect fill="#fed7aa" height="1" width="2" x="11" y="13">
+            <animate attributeName="y" values="14; 13; 13; 14; 13; 14" dur="0.18s" repeatCount="indefinite"/>
+        </rect>
+    </g>
+</svg>

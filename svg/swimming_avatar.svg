@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+    <defs>
+        <!-- 泳池深蓝水波背景渐变 -->
+        <linearGradient id="pool-water" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0284c7"/>
+            <stop offset="50%" stop-color="#0369a1"/>
+            <stop offset="100%" stop-color="#0f172a"/>
+        </linearGradient>
+    </defs>
+
+    <!-- 0. 泳池水体背景与泳道线 -->
+    <g id="pool-bg">
+        <rect width="16" height="16" fill="url(#pool-water)"/>
+        <!-- 泳道底部的十字标线 -->
+        <rect x="7" y="0" width="2" height="16" fill="#0284c7" opacity="0.4"/>
+        <rect x="0" y="7" width="16" height="2" fill="#0284c7" opacity="0.4"/>
+
+        <!-- 动态泛起的水花微粒 -->
+        <rect x="3" y="4" width="1" height="1" fill="#e0f2fe" opacity="0.6">
+            <animate attributeName="opacity" dur="1s" values="0.2; 0.8; 0.2" repeatCount="indefinite"/>
+        </rect>
+        <rect x="12" y="11" width="1" height="1" fill="#e0f2fe" opacity="0.4">
+            <animate attributeName="opacity" dur="1.2s" values="0.8; 0.2; 0.8" repeatCount="indefinite"/>
+        </rect>
+    </g>
+
+    <!-- 1. 游泳姿态的小人核心主体 -->
+    <g id="swimming-avatar">
+        <!-- 头部 (上方) -->
+        <rect fill="#292524" height="3" width="8" x="4" y="2"/>
+        <rect fill="#292524" height="1" width="2" x="5" y="1"/>
+        <rect fill="#292524" height="1" width="3" x="8" y="1"/>
+
+        <!-- 脸部皮肤 -->
+        <rect fill="#fed7aa" height="5" width="8" x="4" y="3"/>
+
+        <!-- 专业泳镜 (覆盖在眼睛上方) -->
+        <rect fill="#0284c7" height="1" width="3" x="4.5" y="4"/>
+        <rect fill="#0284c7" height="1" width="3" x="8.5" y="4"/>
+        <rect fill="#38bdf8" height="1" width="1" x="5" y="4"/>
+        <rect fill="#38bdf8" height="1" width="1" x="9" y="4"/>
+        <rect fill="#1e293b" height="1" width="1" x="7" y="4"/> <!-- 泳镜鼻梁架 -->
+
+        <!-- 换气时微微张开的嘴巴 -->
+        <rect fill="#f97316" height="1" width="1" x="7" y="7"/>
+
+        <!-- 躯干与专业泳衣/泳裤 -->
+        <rect fill="#334155" height="5" width="8" x="4" y="8"/>
+        <rect fill="#1e293b" height="2" width="8" x="4" y="11"/>
+
+        <!-- 划水双臂动画 (通过左右摆动模拟自由泳划水) -->
+        <!-- 左臂 -->
+        <rect fill="#fed7aa" height="3" width="2" x="2" y="7">
+            <animate attributeName="y" dur="0.8s" values="6; 9; 6" repeatCount="indefinite"/>
+            <animate attributeName="height" dur="0.8s" values="4; 2; 4" repeatCount="indefinite"/>
+        </rect>
+        <!-- 右臂 -->
+        <rect fill="#fed7aa" height="3" width="2" x="12" y="7">
+            <animate attributeName="y" dur="0.8s" values="9; 6; 9" repeatCount="indefinite"/>
+            <animate attributeName="height" dur="0.8s" values="2; 4; 2" repeatCount="indefinite"/>
+        </rect>
+
+        <!-- 水花溅起特效 (随手臂划水节奏同步) -->
+        <rect fill="#bae6fd" height="1" width="1" x="1" y="7" opacity="0.8">
+            <animate attributeName="opacity" dur="0.8s" values="0; 1; 0" repeatCount="indefinite"/>
+        </rect>
+        <rect fill="#bae6fd" height="1" width="1" x="14" y="7" opacity="0.8">
+            <animate attributeName="opacity" dur="0.8s" values="1; 0; 1" repeatCount="indefinite"/>
+        </rect>
+
+        <!-- 双腿打水动态 (下方) -->
+        <rect fill="#fed7aa" height="2" width="2" x="5" y="13">
+            <animate attributeName="x" dur="0.4s" values="5; 6; 5" repeatCount="indefinite"/>
+        </rect>
+        <rect fill="#fed7aa" height="2" width="2" x="9" y="13">
+            <animate attributeName="x" dur="0.4s" values="9; 8; 9" repeatCount="indefinite"/>
+        </rect>
+    </g>
+
+    <!-- 2. 水面波纹特效叠加层 -->
+    <g id="water-ripples" opacity="0.5">
+        <path d="M0,5 Q4,3 8,5 T16,5" fill="none" stroke="#e0f2fe" stroke-width="0.5">
+            <animate attributeName="d" dur="2s" values="M0,5 Q4,3 8,5 T16,5; M0,5 Q4,7 8,5 T16,5; M0,5 Q4,3 8,5 T16,5" repeatCount="indefinite"/>
+        </path>
+        <path d="M0,10 Q4,8 8,10 T16,10" fill="none" stroke="#e0f2fe" stroke-width="0.5">
+            <animate attributeName="d" dur="2s" values="M0,10 Q4,12 8,10 T16,10; M0,10 Q4,8 8,10 T16,10; M0,10 Q4,12 8,10 T16,10" repeatCount="indefinite"/>
+        </path>
+    </g>
+</svg>
