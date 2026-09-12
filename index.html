@@ -1813,17 +1813,20 @@
                         </div>
                     </div>
 
-                    <!-- 修改核心：去除包裹层的 h-full，加入 min-h-0，去掉死板的 inline-style -->
-                    <div class="flex-1 min-h-0 w-full bg-black relative flex items-center justify-center border-t border-white/5 overflow-hidden">
-                        <iframe :src="activeGame.url" allow="autoplay; fullscreen"
+                    <!-- 🟢 恢复滚动版：去掉了 scrolling="no"，保留底层容器隔离 -->
+                    <div class="flex-1 min-h-0 w-full bg-black relative flex items-center justify-center border-t border-white/5 overflow-hidden"
+                         style="contain: strict;">
+
+                        <iframe :src="activeGame.url"
+                                allow="autoplay; fullscreen"
                                 :class="isGameVisible ? 'pointer-events-auto' : 'pointer-events-none'"
-                                class="absolute inset-0 w-full h-full border-none bg-black"
+                                class="absolute inset-0 border-none bg-black"
+                                style="width: 1px !important; min-width: 100% !important; height: 100% !important; max-height: 100% !important; will-change: transform;"
                                 v-if="activeGame && activeGame.url"></iframe>
+
                         <div class="text-center space-y-6 z-10" v-else>
                             <div class="text-5xl animate-bounce">⚠️</div>
-                            <div class="text-gray-400 font-mono tracking-widest text-xs animate-pulse">NO URL
-                                DETECTED...
-                            </div>
+                            <div class="text-gray-400 font-mono tracking-widest text-xs animate-pulse">NO URL DETECTED...</div>
                             <div class="text-[9px] text-gray-600">tukuai_engine_v2.0</div>
                         </div>
                     </div>
