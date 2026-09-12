@@ -1781,9 +1781,9 @@
                      @click="minimizeGame"
                      class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity duration-500"></div>
 
-                <!-- 游戏窗口：自带贝塞尔曲线动画，隐身时缩小并下沉 -->
-                <div :class="isGameVisible ? 'pointer-events-auto scale-100 translate-y-0' : 'pointer-events-none scale-85 translate-y-8'"
-                     class="w-full max-w-5xl h-full max-h-[85vh] glass-panel flex flex-col overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] relative transition-transform duration-500"
+                <!-- 👇 修改：手机端仅用透明度显隐，锁死高度 85dvh，彻底杜绝 scale 缩放引起的引擎崩溃 👇 -->
+                <div :class="isGameVisible ? 'pointer-events-auto md:scale-100 opacity-100 translate-y-0' : 'pointer-events-none md:scale-85 opacity-0 translate-y-8'"
+                     class="w-full md:max-w-5xl h-[85dvh] md:h-full md:max-h-[85vh] glass-panel flex flex-col overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] relative transition-all duration-500"
                      ref="gameWindowRef"
                      style="transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);">
 
@@ -2580,7 +2580,16 @@
             const gameWindowRef = ref(null);
             const isGameVisible = ref(false);
 
+            // 👇 修改：加入手机端性能保护拦截器
             const openGame = (gameTitle, targetUrl) => {
+                // 1. 核心修复：如果是手机端（屏幕宽度 < 768px），且打开的是极其消耗内存的重度渲染网页，直接跳出新标签页！
+                const isHeavyWeb = targetUrl.includes('zoomquilt.org') || targetUrl.includes('henryheffernan.com');
+                if (window.innerWidth < 768 && isHeavyWeb) {
+                    window.open(targetUrl, '_blank');
+                    return; // 终止后续逻辑，不再弹窗
+                }
+
+                // 2. 电脑端或轻量游戏，照常走弹窗逻辑
                 // 只有当打开的是新游戏，或者游戏已经被彻底关闭时，才重新赋值 activeGame
                 if (!activeGame.value || activeGame.value.url !== targetUrl) {
                     activeGame.value = {title: gameTitle, url: targetUrl};
@@ -2593,11 +2602,13 @@
                     const frame = document.querySelector('iframe');
                     if (frame) {
                         frame.focus();
-                        frame.contentWindow.postMessage('focus-emulator', '*');
+                        try {
+                            // 加上 try-catch 防止外部跨域页面报错干扰主线程
+                            frame.contentWindow.postMessage('focus-emulator', '*');
+                        } catch (e) {}
                     }
                 });
             };
-
 // 新增：最小化逻辑（只隐藏窗口，不销毁后台数据）
             const minimizeGame = () => {
                 isGameVisible.value = false;
