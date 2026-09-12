@@ -2580,16 +2580,7 @@
             const gameWindowRef = ref(null);
             const isGameVisible = ref(false);
 
-            // 👇 修改：加入手机端性能保护拦截器
             const openGame = (gameTitle, targetUrl) => {
-                // 1. 核心修复：如果是手机端（屏幕宽度 < 768px），且打开的是极其消耗内存的重度渲染网页，直接跳出新标签页！
-                const isHeavyWeb = targetUrl.includes('zoomquilt.org') || targetUrl.includes('henryheffernan.com');
-                if (window.innerWidth < 768 && isHeavyWeb) {
-                    window.open(targetUrl, '_blank');
-                    return; // 终止后续逻辑，不再弹窗
-                }
-
-                // 2. 电脑端或轻量游戏，照常走弹窗逻辑
                 // 只有当打开的是新游戏，或者游戏已经被彻底关闭时，才重新赋值 activeGame
                 if (!activeGame.value || activeGame.value.url !== targetUrl) {
                     activeGame.value = {title: gameTitle, url: targetUrl};
@@ -2602,13 +2593,11 @@
                     const frame = document.querySelector('iframe');
                     if (frame) {
                         frame.focus();
-                        try {
-                            // 加上 try-catch 防止外部跨域页面报错干扰主线程
-                            frame.contentWindow.postMessage('focus-emulator', '*');
-                        } catch (e) {}
+                        frame.contentWindow.postMessage('focus-emulator', '*');
                     }
                 });
             };
+
 // 新增：最小化逻辑（只隐藏窗口，不销毁后台数据）
             const minimizeGame = () => {
                 isGameVisible.value = false;
