@@ -57,6 +57,34 @@
     </script>
 
     <style>
+        /* 🟢 终极交互 1：全息追光玻璃材质 */
+        .glass-card {
+            position: relative;
+            overflow: hidden;
+            /* 确保光效不会溢出圆角 */
+            border-radius: 20px;
+        }
+
+        /* 创造一个跟随鼠标的光晕图层 */
+        .glass-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            /* 光晕的中心点绑定 CSS 变量，由 JS 实时注入 */
+            background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255,255,255,0.15), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 10;
+            mix-blend-mode: overlay; /* 叠加模式，产生强烈的玻璃折射感 */
+        }
+
+        /* 鼠标悬停时，不仅卡片浮起，内部光源也被点亮 */
+        @media (pointer: fine) {
+            .glass-card:hover::after {
+                opacity: 1;
+            }
+        }
         /* ========================================= */
         /* 核心修复：防止 Vue 加载前出现大括号模板闪烁 */
         /* ========================================= */
@@ -161,19 +189,32 @@
             color: #94a3b8;
         }
 
+        /* 🟢 极致交互版：加入 3D 悬浮与多重发光投影 */
+        .nav-item {
+            /* ... 保持原有属性 ... */
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
         .nav-item:hover {
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(255, 255, 255, 0.1);
-            transform: translateX(4px);
+            /* Z轴拔高，配合微小旋转产生按键悬浮错觉 */
+            transform: translateX(8px) translateZ(20px) rotateY(-5deg);
+            box-shadow: -10px 10px 20px rgba(0,0,0,0.3);
         }
 
         .nav-active {
             background: var(--theme-bg) !important;
             border-color: var(--theme-color) !important;
-            box-shadow: 0 4px 15px var(--theme-bg), inset 0 0 10px rgba(255, 255, 255, 0.1);
+            /* 激活状态下，直接弹出屏幕表面 */
+            transform: translateX(12px) translateZ(30px) rotateY(-8deg);
+            box-shadow:
+                    -15px 15px 30px rgba(0,0,0,0.4),
+                    0 0 15px var(--theme-glow),
+                    inset 0 0 10px rgba(255, 255, 255, 0.2) !important;
             color: var(--theme-color) !important;
-            text-shadow: 0 0 10px var(--theme-glow);
-            transform: translateX(4px);
+            text-shadow: 0 0 15px var(--theme-glow), 0 0 30px var(--theme-glow);
         }
 
         .glass-card {
@@ -415,6 +456,12 @@
 
 <!-- 👇 修改为加上 v-cloak 👇 -->
 <div v-cloak :style="cssVars" class="bg-black flex flex-col" id="app">
+
+    <!-- 🟢 终极交互 2：赛博流体光标 -->
+    <div id="cursor-dot" class="hidden md:block fixed w-1.5 h-1.5 bg-white rounded-full pointer-events-none z-[100000]" style="transform: translate(-50%, -50%); will-change: transform;"></div>
+    <div id="cursor-ring" class="hidden md:flex items-center justify-center fixed w-8 h-8 border-[1.5px] rounded-full pointer-events-none z-[99999] transition-all duration-200 ease-out"
+         :style="{ borderColor: activeColor, boxShadow: `0 0 15px ${activeGlow}`, transform: 'translate(-50%, -50%)', willChange: 'width, height, transform, background' }">
+    </div>
 
     <!-- 新增：将背景图和扫描线移到全局，并加上 z-0 防止遮挡 -->
     <img class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen z-0" :src="currentBg"/>
@@ -1776,10 +1823,10 @@
                     class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 transition-all duration-500"
                     v-if="activeGame"
             >
-                <!-- 遮罩层：可见时恢复点击事件 -->
-                <div :class="isGameVisible ? 'pointer-events-auto' : 'pointer-events-none'"
+                <!-- 🟢 极致交互版：极高饱和度的超重度模糊，透出背后霓虹色的光晕 -->
+                <div :class="isGameVisible ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'"
                      @click="minimizeGame"
-                     class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity duration-500"></div>
+                     class="absolute inset-0 bg-[#050505]/40 backdrop-blur-[64px] saturate-[250%] transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)]"></div>
 
                 <!-- 🟢 极致艺术版：全平台强制开启 scale 缩放与景深位移，并强行榨干 GPU 性能保障丝滑 -->
                 <div :class="isGameVisible ? 'pointer-events-auto scale-100 opacity-100 translate-y-0' : 'pointer-events-none scale-85 opacity-0 translate-y-8'"
@@ -2354,25 +2401,46 @@
                     }
                 }
 
-                const createParticles = (x, y) => {
-                    for (let i = 0; i < 2; i++) particles.push(new Particle(x, y));
-                };
-                window.addEventListener('mousemove', (e) => createParticles(e.clientX, e.clientY));
-                window.addEventListener('touchmove', (e) => {
-                    if (e.touches.length > 0) createParticles(e.touches[0].clientX, e.touches[0].clientY);
-                }, {passive: true});
+                // 🟢 性能榨干 3：粒子的残影续费断电系统
+                let animationId = null;
+                let fadeOutCount = 0;
+
                 const animate = () => {
-                    ctx.clearRect(0, 0, width, height);
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+                    ctx.fillRect(0, 0, width, height);
+
+                    ctx.globalCompositeOperation = 'lighter';
                     for (let i = particles.length - 1; i >= 0; i--) {
                         const p = particles[i];
                         p.update();
+                        ctx.shadowBlur = 20;
+                        ctx.shadowColor = p.color;
                         p.draw(ctx);
                         if (p.life <= 0) particles.splice(i, 1);
                     }
+
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.shadowBlur = 0;
                     ctx.globalAlpha = 1;
-                    requestAnimationFrame(animate);
+
+                    // 智能断电：有粒子就一直渲染，没粒子了续费 20 帧等流光消失，然后彻底断电
+                    if (particles.length > 0) {
+                        fadeOutCount = 20;
+                        animationId = requestAnimationFrame(animate);
+                    } else if (fadeOutCount > 0) {
+                        fadeOutCount--;
+                        animationId = requestAnimationFrame(animate);
+                    } else {
+                        ctx.clearRect(0, 0, width, height); // 彻底扫除垃圾
+                        animationId = null; // 熄火
+                    }
                 };
-                animate();
+
+                const createParticles = (x, y) => {
+                    for (let i = 0; i < 2; i++) particles.push(new Particle(x, y));
+                    if (!animationId) animate(); // 重新点火
+                };
             };
 
             const audioRef = ref(null);
@@ -2730,21 +2798,31 @@
                 document.body.appendChild(script);
 
                 // 修改：通过 localStorage 永久记住是否已经播放过开机动画
+                // 🟢 终极交互 3：矩阵解码开机动画
                 if (!isBooted.value) {
-                    let i = 0;
-                    const typeInterval = setInterval(() => {
-                        if (i < targetText.length) {
-                            typedText.value += targetText.charAt(i);
-                            i++;
-                        } else {
-                            clearInterval(typeInterval);
+                    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*"; // 乱码字库
+                    let iterations = 0;
+
+                    const interval = setInterval(() => {
+                        // 将目标文字按当前进度分解成：已确定的字符 + 正在翻滚的乱码
+                        typedText.value = targetText.split("")
+                            .map((letter, index) => {
+                                if(index < iterations) return targetText[index]; // 已经解码完成的锁定
+                                return letters[Math.floor(Math.random() * letters.length)]; // 还没解码的继续乱滚
+                            })
+                            .join("");
+
+                        // 每执行三次翻滚，锁定一个真实的字符（可以通过调小这个除数来加快开机速度）
+                        if(iterations >= targetText.length) {
+                            clearInterval(interval);
                             setTimeout(() => {
                                 isBooted.value = true;
-                                // 将开机状态永久写入本地缓存
                                 localStorage.setItem('os_booted', 'true');
-                            }, 600);
+                            }, 800); // 解码完成后，停留 0.8 秒展示，然后切入系统
                         }
-                    }, 3000 / targetText.length);
+                        iterations += 1 / 3;
+                    }, 40); // 每 40 毫秒刷新一次乱码
+
                 }
 
                 window.addEventListener('message', (event) => {
@@ -2756,6 +2834,91 @@
                         }
                     }
                 });
+
+                // 👇 全息追光引擎：实时计算鼠标在每张卡片内的相对坐标
+                document.getElementById('app').addEventListener('mousemove', (e) => {
+                    const cards = document.querySelectorAll('.glass-card');
+                    for (const card of cards) {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        card.style.setProperty('--mouse-x', `${x}px`);
+                        card.style.setProperty('--mouse-y', `${y}px`);
+                    }
+                }, { passive: true });
+
+                // 👇 赛博流体光标引擎
+                // 只在支持鼠标的设备上运行，放过手机端
+                if (window.matchMedia("(pointer: fine)").matches) {
+                    document.body.style.cursor = 'none'; // 隐藏系统默认鼠标
+                    const cursorDot = document.getElementById('cursor-dot');
+                    const cursorRing = document.getElementById('cursor-ring');
+
+                    // 强制所有可点击元素也隐藏默认鼠标
+                    const style = document.createElement('style');
+                    style.innerHTML = `* { cursor: none !important; }`;
+                    document.head.appendChild(style);
+
+                    let mouseX = window.innerWidth / 2;
+                    let mouseY = window.innerHeight / 2;
+                    let ringX = mouseX;
+                    let ringY = mouseY;
+
+                    // 鼠标移动监听
+                    window.addEventListener('mousemove', (e) => {
+                        mouseX = e.clientX;
+                        mouseY = e.clientY;
+                        // 中心白点瞬间跟上
+                        cursorDot.style.left = `${mouseX}px`;
+                        cursorDot.style.top = `${mouseY}px`;
+                    });
+
+                    // 动画帧循环：让外圈圆环产生丝滑的“延迟追随”感
+                    const renderCursor = () => {
+                        ringX += (mouseX - ringX) * 0.2; // 0.2 决定了圆环追赶鼠标的弹性迟缓度
+                        ringY += (mouseY - ringY) * 0.2;
+                        cursorRing.style.left = `${ringX}px`;
+                        cursorRing.style.top = `${ringY}px`;
+                        requestAnimationFrame(renderCursor);
+                    };
+                    renderCursor();
+
+// 👇 修复：Iframe 黑洞与浏览器边缘隐身机制
+                    document.addEventListener('mouseout', (e) => {
+                        // 核心修复：e.relatedTarget === null 代表移出浏览器边界
+                        // e.relatedTarget.tagName === 'IFRAME' 代表鼠标一脚踩进了黑洞
+                        if (e.relatedTarget === null || (e.relatedTarget && e.relatedTarget.tagName === 'IFRAME')) {
+                            cursorDot.style.opacity = '0';
+                            cursorRing.style.opacity = '0';
+                        }
+                    });
+
+                    document.addEventListener('mouseover', (e) => {
+                        // 只要鼠标重新退回到主网页的普通元素上，瞬间现身
+                        if (e.target && e.target.tagName !== 'IFRAME') {
+                            cursorDot.style.opacity = '1';
+                            cursorRing.style.opacity = '1';
+                        }
+                    });
+
+                    // 交互事件代理：碰到按钮时，外圈放大并填充颜色
+                    document.addEventListener('mouseover', (e) => {
+                        if (e.target.closest('button, a, .cursor-pointer, .nav-item, .song-item')) {
+                            cursorRing.style.width = '48px';
+                            cursorRing.style.height = '48px';
+                            cursorRing.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                            cursorRing.style.backdropFilter = 'blur(4px)';
+                        }
+                    });
+                    document.addEventListener('mouseout', (e) => {
+                        if (e.target.closest('button, a, .cursor-pointer, .nav-item, .song-item')) {
+                            cursorRing.style.width = '32px';
+                            cursorRing.style.height = '32px';
+                            cursorRing.style.backgroundColor = 'transparent';
+                            cursorRing.style.backdropFilter = 'none';
+                        }
+                    });
+                }
             });
 // 👇 -------- 新增：高级滚动渐显逻辑 -------- 👇
             let observer = null;
