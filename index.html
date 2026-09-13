@@ -1933,35 +1933,29 @@
                                 <span class="text-xl mr-1">¥</span> 1.00
                             </div>
 
-                            <!-- 👇 终极优化：直接把二维码容器变成 <a> 标签，点击图片任何位置即可唤醒支付 👇 -->
-                            <a href="wxp://f2f1O3I_GOfhoeEFGcr0rLXcp5Z3pslaLBJQBgRIXPVdnaXAaMUdNPWrxsVGWjZF6UaE"
-                               class="block relative w-44 h-44 bg-black rounded-xl border transition-transform duration-500 hover:scale-105 overflow-hidden select-none cursor-pointer active:scale-95"
-                               style="-webkit-touch-callout: none; -webkit-user-select: none;"
-                               :style="{ borderColor: activeColor, boxShadow: `0 0 25px ${activeGlow}` }">
+                            <!-- 👇 终极优化：回归最稳定的长按识别方案 👇 -->
+                            <div class="relative w-44 h-44 bg-black rounded-xl border transition-transform duration-500 hover:scale-105 overflow-hidden shrink-0"
+                                 :style="{ borderColor: activeColor, boxShadow: `0 0 25px ${activeGlow}` }">
 
-                                <!-- 二维码本体 -->
+                                <!-- 二维码本体：去掉了所有禁用长按的样式，允许手机端长按保存/识别 -->
                                 <img src="./imgs/pay_qr.jpg"
                                      alt="Payment QR"
-                                     draggable="false"
-                                     class="w-full h-full object-cover mix-blend-screen pointer-events-none select-none"
-                                     style="-webkit-touch-callout: none; image-rendering: pixelated; filter: invert(1) brightness(1.2) sepia(1) hue-rotate(80deg) saturate(5) drop-shadow(0 0 4px rgba(74,222,128,0.4));">
+                                     class="w-full h-full object-cover mix-blend-screen"
+                                     style="image-rendering: pixelated; filter: invert(1) brightness(1.2) sepia(1) hue-rotate(80deg) saturate(5) drop-shadow(0 0 4px rgba(74,222,128,0.4));">
 
-                                <!-- 中心的小人头像遮盖（加入 pointer-events-none 防止挡住 a 标签的点击事件） -->
-                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-black rounded-xl border-[2px] flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.9)] overflow-hidden z-10 select-none pointer-events-none"
-                                     style="-webkit-touch-callout: none;"
+                                <!-- 中心的小人头像遮盖（保留 pointer-events-none，防止用户长按时按到了头像而不是二维码） -->
+                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-black rounded-xl border-[2px] flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.9)] overflow-hidden z-10 pointer-events-none"
                                      :style="{ borderColor: activeColor }">
-                                    <img :src="currentAvatarSvg" draggable="false" class="w-full h-full scale-110 object-cover pointer-events-none select-none" style="-webkit-touch-callout: none; image-rendering: pixelated;">
+                                    <img :src="currentAvatarSvg" class="w-full h-full scale-110 object-cover" style="image-rendering: pixelated;">
                                 </div>
-                            </a>
+                            </div>
 
                             <div class="mt-5 font-pixel text-white text-[10px] tracking-widest font-bold flex flex-col items-center">
                                 <span>TARGET: 土块 </span>
                                 <span class="mt-1.5 text-[#4ade80] animate-pulse">> I'm gonna grab a smoke.</span>
-                                <!-- 手机端专属提示语，因为去掉了按钮，用一行小字暗示用户可以点击图片 -->
-                                <span class="mt-3 text-gray-500 text-[8px] md:hidden animate-pulse">>> TAP IMAGE TO PAY <<</span>
+                                <!-- 手机端专属提示语，明确告知操作方式 -->
+                                <span class="mt-3 text-gray-500 text-[8px] md:hidden animate-pulse">>> LONG PRESS TO PAY <<</span>
                             </div>
-
-                            <!-- 删除了原有的跳转按钮，空间彻底释放！ -->
 
                         </div>
                     </transition>
