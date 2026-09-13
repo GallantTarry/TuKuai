@@ -1906,7 +1906,6 @@
                 <div :style="{ borderColor: activeColor, boxShadow: `0 0 30px ${activeGlow}` }"
                      class="glass-panel w-full max-w-sm p-6 relative z-10 flex flex-col space-y-4 border-[2px]">
 
-
                     <!-- 👇 新增/修改：打赏二维码内嵌全息层 (完美贴边+圆角头像+png格式) 👇 -->
                     <transition enter-active-class="transition-all duration-300 ease-out"
                                 enter-from-class="opacity-0 scale-95"
@@ -1915,12 +1914,11 @@
                                 leave-from-class="opacity-100 scale-100"
                                 leave-to-class="opacity-0 scale-95">
 
-                        <!-- ⚠️ 核心修复：去掉了冗余的 border-2 和 rounded-xl，改用 borderRadius: '30px' -->
                         <div v-if="showPayQR"
                              class="absolute inset-0 z-50 bg-[#050505]/95 backdrop-blur-xl flex flex-col items-center justify-center"
                              :style="{ borderRadius: '30px', boxShadow: `inset 0 0 30px ${activeGlow}` }">
 
-                            <!-- 关闭按钮 (稍微往里挪了一点，防止碰到大圆角) -->
+                            <!-- 关闭按钮 -->
                             <button @click="showPayQR = false" class="absolute top-5 right-5 text-gray-400 hover:text-red-500 text-lg transition-all hover:scale-125 z-50">❌</button>
 
                             <!-- 顶部状态指示 -->
@@ -1935,30 +1933,39 @@
                                 <span class="text-xl mr-1">¥</span> 1.00
                             </div>
 
-                            <!-- QR码全息容器 (我把大小调整为 w-44 h-44，比较适中) -->
-                            <div class="relative w-44 h-44 bg-black rounded-xl border transition-transform duration-500 hover:scale-105 overflow-hidden"
-                                 :style="{ borderColor: activeColor, boxShadow: `0 0 25px ${activeGlow}` }">
+                            <!-- 👇 终极优化：直接把二维码容器变成 <a> 标签，点击图片任何位置即可唤醒支付 👇 -->
+                            <a href="wxp://f2f1O3I_GOfhoeEFGcr0rLXcp5Z3pslaLBJQBgRIXPVdnaXAaMUdNPWrxsVGWjZF6UaE"
+                               class="block relative w-44 h-44 bg-black rounded-xl border transition-transform duration-500 hover:scale-105 overflow-hidden select-none cursor-pointer active:scale-95"
+                               style="-webkit-touch-callout: none; -webkit-user-select: none;"
+                               :style="{ borderColor: activeColor, boxShadow: `0 0 25px ${activeGlow}` }">
 
                                 <!-- 二维码本体 -->
                                 <img src="./imgs/pay_qr.jpg"
                                      alt="Payment QR"
-                                     class="w-full h-full object-cover mix-blend-screen"
-                                     style="image-rendering: pixelated; filter: invert(1) brightness(1.2) sepia(1) hue-rotate(80deg) saturate(5) drop-shadow(0 0 4px rgba(74,222,128,0.4));">
+                                     draggable="false"
+                                     class="w-full h-full object-cover mix-blend-screen pointer-events-none select-none"
+                                     style="-webkit-touch-callout: none; image-rendering: pixelated; filter: invert(1) brightness(1.2) sepia(1) hue-rotate(80deg) saturate(5) drop-shadow(0 0 4px rgba(74,222,128,0.4));">
 
-                                <!-- 中心的小人头像遮盖 -->
-                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-black rounded-xl border-[2px] flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.9)] overflow-hidden z-10"
+                                <!-- 中心的小人头像遮盖（加入 pointer-events-none 防止挡住 a 标签的点击事件） -->
+                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-black rounded-xl border-[2px] flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.9)] overflow-hidden z-10 select-none pointer-events-none"
+                                     style="-webkit-touch-callout: none;"
                                      :style="{ borderColor: activeColor }">
-                                    <img :src="currentAvatarSvg" class="w-full h-full scale-110 object-cover" style="image-rendering: pixelated;">
+                                    <img :src="currentAvatarSvg" draggable="false" class="w-full h-full scale-110 object-cover pointer-events-none select-none" style="-webkit-touch-callout: none; image-rendering: pixelated;">
                                 </div>
-                            </div>
+                            </a>
 
                             <div class="mt-5 font-pixel text-white text-[10px] tracking-widest font-bold flex flex-col items-center">
                                 <span>TARGET: 土块 </span>
                                 <span class="mt-1.5 text-[#4ade80] animate-pulse">> I'm gonna grab a smoke.</span>
+                                <!-- 手机端专属提示语，因为去掉了按钮，用一行小字暗示用户可以点击图片 -->
+                                <span class="mt-3 text-gray-500 text-[8px] md:hidden animate-pulse">>> TAP IMAGE TO PAY <<</span>
                             </div>
+
+                            <!-- 删除了原有的跳转按钮，空间彻底释放！ -->
+
                         </div>
                     </transition>
-                    <!-- 👆 打赏弹层结束 👆 -->
+
                     <h3 class="text-white font-bold text-lg tab-title tracking-widest flex items-center">
                         <span class="mr-2">✉️</span> 密函发送
                     </h3>
