@@ -87,39 +87,30 @@
 
         window.EJS_VirtualGamepadSettings = { alpha: 0.5, scale: 1.1 };
 
-        // 1. 强制启用隐藏的系统级菜单
-        window.EJS_HideControls = false;
-
-        // 2. 覆盖底部的按钮面板配置 (针对 PC 端)
+        // 恢复完整的控制栏按钮，包含存档导入/导出功能
         window.EJS_Buttons = {
             playPause: true,
             restart: true,
             mute: true,
             settings: true,
             fullscreen: true,
+
+            // --- 即时存档 (随玩随存，类似于虚拟机的快照) ---
             saveState: true,
             loadState: true,
-            quickSave: true,
-            quickLoad: true,
-            saveSavFiles: true, // 核心：导出 .sav
-            loadSavFiles: true  // 核心：导入 .sav
+            quickSave: true,   // 添加快捷存档按钮
+            quickLoad: true,   // 添加快捷读档按钮
+
+            // --- 实体电池存档 (游戏内真实存档，跨设备、跨核心通用) ---
+            saveSavFiles: true, // 👈 核心按钮：将 .sav 存档文件导出并下载
+            loadSavFiles: true  // 👈 核心按钮：将外部的 .sav 存档文件导入模拟器
         };
 
-        // 3. 强制在模拟器的内置菜单(UI栏)中显示对应的选项 (针对移动端/全屏菜单)
-        window.EJS_Settings = {
-            saveState: true,
-            loadState: true,
-            saveSavFiles: true, // 强制在菜单里显示导出存档
-            loadSavFiles: true  // 强制在菜单里显示导入存档
-        };
-
-        // 仅保留基础的加载完毕通知逻辑
+        // 仅保留基础的加载完毕通知逻辑// 仅保留基础的加载完毕通知逻辑
         window.EJS_onGameStart = function() {
-            // 👇 新增：先为游戏所在的 iframe 独立引入像素字体 👇
             if (!document.getElementById('pixel-font-style')) {
                 const style = document.createElement('style');
                 style.id = 'pixel-font-style';
-                // 注意相对路径：因为当前在 /game/emulator.html，所以要用 ../ 退回上一级
                 style.innerHTML = `
                     @font-face {
                         font-family: 'ChinesePixel';
@@ -130,12 +121,10 @@
                 `;
                 document.head.appendChild(style);
             }
-            // 👆 字体引入结束 👆
 
             const popup = document.createElement('div');
             popup.innerHTML = '✨ 土块祝您玩的开心！';
 
-            // 为弹窗赋予符合你系统的玻璃拟态和赛博朋克样式
             popup.style.cssText = `
                 position: absolute;
                 top: 20px;
@@ -148,21 +137,18 @@
                 padding: 12px 24px;
                 border: 1px solid rgba(74, 222, 128, 0.4);
                 border-radius: 12px;
-                /* 👇 字体修改区 👇 */
                 font-family: 'ChinesePixel', monospace;
-                font-size: 16px; /* 像素字体稍微调大点会更清晰 */
-                font-weight: normal; /* 必须去掉 bold，否则像素边缘会发虚变糊 */
-                /* 👆 字体修改结束 👆 */
+                font-size: 16px;
+                font-weight: normal;
                 letter-spacing: 2px;
                 z-index: 9999;
                 box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8), 0 0 15px rgba(74, 222, 128, 0.2);
-                pointer-events: none; /* 防止遮挡用户点击游戏界面的操作 */
+                pointer-events: none;
                 opacity: 0;
                 transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             `;
             document.body.appendChild(popup);
 
-            // 第一阶段：触发动画，让它向下浮现并完全显示
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     popup.style.opacity = '1';
@@ -170,13 +156,78 @@
                 });
             });
 
-            // 第二阶段：3.5秒后自动渐隐并销毁 DOM 节点，不留垃圾
             setTimeout(() => {
                 popup.style.opacity = '0';
                 popup.style.transform = 'translateX(-50%) translateY(-20px)';
                 setTimeout(() => popup.remove(), 600);
             }, 3500);
-            // 👆 新增结束 👆
+
+            // =========================================================================
+            // 👇 极致隐形 + PC端彻底屏蔽的方案 👇
+            // =========================================================================
+
+            // 精准探测：只有包含移动设备标识，或者支持触控屏幕的设备，才会执行注入
+            const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || ('ontouchstart' in document.documentElement);
+
+            if (isMobile) {
+                const nativeUploadBtn = document.createElement('div');
+                nativeUploadBtn.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 80px;
+                    height: 80px;
+                    z-index: 999999;
+                    overflow: hidden;
+                `;
+
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = '.sav,.state';
+                fileInput.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;';
+
+                fileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    try {
+                        const dt = new DataTransfer();
+                        dt.items.add(file);
+                        const dropEvent = new DragEvent('drop', {
+                            bubbles: true,
+                            cancelable: true,
+                            dataTransfer: dt
+                        });
+
+                        window.dispatchEvent(dropEvent);
+                        document.getElementById('game').dispatchEvent(dropEvent);
+
+                        const successMsg = document.createElement('div');
+                        successMsg.innerHTML = '✨ 注入: ' + file.name;
+                        successMsg.style.cssText = `
+                            position: absolute; top: 20px; left: 20px;
+                            background: rgba(74, 222, 128, 0.9); color: black;
+                            padding: 6px 12px; border-radius: 8px; font-family: monospace;
+                            font-weight: bold; font-size: 12px; z-index: 999999;
+                            transition: opacity 0.5s ease; box-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
+                        `;
+                        document.body.appendChild(successMsg);
+
+                        setTimeout(() => {
+                            successMsg.style.opacity = '0';
+                            setTimeout(() => successMsg.remove(), 500);
+                        }, 2000);
+
+                    } catch (err) {
+                        alert('底层注入失败: ' + err);
+                    }
+
+                    fileInput.value = '';
+                });
+
+                nativeUploadBtn.appendChild(fileInput);
+                document.body.appendChild(nativeUploadBtn);
+            }
         };
 
         const loaderScript = document.createElement('script');
