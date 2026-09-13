@@ -583,13 +583,16 @@
                         <div
                                 class="mt-1 grid grid-cols-[auto_1fr] gap-x-1 gap-y-1 items-center text-[8px] md:text-[10px] tracking-wide text-white/80">
 
-                            <!-- 第二行：fans -->
+
                             <div class="text-left">fans:</div>
                             <div class="text-left flex items-center">
-                                    <span id="busuanzi_container_site_uv"
-                                          style="display: inline-flex !important; align-items: center;">
-    <span class="text-green-400 font-bold animate-pulse" id="busuanzi_site_uv">...</span>
-</span>
+    <span id="busuanzi_container_site_uv"
+          style="display: inline-flex !important; align-items: center;">
+        <!-- 增加了平滑过渡，配合原有的呼吸灯效果 -->
+        <span :style="{ color: activeColor, textShadow: `0 0 10px ${activeGlow}` }"
+              class="font-bold animate-pulse transition-all duration-500"
+              id="busuanzi_site_uv">...</span>
+    </span>
                             </div>
 
                             <!-- 第三行：now -->
