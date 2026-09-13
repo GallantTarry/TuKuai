@@ -2849,6 +2849,9 @@
 
                     let mouseX = window.innerWidth / 2;
                     let mouseY = window.innerHeight / 2;
+                    // 补充以下两行代码进行初始对齐
+                    cursorDot.style.left = `${mouseX}px`;
+                    cursorDot.style.top = `${mouseY}px`;
                     let ringX = mouseX;
                     let ringY = mouseY;
 
