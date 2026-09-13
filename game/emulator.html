@@ -51,6 +51,8 @@
             if (ext === 'sfc' || ext === 'smc') core = 'snes';
             else if (ext === 'nes') core = 'nes';
             else if (ext === 'gb' || ext === 'gbc') core = 'gb';
+            // 仅仅识别 NDS 扩展名
+            else if (ext === 'nds') core = 'nds';
         }
 
         // =========================================================================
@@ -76,10 +78,39 @@
         window.EJS_pathtodata = '../emulator_data/';
         window.EJS_gameUrl = '../rom/' + romFile;
 
+        // 👇 新增：仅在判定为 NDS 核心时，才注入专用的防崩溃和固件参数 👇
+        if (core === 'nds') {
+            window.EJS_cheats = false; // 屏蔽 NDS 核心特有的作弊引起的内存溢出
+            window.EJS_biosUrl = '../emulator_data/nds_bios.zip'; // 挂载 NDS 必须的固件
+        }
+        // 👆 修改结束：这样就绝对不会影响 GBA 或 SFC 的配置了 👆
+
         window.EJS_VirtualGamepadSettings = { alpha: 0.5, scale: 1.1 };
+
+        // 1. 强制启用隐藏的系统级菜单
+        window.EJS_HideControls = false;
+
+        // 2. 覆盖底部的按钮面板配置 (针对 PC 端)
         window.EJS_Buttons = {
-            playPause: true, restart: true, mute: true, settings: true,
-            fullscreen: true, saveState: true, loadState: true
+            playPause: true,
+            restart: true,
+            mute: true,
+            settings: true,
+            fullscreen: true,
+            saveState: true,
+            loadState: true,
+            quickSave: true,
+            quickLoad: true,
+            saveSavFiles: true, // 核心：导出 .sav
+            loadSavFiles: true  // 核心：导入 .sav
+        };
+
+        // 3. 强制在模拟器的内置菜单(UI栏)中显示对应的选项 (针对移动端/全屏菜单)
+        window.EJS_Settings = {
+            saveState: true,
+            loadState: true,
+            saveSavFiles: true, // 强制在菜单里显示导出存档
+            loadSavFiles: true  // 强制在菜单里显示导入存档
         };
 
         // 仅保留基础的加载完毕通知逻辑
