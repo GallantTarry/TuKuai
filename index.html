@@ -1904,7 +1904,7 @@
 
                 <!-- 弹窗主体 -->
                 <div :style="{ borderColor: activeColor, boxShadow: `0 0 30px ${activeGlow}` }"
-                     class="glass-panel w-full max-w-sm p-6 relative z-10 flex flex-col space-y-4 border-[2px]">
+                     class="glass-panel w-full max-w-sm min-h-[420px] p-6 relative z-10 flex flex-col space-y-4 border-[2px]">
 
                     <!-- 👇 终极还原：最本真、纯静态的二维码全息层 👇 -->
                     <transition enter-active-class="transition-all duration-300 ease-out"
@@ -1963,13 +1963,13 @@
                         </div>
                     </transition>
 
-                    <h3 class="text-white font-bold text-lg tab-title tracking-widest flex items-center">
+                    <h3 class="text-white font-bold text-lg tab-title tracking-widest flex items-center !mt-0">
                         <span class="mr-2">✉️</span> 密函发送
                     </h3>
 
                     <textarea v-model="mailContent"
                               placeholder="土块等待您的来信~，附件不可超过5M哦~"
-                              class="w-full h-32 bg-black/50 border border-white/20 rounded-xl p-3 text-white text-xs md:text-sm font-pixel focus:outline-none transition-colors hide-scrollbar resize-none"
+                              class="w-full flex-1 min-h-[120px] bg-black/50 border border-white/20 rounded-xl p-3 text-white text-xs md:text-sm font-pixel focus:outline-none transition-colors hide-scrollbar resize-none"
                               :style="{ outlineColor: activeColor }"></textarea>
 
                     <!-- 👇 新增：多媒体工具栏 👇 -->
