@@ -1906,7 +1906,7 @@
                 <div :style="{ borderColor: activeColor, boxShadow: `0 0 30px ${activeGlow}` }"
                      class="glass-panel w-full max-w-sm p-6 relative z-10 flex flex-col space-y-4 border-[2px]">
 
-                    <!-- 👇 新增/修改：打赏二维码内嵌全息层 (完美贴边+圆角头像+png格式) 👇 -->
+                    <!-- 👇 终极还原：最本真、纯静态的二维码全息层 👇 -->
                     <transition enter-active-class="transition-all duration-300 ease-out"
                                 enter-from-class="opacity-0 scale-95"
                                 enter-to-class="opacity-100 scale-100"
@@ -1933,28 +1933,30 @@
                                 <span class="text-xl mr-1">¥</span> 1.00
                             </div>
 
-                            <!-- 👇 终极优化：回归最稳定的长按识别方案 👇 -->
-                            <div class="relative w-44 h-44 bg-black rounded-xl border transition-transform duration-500 hover:scale-105 overflow-hidden shrink-0"
+                            <!-- 👇 纯视觉容器：无链接、无点击反馈，仅保留悬浮放大特效 👇 -->
+                            <div class="relative w-44 h-44 bg-black rounded-xl border transition-transform duration-500 hover:scale-105 overflow-hidden select-none"
+                                 style="-webkit-touch-callout: none; -webkit-user-select: none;"
                                  :style="{ borderColor: activeColor, boxShadow: `0 0 25px ${activeGlow}` }">
 
-                                <!-- 二维码本体：去掉了所有禁用长按的样式，允许手机端长按保存/识别 -->
+                                <!-- 二维码本体 -->
                                 <img src="./imgs/pay_qr.jpg"
                                      alt="Payment QR"
-                                     class="w-full h-full object-cover mix-blend-screen"
-                                     style="image-rendering: pixelated; filter: invert(1) brightness(1.2) sepia(1) hue-rotate(80deg) saturate(5) drop-shadow(0 0 4px rgba(74,222,128,0.4));">
+                                     draggable="false"
+                                     class="w-full h-full object-cover mix-blend-screen pointer-events-none select-none"
+                                     style="-webkit-touch-callout: none; image-rendering: pixelated; filter: invert(1) brightness(1.2) sepia(1) hue-rotate(80deg) saturate(5) drop-shadow(0 0 4px rgba(74,222,128,0.4));">
 
-                                <!-- 中心的小人头像遮盖（保留 pointer-events-none，防止用户长按时按到了头像而不是二维码） -->
-                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-black rounded-xl border-[2px] flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.9)] overflow-hidden z-10 pointer-events-none"
+                                <!-- 中心的小人头像遮盖 -->
+                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-black rounded-xl border-[2px] flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.9)] overflow-hidden z-10 pointer-events-none select-none"
+                                     style="-webkit-touch-callout: none;"
                                      :style="{ borderColor: activeColor }">
-                                    <img :src="currentAvatarSvg" class="w-full h-full scale-110 object-cover" style="image-rendering: pixelated;">
+                                    <img :src="currentAvatarSvg" draggable="false" class="w-full h-full scale-110 object-cover pointer-events-none select-none" style="-webkit-touch-callout: none; image-rendering: pixelated;">
                                 </div>
                             </div>
 
+                            <!-- 底部文案区 -->
                             <div class="mt-5 font-pixel text-white text-[10px] tracking-widest font-bold flex flex-col items-center">
                                 <span>TARGET: 土块 </span>
                                 <span class="mt-1.5 text-[#4ade80] animate-pulse">> I'm gonna grab a smoke.</span>
-                                <!-- 手机端专属提示语，明确告知操作方式 -->
-                                <span class="mt-3 text-gray-500 text-[8px] md:hidden animate-pulse">>> LONG PRESS TO PAY <<</span>
                             </div>
 
                         </div>
