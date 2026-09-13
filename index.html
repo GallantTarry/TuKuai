@@ -2521,11 +2521,6 @@
             const currentPlayModeIndex = ref(0);
             const playMode = computed(() => playModes[currentPlayModeIndex.value]);
 
-            const playModeIcon = computed(() => {
-                if (playMode.value === 'sequence') return '🔁';
-                if (playMode.value === 'random') return '🔀';
-                return '🔂';
-            });
 
             const playModeText = computed(() => {
                 if (playMode.value === 'sequence') return '顺序播放';
