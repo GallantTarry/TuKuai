@@ -1066,38 +1066,43 @@
                     <!-- 播放器控制台 (shrink-0 防止被压缩) -->
                     <div class="glass-card p-5 md:p-6 flex flex-col space-y-6 shrink-0">
                         <div class="flex items-center space-x-5">
+                            <!-- 📺 新版：真实的复古迷你电视机 -->
                             <div :style="{ borderColor: activeColor, boxShadow: isPlaying ? `0 0 20px ${activeGlow}` : 'none' }"
-                                 class="w-16 h-16 md:w-20 md:h-20 shrink-0 bg-black/40 rounded-2xl border-[3px] flex items-center justify-center relative overflow-hidden transition-all duration-500 shadow-lg">
-                                <div :style="{ backgroundColor: activeColor }"
-                                     class="absolute inset-0 animate-pulse opacity-40" v-if="isPlaying"></div>
+                                 class="w-24 h-20 md:w-28 md:h-24 shrink-0 bg-[#222] rounded-xl border-[3px] p-1.5 flex flex-col relative transition-all duration-500 shadow-lg cursor-pointer hover:scale-105"
+                                 title="点击播放/暂停" @click="togglePlay">
 
-                                <div :style="{ color: activeColor }"
-                                     class="tv-character z-10 flex flex-col items-center justify-center drop-shadow-lg"
-                                     v-if="isPlaying">
-                                    <svg class="w-10 h-10 md:w-12 md:h-12" fill="currentColor" viewBox="0 0 64 64">
-                                        <path d="M32 12 L22 2 M32 12 L42 2" fill="none" stroke="currentColor"
-                                              stroke-linecap="round" stroke-width="3"/>
-                                        <rect fill="#1e293b" height="36" rx="6" stroke="currentColor" stroke-width="4"
-                                              width="48" x="8" y="16"/>
-                                        <rect fill="#020617" height="24" rx="3" width="36" x="14" y="22"/>
-                                        <text class="tv-face" fill="#4ade80" font-family="monospace" font-size="14"
-                                              font-weight="bold" text-anchor="middle" x="32" y="38">{{ currentTvFace }}
-                                        </text>
-                                    </svg>
+                                <!-- 📺 屏幕区域 -->
+                                <div class="flex-1 w-full bg-black rounded border-2 border-[#111] relative overflow-hidden shadow-[inset_0_0_15px_rgba(0,0,0,1)]">
+
+                                    <!-- 1. 播放时的动态 MV -->
+                                    <img :src="currentTvGif"
+                                         :class="['absolute inset-0 w-full h-full object-cover transition-all duration-[800ms] ease-in-out', isPlaying ? 'opacity-100 scale-100' : 'opacity-0 scale-110']"
+                                         alt="MV">
+                                    <!-- 2. 关机/无信号时的提示 -->
+                                    <div :class="['absolute inset-0 bg-black flex items-center justify-center transition-opacity duration-[800ms] z-10', isPlaying ? 'opacity-0' : 'opacity-100']">
+                                        <span class="text-[8px] md:text-[9px] text-white/40 font-pixel animate-pulse tracking-widest">NO SIGNAL</span>
+                                    </div>
+
+                                    <!-- 3. 灵魂注入：CRT 屏幕特效 (扫描线 + 荧光粉质感) -->
+                                    <div class="absolute inset-0 pointer-events-none z-20 opacity-50 mix-blend-overlay"
+                                         style="background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 2px, 3px 100%;">
+                                    </div>
+
+                                    <!-- 4. 灵魂注入：屏幕顶部的玻璃高光反射 -->
+                                    <div class="absolute top-0 left-0 w-full h-[45%] bg-gradient-to-b from-white/15 to-transparent pointer-events-none z-30 rounded-t"></div>
                                 </div>
 
-                                <div class="z-10 flex flex-col items-center justify-center drop-shadow-lg text-gray-600"
-                                     v-else>
-                                    <svg class="w-10 h-10 md:w-12 md:h-12" fill="currentColor" viewBox="0 0 64 64">
-                                        <path d="M32 12 L22 2 M32 12 L42 2" fill="none" stroke="currentColor"
-                                              stroke-linecap="round" stroke-width="3"/>
-                                        <rect fill="#1e293b" height="36" rx="6" stroke="currentColor" stroke-width="4"
-                                              width="48" x="8" y="16"/>
-                                        <rect fill="#000000" height="24" rx="3" width="36" x="14" y="22"/>
-                                        <text fill="#475569" font-family="monospace" font-size="14" font-weight="bold"
-                                              text-anchor="middle" x="32" y="38">-_-
-                                        </text>
-                                    </svg>
+                                <!-- 📺 电视机底部面板 (扬声器孔与指示灯) -->
+                                <div class="h-2.5 w-full mt-1.5 flex items-center justify-between px-1 shrink-0">
+                                    <!-- 左侧装饰：扬声器孔 -->
+                                    <div class="flex space-x-0.5">
+                                        <div class="w-0.5 h-1.5 bg-black/60 rounded-full shadow-[0_1px_0_rgba(255,255,255,0.1)]"></div>
+                                        <div class="w-0.5 h-1.5 bg-black/60 rounded-full shadow-[0_1px_0_rgba(255,255,255,0.1)]"></div>
+                                        <div class="w-0.5 h-1.5 bg-black/60 rounded-full shadow-[0_1px_0_rgba(255,255,255,0.1)]"></div>
+                                        <div class="w-0.5 h-1.5 bg-black/60 rounded-full shadow-[0_1px_0_rgba(255,255,255,0.1)]"></div>
+                                    </div>
+                                    <!-- 右侧电源指示灯 -->
+                                    <div :class="['w-1.5 h-1.5 rounded-full transition-all duration-500', isPlaying ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,1)]' : 'bg-red-900/40']"></div>
                                 </div>
                             </div>
                             <div class="flex flex-col space-y-3 overflow-hidden flex-1">
@@ -2462,30 +2467,6 @@
                 currentPlayModeIndex.value = (currentPlayModeIndex.value + 1) % playModes.length;
             };
 
-            // --- 新增：跳舞小电视颜文字控制 ---
-            // ====== 新增：更庞大的随机颜文字库 ======
-            const tvFaces = [
-                '^_^', '>_<', '0_0', 'T_T', '$_$', '@_@', 'OuO', '*_*', 'Q_Q', 'x_x',
-                'QAQ', 'QwQ', 'TAT', '=_=', 'O_O', '¬_¬', '¯_¯', 'ಠ_ಠ', '✪_✪', '♥_♥',
-                '+_+', '0v0', '•_•', '._.', '^o^', 'U_U', '>o<', '030', '~_~', 'T^T'
-            ];
-            const currentTvFace = ref('^_^');
-            let faceInterval = null;
-
-            watch(isPlaying, (newVal) => {
-                if (newVal) {
-                    // 音乐播放时，小电视随机变换表情
-                    faceInterval = setInterval(() => {
-                        // 这里已经是 Math.random() 随机抽取了，数组变大后随机性会更明显
-                        currentTvFace.value = tvFaces[Math.floor(Math.random() * tvFaces.length)];
-                    }, 800); // 如果想让表情切换更快，可以将 800 (毫秒) 调小，比如 500
-                } else {
-                    // 暂停时清除计时器，强制睡眠表情
-                    if (faceInterval) clearInterval(faceInterval);
-                    currentTvFace.value = '-_-';
-                }
-            });
-
             const playlist = ref([
                 {title: 'The Rain', file: './music/The Rain.mp3'},
                 {title: 'HiddenPath', file: './music/HiddenPath.mp3'},
@@ -2525,6 +2506,28 @@
 
             ]);
 
+            // 👇 ======== 新增：随机电视 GIF 逻辑 ======== 👇
+            const tvGifs = [
+                './imgs/mini_mv.gif',
+                './imgs/mini_mv2.gif', // 将你将来新增的 gif 路径都加到这里
+                './imgs/mini_mv3.gif',
+                './imgs/mini_mv4.gif',
+                './imgs/mini_mv5.gif',
+                './imgs/mini_mv6.gif',
+                './imgs/mini_mv7.gif',
+                './imgs/mini_mv8.gif'
+            ];
+
+            // 初始化时随机给一张
+            const currentTvGif = ref(tvGifs[Math.floor(Math.random() * tvGifs.length)]);
+
+            // 定义随机切换图片的函数
+            const changeTvGif = () => {
+                const randomIndex = Math.floor(Math.random() * tvGifs.length);
+                currentTvGif.value = tvGifs[randomIndex];
+            };
+            // 👆 ========================================= 👆
+
             const currentTrack = computed(() => playlist.value[currentTrackIndex.value] || null);
 
             // 👇 -------- 强制接管苹果灵动岛/锁屏媒体控制台 -------- 👇
@@ -2550,12 +2553,13 @@
             };
 
             const playTrack = async (index) => {
-                // 1. 无论是不是当前歌曲，都直接更新选中的歌曲索引
                 currentTrackIndex.value = index;
 
                 // 2. 先将播放状态置为 false
                 isPlaying.value = false;
 
+                // 👇 新增：只要切歌，就随机换一张 GIF
+                changeTvGif();
                 // 3. 等待 Vue 完成 DOM 更新（确保 audio 标签成功加载了新歌曲的 src）
                 await nextTick();
 
@@ -2576,6 +2580,9 @@
                     audioRef.value.pause();
                     isPlaying.value = false;
                 } else {
+                    // 👇 新增：从暂停恢复播放时，也随机换一张 GIF
+                    changeTvGif();
+
                     audioRef.value.play().then(() => {
                         isPlaying.value = true;
                     }).catch(e => {
@@ -2949,6 +2956,7 @@
             // 👆 ---------------------------------------- 👆
             return {
                 currentBg, // <--- 把这个加进 return 里
+                currentTvGif, // <--- 👇新增这一行，让 HTML 能够读取到这个变量
                 menuItems, currentTab, cssVars, activeColor, activeGlow,
                 isBooted, typedText, particleCanvas,
                 currentTime, currentStatus, // <--- 这里加上 currentStatus// <--- 新增暴露给视图
@@ -2956,7 +2964,7 @@
                 currentTimeDisplay, durationDisplay, seekProgress, durationSec, currentVolume, onVolumeChange,
                 togglePlay, playTrack, nextTrack, prevTrack, onTimeUpdate, onLoadedMetadata, onSeek, onEnded,
                 activeGame, gameWindowRef, openGame, closeGame, toggleFullscreen, isGameVisible, minimizeGame,
-                playModeText, togglePlayMode, currentTvFace,
+                playModeText, togglePlayMode,
                 isWanderJumping, isCollapsing, triggerWanderJump,
                 // ...前面的变量
                 showMailModal, mailContent, isSendingMail, mailStatus, sendMail,
