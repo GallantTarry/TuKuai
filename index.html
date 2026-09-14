@@ -57,33 +57,9 @@
     </script>
 
     <style>
-        /* 🟢 终极交互 1：全息追光玻璃材质 */
-        .glass-card {
-            position: relative;
-            overflow: hidden;
-            /* 确保光效不会溢出圆角 */
-            border-radius: 20px;
-        }
-
-        /* 创造一个跟随鼠标的光晕图层 */
-        .glass-card::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            /* 光晕的中心点绑定 CSS 变量，由 JS 实时注入 */
-            background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255,255,255,0.15), transparent 40%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-            z-index: 10;
-            mix-blend-mode: overlay; /* 叠加模式，产生强烈的玻璃折射感 */
-        }
-
-        /* 鼠标悬停时，不仅卡片浮起，内部光源也被点亮 */
-        @media (pointer: fine) {
-            .glass-card:hover::after {
-                opacity: 1;
-            }
+        /* 隐藏全局鼠标光标 */
+        * {
+            cursor: none !important;
         }
         /* ========================================= */
         /* 核心修复：防止 Vue 加载前出现大括号模板闪烁 */
@@ -457,11 +433,7 @@
 <!-- 👇 修改为加上 v-cloak 👇 -->
 <div v-cloak :style="cssVars" class="bg-black flex flex-col" id="app">
 
-    <!-- 🟢 终极交互 2：赛博流体光标 -->
-    <div id="cursor-dot" class="hidden md:block fixed w-1.5 h-1.5 bg-white rounded-full pointer-events-none z-[100000]" style="transform: translate(-50%, -50%); will-change: transform;"></div>
-    <div id="cursor-ring" class="hidden md:flex items-center justify-center fixed w-8 h-8 border-[1.5px] rounded-full pointer-events-none z-[99999] transition-all duration-200 ease-out"
-         :style="{ borderColor: activeColor, boxShadow: `0 0 15px ${activeGlow}`, transform: 'translate(-50%, -50%)', willChange: 'width, height, transform, background' }">
-    </div>
+
 
     <!-- 新增：将背景图和扫描线移到全局，并加上 z-0 防止遮挡 -->
     <img class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen z-0" :src="currentBg"/>
@@ -2457,13 +2429,14 @@
                         this.color = colors[Math.floor(Math.random() * colors.length)];
                     }
 
-                    update() {
+                    update(timeScale = 1) {
                         this.vx *= 0.94;
                         this.vy *= 0.94;
                         this.vy += 0.08;
                         this.x += this.vx;
                         this.y += this.vy;
-                        this.life -= this.decay;
+                        // 核心修复：根据屏幕帧率动态调整扣血量
+                        this.life -= this.decay * timeScale;
                     }
 
                     draw(ctx) {
@@ -2484,18 +2457,31 @@
                 }, {passive: true});
 
 
-                const animate = () => {
+                // 记录上一帧的时间戳
+                let lastTime = performance.now();
+
+                const animate = (currentTime) => {
+                    // 计算两帧之间经过了多少毫秒
+                    const deltaTime = currentTime - lastTime;
+                    lastTime = currentTime;
+
+                    // 以手机标准的 60Hz（约 16.66 毫秒/帧）作为 1 倍速基准。
+                    // 如果是 240Hz 电脑，deltaTime 大约为 4.16ms，timeScale 就会变成 0.25 倍，从而放慢单帧的扣血量。
+                    const timeScale = deltaTime / 16.66;
+
                     ctx.clearRect(0, 0, width, height);
                     for (let i = particles.length - 1; i >= 0; i--) {
                         const p = particles[i];
-                        p.update();
+                        p.update(timeScale); // 将算好的倍率传给粒子
                         p.draw(ctx);
                         if (p.life <= 0) particles.splice(i, 1);
                     }
                     ctx.globalAlpha = 1;
                     requestAnimationFrame(animate);
                 };
-                animate();
+
+                // 启动动画循环
+                requestAnimationFrame(animate);
             };
 
             const audioRef = ref(null);
@@ -2891,93 +2877,6 @@
                     }
                 });
 
-                // 👇 全息追光引擎：实时计算鼠标在每张卡片内的相对坐标
-                document.getElementById('app').addEventListener('mousemove', (e) => {
-                    const cards = document.querySelectorAll('.glass-card');
-                    for (const card of cards) {
-                        const rect = card.getBoundingClientRect();
-                        const x = e.clientX - rect.left;
-                        const y = e.clientY - rect.top;
-                        card.style.setProperty('--mouse-x', `${x}px`);
-                        card.style.setProperty('--mouse-y', `${y}px`);
-                    }
-                }, { passive: true });
-
-                // 👇 赛博流体光标引擎
-                // 只在支持鼠标的设备上运行，放过手机端
-                if (window.matchMedia("(pointer: fine)").matches) {
-                    document.body.style.cursor = 'none'; // 隐藏系统默认鼠标
-                    const cursorDot = document.getElementById('cursor-dot');
-                    const cursorRing = document.getElementById('cursor-ring');
-
-                    // 强制所有可点击元素也隐藏默认鼠标
-                    const style = document.createElement('style');
-                    style.innerHTML = `* { cursor: none !important; }`;
-                    document.head.appendChild(style);
-
-                    let mouseX = window.innerWidth / 2;
-                    let mouseY = window.innerHeight / 2;
-                    // 补充以下两行代码进行初始对齐
-                    cursorDot.style.left = `${mouseX}px`;
-                    cursorDot.style.top = `${mouseY}px`;
-                    let ringX = mouseX;
-                    let ringY = mouseY;
-
-                    // 鼠标移动监听
-                    window.addEventListener('mousemove', (e) => {
-                        mouseX = e.clientX;
-                        mouseY = e.clientY;
-                        // 中心白点瞬间跟上
-                        cursorDot.style.left = `${mouseX}px`;
-                        cursorDot.style.top = `${mouseY}px`;
-                    });
-
-                    // 动画帧循环：让外圈圆环产生丝滑的“延迟追随”感
-                    const renderCursor = () => {
-                        ringX += (mouseX - ringX) * 0.2; // 0.2 决定了圆环追赶鼠标的弹性迟缓度
-                        ringY += (mouseY - ringY) * 0.2;
-                        cursorRing.style.left = `${ringX}px`;
-                        cursorRing.style.top = `${ringY}px`;
-                        requestAnimationFrame(renderCursor);
-                    };
-                    renderCursor();
-
-// 👇 修复：Iframe 黑洞与浏览器边缘隐身机制
-                    document.addEventListener('mouseout', (e) => {
-                        // 核心修复：e.relatedTarget === null 代表移出浏览器边界
-                        // e.relatedTarget.tagName === 'IFRAME' 代表鼠标一脚踩进了黑洞
-                        if (e.relatedTarget === null || (e.relatedTarget && e.relatedTarget.tagName === 'IFRAME')) {
-                            cursorDot.style.opacity = '0';
-                            cursorRing.style.opacity = '0';
-                        }
-                    });
-
-                    document.addEventListener('mouseover', (e) => {
-                        // 只要鼠标重新退回到主网页的普通元素上，瞬间现身
-                        if (e.target && e.target.tagName !== 'IFRAME') {
-                            cursorDot.style.opacity = '1';
-                            cursorRing.style.opacity = '1';
-                        }
-                    });
-
-                    // 交互事件代理：碰到按钮时，外圈放大并填充颜色
-                    document.addEventListener('mouseover', (e) => {
-                        if (e.target.closest('button, a, .cursor-pointer, .nav-item, .song-item')) {
-                            cursorRing.style.width = '48px';
-                            cursorRing.style.height = '48px';
-                            cursorRing.style.backgroundColor = 'rgba(255,255,255,0.1)';
-                            cursorRing.style.backdropFilter = 'blur(4px)';
-                        }
-                    });
-                    document.addEventListener('mouseout', (e) => {
-                        if (e.target.closest('button, a, .cursor-pointer, .nav-item, .song-item')) {
-                            cursorRing.style.width = '32px';
-                            cursorRing.style.height = '32px';
-                            cursorRing.style.backgroundColor = 'transparent';
-                            cursorRing.style.backdropFilter = 'none';
-                        }
-                    });
-                }
             });
 // 👇 -------- 新增：高级滚动渐显逻辑 -------- 👇
             let observer = null;
