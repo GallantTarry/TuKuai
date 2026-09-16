@@ -1,0 +1,26 @@
+{
+  "name": "tukuai",
+  "version": "1.0.0",
+  "description": "这份 `index.html` 文件是一个集成度极高、功能非常丰富的单页面应用（SPA），具有浓厚的赛博朋克与复古像素风格。该页面没有使用传统的构建工具（如 Webpack 或 Vite）预编译，而是直接在浏览器端引入全局脚本运行。",
+  "main": "sw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GallantTarry/TuKuai.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/GallantTarry/TuKuai/issues"
+  },
+  "homepage": "https://github.com/GallantTarry/TuKuai#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.6.1",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^3.4.19"
+  }
+}

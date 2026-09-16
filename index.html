@@ -31,8 +31,7 @@
 
     <!-- 3. 针对苹果 iOS 设备（iPhone/iPad）保存到桌面时的图标 -->
     <link href="imgs/applefavicon.png" rel="apple-touch-icon">
-
-    <script src="./js/tailwindcss.js"></script>
+    <link href="./css/output.css" rel="stylesheet">
     <script src="./js/vue.global.js"></script>
     <script type="module" src="./js/model-viewer.min.js"></script>
 
@@ -43,17 +42,6 @@
         }
         // 强制每次加载都把页面拉回最顶部
         window.scrollTo(0, 0);
-    </script>
-
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {pixel: ['"Silkscreen"', '"ChinesePixel"', 'cursive']}
-                }
-            }
-        }
     </script>
 
     <style>
