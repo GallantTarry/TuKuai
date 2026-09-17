@@ -2619,7 +2619,28 @@
                 }
             }, {immediate: true}); // 确保一开机就初始化接管
 // 👆 ---------------------------------------------------- 👆
+// 👇 新增：彻底打通灵动岛/锁屏的控制按钮与播放状态 👇
+            if ('mediaSession' in navigator) {
+                // 1. 监听 Vue 的播放状态，实时同步给 iOS 系统（让灵动岛的波浪动画跟网页同步）
+                watch(isPlaying, (newVal) => {
+                    navigator.mediaSession.playbackState = newVal ? 'playing' : 'paused';
+                });
 
+                // 2. 绑定系统的播放、暂停、上一首、下一首按钮到网页内部的方法
+                navigator.mediaSession.setActionHandler('play', () => {
+                    if (!isPlaying.value) togglePlay();
+                });
+                navigator.mediaSession.setActionHandler('pause', () => {
+                    if (isPlaying.value) togglePlay();
+                });
+                navigator.mediaSession.setActionHandler('previoustrack', () => {
+                    prevTrack();
+                });
+                navigator.mediaSession.setActionHandler('nexttrack', () => {
+                    nextTrack();
+                });
+            }
+            // 👆 ---------------------------------------------------- 👆
             const formatTime = (time) => {
                 if (isNaN(time)) return '00:00';
                 const min = Math.floor(time / 60).toString().padStart(2, '0');
