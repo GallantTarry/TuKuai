@@ -1692,6 +1692,23 @@
                             </button>
                         </div>
 
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex items-center space-x-4 overflow-hidden">
+                                <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0">
+                                    <span class="text-xl">🍄</span>
+                                </div>
+                                <div class="flex flex-col truncate">
+                                    <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">新超级马里奥兄弟</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/New_Super_Mario_Bros.nds</span>
+                                </div>
+                            </div>
+                            <button @click="openGame('新超级马里奥兄弟', './game/emulator.html?rom=New_Super_Mario_Bros.nds')"
+                                    class="cursor-pointer text-[#ef4444] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#ef4444] border border-[#ef4444]/50 hover:border-[#ef4444] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(239,68,68,0)] hover:shadow-[0_0_15px_rgba(239,68,68,0.4)]">
+                                START
+                            </button>
+                        </div>
+
+
 
                     </div>
                 </div>
