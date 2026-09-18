@@ -24,6 +24,12 @@
         #game {
             width: 100%;
             height: 100%;
+            /* 必须加回这一行！禁止浏览器拦截触摸，直接穿透给游戏画布 */
+            touch-action: none !important;
+        }
+        /* 👇 强制隐藏可能残留的虚拟鼠标小点UI 👇 */
+        #ejs-mouse, .ejs-cursor, #ejs-ui-mouse-toggle {
+            display: none !important;
         }
     </style>
 </head>
@@ -80,6 +86,8 @@
 
         // 👇 新增：仅在判定为 NDS 核心时，才注入专用的防崩溃和固件参数 👇
         if (core === 'nds') {
+            window.EJS_mouse = false; // 👈 必须显式声明为 false，彻底干掉“触摸板小点”
+
             window.EJS_cheats = false; // 屏蔽 NDS 核心特有的作弊引起的内存溢出
             window.EJS_biosUrl = '../emulator_data/nds_bios.zip'; // 挂载 NDS 必须的固件
         }
