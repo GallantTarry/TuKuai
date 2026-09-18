@@ -83,7 +83,6 @@
 
         // 👇 2. 修正 NDS 专属配置 👇
         if (core === 'desmume' || core === 'nds' || core === 'melonds') {
-            window.EJS_mouse = true; // 👈 必须开启，确保内核愿意接收我们伪造的鼠标信号
             // ❌ 彻底删除 window.EJS_mouse = false;
             window.EJS_cheats = false;
             window.EJS_biosUrl = '../emulator_data/nds_bios.zip';
@@ -231,21 +230,6 @@
                 nativeUploadBtn.appendChild(fileInput);
                 document.body.appendChild(nativeUploadBtn);
             }
-            // 👇👇👇 将那段“终极暴力修复 NDS 触控”的代码完整粘贴在这里 👇👇👇
-            if (core === 'nds' || core === 'desmume' || core === 'melonds') {
-                setTimeout(() => {
-                    const gameCanvas = document.querySelector('#game canvas');
-                    if (gameCanvas) {
-                        // 1. 物理消灭屏幕上所有烦人的虚拟鼠标圆点
-                        const hideMouseStyle = document.createElement('style');
-                        // ... 中间的代码省略，原样粘贴 ...
-                        gameCanvas.addEventListener('touchend', (e) => {
-                            triggerMouse('mouseup', null);
-                        }, { passive: false });
-                    }
-                }, 3000);
-            }
-            // 👆👆👆 粘贴到这里结束 👆👆👆
         };
 
         const loaderScript = document.createElement('script');
