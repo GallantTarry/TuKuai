@@ -27,10 +27,7 @@
             /* 必须加回这一行！禁止浏览器拦截触摸，直接穿透给游戏画布 */
             touch-action: none !important;
         }
-        /* 👇 强制隐藏可能残留的虚拟鼠标小点UI 👇 */
-        #ejs-mouse, .ejs-cursor, #ejs-ui-mouse-toggle {
-            display: none !important;
-        }
+
     </style>
 </head>
 <body>
@@ -58,7 +55,7 @@
             else if (ext === 'nes') core = 'nes';
             else if (ext === 'gb' || ext === 'gbc') core = 'gb';
             // 仅仅识别 NDS 扩展名
-            else if (ext === 'nds') core = 'nds';
+            else if (ext === 'nds') core = 'desmume';
         }
 
         // =========================================================================
@@ -84,15 +81,12 @@
         window.EJS_pathtodata = '../emulator_data/';
         window.EJS_gameUrl = '../rom/' + romFile;
 
-        // 👇 新增：仅在判定为 NDS 核心时，才注入专用的防崩溃和固件参数 👇
-        if (core === 'nds') {
-            window.EJS_mouse = false; // 👈 必须显式声明为 false，彻底干掉“触摸板小点”
-
-            window.EJS_cheats = false; // 屏蔽 NDS 核心特有的作弊引起的内存溢出
-            window.EJS_biosUrl = '../emulator_data/nds_bios.zip'; // 挂载 NDS 必须的固件
+        // 👇 2. 修正 NDS 专属配置 👇
+        if (core === 'desmume' || core === 'nds' || core === 'melonds') {
+            // ❌ 彻底删除 window.EJS_mouse = false;
+            window.EJS_cheats = false;
+            window.EJS_biosUrl = '../emulator_data/nds_bios.zip';
         }
-        // 👆 修改结束：这样就绝对不会影响 GBA 或 SFC 的配置了 👆
-
         window.EJS_VirtualGamepadSettings = { alpha: 0.5, scale: 1.1 };
 
         // 恢复完整的控制栏按钮，包含存档导入/导出功能
