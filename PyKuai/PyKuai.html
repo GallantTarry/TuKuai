@@ -10,6 +10,9 @@
             --primary-color: #0f0;
             --bg-color: #050505;
             --terminal-bg: rgba(0, 20, 0, 0.8);
+            --glass-bg: rgba(20, 20, 20, 0.6);
+            --glass-border: rgba(0, 255, 0, 0.2);
+            --glow-color: rgba(0, 255, 0, 0.5);
         }
 
         * {
@@ -25,6 +28,7 @@
             font-family: 'Courier New', Courier, monospace;
             overflow-x: hidden;
         }
+
         /* 针对 PyKuai 的极客终端主题滚动条 */
         body {
             scrollbar-width: thin;
@@ -38,11 +42,11 @@
             background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(0, 255, 0, 0.4); /* 极客绿半透明 */
+            background: rgba(0, 255, 0, 0.4);
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-color); /* 悬浮时变为实色绿 */
+            background: var(--primary-color);
             box-shadow: 0 0 10px var(--primary-color);
         }
 
@@ -85,6 +89,97 @@
             pointer-events: none;
         }
 
+        /* ================= 顶部导航栏 (融合 BlackHole 风格) ================= */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-container:hover {
+            transform: scale(1.05);
+        }
+
+        /* 【核心修改】：直角矩形容器包裹图标 */
+        .logo-container img {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px; /* 微直角矩形，去除原先的 50% 圆角 */
+            border: 1px solid var(--primary-color); /* 增加极客绿边框包裹 */
+            padding: 3px; /* 增加内边距，形成包裹感 */
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+            transition: transform 0.3s ease;
+            background-color: var(--terminal-bg);
+        }
+
+        .logo-container img.playing {
+            animation: spin-slow 10s linear infinite;
+        }
+
+        @keyframes spin-slow {
+            100% { transform: rotate(360deg); }
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px var(--primary-color);
+            letter-spacing: 2px;
+        }
+
+        /* 毛玻璃说明书按钮 */
+        .buy-btn {
+            background: rgba(0, 20, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            color: var(--primary-color);
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            backdrop-filter: blur(10px);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .buy-btn:hover {
+            background: rgba(0, 255, 0, 0.15);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 25px var(--glow-color);
+            transform: translateY(-2px);
+            color: #fff;
+        }
+
+        .price-tag {
+            background: linear-gradient(135deg, #00aa00, #00ff00);
+            color: #000;
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            box-shadow: inset 0 0 5px rgba(255,255,255,0.4);
+        }
+
+        /* ================= 主体内容区 ================= */
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -93,7 +188,7 @@
             z-index: 1;
         }
 
-        header {
+        header.main-header {
             text-align: center;
             margin-bottom: 40px;
         }
@@ -281,14 +376,11 @@
         }
 
         .download-btn {
-            /* 替换为自适应排版属性 */
             font-size: clamp(13px, 4vw, 18px);
             white-space: nowrap;
             padding: 15px 5vw;
             box-sizing: border-box;
             max-width: 100%;
-
-            /* 保留原有的视觉效果属性 */
             display: inline-block;
             font-weight: bold;
             color: var(--primary-color);
@@ -324,12 +416,6 @@
             left: 100%;
         }
 
-        /* 移动端适配 */
-        @media (max-width: 768px) {
-            .glitch { font-size: 2.5rem; }
-            .terminal { font-size: 1rem; min-height: 180px; }
-            .features { grid-template-columns: 1fr; }
-        }
         /* 页脚样式 */
         footer {
             text-align: center;
@@ -339,111 +425,151 @@
             letter-spacing: 1px;
             text-shadow: 0 0 5px var(--primary-color);
         }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .top-nav { padding: 15px 20px; }
+            .logo-text { font-size: 1.2rem; }
+            .buy-btn { padding: 8px 16px; font-size: 0.95rem; }
+            .glitch { font-size: 2.5rem; }
+            .terminal { font-size: 1rem; min-height: 180px; }
+            .features { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body class="crt">
-    <!-- 动态矩阵雨背景 -->
-    <canvas id="matrix-bg"></canvas>
+<!-- 动态矩阵雨背景 -->
+<canvas id="matrix-bg"></canvas>
 
-    <div class="container">
-        <header>
-            <h1 class="glitch" data-text="PyKuai">PyKuai</h1>
-            <p class="author">Developed by TuKuai</p>
-        </header>
-
-        <main>
-            <!-- 软件截图展示区 -->
-            <section class="showcase">
-                <img src="imgs/main.png" alt="PyKuai Interface">
-            </section>
-
-                <!-- 下载执行区 -->
-                <section class="download-wrapper">
-                    <!-- 替换为国内加速直链 -->
-                    <a href="https://ghproxy.net/https://github.com/GallantTarry/TuKuai/releases/download/20260907/PyKuaiv1.2.3.exe" class="download-btn">>> PyKuai(v1.2.3) <<</a>
-                </section>
-
-            <!-- 打字机效果说明区 -->
-            <section class="terminal">
-                <div id="typewriter" style="display: inline;"></div><span class="cursor"></span>
-            </section>
-
-            <!-- 特性大集合网格 -->
-            <section class="features">
-                <div class="feature-card">
-                    <h3>[01] 泛用针对</h3>
-                    <p>具备泛用性与针对性，涵盖不同领域的不同应用场景。</p>
-                </div>
-                <div class="feature-card">
-                    <h3>[02] 大集合生态</h3>
-                    <p>集成生态，windows直接运行。</p>
-                </div>
-                <div class="feature-card">
-                    <h3>[03] 极简即极客</h3>
-                    <p>摒弃臃肿的UI，回归黑绿终端的浪漫，用最高效的底层代码驱动世界。</p>
-                </div>
-            </section>
-            <footer id="download">
-                <p style="color: #64748B; font-size: 0.95rem; letter-spacing: 1px;">
-                    &copy; 2026 Created by 土块. All rights reserved.
-                </p>
-            </footer>
-
-        </main>
+<!-- 顶部极客毛玻璃导航栏 -->
+<nav class="top-nav">
+    <div class="logo-container" id="music-toggle">
+        <img src="imgs/script.ico" alt="PyKuai Logo" id="music-disk">
+        <div class="logo-text">BGM</div>
+        <audio id="bg-music" src="music/Minecraft.mp3" loop></audio>
     </div>
 
-    <script>
-        // Matrix 背景动画逻辑
-        const canvas = document.getElementById('matrix-bg');
-        const ctx = canvas.getContext('2d');
+    <a href="docs/PyKuai使用说明书.md" download="PyKuai使用说明书.md" class="buy-btn">
+        获取说明
+        <span class="price-tag">下载</span>
+    </a>
+</nav>
 
+<div class="container">
+    <header class="main-header">
+        <h1 class="glitch" data-text="PyKuai">PyKuai</h1>
+        <p class="author">Developed by TuKuai</p>
+    </header>
+
+    <main>
+        <!-- 软件截图展示区 -->
+        <section class="showcase">
+            <img src="imgs/main.png" alt="PyKuai Interface">
+        </section>
+
+        <!-- 下载执行区 -->
+        <section class="download-wrapper">
+            <!-- 国内加速直链 -->
+            <a href="https://ghproxy.net/https://github.com/GallantTarry/TuKuai/releases/download/20260907/PyKuaiv1.2.4.exe" class="download-btn">>> PyKuai (v1.2.4) <<</a>
+        </section>
+
+        <!-- 打字机效果说明区 -->
+        <section class="terminal">
+            <div id="typewriter" style="display: inline;"></div><span class="cursor"></span>
+        </section>
+
+        <!-- 特性大集合网格 -->
+        <section class="features">
+            <div class="feature-card">
+                <h3>[01] 泛用针对</h3>
+                <p>具备泛用性与针对性，涵盖不同领域的不同应用场景。</p>
+            </div>
+            <div class="feature-card">
+                <h3>[02] 大集合生态</h3>
+                <p>集成生态，Windows 环境下直接独立运行。</p>
+            </div>
+            <div class="feature-card">
+                <h3>[03] 极简即极客</h3>
+                <p>摒弃臃肿的UI，回归黑绿终端的浪漫，用最高效的底层代码驱动世界。</p>
+            </div>
+        </section>
+
+        <footer>
+            <p style="color: #64748B; font-size: 0.95rem; letter-spacing: 1px;">
+                &copy; 2026 Created by 土块. All rights reserved.
+            </p>
+        </footer>
+
+    </main>
+</div>
+
+<script>
+    // --- 1. 音乐播放器逻辑 ---
+    const musicToggle = document.getElementById('music-toggle');
+    const bgMusic = document.getElementById('bg-music');
+    const musicDisk = document.getElementById('music-disk');
+
+    musicToggle.addEventListener('click', () => {
+        if (bgMusic.paused) {
+            bgMusic.play();
+            musicDisk.classList.add('playing');
+        } else {
+            bgMusic.pause();
+            musicDisk.classList.remove('playing');
+        }
+    });
+
+    // --- 2. Matrix 背景动画逻辑 ---
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロゴゾドボポヴッン';
+    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const nums = '0123456789';
+    const alphabet = katakana + latin + nums;
+
+    const fontSize = 16;
+    let columns = canvas.width / fontSize;
+
+    let rainDrops = [];
+    for (let x = 0; x < columns; x++) {
+        rainDrops[x] = 1;
+    }
+
+    const draw = () => {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#0F0';
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < rainDrops.length; i++) {
+            const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+            ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+            if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                rainDrops[i] = 0;
+            }
+            rainDrops[i]++;
+        }
+    };
+    setInterval(draw, 30);
+
+    window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-
-        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロゴゾドボポヴッン';
-        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const nums = '0123456789';
-        const alphabet = katakana + latin + nums;
-
-        const fontSize = 16;
-        let columns = canvas.width / fontSize;
-
-        let rainDrops = [];
+        columns = canvas.width / fontSize;
+        rainDrops = [];
         for (let x = 0; x < columns; x++) {
             rainDrops[x] = 1;
         }
+    });
 
-        const draw = () => {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#0F0';
-            ctx.font = fontSize + 'px monospace';
-
-            for (let i = 0; i < rainDrops.length; i++) {
-                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-
-                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    rainDrops[i] = 0;
-                }
-                rainDrops[i]++;
-            }
-        };
-        setInterval(draw, 30);
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            columns = canvas.width / fontSize;
-            rainDrops = [];
-            for (let x = 0; x < columns; x++) {
-                rainDrops[x] = 1;
-            }
-        });
-
-        // 终端打字机效果逻辑
-        const textToType = `root@TuKuai:~# ./pykuai_init.sh
+    // --- 3. 终端打字机效果逻辑 ---
+    const textToType = `root@TuKuai:~# ./pykuai_init.sh
 > 正在初始化 PyKuai 环境... [OK]
 > 正在加载泛用性脚本库... [OK]
 > 正在挂载针对性模块... [OK]
@@ -455,23 +581,23 @@
 >
 > Waiting for user action...`;
 
-        const typeWriterElement = document.getElementById('typewriter');
-        let i = 0;
+    const typeWriterElement = document.getElementById('typewriter');
+    let i = 0;
 
-        function typeWriter() {
-            if (i < textToType.length) {
-                if (textToType.charAt(i) === '\n') {
-                    typeWriterElement.innerHTML += '<br>';
-                } else {
-                    typeWriterElement.innerHTML += textToType.charAt(i);
-                }
-                i++;
-                setTimeout(typeWriter, Math.random() * 40 + 20);
+    function typeWriter() {
+        if (i < textToType.length) {
+            if (textToType.charAt(i) === '\n') {
+                typeWriterElement.innerHTML += '<br>';
+            } else {
+                typeWriterElement.innerHTML += textToType.charAt(i);
             }
+            i++;
+            setTimeout(typeWriter, Math.random() * 40 + 20);
         }
+    }
 
-        // 延迟1秒启动打字机
-        setTimeout(typeWriter, 1000);
-    </script>
+    // 延迟1秒启动打字机
+    setTimeout(typeWriter, 1000);
+</script>
 </body>
 </html>
