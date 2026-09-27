@@ -7,12 +7,12 @@
     <!-- 精准挂载像素玫瑰 ICO -->
     <link rel="icon" href="imgs/KuaiDrive.ico" type="image/x-icon">
     <style>
-        /* CSS 变量：专属红金调色板 */
+        /* CSS 变量：专属深空红金调色板 */
         :root {
             --primary: #D4AF37; /* 暗金 */
             --accent: #C0392B; /* 蔷薇红 */
-            --bg-color: #16151A; /* 极暗紫黑底色 */
-            --glass-bg: rgba(22, 21, 26, 0.6);
+            --bg-color: #0B080C; /* 极暗深空紫黑 */
+            --glass-bg: rgba(15, 10, 15, 0.6);
             --glass-border: rgba(212, 175, 55, 0.2);
             --glow-color: rgba(192, 57, 43, 0.5);
             --glow-gold: rgba(212, 175, 55, 0.4);
@@ -28,15 +28,28 @@
         body {
             background-color: var(--bg-color);
             background-image:
-                    radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.08), transparent 25%),
-                    radial-gradient(circle at 85% 30%, rgba(192, 57, 43, 0.08), transparent 25%);
+                    radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.08), transparent 35%),
+                    radial-gradient(circle at 85% 30%, rgba(192, 57, 43, 0.08), transparent 35%);
             color: #E4E4E7;
             line-height: 1.6;
-            overflow: hidden; /* 没有下方内容了，直接锁定屏幕防止滚动 */
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
+
+        /* 滚动条定制 */
+        body { scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg-color); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 10, 15, 0.8); border-radius: 10px; border: none; }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            border: none;
+            box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.2);
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+        ::-webkit-scrollbar-button, ::-webkit-scrollbar-corner { display: none; }
 
         /* 画布底层：花瓣飘落引擎 */
         #petal-canvas {
@@ -47,14 +60,14 @@
             z-index: -1;
         }
 
-        /* 星云背景 */
+        /* 深空星尘漂移特效 */
         .stars {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: -2;
             background: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.3;
+            opacity: 0.4;
             animation: drift 100s linear infinite;
         }
 
@@ -69,7 +82,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 50px;
-            background: rgba(22, 21, 26, 0.8);
+            background: rgba(10, 5, 10, 0.65);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--glass-border);
@@ -87,21 +100,22 @@
 
         .logo-container:hover { transform: scale(1.05); }
 
+        /* BGM 按钮防遮挡与原生物理发光 */
         .logo-container img {
-            width: 40px; height: 40px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px var(--glow-color);
-            transition: transform 0.3s ease;
+            width: 44px; height: 44px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px var(--glow-gold));
+            transition: transform 0.3s ease, filter 0.3s ease;
         }
 
         .logo-container img.playing {
             animation: heartbeat 1.5s ease-in-out infinite;
-            box-shadow: 0 0 25px var(--accent);
+            filter: drop-shadow(0 0 15px var(--accent));
         }
 
         @keyframes heartbeat {
             0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.08); }
             100% { transform: scale(1); }
         }
 
@@ -154,7 +168,7 @@
             box-shadow: inset 0 0 5px rgba(255,255,255,0.4);
         }
 
-        /* 英雄区域 (居中占满剩余空间) */
+        /* 英雄区域 (居中) */
         .hero {
             flex: 1;
             display: flex;
@@ -167,64 +181,71 @@
         }
 
         .hero h1.cosmic-title {
-            font-size: 5rem;
-            margin-bottom: 20px;
+            font-size: 4.5rem;
+            margin-bottom: 15px;
             letter-spacing: 6px;
             text-shadow: 0 0 20px rgba(192, 57, 43, 0.5), 0 0 40px rgba(212, 175, 55, 0.3);
         }
 
         .hero p.cosmic-subtitle {
             font-family: 'Courier New', Courier, monospace;
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             color: var(--primary);
             letter-spacing: 6px;
             text-transform: uppercase;
             font-weight: bold;
             text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-            margin: 0 auto 50px auto;
+            margin: 0 auto 30px auto;
         }
 
+        /* 软件展示容器 */
         .hero-img-container {
             position: relative;
-            width: 180px; height: 180px;
+            width: 90%;
+            max-width: 340px;
+            height: auto;
             margin: 0 auto 40px auto;
-            animation: float 6s ease-in-out infinite;
+            animation: float-ui 6s ease-in-out infinite;
         }
 
+        /* 底层环境光晕（修改为贴合矩形的圆角光晕） */
         .hero-img-container::after {
             content: '';
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 110%; height: 110%;
-            border-radius: 20%;
-            box-shadow: 0 0 50px var(--accent);
+            width: 90%; height: 90%;
+            border-radius: 24px; /* 匹配主图的圆角弧度 */
+            box-shadow: 0 0 60px 30px var(--accent); /* 柔和向外扩散的红光 */
             z-index: -1;
-            opacity: 0.6;
-            animation: pulse-glow 4s ease-in-out infinite alternate;
+            opacity: 0.35;
+            animation: pulse-glow-ui 4s ease-in-out infinite alternate;
         }
 
+        /* 【核心修改】为主图增加高级弧度（border-radius） */
         .hero-img-container img {
-            width: 100%; height: 100%;
+            width: 100%;
+            height: auto;
+            display: block;
             object-fit: contain;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
-            border-radius: 12px;
+            border-radius: 20px; /* 赋予展示图平滑的弧度 */
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.9));
         }
 
-        @keyframes float {
+        @keyframes float-ui {
             0% { transform: translateY(0px) scale(1); }
-            50% { transform: translateY(-15px) scale(1.02); }
+            50% { transform: translateY(-10px) scale(1.01); }
             100% { transform: translateY(0px) scale(1); }
         }
 
-        @keyframes pulse-glow {
-            from { box-shadow: 0 0 30px var(--accent); opacity: 0.4; }
-            to { box-shadow: 0 0 80px var(--primary); opacity: 0.8; }
+        @keyframes pulse-glow-ui {
+            from { opacity: 0.2; transform: translate(-50%, -50%) scale(0.95); }
+            to { opacity: 0.45; transform: translate(-50%, -50%) scale(1.05); }
         }
 
         /* 开发中敬请期待按钮 */
         .lock-btn {
-            background: rgba(10, 10, 10, 0.8);
+            background: rgba(15, 10, 15, 0.6);
             border: 1px solid var(--primary);
             color: var(--primary);
             padding: 14px 40px;
@@ -239,6 +260,7 @@
             cursor: default;
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
             transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
         }
 
         .lock-btn:hover {
@@ -259,15 +281,17 @@
             header { padding: 15px 20px; }
             .logo-text { font-size: 1.2rem; }
             .buy-btn { padding: 8px 16px; font-size: 0.95rem; }
-            .hero h1.cosmic-title { font-size: 3rem; letter-spacing: 4px; }
-            .hero p.cosmic-subtitle { font-size: 1rem; letter-spacing: 3px; margin-bottom: 35px; }
-            .hero-img-container { width: 140px; height: 140px; margin-bottom: 30px; }
+            .hero h1.cosmic-title { font-size: 2.8rem; letter-spacing: 4px; }
+            .hero p.cosmic-subtitle { font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 30px; }
+            .hero-img-container { max-width: 260px; margin-bottom: 35px; }
         }
     </style>
 </head>
 <body>
 
+<!-- 星海深空背景 -->
 <div class="stars"></div>
+
 <!-- 玫瑰花瓣物理引擎 -->
 <canvas id="petal-canvas"></canvas>
 
@@ -285,8 +309,9 @@
 </header>
 
 <section class="hero">
+    <!-- 软件主界面展示图 (带弧度) -->
     <div class="hero-img-container">
-        <img src="imgs/KuaiDrive.ico" alt="KuaiDrive 核心">
+        <img src="imgs/main.png" alt="KuaiDrive 软件主界面">
     </div>
     <h1 class="cosmic-title">KUAIDRIVE</h1>
     <p class="cosmic-subtitle">安全 · 简洁 · 迅速 · P2P</p>
@@ -338,7 +363,7 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // 提取自像素玫瑰的配色
+    // 提取自像素玫瑰的红金配色
     const petalColors = ['#C0392B', '#D9534F', '#8B0000', '#D4AF37', '#8B6D55'];
 
     class Petal {
