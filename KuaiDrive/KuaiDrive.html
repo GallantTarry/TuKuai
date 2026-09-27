@@ -198,43 +198,43 @@
             margin: 0 auto 30px auto;
         }
 
-        /* 软件展示容器 */
+        /* 软件展示容器 - 【核心修改：变超小尺寸】 */
         .hero-img-container {
             position: relative;
             width: 90%;
-            max-width: 340px;
+            max-width: 160px; /* 彻底缩小，精致的悬浮窗尺寸 */
             height: auto;
-            margin: 0 auto 40px auto;
+            margin: 0 auto 30px auto;
             animation: float-ui 6s ease-in-out infinite;
         }
 
-        /* 底层环境光晕（修改为贴合矩形的圆角光晕） */
+        /* 底层环境光晕 - 【核心修改：配合缩小的尺寸微调光晕扩散】 */
         .hero-img-container::after {
             content: '';
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             width: 90%; height: 90%;
-            border-radius: 24px; /* 匹配主图的圆角弧度 */
-            box-shadow: 0 0 60px 30px var(--accent); /* 柔和向外扩散的红光 */
+            border-radius: 16px; /* 弧度同步调小 */
+            box-shadow: 0 0 40px 15px var(--accent); /* 缩小光晕扩散范围，防止光晕吞噬图片 */
             z-index: -1;
             opacity: 0.35;
             animation: pulse-glow-ui 4s ease-in-out infinite alternate;
         }
 
-        /* 【核心修改】为主图增加高级弧度（border-radius） */
+        /* 主图 - 【核心修改：配合缩小的尺寸微调圆角】 */
         .hero-img-container img {
             width: 100%;
             height: auto;
             display: block;
             object-fit: contain;
-            border-radius: 20px; /* 赋予展示图平滑的弧度 */
-            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.9));
+            border-radius: 14px; /* 赋予展示图平滑且比例协调的弧度 */
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.9)); /* 阴影也按比例适当收敛 */
         }
 
         @keyframes float-ui {
             0% { transform: translateY(0px) scale(1); }
-            50% { transform: translateY(-10px) scale(1.01); }
+            50% { transform: translateY(-10px) scale(1.02); }
             100% { transform: translateY(0px) scale(1); }
         }
 
@@ -283,7 +283,8 @@
             .buy-btn { padding: 8px 16px; font-size: 0.95rem; }
             .hero h1.cosmic-title { font-size: 2.8rem; letter-spacing: 4px; }
             .hero p.cosmic-subtitle { font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 30px; }
-            .hero-img-container { max-width: 260px; margin-bottom: 35px; }
+            /* 手机端图片极致缩小，完美适配屏幕占比 */
+            .hero-img-container { max-width: 120px; margin-bottom: 25px; }
         }
     </style>
 </head>
@@ -309,7 +310,7 @@
 </header>
 
 <section class="hero">
-    <!-- 软件主界面展示图 (带弧度) -->
+    <!-- 软件主界面展示图 (超小微缩版) -->
     <div class="hero-img-container">
         <img src="imgs/main.png" alt="KuaiDrive 软件主界面">
     </div>
