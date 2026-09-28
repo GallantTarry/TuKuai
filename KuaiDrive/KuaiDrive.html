@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KuaiDrive | 挂载磁盘与文件传输七巧板</title>
     <link rel="icon" href="imgs/KuaiDrive.ico" type="image/x-icon">
     <style>
@@ -44,7 +44,8 @@
             background-color: var(--bg-color);
             color: #E4E4E7;
             line-height: 1.6;
-            overflow: hidden;
+            overflow-x: hidden; /* 隐藏横向滚动 */
+            overflow-y: auto;   /* 开放纵向滚动，防止图标被卡没 */
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -142,7 +143,8 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto; /* 同样开放内部滚动 */
             background-color: var(--bg-color); /* 舞台深处纯黑 */
         }
 
@@ -306,13 +308,43 @@
             z-index: 40; pointer-events: none;
         }
 
+        /* === 全新升级版手机端适配响应式代码 === */
         @media (max-width: 768px) {
-            header { padding: 12px 20px; }
-            .logo-text { font-size: 1.2rem; }
-            .hero h1.cosmic-title { font-size: 2.5rem; letter-spacing: 4px; }
-            .hero p.cosmic-subtitle { font-size: 0.85rem; letter-spacing: 4px; }
-            .hero-img-container { max-width: 130px; margin-bottom: 25px; }
-            .lock-btn { padding: 10px 25px; font-size: 0.95rem; }
+            /* 优化顶部留白，防止挤压 */
+            header { padding: 12px 15px; }
+            .logo-container { gap: 10px; }
+            .logo-text { font-size: 1.1rem; }
+            .logo-container img { width: 32px; height: 32px; }
+
+            /* 优化按钮大小，适应手指点击但不过大 */
+            .buy-btn { padding: 6px 15px; font-size: 0.85rem; gap: 6px; }
+            .price-tag { padding: 2px 6px; font-size: 0.75rem; }
+
+            /* 【关键修复】取消强制垂直居中，改为从上往下排布，并留出足够的顶部空间 */
+            .hero {
+                justify-content: flex-start;
+                padding-top: 15vh; /* 强行把图标往下推，避开顶部 4vh 的帷幔遮挡 */
+                padding-bottom: 10vh; /* 底部留白，方便滚动 */
+            }
+
+            /* 调整主要视觉层尺寸 */
+            .hero-img-container { max-width: 110px; margin-bottom: 20px; }
+            .hero h1.cosmic-title { font-size: 2.2rem; letter-spacing: 3px; margin-bottom: 8px; }
+            .hero p.cosmic-subtitle { font-size: 0.8rem; letter-spacing: 3px; margin-bottom: 30px; }
+            .lock-btn { padding: 10px 20px; font-size: 0.9rem; gap: 8px; }
+
+            /* 优化页脚在小屏幕下的排版 */
+            footer { padding: 10px 15px 20px; }
+            footer p { font-size: 0.75rem; letter-spacing: 1px; }
+        }
+
+        /* 针对 iPhone SE 等极致窄屏 (375px 及以下) 进一步收缩 */
+        @media (max-width: 400px) {
+            header { padding: 10px; }
+            .logo-text { font-size: 1rem; }
+            .hero h1.cosmic-title { font-size: 1.8rem; letter-spacing: 2px; }
+            .buy-btn { padding: 6px 12px; font-size: 0.8rem; }
+            .hero p.cosmic-subtitle { font-size: 0.75rem; letter-spacing: 2px; }
         }
     </style>
 </head>
