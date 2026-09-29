@@ -39,24 +39,20 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 🟢 修复 2：彻底锁死全局视口，禁止全局滚动，消除“一堆空气” */
+        /* 🟢 终极修复：恢复原生 body 滚动，夺回最顶层滚动条 */
         body {
             background-color: var(--bg-color);
             color: #E4E4E7;
             line-height: 1.6;
-            overflow: hidden; /* 绝对锁死外层滚动 */
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            height: 100dvh;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
-        /* 定制化优雅滚动条 (将作用域移至真实滚动的 ui-wrapper) */
-        #ui-wrapper { scrollbar-width: thin; scrollbar-color: var(--primary) transparent; }
-        #ui-wrapper::-webkit-scrollbar { width: 4px; height: 4px; }
-        #ui-wrapper::-webkit-scrollbar-track { background: transparent; }
-        #ui-wrapper::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.4); border-radius: 10px; transition: all 0.3s; }
-        #ui-wrapper::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+        /* 重新接管全局的优雅金边滚动条 */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.4); border-radius: 10px; transition: all 0.3s; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
         /* === 1. 顶部标题栏 === */
         header {
@@ -69,9 +65,9 @@
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(212, 175, 55, 0.15);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-            position: relative;
+            position: sticky; /* 🟢 修复：改为吸顶，随页面滚动始终悬浮 */
+            top: 0;
             z-index: 1000;
-            flex-shrink: 0;
         }
 
         .logo-container {
@@ -136,56 +132,41 @@
             border: 1px solid rgba(212, 175, 55, 0.2);
         }
 
-        /* === 2. 舞台内容区 === */
-        #stage-area {
-            position: relative;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; /* 🟢 绝对锁死：幕布和光影永远固定，不会被拉出空气 */
-            background-color: var(--bg-color);
+        /* === 2. 视觉特效层（分离出来，固定死，绝不拉出空气） === */
+        #visual-bg {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none;
         }
-
-        /* 极度柔和的舞台聚光灯 */
         .spotlight {
             position: absolute; top: -10%; left: 50%; transform: translateX(-50%);
             width: 80vw; height: 120%;
             background: radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.12) 0%, rgba(122, 0, 0, 0.05) 40%, transparent 75%);
-            z-index: 1; pointer-events: none;
             animation: soft-breathe 8s infinite alternate ease-in-out;
         }
         .stage-floor {
             position: absolute; bottom: -30%; left: 0%; width: 100%; height: 60%;
             background: radial-gradient(ellipse at 50% 100%, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
-            z-index: 1; pointer-events: none;
+        }
+        .grain-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
         }
         @keyframes soft-breathe {
             from { opacity: 0.6; transform: translateX(-50%) scale(0.98); }
             to { opacity: 1; transform: translateX(-50%) scale(1.02); }
         }
 
-        /* 细腻的胶片颗粒感 */
-        .grain-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2; pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
-        }
-
-        /* === 3. 核心内容 UI层 (真正负责滚动的地方) === */
-        #ui-wrapper {
+        /* === 3. 核心内容区 (依赖 body 滚动) === */
+        #ui-content {
             position: relative;
             z-index: 10;
-            flex: 1;
             display: flex;
             flex-direction: column;
-            overflow-y: auto; /* 🟢 滚动条只赋予给内容层，背景幕布永不动摇 */
-            pointer-events: auto;
+            min-height: calc(100vh - 74px); /* 减去顶栏高度 */
         }
 
-        /* 🟢 修复 1：安全的居中魔法，解决图片顶部被截断的问题 */
         .hero {
             margin: auto 0; /* 这是 Flexbox 防截断的究极绝招 */
-            flex-shrink: 0; /* 保证内容绝对不被挤扁 */
+            flex-shrink: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -196,10 +177,9 @@
         .hero-img-container {
             position: relative; width: 90%; max-width: 170px; height: auto; margin-bottom: 35px;
             animation: gentle-float 8s ease-in-out infinite;
-            display: flex; /* 确保严丝合缝包裹内部图片 */
+            display: flex;
         }
 
-        /* 🟢 修复 3：使用 inset: 0 让阴影永远吸附在边框，绝不移位错乱 */
         .hero-img-container::after {
             content: ''; position: absolute; inset: 0;
             border-radius: 12px;
@@ -223,7 +203,6 @@
             to { opacity: 1; transform: scale(1.1); }
         }
 
-        /* 标题：奢华金 */
         .hero h1.cosmic-title {
             font-size: 4rem; margin-bottom: 12px; letter-spacing: 8px;
             font-weight: 900;
@@ -241,7 +220,6 @@
             margin: 0 auto 40px auto;
         }
 
-        /* 敬请期待按钮 */
         .lock-btn {
             background: rgba(10, 10, 10, 0.6);
             backdrop-filter: blur(15px);
@@ -262,7 +240,7 @@
         }
 
         footer {
-            flex-shrink: 0; /* 保证底部信息绝不被挤压 */
+            flex-shrink: 0;
             text-align: center; padding: 20px 20px 30px;
             opacity: 0.6; transition: opacity 0.3s;
         }
@@ -271,29 +249,31 @@
             color: var(--primary); font-size: 0.85rem; letter-spacing: 3px; font-weight: 300;
         }
 
-        /* === 4. 印象派花瓣引擎 === */
+        /* === 4. 舞台前景特效 (花瓣与幕布，固定死) === */
+        #visual-fg {
+            position: fixed; inset: 0; z-index: 30; pointer-events: none;
+        }
         #petal-canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 20; pointer-events: none;
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
         }
-
-        /* === 5. 顶级丝绒幕布层 === */
+        .valance {
+            position: absolute; top: 0; left: 0; width: 100%; height: 4vh;
+            background: var(--velvet-gradient);
+            border-bottom: 2px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+        }
         .curtain-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 30;
             display: flex;
-            pointer-events: none;
         }
-
         .curtain-left, .curtain-right {
             width: 50%; height: 100%;
             background: var(--velvet-gradient);
             box-shadow: 0 0 50px rgba(0,0,0,1);
             transition: transform 3.5s cubic-bezier(0.25, 1, 0.3, 1);
-            pointer-events: auto;
+            pointer-events: auto; /* 闭合时拦截点击 */
         }
-
         .curtain-left {
             border-right: 2px solid rgba(212, 175, 55, 0.5);
             transform-origin: left;
@@ -308,15 +288,6 @@
         .curtain-open .curtain-left { transform: translateX(-90%); pointer-events: none; }
         .curtain-open .curtain-right { transform: translateX(90%); pointer-events: none; }
 
-        /* 顶部帷幔 */
-        .valance {
-            position: absolute; top: 0; left: 0; width: 100%; height: 4vh;
-            background: var(--velvet-gradient);
-            border-bottom: 2px solid rgba(212, 175, 55, 0.4);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.9);
-            z-index: 40; pointer-events: none;
-        }
-
         /* === 移动端适配 === */
         @media (max-width: 768px) {
             header { padding: 12px 15px; }
@@ -327,7 +298,6 @@
             .buy-btn { padding: 6px 15px; font-size: 0.85rem; gap: 6px; }
             .price-tag { padding: 2px 6px; font-size: 0.75rem; }
 
-            /* 移动端同样享受 margin: auto 安全居中，移除生硬的 padding-top 规避截断 */
             .hero { padding: 40px 20px; }
             .hero-img-container { max-width: 110px; margin-bottom: 20px; }
             .hero h1.cosmic-title { font-size: 2.2rem; letter-spacing: 3px; margin-bottom: 8px; }
@@ -349,7 +319,14 @@
 </head>
 <body>
 
-<!-- 顶部导航 -->
+<!-- 1. 舞台底层光影 (固定脱离文档流，永不穿帮) -->
+<div id="visual-bg">
+    <div class="spotlight"></div>
+    <div class="stage-floor"></div>
+    <div class="grain-overlay"></div>
+</div>
+
+<!-- 2. 顶部导航 (吸顶) -->
 <header>
     <div class="logo-container" id="music-toggle">
         <img src="imgs/KuaiDrive.ico" alt="KuaiDrive Logo" id="music-disk">
@@ -363,40 +340,32 @@
     </a>
 </header>
 
-<!-- 舞台容器区 -->
-<div id="stage-area">
-    <!-- 1. 舞台底层光影 -->
-    <div class="spotlight"></div>
-    <div class="stage-floor"></div>
-    <div class="grain-overlay"></div>
+<!-- 3. 主角内容 (随网页滚动) -->
+<main id="ui-content">
+    <section class="hero">
+        <div class="hero-img-container">
+            <img src="imgs/main.png" alt="KuaiDrive 软件主界面">
+        </div>
+        <h1 class="cosmic-title">KUAIDRIVE</h1>
+        <p class="cosmic-subtitle">安全 · 简洁 · 迅速 · 稳定</p>
 
-    <!-- 2. 主角内容 (滚动条现在只存在于这一层) -->
-    <div id="ui-wrapper">
-        <section class="hero">
-            <div class="hero-img-container">
-                <img src="imgs/main.png" alt="KuaiDrive 软件主界面">
-            </div>
-            <h1 class="cosmic-title">KUAIDRIVE</h1>
-            <p class="cosmic-subtitle">安全 · 简洁 · 迅速 · 稳定</p>
+        <div class="lock-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            软件开发中，敬请期待
+        </div>
+    </section>
 
-            <div class="lock-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-                软件开发中，敬请期待
-            </div>
-        </section>
+    <footer>
+        <p>&copy; 2026 Created by 土块. The Mech is Awakening.</p>
+    </footer>
+</main>
 
-        <footer>
-            <p>&copy; 2026 Created by 土块. The Mech is Awakening.</p>
-        </footer>
-    </div>
-
-    <!-- 3. 庆祝花瓣 -->
+<!-- 4. 舞台顶层特效 (花瓣与幕布，固定覆盖) -->
+<div id="visual-fg">
     <canvas id="petal-canvas"></canvas>
-
-    <!-- 4. 高级丝绒幕布 (绝对静止固定，不受滚动影响) -->
     <div class="valance"></div>
     <div class="curtain-container" id="curtain">
         <div class="curtain-left"></div>
@@ -427,9 +396,8 @@
     let petals = [];
 
     function resize() {
-        const stage = document.getElementById('stage-area');
-        width = stage.clientWidth;
-        height = stage.clientHeight;
+        width = window.innerWidth;
+        height = window.innerHeight;
         canvas.width = width;
         canvas.height = height;
     }
