@@ -2775,7 +2775,7 @@
             let collapseTimer = null;
             let jumpTimer = null;
 
-            const triggerWanderJump = () => {
+            const triggerWanderJump = async () => { // 👈 加上 async 关键字
                 // 防止狂点重复触发
                 if (isWanderJumping.value) return;
 
@@ -2795,7 +2795,7 @@
                     }, 30);
                 }
 
-                // 清理可能残留的旧定时器，防止逻辑叠加错乱
+                // 清理可能残留的旧定时器
                 if (collapseTimer) clearTimeout(collapseTimer);
                 if (jumpTimer) clearTimeout(jumpTimer);
 
@@ -2804,10 +2804,25 @@
                     isCollapsing.value = true;
                 }, 400);
 
-                // 第三阶段：4500ms 后，真正执行网页跳转
-                jumpTimer = setTimeout(() => {
-                    window.location.href = 'https://gallanttarry.github.io/GallantTarry/';
-                }, 4500);
+                const targetUrl = 'https://gallanttarry.github.io/GallantTarry/';
+
+                // 👇 第三阶段：利用 Promise.all 实现后台异步预加载与动画同步 👇
+                try {
+                    // 1. 发起后台预加载请求 (no-cors 模式强制浏览器缓存目标页面资源，不报错)
+                    const preloadPromise = fetch(targetUrl, { mode: 'no-cors', cache: 'force-cache' }).catch(() => {});
+
+                    // 2. 保证加载动画强制播放 4500ms（与你原来的 jumpTimer 时间一致）
+                    const animationPromise = new Promise(resolve => setTimeout(resolve, 4500));
+
+                    // 3. 同时等待：【动画播完】 且 【后台预加载完成】
+                    await Promise.all([preloadPromise, animationPromise]);
+
+                    // 4. 跳转时，由于后台已经拉取过一次，浏览器会直接从本地磁盘缓存秒开目标页面
+                    window.location.href = targetUrl;
+                } catch (e) {
+                    // 兜底方案：如果预加载发生意外，不影响最终的跳转逻辑
+                    window.location.href = targetUrl;
+                }
             };
 
 
