@@ -1968,10 +1968,10 @@
 
                     <!-- 👇 新增：多媒体工具栏 👇 -->
                     <div class="flex items-center space-x-4 mt-2 px-1 text-gray-400">
-                        <!-- 1. Emoji 按钮 -->
+                        <!-- 1. Emoji 按钮 (去掉了 title，加上了 hover:scale-125 和 transition-all) -->
                         <div class="relative">
                             <button @click="showEmojiPicker = !showEmojiPicker"
-                                    class="hover:text-white transition-colors text-lg" title="插入表情">😀
+                                    class="hover:text-white hover:scale-125 transition-all text-lg">😀
                             </button>
                             <div v-if="showEmojiPicker"
                                  class="absolute bottom-full left-0 mb-2 w-48 bg-gray-800/95 backdrop-blur-xl border border-white/20 p-2 rounded-xl grid grid-cols-5 gap-2 z-50 shadow-xl">
@@ -1981,24 +1981,22 @@
                             </div>
                         </div>
 
-                        <!-- 2. 附件按钮 -->
-                        <button @click="triggerFileInput" class="hover:text-white transition-colors text-lg"
-                                title="添加附件">📎
+                        <!-- 2. 附件按钮 (去掉了 title，加上了 hover:scale-125 和 transition-all) -->
+                        <button @click="triggerFileInput" class="hover:text-white hover:scale-125 transition-all text-lg">📎
                         </button>
                         <input type="file" ref="fileInput" @change="handleFileChange" class="hidden" multiple>
 
-                        <!-- 3. 录音按钮 -->
+                        <!-- 3. 录音按钮 (去掉了 :title，加上了 hover:scale-125 和 transition-all) -->
                         <button @click="toggleRecording"
-                                :class="['text-lg transition-colors', isRecording ? 'text-red-500 animate-pulse' : 'hover:text-white']"
-                                :title="isRecording ? '点击停止录音' : '点击开始录音'">
+                                :class="['text-lg transition-all hover:scale-125', isRecording ? 'text-red-500 animate-pulse' : 'hover:text-white']">
                             {{ isRecording ? '⏹️' : '🎤' }}
                         </button>
 
                         <!-- 录音中提示 -->
                         <span v-if="isRecording" class="text-red-500 text-xs animate-pulse font-bold tracking-widest">RECORDING...</span>
 
-                        <!-- 👇 新增：4. 打赏金币按钮 👇 -->
-                        <button @click="showPayQR = true" class="hover:text-yellow-400 hover:scale-125 transition-all text-lg ml-2" title="注入能量 (打赏1元)">
+                        <!-- 4. 打赏金币按钮 (去掉了 title，保留原有的放大特效) -->
+                        <button @click="showPayQR = true" class="hover:text-yellow-400 hover:scale-125 transition-all text-lg ml-2">
                             🪙
                         </button>
                     </div>
