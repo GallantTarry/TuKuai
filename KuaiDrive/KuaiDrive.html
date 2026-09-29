@@ -39,33 +39,32 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 基础页面布局：上下排布 */
+        /* 🟢 修复 2：彻底锁死全局视口，禁止全局滚动，消除“一堆空气” */
         body {
             background-color: var(--bg-color);
             color: #E4E4E7;
             line-height: 1.6;
-            overflow-x: hidden; /* 隐藏横向滚动 */
-            overflow-y: auto;   /* 开放纵向滚动，防止图标被卡没 */
+            overflow: hidden; /* 绝对锁死外层滚动 */
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            min-height: 100dvh;
+            height: 100vh;
+            height: 100dvh;
         }
 
-        /* 定制化优雅滚动条 */
-        body { scrollbar-width: thin; scrollbar-color: var(--primary) transparent; }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.4); border-radius: 10px; transition: all 0.3s; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+        /* 定制化优雅滚动条 (将作用域移至真实滚动的 ui-wrapper) */
+        #ui-wrapper { scrollbar-width: thin; scrollbar-color: var(--primary) transparent; }
+        #ui-wrapper::-webkit-scrollbar { width: 4px; height: 4px; }
+        #ui-wrapper::-webkit-scrollbar-track { background: transparent; }
+        #ui-wrapper::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.4); border-radius: 10px; transition: all 0.3s; }
+        #ui-wrapper::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-        /* === 1. 顶部标题栏（不受幕布遮挡，永远在最顶层 z-index: 1000） === */
+        /* === 1. 顶部标题栏 === */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 50px;
-            background: rgba(5, 5, 5, 0.75); /* 黑金质感毛玻璃 */
+            background: rgba(5, 5, 5, 0.75);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(212, 175, 55, 0.15);
@@ -137,18 +136,17 @@
             border: 1px solid rgba(212, 175, 55, 0.2);
         }
 
-        /* === 2. 舞台内容区（光影、幕布、花瓣与核心 UI） === */
+        /* === 2. 舞台内容区 === */
         #stage-area {
             position: relative;
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
-            overflow-y: auto; /* 同样开放内部滚动 */
-            background-color: var(--bg-color); /* 舞台深处纯黑 */
+            overflow: hidden; /* 🟢 绝对锁死：幕布和光影永远固定，不会被拉出空气 */
+            background-color: var(--bg-color);
         }
 
-        /* 极度柔和的舞台聚光灯 (z-index: 1) */
+        /* 极度柔和的舞台聚光灯 */
         .spotlight {
             position: absolute; top: -10%; left: 50%; transform: translateX(-50%);
             width: 80vw; height: 120%;
@@ -166,36 +164,47 @@
             to { opacity: 1; transform: translateX(-50%) scale(1.02); }
         }
 
-        /* 细腻的胶片颗粒感 (z-index: 2) */
+        /* 细腻的胶片颗粒感 */
         .grain-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 2; pointer-events: none;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
         }
 
-        /* === 3. 核心内容 UI层 (被幕布遮挡，z-index: 10) === */
+        /* === 3. 核心内容 UI层 (真正负责滚动的地方) === */
         #ui-wrapper {
             position: relative;
-            z-index: 10; /* 在幕布之下，拉开后展现 */
+            z-index: 10;
             flex: 1;
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* 🟢 滚动条只赋予给内容层，背景幕布永不动摇 */
             pointer-events: auto;
         }
 
+        /* 🟢 修复 1：安全的居中魔法，解决图片顶部被截断的问题 */
         .hero {
-            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-            padding: 2vh 20px;
+            margin: auto 0; /* 这是 Flexbox 防截断的究极绝招 */
+            flex-shrink: 0; /* 保证内容绝对不被挤扁 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
         }
 
         .hero-img-container {
-            position: relative; width: 90%; max-width: 170px; height: auto; margin: 0 auto 35px auto;
+            position: relative; width: 90%; max-width: 170px; height: auto; margin-bottom: 35px;
             animation: gentle-float 8s ease-in-out infinite;
+            display: flex; /* 确保严丝合缝包裹内部图片 */
         }
+
+        /* 🟢 修复 3：使用 inset: 0 让阴影永远吸附在边框，绝不移位错乱 */
         .hero-img-container::after {
-            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 100%; height: 100%; border-radius: 12px;
+            content: ''; position: absolute; inset: 0;
+            border-radius: 12px;
             background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
-            box-shadow: 0 0 60px 25px rgba(212, 175, 55, 0.15); /* 金色圣光承托 */
+            box-shadow: 0 0 60px 25px rgba(212, 175, 55, 0.15);
             z-index: -1;
             animation: pulse-aura 5s ease-in-out infinite alternate;
         }
@@ -210,11 +219,11 @@
             100% { transform: translateY(0px); }
         }
         @keyframes pulse-aura {
-            from { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+            from { opacity: 0.5; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1.1); }
         }
 
-        /* 标题：剔除刺眼阴影，转为内敛奢华金 */
+        /* 标题：奢华金 */
         .hero h1.cosmic-title {
             font-size: 4rem; margin-bottom: 12px; letter-spacing: 8px;
             font-weight: 900;
@@ -253,6 +262,7 @@
         }
 
         footer {
+            flex-shrink: 0; /* 保证底部信息绝不被挤压 */
             text-align: center; padding: 20px 20px 30px;
             opacity: 0.6; transition: opacity 0.3s;
         }
@@ -261,19 +271,19 @@
             color: var(--primary); font-size: 0.85rem; letter-spacing: 3px; font-weight: 300;
         }
 
-        /* === 4. 印象派花瓣引擎 (z-index: 20，与UI同层展示) === */
+        /* === 4. 印象派花瓣引擎 === */
         #petal-canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 20; pointer-events: none;
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
         }
 
-        /* === 5. 顶级丝绒幕布层 (极高层级 z-index: 30，一开始完全遮挡UI和花瓣) === */
+        /* === 5. 顶级丝绒幕布层 === */
         .curtain-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 30;
             display: flex;
-            pointer-events: none; /* 容器不阻挡点击 */
+            pointer-events: none;
         }
 
         .curtain-left, .curtain-right {
@@ -281,25 +291,24 @@
             background: var(--velvet-gradient);
             box-shadow: 0 0 50px rgba(0,0,0,1);
             transition: transform 3.5s cubic-bezier(0.25, 1, 0.3, 1);
-            pointer-events: auto; /* 闭合时阻挡底层点击 */
+            pointer-events: auto;
         }
 
         .curtain-left {
-            border-right: 2px solid rgba(212, 175, 55, 0.5); /* 金色锁边 */
+            border-right: 2px solid rgba(212, 175, 55, 0.5);
             transform-origin: left;
             box-shadow: inset -20px 0 40px rgba(0,0,0,0.8), 10px 0 30px rgba(0,0,0,0.9);
         }
         .curtain-right {
-            border-left: 2px solid rgba(212, 175, 55, 0.5); /* 金色锁边 */
+            border-left: 2px solid rgba(212, 175, 55, 0.5);
             transform-origin: right;
             box-shadow: inset 20px 0 40px rgba(0,0,0,0.8), -10px 0 30px rgba(0,0,0,0.9);
         }
 
-        /* 幕布拉开状态：平移并取消点击阻挡 */
         .curtain-open .curtain-left { transform: translateX(-90%); pointer-events: none; }
         .curtain-open .curtain-right { transform: translateX(90%); pointer-events: none; }
 
-        /* 顶部帷幔：优雅地下垂 (z-index: 40，覆盖在拉开的幕布上) */
+        /* 顶部帷幔 */
         .valance {
             position: absolute; top: 0; left: 0; width: 100%; height: 4vh;
             background: var(--velvet-gradient);
@@ -308,37 +317,27 @@
             z-index: 40; pointer-events: none;
         }
 
-        /* === 全新升级版手机端适配响应式代码 === */
+        /* === 移动端适配 === */
         @media (max-width: 768px) {
-            /* 优化顶部留白，防止挤压 */
             header { padding: 12px 15px; }
             .logo-container { gap: 10px; }
             .logo-text { font-size: 1.1rem; }
             .logo-container img { width: 32px; height: 32px; }
 
-            /* 优化按钮大小，适应手指点击但不过大 */
             .buy-btn { padding: 6px 15px; font-size: 0.85rem; gap: 6px; }
             .price-tag { padding: 2px 6px; font-size: 0.75rem; }
 
-            /* 【关键修复】取消强制垂直居中，改为从上往下排布，并留出足够的顶部空间 */
-            .hero {
-                justify-content: flex-start;
-                padding-top: 15vh; /* 强行把图标往下推，避开顶部 4vh 的帷幔遮挡 */
-                padding-bottom: 10vh; /* 底部留白，方便滚动 */
-            }
-
-            /* 调整主要视觉层尺寸 */
+            /* 移动端同样享受 margin: auto 安全居中，移除生硬的 padding-top 规避截断 */
+            .hero { padding: 40px 20px; }
             .hero-img-container { max-width: 110px; margin-bottom: 20px; }
             .hero h1.cosmic-title { font-size: 2.2rem; letter-spacing: 3px; margin-bottom: 8px; }
             .hero p.cosmic-subtitle { font-size: 0.8rem; letter-spacing: 3px; margin-bottom: 30px; }
             .lock-btn { padding: 10px 20px; font-size: 0.9rem; gap: 8px; }
 
-            /* 优化页脚在小屏幕下的排版 */
             footer { padding: 10px 15px 20px; }
             footer p { font-size: 0.75rem; letter-spacing: 1px; }
         }
 
-        /* 针对 iPhone SE 等极致窄屏 (375px 及以下) 进一步收缩 */
         @media (max-width: 400px) {
             header { padding: 10px; }
             .logo-text { font-size: 1rem; }
@@ -350,7 +349,7 @@
 </head>
 <body>
 
-<!-- 独立固定在顶部的艺术级通透导航栏，永远可见 -->
+<!-- 顶部导航 -->
 <header>
     <div class="logo-container" id="music-toggle">
         <img src="imgs/KuaiDrive.ico" alt="KuaiDrive Logo" id="music-disk">
@@ -366,12 +365,12 @@
 
 <!-- 舞台容器区 -->
 <div id="stage-area">
-    <!-- 1. 舞台底层光影 (z-index: 1, 2) -->
+    <!-- 1. 舞台底层光影 -->
     <div class="spotlight"></div>
     <div class="stage-floor"></div>
     <div class="grain-overlay"></div>
 
-    <!-- 2. 主角内容 (z-index: 10，初始被幕布遮挡) -->
+    <!-- 2. 主角内容 (滚动条现在只存在于这一层) -->
     <div id="ui-wrapper">
         <section class="hero">
             <div class="hero-img-container">
@@ -394,10 +393,10 @@
         </footer>
     </div>
 
-    <!-- 3. 庆祝花瓣 (z-index: 20，同样被幕布遮挡，拉开时展现) -->
+    <!-- 3. 庆祝花瓣 -->
     <canvas id="petal-canvas"></canvas>
 
-    <!-- 4. 高级丝绒幕布 (z-index: 30, 40，覆盖整个容器，极其厚重) -->
+    <!-- 4. 高级丝绒幕布 (绝对静止固定，不受滚动影响) -->
     <div class="valance"></div>
     <div class="curtain-container" id="curtain">
         <div class="curtain-left"></div>
@@ -421,7 +420,7 @@
         }
     });
 
-    // --- 2. 印象派原生花瓣引擎 (红黑金定制色) ---
+    // --- 2. 印象派原生花瓣引擎 ---
     const canvas = document.getElementById('petal-canvas');
     const ctx = canvas.getContext('2d');
     let width, height;
@@ -488,13 +487,9 @@
         requestAnimationFrame(animate);
     }
 
-    // --- 3. 舞台演出时间轴：先遮蔽，后展现 ---
+    // --- 3. 舞台演出时间轴 ---
     window.addEventListener('load', () => {
-        // 让花瓣引擎立刻启动（在闭合的幕布后方悄悄飘落堆积）
         animate();
-
-        // 给用户 1.2 秒的时间欣赏厚重紧闭的纯粹红黑金丝绒幕布
-        // 随后幕布缓缓拉开，展现背后的 UI 主体与满天花瓣
         setTimeout(() => {
             document.getElementById('curtain').classList.add('curtain-open');
         }, 1200);
