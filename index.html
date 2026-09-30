@@ -33,7 +33,7 @@
     <link href="imgs/applefavicon.png" rel="apple-touch-icon">
     <link href="./css/output.css" rel="stylesheet">
     <script src="./js/vue.global.js"></script>
-    <script type="module" src="./js/model-viewer.min.js"></script>
+    <script src="./js/model-viewer.min.js" type="module"></script>
 
     <script>
         // 必须在所有 DOM 和 Vue 渲染前执行，彻底掐断浏览器的自动滚动恢复！
@@ -49,6 +49,7 @@
         * {
             cursor: none !important;
         }
+
         /* ========================================= */
         /* 核心修复：防止 Vue 加载前出现大括号模板闪烁 */
         /* ========================================= */
@@ -165,7 +166,7 @@
             border-color: rgba(255, 255, 255, 0.1);
             /* Z轴拔高，配合微小旋转产生按键悬浮错觉 */
             transform: translateX(8px) translateZ(20px) rotateY(-5deg);
-            box-shadow: -10px 10px 20px rgba(0,0,0,0.3);
+            box-shadow: -10px 10px 20px rgba(0, 0, 0, 0.3);
         }
 
         .nav-active {
@@ -173,10 +174,9 @@
             border-color: var(--theme-color) !important;
             /* 激活状态下，直接弹出屏幕表面 */
             transform: translateX(12px) translateZ(30px) rotateY(-8deg);
-            box-shadow:
-                    -15px 15px 30px rgba(0,0,0,0.4),
-                    0 0 15px var(--theme-glow),
-                    inset 0 0 10px rgba(255, 255, 255, 0.2) !important;
+            box-shadow: -15px 15px 30px rgba(0, 0, 0, 0.4),
+            0 0 15px var(--theme-glow),
+            inset 0 0 10px rgba(255, 255, 255, 0.2) !important;
             color: var(--theme-color) !important;
             text-shadow: 0 0 15px var(--theme-glow), 0 0 30px var(--theme-glow);
         }
@@ -419,12 +419,11 @@
 <body class="font-pixel text-xs md:text-sm">
 
 <!-- 👇 修改为加上 v-cloak 👇 -->
-<div v-cloak :style="cssVars" class="bg-black flex flex-col" id="app">
-
+<div :style="cssVars" class="bg-black flex flex-col" id="app" v-cloak>
 
 
     <!-- 新增：将背景图和扫描线移到全局，并加上 z-0 防止遮挡 -->
-    <img class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen z-0" :src="currentBg"/>
+    <img :src="currentBg" class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen z-0"/>
     <div class="absolute inset-0 scanlines z-0"></div>
 
     <canvas class="absolute inset-0 pointer-events-none z-50" ref="particleCanvas"></canvas>
@@ -437,8 +436,9 @@
             </div>
             <div :class="['w-64 h-1 bg-white/20 rounded-full overflow-hidden transition-opacity duration-300 delay-300', isCollapsing ? 'opacity-100' : 'opacity-0']">
                 <!-- 👇 新增 :key="jumpKey" 👇 -->
-                <div v-if="isCollapsing" :key="jumpKey" class="h-full bg-white"
-                     style="animation: loading 2.5s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;"></div>
+                <div :key="jumpKey" class="h-full bg-white"
+                     style="animation: loading 2.5s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;"
+                     v-if="isCollapsing"></div>
             </div>
         </div>
     </div>
@@ -503,30 +503,30 @@
                                     leave-to-class="opacity-0 scale-50 -translate-x-4">
 
                                 <!-- 修改后：必须在展示中 且 当前状态是 smoking -->
-                                <div v-if="showBubble && currentStatus === 'smoking'"
+                                <div :style="{ borderColor: activeColor }"
                                      class="relative bg-white/90 backdrop-blur-sm text-black px-3 py-1.5 rounded-xl text-[10px] md:text-[11px] font-bold tracking-widest shadow-[0_0_15px_rgba(255,255,255,0.3)] whitespace-nowrap border-2"
-                                     :style="{ borderColor: activeColor }"
-                                     style="transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);">
+                                     style="transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);"
+                                     v-if="showBubble && currentStatus === 'smoking'">
                                     {{ bubbleText }}
 
                                     <!-- 气泡左侧的尖角小尾巴 -->
-                                    <div class="absolute top-1/2 -translate-y-1/2 -left-[6px] w-2.5 h-2.5 bg-white border-b-2 border-l-2 transform rotate-45 rounded-sm"
-                                         :style="{ borderColor: activeColor }"></div>
+                                    <div :style="{ borderColor: activeColor }"
+                                         class="absolute top-1/2 -translate-y-1/2 -left-[6px] w-2.5 h-2.5 bg-white border-b-2 border-l-2 transform rotate-45 rounded-sm"></div>
                                 </div>
 
                             </transition>
                         </div>
 
                         <!-- 抽烟小人本体 -->
-                        <div @click="showMailModal = true"
-                             :style="{ borderColor: activeColor, boxShadow: `0 8px 20px ${activeGlow}` }"
+                        <div :style="{ borderColor: activeColor, boxShadow: `0 8px 20px ${activeGlow}` }"
+                             @click="showMailModal = true"
                              class="w-12 h-12 md:w-16 md:h-16 bg-black/40 rounded-2xl border-[3px] flex items-center justify-center overflow-hidden transition-all duration-500 shadow-lg cursor-pointer hover:scale-105 pointer-events-auto">
 
                             <!-- 修改后 -->
                             <img :src="currentAvatarSvg"
+                                 alt="Avatar"
                                  class="w-full h-full scale-110"
-                                 style="image-rendering: pixelated;"
-                                 alt="Avatar">
+                                 style="image-rendering: pixelated;">
 
                         </div>
 
@@ -638,8 +638,8 @@
                     </div>
 
                     <div class="glass-card p-6">
-                        <a class="leading-loose text-gray-300 hover:text-white hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] transition-all duration-300 text-xs md:text-sm text-center font-bold tracking-widest block cursor-pointer select-none"
-                           @click.prevent="triggerWanderJump">
+                        <a @click.prevent="triggerWanderJump"
+                           class="leading-loose text-gray-300 hover:text-white hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] transition-all duration-300 text-xs md:text-sm text-center font-bold tracking-widest block cursor-pointer select-none">
                             Not all those who wander are lost.
                         </a>
                     </div>
@@ -650,359 +650,370 @@
                     <h2 class="text-lg md:text-xl tab-title mb-4 font-bold shrink-0">> 在线工具</h2>
 
                     <div class="flex flex-col space-y-3 overflow-y-auto hide-scrollbar flex-1 pb-6 pt-2 px-2 -mx-2">
-                        <!-- 1. Google map -->
+
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">1. Google Maps</span>
-                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">谷歌地图</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Google Docs</span>
+                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">谷歌文档</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
-                               href="https://www.google.com/maps"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               href="https://docs.google.com/"
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 2. Google Gemini -->
+                        <!-- Google Gemini -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">2. Gemini</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Gemini</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">智能AI助手</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://gemini.google.com/app"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 3. GitHub -->
+                        <!-- GitHub -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">3. GitHub</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">GitHub</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">代码界的社交网络</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://github.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 4. Wallhaven -->
+                        <!-- GoogleArts -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">4. Wallhaven</span>
-                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">高质量壁纸</span>
-                            </div>
-                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
-                               href="https://wallhaven.cc/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
-                        </div>
-
-                        <!-- 5. wikiart -->
-                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
-                            <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">5. wikiart</span>
-                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">维基百科的“艺术图库”</span>
-                            </div>
-                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
-                               href="https://www.wikiart.org/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
-                        </div>
-
-                        <!-- 6. GIPHY -->
-                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
-                            <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">6. GIPHY</span>
-                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">gif动图网址</span>
-                            </div>
-                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
-                               href="https://giphy.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
-                        </div>
-
-                        <!-- 7. MongoDB -->
-                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
-                            <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">7. MongoDB</span>
-                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">Atlas云数据库管理平台</span>
-                            </div>
-                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
-                               href="https://cloud.mongodb.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
-                        </div>
-
-                        <!-- 8. vercel -->
-                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
-                            <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">8. vercel</span>
-                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">云端部署平台</span>
-                            </div>
-                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
-                               href="https://vercel.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
-                        </div>
-
-                        <!-- 9. Songsterr -->
-                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
-                            <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">9. Songsterr</span>
-                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">吉他谱</span>
-                            </div>
-                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
-                               href="https://www.songsterr.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
-                        </div>
-
-                        <!-- 10. World Press Photo -->
-                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
-                            <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">10. World Press Photo</span>
-                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">荷赛艺术奖</span>
-                            </div>
-                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
-                               href="https://www.worldpressphoto.org/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
-                        </div>
-
-                        <!-- 11. GoogleArts -->
-                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
-                            <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">11. GoogleArts</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">GoogleArts</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">谷歌艺术</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://artsandculture.google.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 12. Dezoomify -->
+                        <!-- wikiart -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">12. Dezoomify</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">wikiart</span>
+                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">维基百科的“艺术图库”</span>
+                            </div>
+                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
+                               href="https://www.wikiart.org/"
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
+                        </div>
+                        <!-- Google map -->
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex flex-col truncate px-2">
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Google Maps</span>
+                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">谷歌地图</span>
+                            </div>
+                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
+                               href="https://www.google.com/maps"
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
+                        </div>
+
+
+                        <!-- Wallhaven -->
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex flex-col truncate px-2">
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Wallhaven</span>
+                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">高质量壁纸</span>
+                            </div>
+                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
+                               href="https://wallhaven.cc/"
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
+                        </div>
+
+
+                        <!-- GIPHY -->
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex flex-col truncate px-2">
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">GIPHY</span>
+                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">gif动图网址</span>
+                            </div>
+                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
+                               href="https://giphy.com/"
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
+                        </div>
+
+                        <!-- MongoDB -->
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex flex-col truncate px-2">
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">MongoDB</span>
+                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">Atlas云数据库管理平台</span>
+                            </div>
+                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
+                               href="https://cloud.mongodb.com/"
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
+                        </div>
+
+                        <!-- vercel -->
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex flex-col truncate px-2">
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">vercel</span>
+                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">云端部署平台</span>
+                            </div>
+                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
+                               href="https://vercel.com/"
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
+                        </div>
+
+                        <!-- Songsterr -->
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex flex-col truncate px-2">
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Songsterr</span>
+                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">吉他谱</span>
+                            </div>
+                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
+                               href="https://www.songsterr.com/"
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
+                        </div>
+
+                        <!-- World Press Photo -->
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex flex-col truncate px-2">
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">World Press Photo</span>
+                                <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">荷赛艺术奖</span>
+                            </div>
+                            <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
+                               href="https://www.worldpressphoto.org/"
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
+                        </div>
+
+
+                        <!-- Dezoomify -->
+                        <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
+                            <div class="flex flex-col truncate px-2">
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Dezoomify</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">抓取合并瓦片图</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://dezoomify.ophir.dev/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 13. supabase -->
+                        <!-- supabase -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">13. supabase</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">supabase</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">云端数据库</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://supabase.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 14. FlyBit -->
+                        <!-- FlyBit -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">14. FlyBit</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">FlyBit</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">机场起飞</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://flybit.vip/#/dashboard"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 15. unsplash -->
+                        <!-- unsplash -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">15. unsplash</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">unsplash</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">个人艺术</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://unsplash.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 16. cloudflare -->
+                        <!-- cloudflare -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">16. cloudflare</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">cloudflare</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">全球网络基础设施服务</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://www.cloudflare.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 17. iconfont -->
+                        <!-- iconfont -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">17. iconfont</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">iconfont</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">矢量图标库</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://www.iconfont.cn/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 18. Google Fonts -->
+                        <!-- Google Fonts -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">18. Google Fonts</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Google Fonts</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">谷歌字体</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://fonts.google.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 19. z-library -->
+                        <!-- z-library -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">19. z-library</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">z-library</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">图书库</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://zh.z-library.sk"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 20. 廖雪峰教学 -->
+                        <!-- 廖雪峰教学 -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">20. 廖雪峰教学</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">廖雪峰教学</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">编程库</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://liaoxuefeng.com/index.html?src=redirect"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 21. 动态图 -->
+                        <!-- loading -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">21. loading</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">loading</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">载入gif图</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://loading.io/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 22. G4谷歌分析 -->
+                        <!-- analytics -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">22. analytics</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">analytics</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">谷歌数据分析</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://analytics.google.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 23. savetwitter -->
+                        <!-- savetwitter -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">23. savetwitter</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">savetwitter</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">X推特视频下载</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://savetwitter.net/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 24. 阿里云 -->
+                        <!-- 阿里云 -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">24. 阿里云</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">阿里云</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">阿里云服务</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://cn.aliyun.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 25. Punycode -->
+                        <!-- Punycode -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">25. Punycode</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Punycode</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">域名转换</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://tool.lu/punycode/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 26. resend.com -->
+                        <!-- Resend -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">26. Resend</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Resend</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">邮件发送</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://resend.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 27. Sketchfab.com -->
+                        <!-- Sketchfab -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">27. Sketchfab</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">Sketchfab</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">模型官方推荐</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://sketchfab.com/Sketchfab/collections"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 28. gltf-viewer -->
+                        <!-- gltf-viewer -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">28. gltf-viewer</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">gltf-viewer</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">模型预览</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://gltf-viewer.donmccurdy.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 29. pypi -->
+                        <!-- PyPI -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">29. PyPI</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">PyPI</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">Python开发者的“应用商店”</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://pypi.org/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 30. OLDMAN -->
+                        <!-- OldMan -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">30. OldMan</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">OldMan</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">老男人游戏网</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://www.oldmanemu.org/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 31. flaticon -->
+                        <!-- FlatIcon -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">31. FlatIcon</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">FlatIcon</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">ico图库网</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://www.flaticon.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
 
-                        <!-- 32. zerotier -->
+                        <!-- zerotier -->
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
                             <div class="flex flex-col truncate px-2">
-                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">32. zerotier</span>
+                                <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">zerotier</span>
                                 <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">虚拟局域网</span>
                             </div>
                             <a class="text-[#4ade80] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#4ade80] border border-[#4ade80]/50 hover:border-[#4ade80] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(74,222,128,0)] hover:shadow-[0_0_15px_rgba(74,222,128,0.4)]"
                                href="https://www.zerotier.com/"
-                               target="_blank" rel="noopener noreferrer">VISIT</a>
+                               rel="noopener noreferrer" target="_blank">VISIT</a>
                         </div>
-
-
                     </div>
                 </div>
 
@@ -1019,7 +1030,8 @@
                                 <!-- 外框统一改为 w-10 h-10 -->
                                 <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
                                     <!-- 图标统一改为 w-6 h-6 -->
-                                    <img src="./imgs/app/BlackHole.ico" alt="BlackHole" class="w-6 h-6 object-contain drop-shadow-md">
+                                    <img alt="BlackHole" class="w-6 h-6 object-contain drop-shadow-md"
+                                         src="./imgs/app/BlackHole.ico">
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">1. Blackhole</span>
@@ -1037,7 +1049,8 @@
                             <!-- 去掉了 px-2，统一改为 space-x-4 -->
                             <div class="flex items-center space-x-4 overflow-hidden">
                                 <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
-                                    <img src="./imgs/app/ToolKit.ico" alt="ToolKit" class="w-6 h-6 object-contain drop-shadow-md">
+                                    <img alt="ToolKit" class="w-6 h-6 object-contain drop-shadow-md"
+                                         src="./imgs/app/ToolKit.ico">
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">2. ToolKit</span>
@@ -1055,7 +1068,8 @@
                             <!-- 去掉了 px-2，统一改为 space-x-4 -->
                             <div class="flex items-center space-x-4 overflow-hidden">
                                 <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
-                                    <img src="./imgs/app/script.ico" alt="PyKuai" class="w-6 h-6 object-contain drop-shadow-md">
+                                    <img alt="PyKuai" class="w-6 h-6 object-contain drop-shadow-md"
+                                         src="./imgs/app/script.ico">
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">3. PyKuai</span>
@@ -1073,7 +1087,8 @@
                             <!-- 去掉了 px-2，统一改为 space-x-4 -->
                             <div class="flex items-center space-x-4 overflow-hidden">
                                 <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
-                                    <img src="./imgs/app/KuaiDrive.ico" alt="PyKuai" class="w-6 h-6 object-contain drop-shadow-md">
+                                    <img alt="PyKuai" class="w-6 h-6 object-contain drop-shadow-md"
+                                         src="./imgs/app/KuaiDrive.ico">
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">4. KuaiDrive</span>
@@ -1098,15 +1113,16 @@
                         <div class="flex items-center space-x-5">
                             <!-- 📺 新版：真实的复古迷你电视机 -->
                             <div :style="{ borderColor: activeColor, boxShadow: isPlaying ? `0 0 20px ${activeGlow}` : 'none' }"
+                                 @click="togglePlay"
                                  class="w-24 h-20 md:w-28 md:h-24 shrink-0 bg-[#222] rounded-xl border-[3px] p-1.5 flex flex-col relative transition-all duration-500 shadow-lg cursor-pointer hover:scale-105"
-                                 title="点击播放/暂停" @click="togglePlay">
+                                 title="点击播放/暂停">
 
                                 <!-- 📺 屏幕区域 -->
                                 <div class="flex-1 w-full bg-black rounded border-2 border-[#111] relative overflow-hidden shadow-[inset_0_0_15px_rgba(0,0,0,1)]">
 
                                     <!-- 1. 播放时的动态 MV -->
-                                    <img :src="currentTvGif"
-                                         :class="['absolute inset-0 w-full h-full object-cover transition-all duration-[800ms] ease-in-out', isPlaying ? 'opacity-100 scale-100' : 'opacity-0 scale-110']"
+                                    <img :class="['absolute inset-0 w-full h-full object-cover transition-all duration-[800ms] ease-in-out', isPlaying ? 'opacity-100 scale-100' : 'opacity-0 scale-110']"
+                                         :src="currentTvGif"
                                          alt="MV">
                                     <!-- 2. 关机/无信号时的提示 -->
                                     <div :class="['absolute inset-0 bg-black flex items-center justify-center transition-opacity duration-[800ms] z-10', isPlaying ? 'opacity-0' : 'opacity-100']">
@@ -1866,16 +1882,18 @@
                     <div class="flex-1 min-h-0 w-full bg-black relative flex items-center justify-center border-t border-white/5 overflow-hidden"
                          style="contain: strict;">
 
-                        <iframe :src="activeGame.url"
+                        <iframe :class="isGameVisible ? 'pointer-events-auto' : 'pointer-events-none'"
+                                :src="activeGame.url"
                                 allow="autoplay; fullscreen"
-                                :class="isGameVisible ? 'pointer-events-auto' : 'pointer-events-none'"
                                 class="absolute inset-0 border-none bg-black"
                                 style="width: 1px !important; min-width: 100% !important; height: 100% !important; max-height: 100% !important; will-change: transform;"
                                 v-if="activeGame && activeGame.url"></iframe>
 
                         <div class="text-center space-y-6 z-10" v-else>
                             <div class="text-5xl animate-bounce">⚠️</div>
-                            <div class="text-gray-400 font-mono tracking-widest text-xs animate-pulse">NO URL DETECTED...</div>
+                            <div class="text-gray-400 font-mono tracking-widest text-xs animate-pulse">NO URL
+                                DETECTED...
+                            </div>
                             <div class="text-[9px] text-gray-600">tukuai_engine_v2.0</div>
                         </div>
                     </div>
@@ -1891,10 +1909,11 @@
                     leave-active-class="transition-all duration-300 ease-in-out"
                     leave-from-class="opacity-100 scale-100 translate-y-0"
                     leave-to-class="opacity-0 scale-75 translate-y-10">
-            <div v-if="showMailModal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+            <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4" v-if="showMailModal">
 
                 <!-- 遮罩层：高级毛玻璃质感 -->
-                <div class="absolute inset-0 bg-[#050505]/30 backdrop-blur-md transition-all duration-700" @click="clearMailModal"></div>
+                <div @click="clearMailModal"
+                     class="absolute inset-0 bg-[#050505]/30 backdrop-blur-md transition-all duration-700"></div>
 
                 <!-- 弹窗主体 -->
                 <div :style="{ borderColor: activeColor, boxShadow: `0 0 30px ${activeGlow}` }"
@@ -1909,12 +1928,15 @@
                                 leave-to-class="opacity-0 scale-95">
 
                         <!-- 修改后 -->
-                        <div v-if="showPayQR"
+                        <div :style="{ borderRadius: '32px', boxShadow: `inset 0 0 30px ${activeGlow}` }"
                              class="absolute inset-0 z-50 bg-[#050505]/95 backdrop-blur-xl flex flex-col items-center justify-center"
-                             :style="{ borderRadius: '32px', boxShadow: `inset 0 0 30px ${activeGlow}` }">
+                             v-if="showPayQR">
 
                             <!-- 关闭按钮 -->
-                            <button @click="showPayQR = false" class="absolute top-5 right-5 text-gray-400 hover:text-red-500 text-lg transition-all hover:scale-125 z-50">❌</button>
+                            <button @click="showPayQR = false"
+                                    class="absolute top-5 right-5 text-gray-400 hover:text-red-500 text-lg transition-all hover:scale-125 z-50">
+                                ❌
+                            </button>
 
                             <!-- 顶部状态指示 -->
                             <div class="flex items-center space-x-2 mb-3">
@@ -1923,28 +1945,31 @@
                             </div>
 
                             <!-- 赛博字体显示金额 -->
-                            <div class="font-pixel text-3xl text-white mb-4 z-10 flex items-center"
-                                 :style="{ textShadow: `0 0 15px ${activeGlow}` }">
+                            <div :style="{ textShadow: `0 0 15px ${activeGlow}` }"
+                                 class="font-pixel text-3xl text-white mb-4 z-10 flex items-center">
                                 <span class="text-xl mr-1">¥</span> 1.00
                             </div>
 
                             <!-- 👇 纯视觉容器：无链接、无点击反馈，仅保留悬浮放大特效 👇 -->
-                            <div class="relative w-44 h-44 bg-black rounded-xl border transition-transform duration-500 hover:scale-105 overflow-hidden select-none"
-                                 style="-webkit-touch-callout: none; -webkit-user-select: none;"
-                                 :style="{ borderColor: activeColor, boxShadow: `0 0 25px ${activeGlow}` }">
+                            <div :style="{ borderColor: activeColor, boxShadow: `0 0 25px ${activeGlow}` }"
+                                 class="relative w-44 h-44 bg-black rounded-xl border transition-transform duration-500 hover:scale-105 overflow-hidden select-none"
+                                 style="-webkit-touch-callout: none; -webkit-user-select: none;">
 
                                 <!-- 二维码本体 -->
-                                <img src="./imgs/pay_qr.jpg"
-                                     alt="Payment QR"
-                                     draggable="false"
+                                <img alt="Payment QR"
                                      class="w-full h-full object-cover mix-blend-screen pointer-events-none select-none"
+                                     draggable="false"
+                                     src="./imgs/pay_qr.jpg"
                                      style="-webkit-touch-callout: none; image-rendering: pixelated; filter: invert(1) brightness(1.2) sepia(1) hue-rotate(80deg) saturate(5) drop-shadow(0 0 4px rgba(74,222,128,0.4));">
 
                                 <!-- 中心的小人头像遮盖 -->
-                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-black rounded-xl border-[2px] flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.9)] overflow-hidden z-10 pointer-events-none select-none"
-                                     style="-webkit-touch-callout: none;"
-                                     :style="{ borderColor: activeColor }">
-                                    <img :src="currentAvatarSvg" draggable="false" class="w-full h-full scale-110 object-cover pointer-events-none select-none" style="-webkit-touch-callout: none; image-rendering: pixelated;">
+                                <div :style="{ borderColor: activeColor }"
+                                     class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-black rounded-xl border-[2px] flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.9)] overflow-hidden z-10 pointer-events-none select-none"
+                                     style="-webkit-touch-callout: none;">
+                                    <img :src="currentAvatarSvg"
+                                         class="w-full h-full scale-110 object-cover pointer-events-none select-none"
+                                         draggable="false"
+                                         style="-webkit-touch-callout: none; image-rendering: pixelated;">
                                 </div>
                             </div>
 
@@ -1961,10 +1986,10 @@
                         <span class="mr-2">✉️</span> 密函发送
                     </h3>
 
-                    <textarea v-model="mailContent"
-                              placeholder="土块等待您的来信~，附件不可超过5M哦~"
+                    <textarea :style="{ outlineColor: activeColor }"
                               class="w-full flex-1 min-h-[120px] bg-black/50 border border-white/20 rounded-xl p-3 text-white text-xs md:text-sm font-pixel focus:outline-none transition-colors hide-scrollbar resize-none"
-                              :style="{ outlineColor: activeColor }"></textarea>
+                              placeholder="土块等待您的来信~，附件不可超过5M哦~"
+                              v-model="mailContent"></textarea>
 
                     <!-- 👇 新增：多媒体工具栏 👇 -->
                     <div class="flex items-center space-x-4 mt-2 px-1 text-gray-400">
@@ -1973,60 +1998,68 @@
                             <button @click="showEmojiPicker = !showEmojiPicker"
                                     class="hover:text-white hover:scale-125 transition-all text-lg">😀
                             </button>
-                            <div v-if="showEmojiPicker"
-                                 class="absolute bottom-full left-0 mb-2 w-48 bg-gray-800/95 backdrop-blur-xl border border-white/20 p-2 rounded-xl grid grid-cols-5 gap-2 z-50 shadow-xl">
-                                <span v-for="emoji in emojis" :key="emoji" @click="insertEmoji(emoji)"
-                                      class="cursor-pointer text-xl hover:scale-125 transition-transform text-center">{{ emoji
+                            <div class="absolute bottom-full left-0 mb-2 w-48 bg-gray-800/95 backdrop-blur-xl border border-white/20 p-2 rounded-xl grid grid-cols-5 gap-2 z-50 shadow-xl"
+                                 v-if="showEmojiPicker">
+                                <span :key="emoji" @click="insertEmoji(emoji)"
+                                      class="cursor-pointer text-xl hover:scale-125 transition-transform text-center"
+                                      v-for="emoji in emojis">{{ emoji
                                     }}</span>
                             </div>
                         </div>
 
                         <!-- 2. 附件按钮 (去掉了 title，加上了 hover:scale-125 和 transition-all) -->
-                        <button @click="triggerFileInput" class="hover:text-white hover:scale-125 transition-all text-lg">📎
+                        <button @click="triggerFileInput"
+                                class="hover:text-white hover:scale-125 transition-all text-lg">📎
                         </button>
-                        <input type="file" ref="fileInput" @change="handleFileChange" class="hidden" multiple>
+                        <input @change="handleFileChange" class="hidden" multiple ref="fileInput" type="file">
 
                         <!-- 3. 录音按钮 (去掉了 :title，加上了 hover:scale-125 和 transition-all) -->
-                        <button @click="toggleRecording"
-                                :class="['text-lg transition-all hover:scale-125', isRecording ? 'text-red-500 animate-pulse' : 'hover:text-white']">
+                        <button :class="['text-lg transition-all hover:scale-125', isRecording ? 'text-red-500 animate-pulse' : 'hover:text-white']"
+                                @click="toggleRecording">
                             {{ isRecording ? '⏹️' : '🎤' }}
                         </button>
 
                         <!-- 录音中提示 -->
-                        <span v-if="isRecording" class="text-red-500 text-xs animate-pulse font-bold tracking-widest">RECORDING...</span>
+                        <span class="text-red-500 text-xs animate-pulse font-bold tracking-widest" v-if="isRecording">RECORDING...</span>
 
                         <!-- 4. 打赏金币按钮 (去掉了 title，保留原有的放大特效) -->
-                        <button @click="showPayQR = true" class="hover:text-yellow-400 hover:scale-125 transition-all text-lg ml-2">
+                        <button @click="showPayQR = true"
+                                class="hover:text-yellow-400 hover:scale-125 transition-all text-lg ml-2">
                             🪙
                         </button>
                     </div>
 
                     <!-- 👇 修改后的：附件预览区 👇 -->
-                    <div v-if="attachments.length > 0"
-                         class="flex flex-col gap-2 mt-1 max-h-32 overflow-y-auto hide-scrollbar">
-                        <div v-for="(file, index) in attachments" :key="index"
-                             class="bg-gray-700/50 text-white text-[10px] px-3 py-2 rounded-lg flex items-center justify-between border border-white/10">
+                    <div class="flex flex-col gap-2 mt-1 max-h-32 overflow-y-auto hide-scrollbar"
+                         v-if="attachments.length > 0">
+                        <div :key="index"
+                             class="bg-gray-700/50 text-white text-[10px] px-3 py-2 rounded-lg flex items-center justify-between border border-white/10"
+                             v-for="(file, index) in attachments">
 
                             <!-- 左侧信息区 -->
                             <div class="flex items-center space-x-3 overflow-hidden">
                                 <!-- 根据类型显示不同图标 -->
                                 <span class="text-sm shrink-0">{{ file.type === 'audio' ? '🎵' : '📎' }}</span>
-                                <span class="truncate max-w-[120px] md:max-w-[200px]"
-                                      :title="file.filename">{{ file.filename }}</span>
+                                <span :title="file.filename"
+                                      class="truncate max-w-[120px] md:max-w-[200px]">{{ file.filename }}</span>
                             </div>
 
                             <!-- 👇 右侧按钮区：播放和删除并排，绝对像素化 👇 -->
                             <div class="flex items-center space-x-2 shrink-0">
                                 <!-- 播放/暂停按钮 -->
-                                <button v-if="file.type === 'audio'" @click="toggleAudioPreview(file)"
-                                        class="text-green-400 hover:text-green-300 bg-black/40 rounded-full w-5 h-5 flex items-center justify-center shadow-inner hover:bg-green-500/20 transition-all">
+                                <button @click="toggleAudioPreview(file)"
+                                        class="text-green-400 hover:text-green-300 bg-black/40 rounded-full w-5 h-5 flex items-center justify-center shadow-inner hover:bg-green-500/20 transition-all"
+                                        v-if="file.type === 'audio'">
                                     <!-- 播放状态的纯手工像素 SVG -->
-                                    <svg v-if="!file.isPlaying" class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 10 10" style="shape-rendering: crispEdges;">
-                                        <path d="M 3 1 h 2 v 1 h 1 v 1 h 1 v 1 h 1 v 2 h -1 v 1 h -1 v 1 h -1 v 1 h -2 Z" />
+                                    <svg class="w-2.5 h-2.5" fill="currentColor" style="shape-rendering: crispEdges;"
+                                         v-if="!file.isPlaying" viewBox="0 0 10 10">
+                                        <path d="M 3 1 h 2 v 1 h 1 v 1 h 1 v 1 h 1 v 2 h -1 v 1 h -1 v 1 h -1 v 1 h -2 Z"/>
                                     </svg>
                                     <!-- 暂停状态的纯手工像素 SVG -->
-                                    <svg v-else class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 10 10" style="shape-rendering: crispEdges;">
-                                        <path d="M 2 1 h 2 v 8 h -2 Z M 6 1 h 2 v 8 h -2 Z" />
+                                    <svg class="w-2.5 h-2.5" fill="currentColor" style="shape-rendering: crispEdges;"
+                                         v-else
+                                         viewBox="0 0 10 10">
+                                        <path d="M 2 1 h 2 v 8 h -2 Z M 6 1 h 2 v 8 h -2 Z"/>
                                     </svg>
                                 </button>
 
@@ -2034,8 +2067,9 @@
                                 <button @click="removeAttachment(index)"
                                         class="text-red-400 hover:text-red-300 bg-black/40 rounded-full w-5 h-5 flex items-center justify-center shadow-inner hover:bg-red-500/20 transition-all">
                                     <!-- 叉号的纯手工像素 SVG -->
-                                    <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 10 10" style="shape-rendering: crispEdges;">
-                                        <path d="M 1 1 h 2 v 1 h 1 v 1 h 2 v -1 h 1 v -1 h 2 v 2 h -1 v 1 h -1 v 2 h 1 v 1 h 1 v 2 h -2 v -1 h -1 v -1 h -2 v 1 h -1 v 1 h -2 v -2 h 1 v -1 h 1 v -2 h -1 v -1 h -1 Z" />
+                                    <svg class="w-2.5 h-2.5" fill="currentColor" style="shape-rendering: crispEdges;"
+                                         viewBox="0 0 10 10">
+                                        <path d="M 1 1 h 2 v 1 h 1 v 1 h 2 v -1 h 1 v -1 h 2 v 2 h -1 v 1 h -1 v 2 h 1 v 1 h 1 v 2 h -2 v -1 h -1 v -1 h -2 v 1 h -1 v 1 h -2 v -2 h 1 v -1 h 1 v -2 h -1 v -1 h -1 Z"/>
                                     </svg>
                                 </button>
                             </div>
@@ -2049,16 +2083,16 @@
                                 class="px-4 py-2 rounded-full border border-gray-500 text-gray-400 hover:text-white hover:border-white transition-all tracking-widest">
                             取消
                         </button>
-                        <button @click="sendMail"
-                                :disabled="isSendingMail || !mailContent.trim()"
-                                :class="['px-4 py-2 rounded-full border transition-all text-black tracking-widest',
+                        <button :class="['px-4 py-2 rounded-full border transition-all text-black tracking-widest',
                                  (isSendingMail || !mailContent.trim()) ? 'bg-gray-500 border-gray-500 opacity-50 cursor-not-allowed' : 'hover:scale-105']"
-                                :style="{ backgroundColor: (!isSendingMail && mailContent.trim()) ? activeColor : '', borderColor: (!isSendingMail && mailContent.trim()) ? activeColor : '' }">
+                                :disabled="isSendingMail || !mailContent.trim()"
+                                :style="{ backgroundColor: (!isSendingMail && mailContent.trim()) ? activeColor : '', borderColor: (!isSendingMail && mailContent.trim()) ? activeColor : '' }"
+                                @click="sendMail">
                             {{ isSendingMail ? '发送中...' : (mailStatus === 'success' ? '已发送!' : '发送') }}
                         </button>
                     </div>
 
-                    <div v-if="mailStatus === 'error'" class="text-red-400 text-[10px] animate-pulse text-center mt-1">
+                    <div class="text-red-400 text-[10px] animate-pulse text-center mt-1" v-if="mailStatus === 'error'">
                         网络异常或接口错误，发送失败。
                     </div>
                 </div>
@@ -2198,7 +2232,7 @@
                         }
 
                         // 强制指定格式录制
-                        mediaRecorder = new MediaRecorder(stream, { mimeType: mimeStr });
+                        mediaRecorder = new MediaRecorder(stream, {mimeType: mimeStr});
                         audioChunks = [];
 
                         mediaRecorder.ondataavailable = e => {
@@ -2919,13 +2953,13 @@
                         // 将目标文字按当前进度分解成：已确定的字符 + 正在翻滚的乱码
                         typedText.value = targetText.split("")
                             .map((letter, index) => {
-                                if(index < iterations) return targetText[index]; // 已经解码完成的锁定
+                                if (index < iterations) return targetText[index]; // 已经解码完成的锁定
                                 return letters[Math.floor(Math.random() * letters.length)]; // 还没解码的继续乱滚
                             })
                             .join("");
 
                         // 每执行三次翻滚，锁定一个真实的字符（可以通过调小这个除数来加快开机速度）
-                        if(iterations >= targetText.length) {
+                        if (iterations >= targetText.length) {
                             clearInterval(interval);
                             setTimeout(() => {
                                 isBooted.value = true;
