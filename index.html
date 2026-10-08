@@ -546,13 +546,10 @@
 
                             <div class="text-left">fans:</div>
                             <div class="text-left flex items-center">
-    <span id="busuanzi_container_site_uv"
-          style="display: inline-flex !important; align-items: center;">
-        <!-- 增加了平滑过渡，配合原有的呼吸灯效果 -->
-        <span :style="{ color: activeColor, textShadow: `0 0 10px ${activeGlow}` }"
-              class="font-bold animate-pulse transition-all duration-500"
-              id="busuanzi_site_uv">...</span>
-    </span>
+                                <span :style="{ color: activeColor, textShadow: `0 0 10px ${activeGlow}` }"
+                                      class="font-bold animate-pulse transition-all duration-500">
+                                    {{ siteUv }}
+                                </span>
                             </div>
 
                             <!-- 第三行：now -->
@@ -2408,9 +2405,30 @@
             // 3. 存入响应式变量中，供上面的 <img> 标签读取
             const currentBg = ref(bgImages[randomIndex]);
             // 👆 ====================================== 👆
+            // 新增：独立的 UV 计数器变量
+            const siteUv = ref('...');
             // 新增：实时时钟状态 与 个人状态
             const currentTime = ref('00:00:00');
             const currentStatus = ref('...');
+
+
+            // 新增：调用独立 UV 引擎获取访客数据
+            const initUvCounter = async () => {
+                try {
+                    // ✅ 加上 /api/uv 后缀，精准狙击后端接口
+                    const workerUrl = 'https://tukuai-kv.xn--udsye.art/api/uv';
+
+                    const response = await fetch(workerUrl);
+                    const data = await response.json();
+
+                    if (data.count !== undefined) {
+                        siteUv.value = data.count;
+                    }
+                } catch (e) {
+                    console.error('UV 引擎连接失败:', e);
+                    siteUv.value = 'ERR';
+                }
+            };
 
             // 修改：更新时钟的函数，同时判定当前状态
             const updateClock = () => {
@@ -2929,7 +2947,8 @@
 
             onMounted(() => {
                 initParticleSystem();
-
+// 👇 在这里启动你的 UV 引擎！
+                initUvCounter();
                 updateClock();
                 setInterval(updateClock, 1000);
 
@@ -2970,11 +2989,6 @@
                 });
                 // 👆 ======================================================= 👆
 
-                // 👉 必须换成这个防拦截的社区镜像版本，把原本的 ibruce 删掉！
-                const script = document.createElement('script');
-                script.src = 'https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js';
-                script.defer = true;
-                document.body.appendChild(script);
 
                 // 修改：通过 localStorage 永久记住是否已经播放过开机动画
                 // 🟢 终极交互 3：矩阵解码开机动画
@@ -3062,6 +3076,7 @@
             }, {immediate: true});
             // 👆 ---------------------------------------- 👆
             return {
+                siteUv, // <--- 【确保把这行加上！】
                 currentBg, // <--- 把这个加进 return 里
                 currentTvGif, // <--- 👇新增这一行，让 HTML 能够读取到这个变量
                 menuItems, currentTab, cssVars, activeColor, activeGlow,
