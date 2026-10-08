@@ -2860,7 +2860,7 @@
             let collapseTimer = null;
             let jumpTimer = null;
 
-            const triggerWanderJump = async () => { // 👈 加上 async 关键字
+            const triggerWanderJump = () => { // 👈 去掉了 async
                 // 防止狂点重复触发
                 if (isWanderJumping.value) return;
 
@@ -2884,36 +2884,18 @@
                 if (collapseTimer) clearTimeout(collapseTimer);
                 if (jumpTimer) clearTimeout(jumpTimer);
 
-                // 第二阶段：400ms 后，UI 界面开始向中心坍缩，黑屏降临
+                // 400ms 后，UI 界面开始向中心坍缩，黑屏降临
                 collapseTimer = setTimeout(() => {
                     isCollapsing.value = true;
                 }, 400);
 
                 const targetUrl = 'https://gallanttarry.github.io/GallantTarry/';
 
-                // 👇 第三阶段：利用 Promise.all 实现后台异步预加载与动画同步 👇
-                try {
-                    // 1. 改用动态插入 <link rel="prefetch"> 标签，让浏览器以最标准、最安全的方式在后台静默拉取目标网页
-                    const prefetchLink = document.createElement('link');
-                    prefetchLink.rel = 'prefetch';
-                    prefetchLink.href = targetUrl;
-                    document.head.appendChild(prefetchLink);
-
-                    // 生成一个空的 Promise，确保不破坏你下面配合动画的 Promise.all 逻辑
-                    const preloadPromise = Promise.resolve();
-
-                    // 2. 保证加载动画强制播放 4500ms（与你原来的 jumpTimer 时间一致）
-                    const animationPromise = new Promise(resolve => setTimeout(resolve, 4500));
-
-                    // 3. 同时等待：【动画播完】 且 【后台预加载完成】
-                    await Promise.all([preloadPromise, animationPromise]);
-
-                    // 4. 跳转时，浏览器会完美读取 prefetch 准备好的正常 HTML
+                // 👇 删除了复杂的异步预加载，直接用最简单的定时器跳转 👇
+                // 保证动画播放 4500ms 后立刻跳转
+                jumpTimer = setTimeout(() => {
                     window.location.href = targetUrl;
-                } catch (e) {
-                    // 兜底方案：如果不小心报错，不影响最终的跳转逻辑
-                    window.location.href = targetUrl;
-                }
+                }, 4500);
             };
 
 
