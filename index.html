@@ -2412,11 +2412,20 @@
             const currentStatus = ref('...');
 
 
-            // 新增：调用独立 UV 引擎获取访客数据
+            // 新增：调用独立 UV 引擎获取访客数据 (基于 UUID + LocalStorage)
             const initUvCounter = async () => {
                 try {
-                    // ✅ 加上 /api/uv 后缀，精准狙击后端接口
-                    const workerUrl = 'https://tukuai-kv.xn--udsye.art/api/uv';
+                    // 1. 尝试从 LocalStorage 读取现有的设备 UUID
+                    let uuid = localStorage.getItem('tukuai_device_uuid');
+
+                    // 2. 如果没有（首次访问或清了缓存），生成一个新的并存起来
+                    if (!uuid) {
+                        uuid = crypto.randomUUID();
+                        localStorage.setItem('tukuai_device_uuid', uuid);
+                    }
+
+                    // 3. 将 UUID 作为 URL 参数拼接到请求中，发给 Worker 引擎
+                    const workerUrl = `https://tukuai-kv.xn--udsye.art/api/uv?uuid=${uuid}`;
 
                     const response = await fetch(workerUrl);
                     const data = await response.json();
