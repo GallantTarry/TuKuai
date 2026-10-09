@@ -471,6 +471,27 @@
             .buy-btn { padding: 6px 12px; font-size: 0.85rem; }
             .logo-container img { width: 32px; height: 32px; }
         }
+        /* ================= 节点竞速引擎：空间折跃状态 ================= */
+        .buy-btn.is-routing {
+            pointer-events: none;
+            background: rgba(139, 92, 246, 0.6); /* 深紫色高亮 */
+            border-color: #06B6D4; /* 冰蓝边界 */
+            box-shadow: 0 0 35px rgba(139, 92, 246, 0.8), inset 0 0 15px rgba(6, 182, 212, 0.4);
+            transform: scale(0.98);
+            animation: none; /* 暂停原本的 pulse-ring 呼吸动画 */
+        }
+
+        .icon-spin {
+            animation: routing-spin 1.2s cubic-bezier(0.5, 0.1, 0.1, 0.9) infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes routing-spin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(0.8); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -499,7 +520,8 @@
         <h1 class="cosmic-title">BLACK HOLE</h1>
         <p class="cosmic-subtitle">Do not go gentle into that good night.</p>
 
-        <a href="https://ghproxy.net/https://github.com/GallantTarry/TuKuai/releases/download/20260907/BlackHole_v1.2.3_Setup.exe" class="buy-btn pulse hero-btn">
+        <!-- 将固定的 ghproxy 链接替换为 #，并加入 id -->
+        <a href="#" id="btn-download" class="buy-btn pulse hero-btn">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
@@ -587,6 +609,101 @@
                 observer.observe(row);
             });
         });
+
+        // --- 3. 空间奇点：节点智能竞速分配引擎 ---
+        class DownloadRouter {
+            constructor(btnId, targetUrl) {
+                this.btn = document.getElementById(btnId);
+                // 填入官方 Github Release 链接
+                this.targetUrl = targetUrl;
+
+                this.nodes = [
+                    '',
+                    'https://ghproxy.net/',
+                    'https://mirror.ghproxy.com/',
+                    'https://sciproxy.com/',
+                    'https://gh-proxy.com/'
+                ];
+
+                if (this.btn) {
+                    this.originalHtml = this.btn.innerHTML;
+                    this.init();
+                }
+            }
+
+            init() {
+                this.btn.addEventListener('click', (e) => this.startRace(e));
+            }
+
+            async startRace(e) {
+                e.preventDefault();
+                if (this.btn.classList.contains('is-routing')) return;
+
+                // 1. 切换为空间寻优 UI
+                this.btn.classList.add('is-routing');
+                this.btn.classList.remove('pulse'); // 移除原先的脉冲动画
+
+                this.btn.innerHTML = `
+                    <svg class="icon-spin" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        <path d="M2 12h20"></path>
+                    </svg>
+                    星门寻优中...`;
+
+                const testUrls = this.nodes.map(prefix => prefix ? prefix + this.targetUrl : this.targetUrl);
+
+                // 2. 发起并行 HEAD 请求
+                const racePromises = testUrls.map(url => {
+                    return new Promise((resolve, reject) => {
+                        fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' })
+                            .then(() => resolve(url))
+                            .catch(reject);
+                    });
+                });
+
+                try {
+                    // 3. 捕获延迟最低的奇点节点
+                    const fastestUrl = await Promise.any(racePromises);
+
+                    this.btn.innerHTML = `
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00FF00" stroke-width="2" style="margin-right:10px; vertical-align:middle;">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        奇点通道建立`;
+
+                    setTimeout(() => {
+                        const a = document.createElement('a');
+                        a.href = fastestUrl;
+                        a.download = '';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+
+                        this.resetBtn();
+                    }, 600);
+
+                } catch (error) {
+                    window.location.href = 'https://ghproxy.net/' + this.targetUrl;
+                    this.resetBtn();
+                }
+            }
+
+            resetBtn() {
+                setTimeout(() => {
+                    this.btn.classList.remove('is-routing');
+                    this.btn.classList.add('pulse'); // 恢复呼吸灯
+                    this.btn.innerHTML = this.originalHtml;
+                }, 2500);
+            }
+        }
+
+        // 初始化黑洞节点竞速
+        new DownloadRouter(
+            'btn-download',
+            'https://github.com/GallantTarry/TuKuai/releases/download/20260907/BlackHole_v1.2.3_Setup.exe'
+        );
     </script>
 </body>
 </html>

@@ -338,6 +338,24 @@
         .btn-download-core:hover::before { left: 150%; }
 
         /* ==========================================================================
+   【竞速引擎】 节点寻优动态视觉
+   ========================================================================== */
+        .btn-download-core.is-routing {
+            pointer-events: none; /* 防止重复点击 */
+            background: linear-gradient(135deg, rgba(14, 52, 98, 0.8) 0%, #1e90ff 100%);
+            box-shadow: 0 0 25px rgba(79, 172, 254, 0.8);
+            border: 1px solid var(--text-accent);
+        }
+
+        @keyframes routing-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .icon-spin {
+            animation: routing-spin 1.5s linear infinite;
+        }
+
+        /* ==========================================================================
            【绝对居中轮播引擎】 OOP Carousel with Absolute Center Math
            ========================================================================== */
         .ui-panel {
@@ -708,7 +726,7 @@
     </section>
 
     <div class="download-engine">
-        <a href="https://ghproxy.net/https://github.com/GallantTarry/TuKuai/releases/download/20260907/toolkit-1.9.6.msi" class="btn-download-core" download>
+        <a href="#" id="btn-download" class="btn-download-core">
             <svg style="margin-right:10px;" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             下载 ToolKit 1.9.6版本
         </a>
@@ -978,6 +996,7 @@
             this.initialize();
         }
 
+
         initialize() {
             this.buildNavigation();
             this.viewportWidth = this.track.parentElement.clientWidth;
@@ -1105,8 +1124,97 @@
         }
     });
 
+    /**
+     * 模块四：全球节点智能竞速分配引擎
+     */
+    class DownloadRouter {
+        constructor(btnId, targetUrl) {
+            this.btn = document.getElementById(btnId);
+            // 剥离掉前缀，保留纯净的 Github 原链接
+            this.targetUrl = targetUrl;
+
+            // 核心节点池定义 (包含原版以及各大可用镜像池)
+            this.nodes = [
+                '', // Github 官方直连 (给自带科学上网环境的用户)
+                'https://ghproxy.net/',
+                'https://mirror.ghproxy.com/',
+                'https://sciproxy.com/',
+                'https://gh-proxy.com/'
+            ];
+
+            if (this.btn) {
+                this.originalHtml = this.btn.innerHTML;
+                this.init();
+            }
+        }
+
+        init() {
+            this.btn.addEventListener('click', (e) => this.startRace(e));
+        }
+
+        async startRace(e) {
+            e.preventDefault();
+            if (this.btn.classList.contains('is-routing')) return;
+
+            // 1. 切换为寻优状态 UI
+            this.btn.classList.add('is-routing');
+            this.btn.innerHTML = `<svg class="icon-spin" style="margin-right:10px;" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>节点智能寻优中...`;
+
+            // 2. 构造所有的下载拼接链接
+            const testUrls = this.nodes.map(prefix => prefix ? prefix + this.targetUrl : this.targetUrl);
+
+            // 3. 构造竞速 Promise 数组 (发出极轻量的 HEAD 请求测算握手延迟)
+            const racePromises = testUrls.map(url => {
+                return new Promise((resolve, reject) => {
+                    // mode: 'no-cors' 忽略跨域错误，只要 TCP 握手成功并返回（哪怕是 opaque 不透明响应），即视为连通
+                    fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' })
+                        .then(() => resolve(url))
+                        .catch(reject);
+                });
+            });
+
+            try {
+                // 4. Promise.any 会捕获第一个 resolve (即延迟最低、最快返回) 的节点
+                const fastestUrl = await Promise.any(racePromises);
+
+                this.btn.innerHTML = `<svg style="margin-right:10px;" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>最佳节点分配成功`;
+
+                setTimeout(() => {
+                    // 创建静默下载通道
+                    const a = document.createElement('a');
+                    a.href = fastestUrl;
+                    a.download = '';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+
+                    this.resetBtn();
+                }, 600);
+
+            } catch (error) {
+                // 5. 极端容错：如果所有的探测都被防火墙拦截，使用原定方案兜底
+                window.location.href = 'https://ghproxy.net/' + this.targetUrl;
+                this.resetBtn();
+            }
+        }
+
+        resetBtn() {
+            setTimeout(() => {
+                this.btn.classList.remove('is-routing');
+                this.btn.innerHTML = this.originalHtml;
+            }, 2500);
+        }
+    }
+
+    // 替换掉原有的 DOMContentLoaded 块
     document.addEventListener('DOMContentLoaded', () => {
         new PrecisionCarousel('slider-track', '.slider-frame');
+
+        // 初始化下载节点竞速引擎，传入你的 Github 官方原文件 Release 链接
+        new DownloadRouter(
+            'btn-download',
+            'https://github.com/GallantTarry/TuKuai/releases/download/20260907/toolkit-1.9.6.msi'
+        );
     });
 </script>
 </body>
