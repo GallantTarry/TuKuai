@@ -373,3 +373,8 @@
 1. 更新内置Openssh服务至软件内部，不再依赖于电脑自带服务。
 2. 放弃自解压技术用Wix进行安装，卸载请调用控制面板搜索ToolKit进行软件卸载。
 
+
+
+---
+© 2026 Created by 土块. All rights reserved.
+
