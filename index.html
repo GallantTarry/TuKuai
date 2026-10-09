@@ -11,7 +11,11 @@
     <script>
         // 定义核心统计函数
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
         gtag('js', new Date());
         gtag('config', 'G-FGG6EYF0HC');
 
@@ -30,22 +34,9 @@
 
         // 监听用户的第一次交互行为
         ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(event => {
-            window.addEventListener(event, loadGA, { once: true, passive: true });
+            window.addEventListener(event, loadGA, {once: true, passive: true});
         });
     </script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-
-        gtag('js', new Date());
-
-        // 配置你的专属测量 ID
-        gtag('config', 'G-FGG6EYF0HC');
-    </script>
-    <!-- 👆 新增结束 👆 -->
 
 
     <link href="imgs/favicon.png" rel="icon" type="image/png">
@@ -1329,7 +1320,6 @@
                                 START
                             </button>
                         </div>
-
 
 
                         <div class="glass-card p-3 md:p-4 flex justify-between items-center hover:bg-white/10 group transition-all">
