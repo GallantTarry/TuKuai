@@ -7,8 +7,32 @@
     <meta content="no-referrer-when-downgrade" name="referrer">
     <title>少侠别走</title>
 
-    <!-- 👇 新增：GA4 全局统计探针 👇 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FGG6EYF0HC"></script>
+    <!-- 移除原先写在 head 里的 GA4 script，替换为以下脚本 -->
+    <script>
+        // 定义核心统计函数
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-FGG6EYF0HC');
+
+        // 核心：等用户第一次点击、滑动或按下键盘时，再动态插入 GA4 脚本
+        const loadGA = () => {
+            const script = document.createElement('script');
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=G-FGG6EYF0HC';
+            script.async = true;
+            document.head.appendChild(script);
+
+            // 脚本加载完就解除监听，避免重复加载
+            ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(event => {
+                window.removeEventListener(event, loadGA);
+            });
+        };
+
+        // 监听用户的第一次交互行为
+        ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(event => {
+            window.addEventListener(event, loadGA, { once: true, passive: true });
+        });
+    </script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
