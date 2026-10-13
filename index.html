@@ -428,11 +428,97 @@
             animation: crt-implode 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
             transform-origin: center center;
         }
+
+        /* 2. 极致毛玻璃 Cookie 提示框 */
+        .cookie-consent-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 450px;
+            padding: 20px;
+            border-radius: 20px;
+            /* 借用你侧边栏的玻璃质感 */
+            background: rgba(15, 20, 30, 0.45);
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            z-index: 10000;
+            display: none; /* 默认隐藏，由 JS 控制显示 (flex) */
+            flex-direction: column;
+            gap: 15px;
+            font-family: inherit; /* 继承你现有的 font-pixel 或系统字体 */
+        }
+
+        .cookie-text {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            letter-spacing: 0.05em;
+        }
+
+        .cookie-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .cookie-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cookie-btn-decline {
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .cookie-btn-decline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .cookie-btn-accept {
+            /* 使用你原有的绿色高亮 */
+            background: rgba(74, 222, 128, 0.1);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.1);
+        }
+
+        .cookie-btn-accept:hover {
+            background: rgba(74, 222, 128, 0.2);
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.4);
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 
 <body class="font-pixel text-xs md:text-sm">
+<!-- ================= 新增：谷歌翻译与 Cookie 提示 UI ================= -->
 
+
+<!-- 2. Cookie 提示弹窗 -->
+<div id="cookieConsentBanner" class="cookie-consent-banner">
+    <div class="cookie-text">
+        <span class="text-[#4ade80] font-bold">SYSTEM ALERT:</span><br>
+        本终端需要使用 Cookie 及 Google 翻译组件以强化您的浏览体验。请确认是否挂载相关协议？
+    </div>
+    <div class="cookie-buttons">
+        <button class="cookie-btn cookie-btn-decline" id="btnDecline">仅基础运行</button>
+        <button class="cookie-btn cookie-btn-accept" id="btnAccept">全功率授权 (ACCEPT)</button>
+    </div>
+</div>
+<!-- ==================================================================== -->
 <!-- 👇 修改为加上 v-cloak 👇 -->
 <div :style="cssVars" class="bg-black flex flex-col" id="app" v-cloak>
 
@@ -3188,6 +3274,78 @@
             }, 2500);
         }
     });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const banner = document.getElementById('cookieConsentBanner');
+        const btnAccept = document.getElementById('btnAccept');
+        const btnDecline = document.getElementById('btnDecline');
+
+        const cookieStatus = localStorage.getItem('tukuai_cookie_consent');
+
+        if (!cookieStatus) {
+            // 没有授权记录，弹出毛玻璃警告
+            banner.style.display = 'flex';
+        } else if (cookieStatus === 'accepted') {
+            // 已授权，静默启动核心统计引擎
+            loadGAEngine();
+        }
+
+        // 接受授权：记录状态，关闭弹窗，拉起引擎
+        btnAccept.addEventListener('click', function() {
+            localStorage.setItem('tukuai_cookie_consent', 'accepted');
+            banner.style.display = 'none';
+            loadGAEngine();
+        });
+
+        // 拒绝授权：只关闭弹窗，不加载任何追踪代码
+        btnDecline.addEventListener('click', function() {
+            localStorage.setItem('tukuai_cookie_consent', 'declined');
+            banner.style.display = 'none';
+        });
+    });
+
+    // 核心统计引擎注入函数
+    function loadGAEngine() {
+        if (document.getElementById('ga4-script')) return; // 防止重复加载
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-FGG6EYF0HC');
+
+        const script = document.createElement('script');
+        script.id = 'ga4-script';
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-FGG6EYF0HC';
+        script.async = true;
+        document.head.appendChild(script);
+        console.log("GA4 统计引擎已全功率挂载");
+    }
+
+    // 独立函数：动态向 DOM 注入谷歌官方翻译组件
+    function loadGoogleTranslate() {
+        // 防止重复注入导致页面出现多个组件
+        if (document.getElementById('google-translate-script')) return;
+
+        // 1. 在全局对象上挂载初始化回调函数
+        window.googleTranslateElementInit = function() {
+            new google.translate.TranslateElement(
+                {
+                    pageLanguage: 'zh-CN', // 明确告诉引擎当前网页是中文
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false
+                },
+                'google_translate_element'
+            );
+        };
+
+        // 2. 动态创建 <script> 标签并挂载
+        const script = document.createElement('script');
+        script.id = 'google-translate-script';
+        // 关键点：cb=googleTranslateElementInit 指定了加载完成后执行的回调
+        script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+        document.head.appendChild(script);
+    }
 </script>
 </body>
 </html>
