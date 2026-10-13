@@ -3053,6 +3053,7 @@
             onMounted(() => {
                 initParticleSystem();
                 // 👇 新增：Cookie 弹窗的监听与处理
+                // 👇 新增：Cookie 弹窗的监听与处理
                 const initCookieBanner = () => {
                     const banner = document.getElementById('cookieConsentBanner');
                     const btnAccept = document.getElementById('btnAccept');
@@ -3075,8 +3076,16 @@
                         });
                     }
                 };
-                initCookieBanner(); // 启动弹窗逻辑
-                // 👆 新增结束
+
+                // 👇 核心修改：利用 watch 监听 isBooted，不再直接调用 initCookieBanner()
+                watch(isBooted, (newBootedVal) => {
+                    if (newBootedVal) {
+                        // 增加 500 毫秒的延迟，等 HelloWorld 动画完全消失、系统界面浮现后再平滑弹出提示框
+                        setTimeout(() => {
+                            initCookieBanner();
+                        }, 500);
+                    }
+                }, { immediate: true }); // immediate: true 确保已经有缓存的老用户一进网站也能直接看到弹窗
 // 👇 在这里启动你的 UV 引擎！
                 initUvCounter();
                 updateClock();
