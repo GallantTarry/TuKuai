@@ -7,6 +7,7 @@
     <meta content="no-referrer-when-downgrade" name="referrer">
     <title>少侠别走</title>
 
+
     <!-- 移除原先写在 head 里的 GA4 script，替换为以下脚本 -->
     <script>
         // 定义核心统计函数
@@ -37,6 +38,11 @@
             window.addEventListener(event, loadGA, {once: true, passive: true});
         });
     </script>
+
+    <!-- 在 <head> 里补充这两行 -->
+    <link rel="preload" href="./font/Silkscreen-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="./font/zpix.ttf" as="font" type="font/ttf" crossorigin>
+
 
 
     <link href="imgs/favicon.png" rel="icon" type="image/png">
@@ -514,8 +520,8 @@
         土块请求使用 Cookie 以优化系统交互与浏览体验，是否授权挂载？
     </div>
     <div class="cookie-buttons">
-        <button class="cookie-btn cookie-btn-decline" id="btnDecline">拒绝~</button>
-        <button class="cookie-btn cookie-btn-accept" id="btnAccept">同意！</button>
+        <button class="cookie-btn cookie-btn-decline" id="btnDecline"> 拒绝~ </button>
+        <button class="cookie-btn cookie-btn-accept" id="btnAccept"> 同意！ </button>
     </div>
 </div>
 <!-- ==================================================================== -->
@@ -3227,17 +3233,22 @@
 </script>
 <!-- Service Worker 核心引擎启动 -->
 <script>
+    // Service Worker 核心引擎启动
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw.js')
                 .then(registration => {
                     console.log('Tukuai OS 核心管家已接管系统. 作用域:', registration.scope);
 
+                    // 【核心修复1】：在这个时刻提前判断，如果 controller 为空，说明是用户第一次访问安装
+                    const isFirstInstall = !navigator.serviceWorker.controller;
+
                     // 监听后台版本更新，如果发现新版本，自动强制刷新页面
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
                         newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'activated' && navigator.serviceWorker.controller) {
+                            // 【核心修复2】：确保只有在非首次安装（即真的是后台发布了更新）的情况下，才允许强制重载页面
+                            if (newWorker.state === 'activated' && !isFirstInstall) {
                                 console.log('检测到核心引擎更新，系统正在热重载...');
                                 window.location.reload();
                             }
