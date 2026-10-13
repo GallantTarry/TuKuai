@@ -514,7 +514,7 @@
         土块请求使用 Cookie 以优化系统交互与浏览体验，是否授权挂载？
     </div>
     <div class="cookie-buttons">
-        <button class="cookie-btn cookie-btn-decline" id="btnDecline">拒绝~ </button>
+        <button class="cookie-btn cookie-btn-decline" id="btnDecline">拒绝~</button>
         <button class="cookie-btn cookie-btn-accept" id="btnAccept">同意！</button>
     </div>
 </div>
@@ -2208,10 +2208,11 @@
                                 class="px-4 py-2 rounded-full border border-gray-500 text-gray-400 hover:text-white hover:border-white transition-all tracking-widest">
                             取消
                         </button>
+                        <!-- 修复后的按钮代码 -->
                         <button :class="['px-4 py-2 rounded-full border transition-all text-black tracking-widest',
-                                 (isSendingMail || !mailContent.trim()) ? 'bg-gray-500 border-gray-500 opacity-50 cursor-not-allowed' : 'hover:scale-105']"
-                                :disabled="isSendingMail || !mailContent.trim()"
-                                :style="{ backgroundColor: (!isSendingMail && mailContent.trim()) ? activeColor : '', borderColor: (!isSendingMail && mailContent.trim()) ? activeColor : '' }"
+         (isSendingMail || (!mailContent.trim() && attachments.length === 0)) ? 'bg-gray-500 border-gray-500 opacity-50 cursor-not-allowed' : 'hover:scale-105']"
+                                :disabled="isSendingMail || (!mailContent.trim() && attachments.length === 0)"
+                                :style="{ backgroundColor: (!isSendingMail && (mailContent.trim() || attachments.length > 0)) ? activeColor : '', borderColor: (!isSendingMail && (mailContent.trim() || attachments.length > 0)) ? activeColor : '' }"
                                 @click="sendMail">
                             {{ isSendingMail ? '发送中...' : (mailStatus === 'success' ? '已发送!' : '发送') }}
                         </button>
@@ -2426,12 +2427,18 @@
                     };
                 }
 
-                // 2. 判断当前是在播放还是暂停
+                // 修改 toggleAudioPreview 中的播放逻辑部分：
                 if (file.isPlaying) {
                     file.audioElement.pause();
                     file.isPlaying = false;
                 } else {
-                    file.audioElement.play();
+                    // 捕获播放中断异常
+                    const playPromise = file.audioElement.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.warn('音频播放准备被中断', error);
+                        });
+                    }
                     file.isPlaying = true;
                 }
             };
@@ -3038,6 +3045,31 @@
 
             onMounted(() => {
                 initParticleSystem();
+                // 👇 新增：Cookie 弹窗的监听与处理
+                const initCookieBanner = () => {
+                    const banner = document.getElementById('cookieConsentBanner');
+                    const btnAccept = document.getElementById('btnAccept');
+                    const btnDecline = document.getElementById('btnDecline');
+
+                    if (banner && btnAccept && btnDecline) {
+                        // 如果本地没有授权记录，则显示弹窗
+                        if (!localStorage.getItem('tukuai_cookie_consent')) {
+                            banner.style.display = 'flex';
+                        }
+
+                        btnAccept.addEventListener('click', () => {
+                            localStorage.setItem('tukuai_cookie_consent', 'accepted');
+                            banner.style.display = 'none';
+                        });
+
+                        btnDecline.addEventListener('click', () => {
+                            localStorage.setItem('tukuai_cookie_consent', 'declined');
+                            banner.style.display = 'none';
+                        });
+                    }
+                };
+                initCookieBanner(); // 启动弹窗逻辑
+                // 👆 新增结束
 // 👇 在这里启动你的 UV 引擎！
                 initUvCounter();
                 updateClock();
@@ -3059,20 +3091,20 @@
                 }, 15000);
 
 
-                // 👇 新增这块：强行拦截 BFCache，解决后退时动画失效的问题 👇
                 // 👇 替换掉你原本的 pageshow 监听器 👇
                 window.addEventListener('pageshow', (event) => {
                     if (event.persisted) {
                         isWanderJumping.value = false;
                         isCollapsing.value = false;
 
-                        // 恢复刚才被渐渐关掉的音量
+                        // 👇 核心修复：必须清理定时器，防止原有的跳转逻辑依然在后台倒数
+                        if (collapseTimer) clearTimeout(collapseTimer);
+                        if (jumpTimer) clearTimeout(jumpTimer);
+
                         if (audioRef.value) {
                             audioRef.value.volume = currentVolume.value;
                         }
 
-                        // 终极绝招：让 DOM 隐身 0.1 毫秒并强迫浏览器计算高度 (Reflow回流)
-                        // 这样能彻底撕碎浏览器对 CSS 动画 100% 状态的缓存死锁！
                         document.body.style.display = 'none';
                         void document.body.offsetHeight;
                         document.body.style.display = '';
@@ -3219,9 +3251,9 @@
     }
     const originTitle = document.title;
     let titleTimer = null;
-    let worker = null; // 独立线程对象
+    let worker = null;
+    let workerBlobUrl = null; // 👇 新增变量：记录 Blob URL 以便销毁
 
-    // 将全诗拼接成一行，末尾留白
     const fullVerse = "· ᴛʜᴇ ʟᴏʀᴅ ɪs ᴍʏ sʜᴇᴘʜᴇʀᴅ · ɪ sʜᴀʟʟ ɴᴏᴛ ᴡᴀɴᴛ · ʜᴇ ᴍᴀᴋᴇᴛʜ ᴍᴇ ᴛᴏ ʟɪᴇ ᴅᴏᴡɴ ɪɴ ɢʀᴇᴇɴ ᴘᴀsᴛᴜʀᴇs · ʜᴇ ʟᴇᴀᴅᴇᴛʜ ᴍᴇ ʙᴇsɪᴅᴇ ᴛʜᴇ sᴛɪʟʟ ᴡᴀᴛᴇʀs · ʜᴇ ʀᴇsᴛᴏʀᴇᴛʜ ᴍʏ sᴏᴜʟ · ʜᴇ ʟᴇᴀᴅᴇᴛʜ ᴍᴇ ɪɴ ᴛʜᴇ ᴘᴀᴛʜs ᴏғ ʀɪɢʜᴛᴇᴏᴜsɴᴇss ғᴏʀ ʜɪs ɴᴀᴍᴇ's sᴀᴋᴇ · ʏᴇᴀ, ᴛʜᴏᴜɢʜ ɪ ᴡᴀʟᴋ ᴛʜʀᴏᴜɢʜ ᴛʜᴇ ᴠᴀʟʟᴇʏ ᴏғ ᴛʜᴇ sʜᴀᴅᴏᴡ ᴏғ ᴅᴇᴀᴛʜ · ɪ ᴡɪʟʟ ғᴇᴀʀ ɴᴏ ᴇᴠɪʟ: ғᴏʀ ᴛʜᴏᴜ ᴀʀᴛ ᴡɪᴛʜ ᴍᴇ · ᴛʜʏ ʀᴏᴅ ᴀɴᴅ ᴛʜʏ sᴛᴀғғ ᴛʜᴇʏ ᴄᴏᴍғᴏʀᴛ ᴍᴇ · ᴛʜᴏᴜ ᴘʀᴇᴘᴀʀᴇsᴛ ᴀ ᴛᴀʙʟᴇ ʙᴇғᴏʀᴇ ᴍᴇ ɪɴ ᴛʜᴇ ᴘʀᴇsᴇɴᴄᴇ ᴏғ ᴍɪɴᴇ ᴇɴᴇᴍɪᴇs · ᴛʜᴏᴜ ᴀɴᴏɪɴᴛᴇsᴛ ᴍʏ ʜᴇᴀᴅ ᴡɪᴛʜ ᴏɪʟ · ᴍʏ ᴄᴜᴘ ʀᴜɴɴᴇᴛʜ ᴏᴠᴇʀ · sᴜʀᴇʟʏ ɢᴏᴏᴅɴᴇss ᴀɴᴅ ᴍᴇʀᴄʏ sʜᴀʟʟ ғᴏʟʟᴏᴡ ᴍᴇ ᴀʟʟ ᴛʜᴇ ᴅᴀʏs ᴏғ ᴍʏ ʟɪғᴇ · ᴀɴᴅ ɪ ᴡɪʟʟ ᴅᴡᴇʟʟ ɪɴ ᴛʜᴇ ʜᴏᴜsᴇ ᴏғ ᴛʜᴇ ʟᴏʀᴅ ғᴏʀ ᴇᴠᴇʀ ·                  ";
 
     let currentText = fullVerse;
@@ -3232,43 +3264,43 @@
             currentText = fullVerse;
             document.title = currentText;
 
-            // 1. 动态生成一个不受限制的后台 Worker 脚本
             const blob = new Blob([`
-                let timer;
-                self.onmessage = function(e) {
-                    if (e.data === 'start') {
-                        // 在独立线程中发起高频心跳，200ms 的速度对古典阅读最优雅
-                        timer = setInterval(() => self.postMessage('tick'), 200);
-                    } else if (e.data === 'stop') {
-                        clearInterval(timer);
-                    }
-                };
-            `], {type: 'application/javascript'});
+            let timer;
+            self.onmessage = function(e) {
+                if (e.data === 'start') {
+                    timer = setInterval(() => self.postMessage('tick'), 200);
+                } else if (e.data === 'stop') {
+                    clearInterval(timer);
+                }
+            };
+        `], {type: 'application/javascript'});
 
-            // 2. 唤醒并连接这个独立线程
-            worker = new Worker(URL.createObjectURL(blob));
+            // 👇 修复：保存并使用 Blob URL
+            workerBlobUrl = URL.createObjectURL(blob);
+            worker = new Worker(workerBlobUrl);
 
-            // 3. 主线程每次收到 Worker 的心跳，就向左滚动一个字符
             worker.onmessage = function () {
                 currentText = currentText.substring(1) + currentText[0];
                 document.title = currentText;
             };
 
-            // 4. 发送启动指令
             worker.postMessage('start');
 
         } else {
-            // 用户切回来时，立刻给独立线程发送停止指令并彻底销毁，释放内存
             if (worker) {
                 worker.postMessage('stop');
                 worker.terminate();
                 worker = null;
             }
 
-            // 留下古典字体的祈祷结语
+            // 👇 核心修复：立刻释放内存中的 Blob 引用
+            if (workerBlobUrl) {
+                URL.revokeObjectURL(workerBlobUrl);
+                workerBlobUrl = null;
+            }
+
             document.title = '· ᴀᴍᴇɴ ·';
 
-            // 2.5 秒后平缓恢复为原本的系统名字
             titleTimer = setTimeout(() => {
                 document.title = originTitle;
             }, 2500);
