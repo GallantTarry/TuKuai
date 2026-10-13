@@ -510,9 +510,6 @@
 </head>
 
 <body class="font-pixel text-xs md:text-sm">
-<!-- ================= 新增：谷歌翻译与 Cookie 提示 UI ================= -->
-
-
 <!-- 2. Cookie 提示弹窗 -->
 <div id="cookieConsentBanner" class="cookie-consent-banner">
     <div class="cookie-text">
@@ -520,8 +517,12 @@
         土块请求使用 Cookie 以优化系统交互与浏览体验，是否授权挂载？
     </div>
     <div class="cookie-buttons">
-        <button class="cookie-btn cookie-btn-decline" id="btnDecline"> 拒绝~ </button>
-        <button class="cookie-btn cookie-btn-accept" id="btnAccept"> 同意！ </button>
+        <button class="cookie-btn cookie-btn-decline flex items-center justify-center space-x-1" id="btnDecline">
+            <span>🙅‍♂️</span><span>拒绝~</span>
+        </button>
+        <button class="cookie-btn cookie-btn-accept flex items-center justify-center space-x-1" id="btnAccept">
+            <span>🙆‍♂️</span><span>同意！</span>
+        </button>
     </div>
 </div>
 <!-- ==================================================================== -->
