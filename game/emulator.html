@@ -78,14 +78,14 @@
         window.EJS_color = '#4ade80';
         window.EJS_startOnLoaded = true;
 
-        window.EJS_pathtodata = '../emulator_data/';
-        window.EJS_gameUrl = '../rom/' + romFile;
+        window.EJS_pathtodata = './emulator_data/';
+        window.EJS_gameUrl = './rom/' + romFile;
 
         // 👇 2. 修正 NDS 专属配置 👇
         if (core === 'desmume' || core === 'nds' || core === 'melonds') {
             // ❌ 彻底删除 window.EJS_mouse = false;
             window.EJS_cheats = false;
-            window.EJS_biosUrl = '../emulator_data/nds_bios.zip';
+            window.EJS_biosUrl = './emulator_data/nds_bios.zip';
         }
         window.EJS_VirtualGamepadSettings = { alpha: 0.5, scale: 1.1 };
 

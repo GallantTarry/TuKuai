@@ -53,8 +53,9 @@
     <!-- 3. 针对苹果 iOS 设备（iPhone/iPad）保存到桌面时的图标 -->
     <link href="imgs/applefavicon.png" rel="apple-touch-icon">
     <link href="./css/output.css" rel="stylesheet">
+    <!-- 👇 新增：引入抽离出来的自定义样式（放在 output.css 下面以保证优先级） -->
+    <link href="./css/style.css" rel="stylesheet">
     <script src="./js/vue.global.js"></script>
-    <script src="./js/model-viewer.min.js" type="module"></script>
 
     <script>
         // 必须在所有 DOM 和 Vue 渲染前执行，彻底掐断浏览器的自动滚动恢复！
@@ -65,448 +66,7 @@
         window.scrollTo(0, 0);
     </script>
 
-    <style>
-        /* 隐藏全局鼠标光标 */
-        * {
-            cursor: none !important;
-        }
 
-        /* ========================================= */
-        /* 核心修复：防止 Vue 加载前出现大括号模板闪烁 */
-        /* ========================================= */
-        [v-cloak] {
-            display: none !important;
-        }
-
-        /* 1. 引入本地 Silkscreen (英数常规) */
-        @font-face {
-            font-family: 'Silkscreen';
-            src: url('./font/Silkscreen-Regular.ttf') format('truetype');
-            font-weight: 400;
-            font-display: swap;
-        }
-
-        /* 2. 引入本地 Silkscreen (英数加粗) */
-        @font-face {
-            font-family: 'Silkscreen';
-            src: url('./font/Silkscreen-Bold.ttf') format('truetype');
-            font-weight: 700;
-            font-display: swap;
-        }
-
-        /* 3. 新增：引入本地 中文像素字体 */
-        @font-face {
-            font-family: 'ChinesePixel'; /* 这里的名字你可以随便起 */
-            src: url('./font/zpix.ttf') format('truetype'); /* 确保文件名对应 */
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        /* ---------------- 核心毛玻璃与动态主题 CSS ---------------- */
-        html, body {
-            background-color: #050505;
-            color: #f8fafc;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            /* 增加 100dvh，并用 100vh 给老浏览器兜底 */
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
-            overscroll-behavior-y: none;
-            -webkit-overflow-scrolling: none;
-            touch-action: manipulation;
-        }
-
-        #app {
-            position: fixed;
-            /* 将原本的 inset: 0 替换为明确的 top 和 left，防止部分浏览器在底部栏弹出时乱拉伸 */
-            top: 0;
-            left: 0;
-            width: 100%;
-            /* 核心修改：弃用 var(--real-height)，直接使用 dvh */
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
-        }
-
-        .scanlines {
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1));
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 15;
-        }
-
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        .glass-sidebar {
-            background: rgba(15, 23, 42, 0.45);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 20;
-        }
-
-        .glass-panel {
-            background: rgba(15, 20, 30, 0.45);
-            backdrop-filter: blur(24px) saturate(200%);
-            -webkit-backdrop-filter: blur(24px) saturate(200%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-            border-left: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px var(--theme-bg), inset 0 0 20px rgba(255, 255, 255, 0.05);
-            border-radius: 32px;
-            transition: box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .nav-item {
-            border: 1px solid transparent;
-            border-radius: 20px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: transparent;
-            color: #94a3b8;
-        }
-
-        /* 🟢 极致交互版：加入 3D 悬浮与多重发光投影 */
-        .nav-item {
-            /* ... 保持原有属性 ... */
-            transform-style: preserve-3d;
-            perspective: 1000px;
-        }
-
-        .nav-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.1);
-            /* Z轴拔高，配合微小旋转产生按键悬浮错觉 */
-            transform: translateX(8px) translateZ(20px) rotateY(-5deg);
-            box-shadow: -10px 10px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .nav-active {
-            background: var(--theme-bg) !important;
-            border-color: var(--theme-color) !important;
-            /* 激活状态下，直接弹出屏幕表面 */
-            transform: translateX(12px) translateZ(30px) rotateY(-8deg);
-            box-shadow: -15px 15px 30px rgba(0, 0, 0, 0.4),
-            0 0 15px var(--theme-glow),
-            inset 0 0 10px rgba(255, 255, 255, 0.2) !important;
-            color: var(--theme-color) !important;
-            text-shadow: 0 0 15px var(--theme-glow), 0 0 30px var(--theme-glow);
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            border-radius: 20px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--theme-color);
-            box-shadow: 0 8px 25px var(--theme-bg);
-            transform: translateY(-3px);
-        }
-
-        .tab-title {
-            color: var(--theme-color);
-            text-shadow: 0 0 12px var(--theme-glow);
-            transition: color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .theme-link {
-            color: var(--theme-color);
-            border: 1px solid var(--theme-color);
-            border-radius: 9999px;
-            transition: all 0.3s ease;
-        }
-
-        .theme-link:hover {
-            background: var(--theme-color);
-            color: #000;
-            box-shadow: 0 0 20px var(--theme-glow);
-        }
-
-        input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-        }
-
-        /* ====== 新增：音量调整滑块专属样式 ====== */
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 12px !important;
-            width: 12px !important;
-            background: #f8fafc !important;
-            border-radius: 50% !important;
-            margin-top: -4px !important;
-            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5) !important;
-            transition: transform 0.2s ease;
-        }
-
-        .volume-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.3);
-        }
-
-        .volume-slider::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 4px;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 16px;
-            width: 16px;
-            background: var(--theme-color);
-            box-shadow: 0 0 12px var(--theme-glow);
-            cursor: pointer;
-            border-radius: 50%;
-            margin-top: -6px;
-            transition: background 0.5s ease;
-        }
-
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 4px;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 2px;
-        }
-
-        input[type=range]:focus {
-            outline: none;
-        }
-
-        .game-pop-enter-active,
-        .game-pop-leave-active {
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .game-pop-enter-from,
-        .game-pop-leave-to {
-            opacity: 0;
-            transform: scale(0.85) translateY(20px);
-        }
-
-        /* ====== 新增：紫色玻璃滑动块专属样式 ====== */
-        .music-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 18px !important;
-            width: 10px !important;
-            background: rgba(168, 85, 247, 0.7) !important;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 0 10px rgba(168, 85, 247, 0.8), inset 0 0 5px rgba(255, 255, 255, 0.4) !important;
-            border-radius: 4px !important;
-            margin-top: -7px !important;
-            transition: all 0.3s ease;
-        }
-
-        .music-slider::-webkit-slider-thumb:hover {
-            background: rgba(168, 85, 247, 1) !important;
-            transform: scale(1.2);
-        }
-
-        /* ====== 新增：跳舞小电视动画 ====== */
-        /* 修改：跳舞小电视动画 - 左右摇摆 */
-        .tv-character {
-            /* 如果想让摇摆更快，可以把 0.5s 改为 0.3s */
-            animation: dance 0.4s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes dance {
-            0% {
-                /* 向左偏移并向左倾斜 */
-                transform: translateX(-6px) rotate(-12deg) scale(0.95);
-            }
-            100% {
-                /* 向右偏移并向右倾斜 */
-                transform: translateX(6px) rotate(12deg) scale(1.05);
-            }
-        }
-
-        /* ========================================= */
-        /* ====== 新增：优雅滚动渐显专用类 ====== */
-        /* ========================================= */
-
-        .reveal-init {
-            /* 初始状态：完全透明，向下位移 30px，并强制覆盖以防止闪烁 */
-            opacity: 0 !important;
-            /* 将 30px 改为 10px，依然保留向上的浮动感，但不会导致底部判定死锁 */
-            transform: translateY(10px) !important;
-        }
-
-        .reveal-transition {
-            /* 1. 绝不使用 all！只让浏览器专门处理透明度和位移的动画，极大减轻计算量 */
-            transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-
-            /* 2. 核心大招：呼叫 GPU 硬件加速！提前为这些卡片分配独立图层，专治各种掉帧卡顿 */
-            will-change: opacity, transform;
-        }
-
-        /* 新增：跃迁进度条动画 */
-        @keyframes loading {
-            0% {
-                width: 0%;
-            }
-            50% {
-                width: 70%;
-            }
-            100% {
-                width: 100%;
-            }
-        }
-
-        /* ========================================= */
-        /* ====== 新增：Wander Jump 坍缩特效 ====== */
-        /* ========================================= */
-
-        /* 1. 能量过载：剧烈随机抖动与 RGB 色相偏移 */
-        @keyframes overload-shake {
-            0%, 100% {
-                transform: translate(0, 0) scale(1);
-                filter: hue-rotate(0deg) brightness(1);
-            }
-            20% {
-                transform: translate(-4px, 4px) scale(1.01);
-                filter: hue-rotate(90deg) brightness(1.2);
-            }
-            40% {
-                transform: translate(4px, -4px) scale(0.99);
-                filter: hue-rotate(-90deg) brightness(1.5);
-            }
-            60% {
-                transform: translate(-4px, -4px) scale(1.02);
-                filter: hue-rotate(45deg) brightness(1.2);
-            }
-            80% {
-                transform: translate(4px, 4px) scale(0.98);
-                filter: hue-rotate(-45deg) brightness(1.5);
-            }
-        }
-
-        /* 2. 空间坍缩：CRT老电视关机式向内吸入 */
-        @keyframes crt-implode {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-                filter: brightness(1) blur(0px);
-            }
-            30% {
-                transform: scale(1, 0.01);
-                opacity: 1;
-                filter: brightness(2) blur(2px);
-            }
-            /* 上下压扁成一条亮线 */
-            60% {
-                transform: scale(0, 0.01);
-                opacity: 0;
-                filter: brightness(3) blur(5px);
-            }
-            /* 亮线向中间聚集成一个点消失 */
-            100% {
-                transform: scale(0);
-                opacity: 0;
-            }
-        }
-
-        /* 绑定到类名，使用 !important 确保覆盖常规的 transition */
-        .animate-overload {
-            animation: overload-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite !important;
-        }
-
-        .animate-implode {
-            /* 停留在最后一帧 (forwards) */
-            animation: crt-implode 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
-            transform-origin: center center;
-        }
-
-        /* 2. 极致毛玻璃 Cookie 提示框 */
-        .cookie-consent-banner {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 450px;
-            padding: 20px;
-            border-radius: 20px;
-            /* 借用你侧边栏的玻璃质感 */
-            background: rgba(15, 20, 30, 0.45);
-            backdrop-filter: blur(24px) saturate(200%);
-            -webkit-backdrop-filter: blur(24px) saturate(200%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05);
-            z-index: 10000;
-            display: none; /* 默认隐藏，由 JS 控制显示 (flex) */
-            flex-direction: column;
-            gap: 15px;
-            font-family: inherit; /* 继承你现有的 font-pixel 或系统字体 */
-        }
-
-        .cookie-text {
-            font-size: 12px;
-            line-height: 1.6;
-            color: #e2e8f0;
-            letter-spacing: 0.05em;
-        }
-
-        .cookie-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-        }
-
-        .cookie-btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: bold;
-            letter-spacing: 0.1em;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .cookie-btn-decline {
-            background: transparent;
-            color: #94a3b8;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .cookie-btn-decline:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-
-        .cookie-btn-accept {
-            /* 使用你原有的绿色高亮 */
-            background: rgba(74, 222, 128, 0.1);
-            color: #4ade80;
-            border: 1px solid rgba(74, 222, 128, 0.3);
-            box-shadow: 0 0 10px rgba(74, 222, 128, 0.1);
-        }
-
-        .cookie-btn-accept:hover {
-            background: rgba(74, 222, 128, 0.2);
-            box-shadow: 0 0 20px rgba(74, 222, 128, 0.4);
-            transform: translateY(-2px);
-        }
-    </style>
 </head>
 
 <body class="font-pixel text-xs md:text-sm">
@@ -1153,7 +713,7 @@
                                     <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">多功能归纳悬浮黑洞</span>
                                 </div>
                             </div>
-                            <button @click="openGame('Blackhole', 'BlackHole/BlackHole.html')"
+                            <button @click="openGame('Blackhole', './projects/BlackHole/BlackHole.html')"
                                     class="cursor-pointer text-[#facc15] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#facc15] border border-[#facc15]/50 hover:border-[#facc15] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(250,204,21,0)] hover:shadow-[0_0_15px_rgba(250,204,21,0.4)]">
                                 OPEN
                             </button>
@@ -1172,7 +732,7 @@
                                     <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">招标代理部门办公辅助应用</span>
                                 </div>
                             </div>
-                            <button @click="openGame('ToolKit', 'ToolKit/ToolKit.html')"
+                            <button @click="openGame('ToolKit', './projects/ToolKit/ToolKit.html')"
                                     class="cursor-pointer text-[#facc15] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#facc15] border border-[#facc15]/50 hover:border-[#facc15] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(250,204,21,0)] hover:shadow-[0_0_15px_rgba(250,204,21,0.4)]">
                                 OPEN
                             </button>
@@ -1191,7 +751,7 @@
                                     <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">可视化脚本盒子</span>
                                 </div>
                             </div>
-                            <button @click="openGame('PyKuai', 'PyKuai/PyKuai.html')"
+                            <button @click="openGame('PyKuai', './projects/PyKuai/PyKuai.html')"
                                     class="cursor-pointer text-[#facc15] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#facc15] border border-[#facc15]/50 hover:border-[#facc15] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(250,204,21,0)] hover:shadow-[0_0_15px_rgba(250,204,21,0.4)]">
                                 OPEN
                             </button>
@@ -1202,7 +762,7 @@
                             <!-- 去掉了 px-2，统一改为 space-x-4 -->
                             <div class="flex items-center space-x-4 overflow-hidden">
                                 <div class="w-10 h-10 bg-black/40 rounded-xl border border-white/10 flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
-                                    <img alt="PyKuai" class="w-6 h-6 object-contain drop-shadow-md"
+                                    <img alt="KuaiDrive" class="w-6 h-6 object-contain drop-shadow-md"
                                          src="./imgs/app/KuaiDrive.ico">
                                 </div>
                                 <div class="flex flex-col truncate">
@@ -1210,7 +770,7 @@
                                     <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">挂载磁盘与文件传输七巧板</span>
                                 </div>
                             </div>
-                            <button @click="openGame('KuaiDrive', 'KuaiDrive/KuaiDrive.html')"
+                            <button @click="openGame('KuaiDrive', './projects/KuaiDrive/KuaiDrive.html')"
                                     class="cursor-pointer text-[#facc15] hover:text-[#050505] text-[10px] md:text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 font-mono font-bold shrink-0 whitespace-nowrap bg-transparent hover:bg-[#facc15] border border-[#facc15]/50 hover:border-[#facc15] rounded-full px-4 py-1.5 ml-3 shadow-[0_0_10px_rgba(250,204,21,0)] hover:shadow-[0_0_15px_rgba(250,204,21,0.4)]">
                                 OPEN
                             </button>
@@ -1405,7 +965,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">瓦里奥制造</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/warioware.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: warioware.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('瓦里奥制造', './game/emulator.html?rom=warioware.gba')"
@@ -1422,7 +982,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">口袋妖怪：绿宝石</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/emerald.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: emerald.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('口袋妖怪：绿宝石', './game/emulator.html?rom=emerald.gba')"
@@ -1438,7 +998,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">星之卡比：镜之大迷宫</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/kirby.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: kirby.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('星之卡比：镜之大迷宫', './game/emulator.html?rom=kirby.gba')"
@@ -1454,7 +1014,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">牧场物语：矿石镇的伙伴们</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/harvest_moon.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: harvest_moon.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('牧场物语：矿石镇的伙伴们', './game/emulator.html?rom=harvest_moon.gba')"
@@ -1470,7 +1030,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">超级马里奥A4</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/super_mario_a4.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: super_mario_a4.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('超级马里奥A4', './game/emulator.html?rom=super_mario_a4.gba')"
@@ -1486,7 +1046,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">恶魔城晓月圆舞曲</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/castlevania_aria.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: castlevania_aria.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('恶魔城晓月圆舞曲', './game/emulator.html?rom=castlevania_aria.gba')"
@@ -1502,7 +1062,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">高级战争</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/advance_wars.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: advance_wars.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('高级战争', './game/emulator.html?rom=advance_wars.gba')"
@@ -1518,7 +1078,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">光明之魂2</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/shining_soul_2.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: shining_soul_2.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('光明之魂2', './game/emulator.html?rom=shining_soul_2.gba')"
@@ -1534,7 +1094,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">黄金太阳1开启的封印</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/golden_sun_1.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: golden_sun_1.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('黄金太阳1开启的封印', './game/emulator.html?rom=golden_sun_1.gba')"
@@ -1550,7 +1110,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">黄金太阳2失落的时代</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/golden_sun_2.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: golden_sun_2.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('黄金太阳2失落的时代', './game/emulator.html?rom=golden_sun_2.gba')"
@@ -1566,7 +1126,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">火炎之纹章封印之剑</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/fire_emblem.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: fire_emblem.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('火炎之纹章封印之剑', './game/emulator.html?rom=fire_emblem.gba')"
@@ -1582,7 +1142,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">龙珠Z舞空斗剧</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/dbz_supersonic.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: dbz_supersonic.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('龙珠Z舞空斗剧', './game/emulator.html?rom=dbz_supersonic.gba')"
@@ -1598,7 +1158,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">龙珠大冒险</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/db_advance.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: db_advance.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('龙珠大冒险', './game/emulator.html?rom=db_advance.gba')"
@@ -1614,7 +1174,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">马里奥与路易吉RPG</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/mario_luigi.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: mario_luigi.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('马里奥与路易吉RPG', './game/emulator.html?rom=mario_luigi.gba')"
@@ -1630,7 +1190,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">逆转裁判</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/phoenix_wright_1.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: phoenix_wright_1.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('逆转裁判', './game/emulator.html?rom=phoenix_wright_1.gba')"
@@ -1646,7 +1206,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">逆转裁判2</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/phoenix_wright_2.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: phoenix_wright_2.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('逆转裁判2', './game/emulator.html?rom=phoenix_wright_2.gba')"
@@ -1662,7 +1222,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">逆转裁判3</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/phoenix_wright_3.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: phoenix_wright_3.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('逆转裁判3', './game/emulator.html?rom=phoenix_wright_3.gba')"
@@ -1678,7 +1238,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">塞尔达传说缩小帽</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/zelda_minish_cap.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: zelda_minish_cap.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('塞尔达传说缩小帽', './game/emulator.html?rom=zelda_minish_cap.gba')"
@@ -1694,7 +1254,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">塞尔达传说众神的三角力量与四人之剑</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/zelda_four_swords.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: zelda_four_swords.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('塞尔达传说众神的三角力量与四人之剑', './game/emulator.html?rom=zelda_four_swords.gba')"
@@ -1710,7 +1270,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">最终幻想6A</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/ff6a.gba</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: ff6a.gba</span>
                                 </div>
                             </div>
                             <button @click="openGame('最终幻想6A', './game/emulator.html?rom=ff6a.gba')"
@@ -1726,7 +1286,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">阿拉丁</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/aladdin.sfc</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: aladdin.sfc</span>
                                 </div>
                             </div>
                             <button @click="openGame('阿拉丁', './game/emulator.html?rom=aladdin.sfc')"
@@ -1742,7 +1302,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">超级马里奥世界2耀西岛</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/yoshis_island.sfc</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: yoshis_island.sfc</span>
                                 </div>
                             </div>
                             <button @click="openGame('超级马里奥世界2耀西岛', './game/emulator.html?rom=yoshis_island.sfc')"
@@ -1758,7 +1318,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">超级银河战士</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/super_metroid.smc</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: super_metroid.smc</span>
                                 </div>
                             </div>
                             <button @click="openGame('超级银河战士', './game/emulator.html?rom=super_metroid.smc')"
@@ -1774,7 +1334,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">超时空之轮</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/chrono_trigger.smc</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: chrono_trigger.smc</span>
                                 </div>
                             </div>
                             <button @click="openGame('超时空之轮', './game/emulator.html?rom=chrono_trigger.smc')"
@@ -1790,7 +1350,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">恐龙战队</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/power_rangers.smc</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: power_rangers.smc</span>
                                 </div>
                             </div>
                             <button @click="openGame('恐龙战队', './game/emulator.html?rom=power_rangers.smc')"
@@ -1806,7 +1366,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">天地创造</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/terranigma.sfc</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: terranigma.sfc</span>
                                 </div>
                             </div>
                             <button @click="openGame('天地创造', './game/emulator.html?rom=terranigma.sfc')"
@@ -1822,7 +1382,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">勇者斗恶龙3</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/dragon_quest_3.sfc</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: dragon_quest_3.sfc</span>
                                 </div>
                             </div>
                             <button @click="openGame('勇者斗恶龙3', './game/emulator.html?rom=dragon_quest_3.sfc')"
@@ -1838,7 +1398,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">勇者斗恶龙5</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/dragon_quest_5.smc</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: dragon_quest_5.smc</span>
                                 </div>
                             </div>
                             <button @click="openGame('勇者斗恶龙5', './game/emulator.html?rom=dragon_quest_5.smc')"
@@ -1854,7 +1414,7 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="text-white font-bold text-[11px] md:text-sm tracking-wide truncate">宇宙巡航机3</span>
-                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: /rom/gradius_3.sfc</span>
+                                    <span class="text-gray-400 text-[9px] md:text-[10px] mt-1 truncate">DIR: gradius_3.sfc</span>
                                 </div>
                             </div>
                             <button @click="openGame('宇宙巡航机3', './game/emulator.html?rom=gradius_3.sfc')"
@@ -3226,7 +2786,7 @@
                 togglePlay, playTrack, nextTrack, prevTrack, onTimeUpdate, onLoadedMetadata, onSeek, onEnded,
                 activeGame, gameWindowRef, openGame, closeGame, toggleFullscreen, isGameVisible, minimizeGame,
                 playModeText, togglePlayMode,
-                isWanderJumping, isCollapsing, triggerWanderJump,
+                isWanderJumping, isCollapsing, jumpKey, triggerWanderJump,
                 // ...前面的变量
                 showMailModal, mailContent, isSendingMail, mailStatus, sendMail,
                 showPayQR, // <--- 【把变量加进 return 里】
