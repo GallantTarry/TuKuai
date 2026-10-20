@@ -2122,7 +2122,7 @@
             const currentStatus = ref('...');
 
 
-            // 新增：调用独立 UV 引擎获取访客数据 (基于 UUID + LocalStorage)
+            // 修改：调用独立 UV 引擎获取访客数据 (基于 UUID + LocalStorage + 防缓存)
             const initUvCounter = async () => {
                 try {
                     // 1. 尝试从 LocalStorage 读取现有的设备 UUID
@@ -2134,10 +2134,14 @@
                         localStorage.setItem('tukuai_device_uuid', uuid);
                     }
 
-                    // 3. 将 UUID 作为 URL 参数拼接到请求中，发给 Worker 引擎
-                    const workerUrl = `https://tukuai-kv.xn--udsye.art/api/uv?uuid=${uuid}`;
+                    // 3. 🔥 核心修复：拼接时间戳 _t=${Date.now()}，强制每次请求的 URL 唯一，彻底破除浏览器和 Service Worker 缓存
+                    const workerUrl = `https://tukuai-kv.xn--udsye.art/api/uv?uuid=${uuid}&_t=${Date.now()}`;
 
-                    const response = await fetch(workerUrl);
+                    // 4. 🔥 核心修复：配置 cache: 'no-store' 拒绝读取任何本地缓存
+                    const response = await fetch(workerUrl, {
+                        method: 'GET',
+                        cache: 'no-store'
+                    });
                     const data = await response.json();
 
                     if (data.count !== undefined) {
@@ -2145,7 +2149,10 @@
                     }
                 } catch (e) {
                     console.error('UV 引擎连接失败:', e);
-                    siteUv.value = 'ERR';
+                    // 优化：只有初始还没拿到数据时才显示 ERR，避免实时轮询偶发断网把已显示的粉丝数覆盖成 ERR
+                    if (siteUv.value === '...') {
+                        siteUv.value = 'ERR';
+                    }
                 }
             };
 
@@ -2683,7 +2690,23 @@
                     }
                 }, { immediate: true }); // immediate: true 确保已经有缓存的老用户一进网站也能直接看到弹窗
 // 👇 在这里启动你的 UV 引擎！
+                // 👇 在这里启动你的 UV 引擎并开启实时更新！
                 initUvCounter();
+
+                // 🔥 新增 1：每 30 秒自动静默拉取一次最新 fans 数量（无需用户刷新页面）
+                // 加上 !document.hidden 判断：只有用户当前正看着网页时才轮询，切到后台自动暂停，节省 Cloudflare KV 免费读取额度
+                setInterval(() => {
+                    if (!document.hidden) {
+                        initUvCounter();
+                    }
+                }, 30000);
+
+                // 🔥 新增 2：当老用户从其他浏览器标签页、或手机后台重新切回你的网站时，立刻刷新一次最新粉丝数
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden) {
+                        initUvCounter();
+                    }
+                });
                 updateClock();
                 setInterval(updateClock, 1000);
 
