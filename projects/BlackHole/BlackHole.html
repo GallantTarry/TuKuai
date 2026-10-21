@@ -416,15 +416,17 @@
                 padding: 15px 20px;
             }
             .logo-text { font-size: 1.2rem; }
+
+            /* 1. 调大顶部导航栏按钮 */
             .buy-btn {
-                padding: 8px 16px;
-                font-size: 0.95rem;
+                padding: 10px 20px;
+                font-size: 1rem;
             }
             .price-tag {
                 padding: 2px 8px;
-                font-size: 0.75rem;
+                font-size: 0.8rem;
             }
-            
+
             .hero { padding: 80px 15px 60px; }
             .hero h1 { font-size: 2.2rem; }
             .hero p {
@@ -436,11 +438,16 @@
                 height: 200px;
                 margin-bottom: 25px;
             }
+
+            /* 2. 调大核心下载按钮，增加触控面积与整体宽度 */
             .hero-btn {
-                padding: 12px 28px;
-                font-size: 1.1rem;
+                padding: 16px 32px;
+                font-size: 1.2rem;
+                width: 90%;
+                max-width: 300px;
+                justify-content: center; /* 确保文字与图标居中 */
             }
-            
+
             .feature-row, .feature-row.reverse {
                 flex-direction: column;
                 text-align: center;
@@ -456,7 +463,7 @@
             }
             .feature-text p { font-size: 1rem; }
             .feature-visual img { max-width: 260px; }
-            
+
             footer { padding: 60px 20px 30px; }
             .footer-title { font-size: 1.6rem; }
             .footer-btn {
@@ -468,7 +475,12 @@
         @media (max-width: 400px) {
             header { padding: 12px 15px; }
             .logo-text { font-size: 1.05rem; }
-            .buy-btn { padding: 6px 12px; font-size: 0.85rem; }
+
+            /* 3. 调大超小屏幕手机上的导航栏按钮 */
+            .buy-btn {
+                padding: 8px 16px;
+                font-size: 0.95rem;
+            }
             .logo-container img { width: 32px; height: 32px; }
         }
         /* ================= 节点竞速引擎：空间折跃状态 ================= */
