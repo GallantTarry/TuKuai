@@ -513,10 +513,10 @@
             padding: 80px 20px 40px;
             position: relative;
         }
-
+        
         /* ==========================================================================
-           【移动端响应式深度适配】 Mobile Responsive Optimization
-           ========================================================================== */
+              【移动端响应式深度适配】 Mobile Responsive Optimization
+              ========================================================================== */
         @media (max-width: 768px) {
             .core-layout { padding: 30px 15px 80px; }
             .sys-header { margin-bottom: 30px; }
@@ -528,6 +528,10 @@
 
             /* 压缩移动端视窗，避免过高空白 */
             .visual-container { height: 35vh; min-height: 220px; margin-bottom: 20px; }
+
+            /* 👇 新增这一行：将手机端图片圆角从 14px 缩小为 6px（可根据观感在 4px~8px 间微调） */
+            .visual-img { border-radius: 6px; }
+
             .slider-viewport { padding: 25px 0 50px; }
 
             .frame-description h3 { font-size: 1.5rem; }
