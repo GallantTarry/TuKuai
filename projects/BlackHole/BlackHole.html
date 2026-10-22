@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>BlackHole | 多功能归纳悬浮黑洞</title>
     <link rel="icon" href="imgs/BlackHole.ico" type="image/x-icon">
     <style>
@@ -62,12 +62,13 @@
             --glass-border: rgba(255, 255, 255, 0.1);
             --glow-color: rgba(139, 92, 246, 0.5);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "-apple-system", "Microsoft YaHei", "Segoe UI", sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         html {
@@ -82,9 +83,6 @@
             color: #E4E4E7;
             line-height: 1.6;
             overflow-x: hidden;
-        }
-        /* 针对 BlackHole 的暗物质主题滚动条 */
-        body {
             scrollbar-width: thin;
             scrollbar-color: rgba(139, 92, 246, 0.8) var(--bg-color);
         }
@@ -95,14 +93,12 @@
             height: 6px;
         }
 
-        /* 轨道定制：稍微给个暗物质玻璃态底色，打破手机浏览器的隐藏机制 */
         ::-webkit-scrollbar-track {
             background: rgba(24, 24, 27, 0.6);
             border-radius: 10px;
             border: none;
         }
 
-        /* 滑块定制：拉高紫色透明度，加一点内发光提升手机端质感 */
         ::-webkit-scrollbar-thumb {
             background: rgba(139, 92, 246, 0.8);
             border-radius: 10px;
@@ -111,21 +107,20 @@
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent); /* 悬浮时变为实色紫 */
+            background: var(--accent);
             box-shadow: 0 0 10px var(--accent);
         }
 
-        /* 终极杀招：彻底隐藏滚动条两端的按钮（小箭头） */
         ::-webkit-scrollbar-button {
             display: none;
             height: 0;
             width: 0;
         }
 
-        /* 终极杀招：清理边角残留 */
         ::-webkit-scrollbar-corner {
             background: transparent;
         }
+
         /* 静态星空漂移特效 */
         .stars {
             position: fixed;
@@ -141,8 +136,8 @@
             to { background-position: -10000px 5000px; }
         }
 
-        /* 导航栏 */
-        header {
+        /* 导航栏 - 采用严谨的 header.nav-header 选择器与 80px 黄金吸顶高度 */
+        header.nav-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -172,9 +167,10 @@
         .logo-container img {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
+            border-radius: 25%; /* 苹果 iOS 连续曲率平滑圆角 (Squircle) */
             box-shadow: 0 0 15px var(--accent);
             transition: transform 0.3s ease;
+            object-fit: cover;
         }
 
         .logo-container img.playing {
@@ -196,6 +192,12 @@
         }
 
         .logo-text { font-size: 1.5rem; }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
         /* 毛玻璃按钮 + 脉冲引力波 */
         .buy-btn {
@@ -292,7 +294,7 @@
         }
 
         .hero-btn {
-            padding: 16px 36px; 
+            padding: 16px 36px;
             font-size: 1.25rem;
         }
 
@@ -301,7 +303,7 @@
             50% { transform: translateY(-20px) scale(1.02); }
             100% { transform: translateY(0px) scale(1); }
         }
-        
+
         @keyframes pulse-glow {
             from { box-shadow: 0 0 40px var(--accent); opacity: 0.3; }
             to { box-shadow: 0 0 100px #3B82F6; opacity: 0.7; }
@@ -327,7 +329,7 @@
             -webkit-backdrop-filter: blur(20px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
             transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-            
+
             opacity: 0;
             transform: translateY(60px);
         }
@@ -356,7 +358,7 @@
             position: relative;
             display: inline-block;
         }
-        
+
         .feature-text h2::after {
             content: '';
             position: absolute;
@@ -366,7 +368,7 @@
             border-radius: 2px;
             transition: width 0.3s ease;
         }
-        
+
         .feature-row:hover .feature-text h2::after {
             width: 100%;
             background: linear-gradient(90deg, var(--primary), var(--accent));
@@ -406,25 +408,21 @@
             position: relative;
         }
 
-        .footer-action { margin-bottom: 50px; }
-        .footer-title { margin-bottom: 25px; font-size: 2rem; }
-        .footer-btn { padding: 16px 45px; font-size: 1.35rem; }
-
-        /* 移动端完美适配 */
+        /* 移动端完美适配（处于完美甜点位 Sweet Spot） */
         @media (max-width: 768px) {
-            header {
+            header.nav-header {
                 padding: 15px 20px;
             }
             .logo-text { font-size: 1.2rem; }
+            .logo-container img { width: 32px; height: 32px; }
 
-            /* 1. 调大顶部导航栏按钮 */
             .buy-btn {
-                padding: 10px 20px;
-                font-size: 1rem;
+                padding: 8px 16px;
+                font-size: 0.95rem;
             }
             .price-tag {
                 padding: 2px 8px;
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
 
             .hero { padding: 80px 15px 60px; }
@@ -439,13 +437,12 @@
                 margin-bottom: 25px;
             }
 
-            /* 2. 调大核心下载按钮，增加触控面积与整体宽度 */
             .hero-btn {
                 padding: 16px 32px;
                 font-size: 1.2rem;
                 width: 90%;
                 max-width: 300px;
-                justify-content: center; /* 确保文字与图标居中 */
+                justify-content: center;
             }
 
             .feature-row, .feature-row.reverse {
@@ -465,32 +462,16 @@
             .feature-visual img { max-width: 260px; }
 
             footer { padding: 60px 20px 30px; }
-            .footer-title { font-size: 1.6rem; }
-            .footer-btn {
-                padding: 14px 35px;
-                font-size: 1.15rem;
-            }
         }
 
-        @media (max-width: 400px) {
-            header { padding: 12px 15px; }
-            .logo-text { font-size: 1.05rem; }
-
-            /* 3. 调大超小屏幕手机上的导航栏按钮 */
-            .buy-btn {
-                padding: 8px 16px;
-                font-size: 0.95rem;
-            }
-            .logo-container img { width: 32px; height: 32px; }
-        }
         /* ================= 节点竞速引擎：空间折跃状态 ================= */
         .buy-btn.is-routing {
             pointer-events: none;
-            background: rgba(139, 92, 246, 0.6); /* 深紫色高亮 */
-            border-color: #06B6D4; /* 冰蓝边界 */
+            background: rgba(139, 92, 246, 0.6);
+            border-color: #06B6D4;
             box-shadow: 0 0 35px rgba(139, 92, 246, 0.8), inset 0 0 15px rgba(6, 182, 212, 0.4);
             transform: scale(0.98);
-            animation: none; /* 暂停原本的 pulse-ring 呼吸动画 */
+            animation: none;
         }
 
         .icon-spin {
@@ -508,154 +489,146 @@
 </head>
 <body>
 
-    <div class="stars"></div>
+<div class="stars"></div>
 
-    <header>
-        <div class="logo-container" id="music-toggle">
-            <img src="imgs/BlackHole.png" alt="Black Hole Logo" id="music-disk">
-            <div class="logo-text">BGM</div>
-            <audio id="bg-music" src="music/Travelers.mp3" loop></audio>
+<header class="nav-header">
+    <div class="logo-container" id="music-toggle">
+        <img src="imgs/BlackHole.png" alt="Black Hole Logo" id="music-disk">
+        <div class="logo-text">BGM</div>
+        <audio id="bg-music" src="music/Travelers.mp3" loop></audio>
+    </div>
+
+    <a href="docs/BlackHole使用说明书.md" download="BlackHole使用说明书.md" class="buy-btn">
+        获取说明
+        <span class="price-tag">下载</span>
+    </a>
+</header>
+
+<section class="hero">
+    <div class="hero-img-container">
+        <img src="imgs/BlackHole.png" alt="Black Hole 核心">
+    </div>
+    <h1 class="cosmic-title">BLACK HOLE</h1>
+    <p class="cosmic-subtitle">Do not go gentle into that good night.</p>
+
+    <a href="#" id="btn-download" class="buy-btn pulse hero-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        立即下载1.2.3版本
+    </a>
+</section>
+
+<section class="features">
+    <div class="feature-row">
+        <div class="feature-text">
+            <h2>静默守护，引力无形</h2>
+            <p>平时化作一颗静谧的奇点，悬浮于屏幕边缘或自动隐藏。它极度克制，绝不打扰你的工作流，但在你需要时，只需一次拖拽或快捷键（Ctrl+Alt+E），视界立即为你展开。</p>
         </div>
-
-
-        <a href="docs/BlackHole使用说明书.md" download="BlackHole使用说明书.md" class="buy-btn">
-            获取说明
-            <span class="price-tag">下载</span>
-        </a>
-    </header>
-
-    <section class="hero">
-        <div class="hero-img-container">
-            <img src="imgs/BlackHole.png" alt="Black Hole 核心">
+        <div class="feature-visual">
+            <img src="imgs/giphy.gif" alt="静默状态">
         </div>
-        <!-- 修改为英文主题，保留原有副标题作修饰 -->
-        <h1 class="cosmic-title">BLACK HOLE</h1>
-        <p class="cosmic-subtitle">Do not go gentle into that good night.</p>
+    </div>
 
-        <!-- 将固定的 ghproxy 链接替换为 #，并加入 id -->
-        <a href="#" id="btn-download" class="buy-btn pulse hero-btn">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            立即下载1.2.3版本
-        </a>
-    </section>
-
-    <section class="features">
-        <div class="feature-row">
-            <div class="feature-text">
-                <h2>静默守护，引力无形</h2>
-                <p>平时化作一颗静谧的奇点，悬浮于屏幕边缘或自动隐藏。它极度克制，绝不打扰你的工作流，但在你需要时，只需一次拖拽或快捷键（Ctrl+Alt+E），视界立即为你展开。</p>
-            </div>
-            <div class="feature-visual">
-                <img src="imgs/giphy.gif" alt="静默状态">
-            </div>
+    <div class="feature-row reverse">
+        <div class="feature-text">
+            <h2>万物吞噬，智能归档</h2>
+            <p>无论是错综复杂的代码、杂乱的办公表格、还是网上的高清图片素材，只需将它们拖入黑洞。强大的暗物质引擎会瞬间将其吞噬，并自动在底层文件系统中为你精准分类归档，还你一个绝对干净的桌面。</p>
         </div>
-
-        <div class="feature-row reverse">
-            <div class="feature-text">
-                <h2>万物吞噬，智能归档</h2>
-                <p>无论是错综复杂的代码、杂乱的办公表格、还是网上的高清图片素材，只需将它们拖入黑洞。强大的暗物质引擎会瞬间将其吞噬，并自动在底层文件系统中为你精准分类归档，还你一个绝对干净的桌面。</p>
-            </div>
-            <div class="feature-visual">
-                <img src="imgs/Space.gif" alt="吞噬吸收">
-            </div>
+        <div class="feature-visual">
+            <img src="imgs/Space.gif" alt="吞噬吸收">
         </div>
+    </div>
 
-        <div class="feature-row">
-            <div class="feature-text">
-                <h2>涤荡冗余，释放潜能</h2>
-                <p>电脑卡顿？双击黑洞核心，立即触发空间坍缩。它将强制遍历并榨干所有后台进程的驻留内存，吞噬系统垃圾，让你的设备重获新生，时刻保持巅峰状态。</p>
-            </div>
-            <div class="feature-visual">
-                <img src="imgs/refreshing.gif" alt="内存清理">
-            </div>
+    <div class="feature-row">
+        <div class="feature-text">
+            <h2>涤荡冗余，释放潜能</h2>
+            <p>电脑卡顿？双击黑洞核心，立即触发空间坍缩。它将强制遍历并榨干所有后台进程的驻留内存，吞噬系统垃圾，让你的设备重获新生，时刻保持巅峰状态。</p>
         </div>
-
-        <div class="feature-row reverse">
-            <div class="feature-text">
-                <h2>时空胶囊，精准警报</h2>
-                <p>内置纯净的待办系统与便利贴截图引擎。将未来的任务注入黑洞，当时间奇点到达时，黑洞会发出高亮能量脉冲提醒你。事情完成后，记录将被彻底粉碎湮灭。</p>
-            </div>
-            <div class="feature-visual">
-                <img src="imgs/message.gif" alt="消息警报">
-            </div>
+        <div class="feature-visual">
+            <img src="imgs/refreshing.gif" alt="内存清理">
         </div>
-    </section>
+    </div>
 
-    <footer id="download">
-        <p style="color: #64748B; font-size: 0.95rem; letter-spacing: 1px;">
-            &copy; 2026 Created by 土块. All rights reserved.
-        </p>
-    </footer>
+    <div class="feature-row reverse">
+        <div class="feature-text">
+            <h2>时空胶囊，精准警报</h2>
+            <p>内置纯净的待办系统与便利贴截图引擎。将未来的任务注入黑洞，当时间奇点到达时，黑洞会发出高亮能量脉冲提醒你。事情完成后，记录将被彻底粉碎湮灭。</p>
+        </div>
+        <div class="feature-visual">
+            <img src="imgs/message.gif" alt="消息警报">
+        </div>
+    </div>
+</section>
 
-    <script>
-        // --- 1. 音乐播放器逻辑 ---
-        const musicToggle = document.getElementById('music-toggle');
-        const bgMusic = document.getElementById('bg-music');
-        const musicDisk = document.getElementById('music-disk');
+<footer>
+    <p style="color: #64748B; font-size: 0.95rem; letter-spacing: 1px;">
+        &copy; 2026 Created by 土块. All rights reserved.
+    </p>
+</footer>
 
-        musicToggle.addEventListener('click', () => {
-            if (bgMusic.paused) {
-                bgMusic.play();
-                musicDisk.classList.add('playing');
-            } else {
-                bgMusic.pause();
-                musicDisk.classList.remove('playing');
-            }
-        });
+<script>
+    const musicToggle = document.getElementById('music-toggle');
+    const bgMusic = document.getElementById('bg-music');
+    const musicDisk = document.getElementById('music-disk');
 
-        // --- 2. 视界滚动涌现特效 ---
-        document.addEventListener("DOMContentLoaded", () => {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, { threshold: 0.15 });
+    musicToggle.addEventListener('click', () => {
+        if (bgMusic.paused) {
+            bgMusic.play();
+            musicDisk.classList.add('playing');
+        } else {
+            bgMusic.pause();
+            musicDisk.classList.remove('playing');
+        }
+    });
 
-            document.querySelectorAll('.feature-row').forEach(row => {
-                observer.observe(row);
-            });
-        });
-
-        // --- 3. 空间奇点：节点智能竞速分配引擎 ---
-        class DownloadRouter {
-            constructor(btnId, targetUrl) {
-                this.btn = document.getElementById(btnId);
-                // 填入官方 Github Release 链接
-                this.targetUrl = targetUrl;
-
-                this.nodes = [
-                    '',
-                    'https://ghproxy.net/',
-                    'https://mirror.ghproxy.com/',
-                    'https://sciproxy.com/',
-                    'https://gh-proxy.com/'
-                ];
-
-                if (this.btn) {
-                    this.originalHtml = this.btn.innerHTML;
-                    this.init();
+    document.addEventListener("DOMContentLoaded", () => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
                 }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.feature-row').forEach(row => {
+            observer.observe(row);
+        });
+    });
+
+    class DownloadRouter {
+        constructor(btnId, targetUrl) {
+            this.btn = document.getElementById(btnId);
+            this.targetUrl = targetUrl;
+
+            this.nodes = [
+                '',
+                'https://ghproxy.net/',
+                'https://mirror.ghproxy.com/',
+                'https://sciproxy.com/',
+                'https://gh-proxy.com/'
+            ];
+
+            if (this.btn) {
+                this.originalHtml = this.btn.innerHTML;
+                this.init();
             }
+        }
 
-            init() {
-                this.btn.addEventListener('click', (e) => this.startRace(e));
-            }
+        init() {
+            this.btn.addEventListener('click', (e) => this.startRace(e));
+        }
 
-            async startRace(e) {
-                e.preventDefault();
-                if (this.btn.classList.contains('is-routing')) return;
+        async startRace(e) {
+            e.preventDefault();
+            if (this.btn.classList.contains('is-routing')) return;
 
-                // 1. 切换为空间寻优 UI
-                this.btn.classList.add('is-routing');
-                this.btn.classList.remove('pulse'); // 移除原先的脉冲动画
+            this.btn.classList.add('is-routing');
+            this.btn.classList.remove('pulse');
 
-                this.btn.innerHTML = `
+            this.btn.innerHTML = `
                     <svg class="icon-spin" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"></circle>
                         <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
@@ -663,59 +636,56 @@
                     </svg>
                     星门寻优中...`;
 
-                const testUrls = this.nodes.map(prefix => prefix ? prefix + this.targetUrl : this.targetUrl);
+            const testUrls = this.nodes.map(prefix => prefix ? prefix + this.targetUrl : this.targetUrl);
 
-                // 2. 发起并行 HEAD 请求
-                const racePromises = testUrls.map(url => {
-                    return new Promise((resolve, reject) => {
-                        fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' })
-                            .then(() => resolve(url))
-                            .catch(reject);
-                    });
+            const racePromises = testUrls.map(url => {
+                return new Promise((resolve, reject) => {
+                    fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' })
+                        .then(() => resolve(url))
+                        .catch(reject);
                 });
+            });
 
-                try {
-                    // 3. 捕获延迟最低的奇点节点
-                    const fastestUrl = await Promise.any(racePromises);
+            try {
+                const fastestUrl = await Promise.any(racePromises);
 
-                    this.btn.innerHTML = `
+                this.btn.innerHTML = `
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00FF00" stroke-width="2" style="margin-right:10px; vertical-align:middle;">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
                         </svg>
                         奇点通道建立`;
 
-                    setTimeout(() => {
-                        const a = document.createElement('a');
-                        a.href = fastestUrl;
-                        a.download = '';
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-
-                        this.resetBtn();
-                    }, 600);
-
-                } catch (error) {
-                    window.location.href = 'https://ghproxy.net/' + this.targetUrl;
-                    this.resetBtn();
-                }
-            }
-
-            resetBtn() {
                 setTimeout(() => {
-                    this.btn.classList.remove('is-routing');
-                    this.btn.classList.add('pulse'); // 恢复呼吸灯
-                    this.btn.innerHTML = this.originalHtml;
-                }, 2500);
+                    const a = document.createElement('a');
+                    a.href = fastestUrl;
+                    a.download = '';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+
+                    this.resetBtn();
+                }, 600);
+
+            } catch (error) {
+                window.location.href = 'https://ghproxy.net/' + this.targetUrl;
+                this.resetBtn();
             }
         }
 
-        // 初始化黑洞节点竞速
-        new DownloadRouter(
-            'btn-download',
-            'https://github.com/GallantTarry/TuKuai/releases/download/20260907/BlackHole_v1.2.3_Setup.exe'
-        );
-    </script>
+        resetBtn() {
+            setTimeout(() => {
+                this.btn.classList.remove('is-routing');
+                this.btn.classList.add('pulse');
+                this.btn.innerHTML = this.originalHtml;
+            }, 2500);
+        }
+    }
+
+    new DownloadRouter(
+        'btn-download',
+        'https://github.com/GallantTarry/TuKuai/releases/download/20260907/BlackHole_v1.2.3_Setup.exe'
+    );
+</script>
 </body>
 </html>
