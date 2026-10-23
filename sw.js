@@ -35,7 +35,6 @@ self.addEventListener('fetch', event => {
         url.protocol.startsWith('chrome-extension') ||
         url.hostname.includes('google-analytics.com') ||
         url.hostname.includes('googletagmanager.com') ||
-        url.hostname.includes('busuanzi') ||
         url.hostname.includes('tukuai-kv') ||
         url.pathname.includes('/api/')
     ) {
