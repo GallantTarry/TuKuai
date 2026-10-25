@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>TuKuaiStudio | 土块工坊主控制台</title>
     <link rel="icon" href="imgs/TuKuaiStudio.ico" type="image/x-icon">
 
     <style>
         /* ==========================================================================
-           【主控制台设计系统】 极简深空 · 全屏控制台布局
+           【主控制台设计系统】 极简深空 · 全屏控制台布局 (PC + Mobile 全端适配)
            ========================================================================== */
         :root {
             --bg-abyss: #04060a;
@@ -20,6 +20,7 @@
             --text-primary: #ffffff;
             --text-muted: #94a3b8;
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --navbar-height: 58px;
         }
 
         *, *::before, *::after {
@@ -32,10 +33,12 @@
         html, body {
             width: 100%;
             height: 100%;
+            height: 100dvh; /* 适配移动端动态地址栏高度 */
             overflow: hidden;
             background-color: var(--bg-abyss);
             color: var(--text-primary);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* 控制台整体纵向 Flex 布局 */
@@ -44,12 +47,13 @@
             flex-direction: column;
             width: 100%;
             height: 100%;
+            padding-top: env(safe-area-inset-top, 0px);
         }
 
         /* ================= 顶部控制台导航栏 (Top Console Bar) ================= */
         .console-navbar {
-            height: 58px;
-            min-height: 58px;
+            height: var(--navbar-height);
+            min-height: var(--navbar-height);
             background: var(--bar-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -57,7 +61,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
+            gap: 12px;
+            padding: 0 max(20px, env(safe-area-inset-right, 20px)) 0 max(20px, env(safe-area-inset-left, 20px));
             z-index: 50;
             user-select: none;
         }
@@ -66,7 +71,8 @@
         .brand-section {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            flex-shrink: 0;
         }
 
         .brand-logo {
@@ -78,6 +84,7 @@
             background: rgba(0, 0, 0, 0.5);
             box-shadow: 0 0 12px rgba(250, 204, 21, 0.2);
             object-fit: cover;
+            flex-shrink: 0;
         }
 
         .brand-meta {
@@ -93,6 +100,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1.2;
+            white-space: nowrap;
         }
 
         .brand-sub {
@@ -101,6 +109,7 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            white-space: nowrap;
         }
 
         .status-dot {
@@ -109,24 +118,43 @@
             border-radius: 50%;
             background: var(--accent-emerald);
             box-shadow: 0 0 6px var(--accent-emerald);
+            flex-shrink: 0;
         }
 
-        /* 中间功能跳转选项卡 (工坊功能切换区) */
+        /* 右侧导航与工具组合区 */
+        .nav-right-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        /* 中间/右侧功能跳转选项卡 (工坊功能切换区) */
         .console-tabs {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.06);
             padding: 4px;
             border-radius: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            max-width: 100%;
+        }
+
+        .console-tabs::-webkit-scrollbar {
+            display: none;
         }
 
         .tab-btn {
             background: transparent;
             border: 1px solid transparent;
             color: var(--text-muted);
-            padding: 6px 16px;
+            padding: 6px 14px;
             border-radius: 8px;
             font-size: 0.84rem;
             font-weight: 600;
@@ -134,7 +162,9 @@
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .tab-btn:hover {
@@ -156,14 +186,43 @@
             pointer-events: none;
         }
 
+        /* 刷新按钮 */
+        .action-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            padding: 7px 12px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .action-btn:hover {
+            color: #ffffff;
+            border-color: rgba(250, 204, 21, 0.35);
+            background: rgba(250, 204, 21, 0.1);
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
 
         /* ================= 核心视窗：嵌套的工坊模块 (Iframe Viewport) ================= */
         .console-viewport {
             flex: 1;
             width: 100%;
-            height: calc(100% - 58px);
+            height: calc(100% - var(--navbar-height));
             position: relative;
             background: #05070f;
+            overflow: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
         .viewport-iframe {
@@ -176,7 +235,7 @@
         /* 吐司提示条 */
         #console-toast {
             position: fixed;
-            bottom: 24px;
+            bottom: max(24px, calc(env(safe-area-inset-bottom, 16px) + 12px));
             left: 50%;
             transform: translateX(-50%) translateY(80px);
             background: #10b981;
@@ -190,6 +249,7 @@
             pointer-events: none;
             transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
             z-index: 9999;
+            white-space: nowrap;
         }
 
         #console-toast.show {
@@ -197,13 +257,67 @@
             opacity: 1;
         }
 
-        /* 移动端紧凑适配 */
+        /* ================= 移动端深度紧凑适配 ================= */
         @media (max-width: 768px) {
-            .console-navbar { padding: 0 12px; }
-            .brand-sub { display: none; }
-            .tab-btn { padding: 6px 10px; font-size: 0.78rem; }
-            .action-btn span { display: none; }
-            .action-btn { padding: 6px 10px; }
+            :root {
+                --navbar-height: 52px;
+            }
+
+            .console-navbar {
+                padding: 0 10px;
+                gap: 8px;
+            }
+
+            .brand-logo {
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+            }
+
+            .brand-title {
+                font-size: 0.92rem;
+            }
+
+            .brand-sub {
+                display: none;
+            }
+
+            .console-tabs {
+                padding: 3px;
+                border-radius: 10px;
+                gap: 4px;
+            }
+
+            .tab-btn {
+                padding: 5px 10px;
+                font-size: 0.76rem;
+                border-radius: 7px;
+                gap: 5px;
+            }
+
+            .tab-btn svg {
+                width: 13px;
+                height: 13px;
+            }
+
+            .action-btn {
+                padding: 7px;
+                border-radius: 8px;
+            }
+
+            .action-btn span {
+                display: none;
+            }
+        }
+
+        /* 超窄屏手机 (如 iPhone SE / 折叠屏外屏) 极限保护 */
+        @media (max-width: 390px) {
+            .brand-title {
+                font-size: 0.85rem;
+            }
+            .tab-btn.disabled {
+                display: none; /* 超小屏隐藏占位槽位，优先确保核心按钮完整显示 */
+            }
         }
     </style>
 </head>
@@ -225,29 +339,36 @@
             </div>
         </div>
 
-        <!-- 2. 业内功能跳转选项卡 (当前仅有一个跳转：TuKuaiUI.html) -->
-        <nav class="console-tabs" aria-label="工坊功能导航">
-            <!-- 当前唯一功能项：TuKuaiUI.html -->
-            <button class="tab-btn active" id="tab-tukuaiui" onclick="switchConsoleModule('./TuKuaiUI/TuKuaiUI.html', this)">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
-                TuKuai-UI 影音组件
-            </button>
+        <!-- 2. 右侧功能跳转选项卡与快捷刷新 -->
+        <div class="nav-right-group">
+            <nav class="console-tabs" aria-label="工坊功能导航">
+                <!-- 当前唯一功能项：TuKuaiUI.html -->
+                <button class="tab-btn active" id="tab-tukuaiui" onclick="switchConsoleModule('./TuKuaiUI/TuKuaiUI.html', this)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                    TuKuai-UI 影音组件
+                </button>
 
-            <!-- 未来扩展槽位占位 -->
-            <button class="tab-btn disabled" title="更多自研工位正在孵化中...">
-                <span>✦</span>
-                待接入功能...
+                <!-- 未来扩展槽位占位 -->
+                <button class="tab-btn disabled" title="更多自研工位正在孵化中...">
+                    <span>✦</span>
+                    待接入功能...
+                </button>
+            </nav>
+
+            <button class="action-btn" onclick="reloadConsoleIframe()" title="重新加载当前工位">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                <span>刷新</span>
             </button>
-        </nav>
+        </div>
     </header>
 
     <!-- 核心视窗：业内嵌套跳转目标 (默认加载 TuKuaiUI.html) -->
     <main class="console-viewport">
-        <iframe 
-            id="console-frame" 
-            class="viewport-iframe" 
-            src="./TuKuaiUI/TuKuaiUI.html" 
-            title="TuKuaiUI 影音组件工坊">
+        <iframe
+                id="console-frame"
+                class="viewport-iframe"
+                src="./TuKuaiUI/TuKuaiUI.html"
+                title="TuKuaiUI 影音组件工坊">
         </iframe>
     </main>
 
