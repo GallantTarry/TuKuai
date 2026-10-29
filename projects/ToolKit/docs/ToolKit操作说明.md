@@ -471,6 +471,12 @@
 
 ---
 
+> "Premature optimization is the root of all evil." —— 过早的优化是万恶之源。
+>Donald Knuth（算法宗师，《计算机程序设计艺术》作者） 💡 解读：警告程序员在没有摸清系统真正的性能瓶颈前，不要瞎折腾细枝末节的“炫技式”优化。
+
+
+
+
 © 2026 Created by 土块. All rights reserved.
 
 
