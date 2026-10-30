@@ -71,7 +71,7 @@
 
         /* 补全核心缺失部分：定义滚动条的整体尺寸 */
         ::-webkit-scrollbar {
-            width: 8px;  /* 纵向滚动条更显纤细 */
+            width: 8px; /* 纵向滚动条更显纤细 */
             height: 8px; /* 横向滚动条高度 */
         }
 
@@ -107,21 +107,31 @@
         ::-webkit-scrollbar-corner {
             background: transparent;
         }
+
         /* ==========================================================================
            【宇宙引擎底层】 Canvas Particle System & Nebula Mask
            ========================================================================== */
         #space-engine {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -3; pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -3;
+            pointer-events: none;
         }
 
         /* 环境星云遮罩 */
         .nebula-environment {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background:
-                    radial-gradient(ellipse at 80% 20%, rgba(13, 30, 70, 0.6) 0%, transparent 60%),
-                    radial-gradient(circle at 20% 80%, rgba(20, 10, 40, 0.4) 0%, transparent 50%);
-            z-index: -2; pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(ellipse at 80% 20%, rgba(13, 30, 70, 0.6) 0%, transparent 60%),
+            radial-gradient(circle at 20% 80%, rgba(20, 10, 40, 0.4) 0%, transparent 50%);
+            z-index: -2;
+            pointer-events: none;
             mix-blend-mode: screen;
         }
 
@@ -130,10 +140,14 @@
            ========================================================================== */
         .solar-system {
             position: fixed;
-            bottom: -20vh; right: -15vw;
-            width: 75vw; height: 75vw;
-            max-width: 900px; max-height: 900px;
-            z-index: -1; pointer-events: none;
+            bottom: -20vh;
+            right: -15vw;
+            width: 75vw;
+            height: 75vw;
+            max-width: 900px;
+            max-height: 900px;
+            z-index: -1;
+            pointer-events: none;
             /* 系统级轻微浮动 */
             animation: cosmic-float 30s ease-in-out infinite alternate;
             transform-style: preserve-3d;
@@ -142,30 +156,32 @@
 
         /* --- 高精度地球本体 --- */
         .planet-earth {
-            position: absolute; top: 50%; left: 50%;
-            width: 70%; height: 70%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 70%;
+            height: 70%;
             transform: translate(-50%, -50%);
             border-radius: 50%;
             background-color: #05142a;
             background-image: url('imgs/earth-blue-marble.jpg');
             background-size: 200% 100%;
-            box-shadow:
-                /* 1. 【调整】将原来的 0.8 浓度降到 0.4，让地球边缘透出光泽 */
-                    inset 0 0 15px rgba(0, 0, 0, 0.4),
-                        /* 2. 内侧昼夜交界线 (保持原样，维持暗面的深度) */
-                    inset -50px -50px 100px var(--earth-terminator),
-                        /* 3. 【提亮】增强内侧大气层折射，让亮面更通透 */
-                    inset 15px 15px 50px rgba(14, 52, 98, 0.8),
-                        /* 4. 外侧大气层散射辉光 (保持原样) */
-                    0 0 120px var(--earth-atmos-glow),
-                        /* 5. 外围柔和微蓝色光晕 (保持原样) */
-                    0 0 60px rgba(79, 172, 254, 0.15);
+            box-shadow: /* 1. 【调整】将原来的 0.8 浓度降到 0.4，让地球边缘透出光泽 */ inset 0 0 15px rgba(0, 0, 0, 0.4),
+                /* 2. 内侧昼夜交界线 (保持原样，维持暗面的深度) */ inset -50px -50px 100px var(--earth-terminator),
+                /* 3. 【提亮】增强内侧大气层折射，让亮面更通透 */ inset 15px 15px 50px rgba(14, 52, 98, 0.8),
+                /* 4. 外侧大气层散射辉光 (保持原样) */ 0 0 120px var(--earth-atmos-glow),
+                /* 5. 外围柔和微蓝色光晕 (保持原样) */ 0 0 60px rgba(79, 172, 254, 0.15);
             animation: planetary-rotation 120s linear infinite;
         }
 
         /* 独立的大气云层系统 */
         .planet-earth::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             /* 替换为正确的 Three.js 官方云层贴图源 */
             background-image: url('imgs/earth-topology.png');
@@ -177,12 +193,21 @@
         }
 
         @keyframes cosmic-float {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-40px) rotate(2deg); }
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-40px) rotate(2deg);
+            }
         }
+
         @keyframes planetary-rotation {
-            0% { background-position: 0 0; }
-            100% { background-position: -200% 0; }
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
         }
 
         /* ==========================================================================
@@ -246,9 +271,15 @@
         }
 
         @keyframes gradient-shift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         /* 毛玻璃按钮 */
@@ -281,61 +312,115 @@
             padding: 2px 12px;
             border-radius: 12px;
             font-size: 0.85rem;
-            box-shadow: inset 0 0 5px rgba(255,255,255,0.2);
+            box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.2);
             color: #fff;
         }
 
         @keyframes disk-spin {
-            100% { transform: rotate(360deg); }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         @media (max-width: 768px) {
-            header.nav-header { padding: 15px 20px; }
-            .logo-text { font-size: 1.2rem; } /* 修改这里 */
-            .logo-container img { width: 32px; height: 32px; } /* 修改这里，并稍微调大手机端图标 */
-            .buy-btn { padding: 8px 16px; font-size: 0.95rem; }
-            .price-tag { padding: 2px 8px; font-size: 0.75rem; }
+            header.nav-header {
+                padding: 15px 20px;
+            }
+
+            .logo-text {
+                font-size: 1.2rem;
+            }
+
+            /* 修改这里 */
+            .logo-container img {
+                width: 32px;
+                height: 32px;
+            }
+
+            /* 修改这里，并稍微调大手机端图标 */
+            .buy-btn {
+                padding: 8px 16px;
+                font-size: 0.95rem;
+            }
+
+            .price-tag {
+                padding: 2px 8px;
+                font-size: 0.75rem;
+            }
         }
+
         .core-layout {
-            position: relative; z-index: 10;
-            max-width: 1300px; margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            max-width: 1300px;
+            margin: 0 auto;
             padding: 50px 20px 120px;
         }
 
         .sys-header {
-            text-align: center; margin-bottom: 50px;
+            text-align: center;
+            margin-bottom: 50px;
             animation: slide-fade-down 1.2s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         .sys-title {
-            font-size: 4.5rem; font-weight: 900; letter-spacing: 2px;
+            font-size: 4.5rem;
+            font-weight: 900;
+            letter-spacing: 2px;
             background: linear-gradient(135deg, #ffffff 0%, #b0c4de 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-shadow: 0 10px 40px rgba(79, 172, 254, 0.4);
             margin-bottom: 15px;
         }
 
 
         /* 纯净下载引擎 */
-        .download-engine { display: flex; justify-content: center; align-items: center; margin-top: 35px; }
+        .download-engine {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 35px;
+        }
+
         .btn-download-core {
-            position: relative; display: inline-flex; align-items: center; justify-content: center;
-            padding: 16px 40px; background: linear-gradient(135deg, #1e90ff 0%, #00f2fe 100%);
-            color: #ffffff; text-decoration: none; font-size: 1.15rem; font-weight: 700;
-            border-radius: 14px; overflow: hidden; transition: var(--transition-smooth);
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #1e90ff 0%, #00f2fe 100%);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.15rem;
+            font-weight: 700;
+            border-radius: 14px;
+            overflow: hidden;
+            transition: var(--transition-smooth);
             box-shadow: 0 12px 30px rgba(30, 144, 255, 0.4);
             letter-spacing: 1px;
         }
+
         .btn-download-core::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
-            transform: skewX(-25deg); transition: 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transform: skewX(-25deg);
+            transition: 0.7s cubic-bezier(0.25, 1, 0.5, 1);
         }
+
         .btn-download-core:hover {
             transform: translateY(-4px);
             box-shadow: 0 18px 40px rgba(30, 144, 255, 0.6);
         }
-        .btn-download-core:hover::before { left: 150%; }
+
+        .btn-download-core:hover::before {
+            left: 150%;
+        }
 
         /* ==========================================================================
    【竞速引擎】 节点寻优动态视觉
@@ -348,9 +433,14 @@
         }
 
         @keyframes routing-spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
+
         .icon-spin {
             animation: routing-spin 1.5s linear infinite;
         }
@@ -359,84 +449,196 @@
            【共用信息面板样式】
            ========================================================================== */
         .ui-panel {
-            background: var(--glass-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
-            box-shadow: var(--glass-shadow-deep); margin-bottom: 50px;
-            overflow: hidden; position: relative;
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow-deep);
+            margin-bottom: 50px;
+            overflow: hidden;
+            position: relative;
         }
 
         .panel-header-title {
-            text-align: center; padding: 25px 20px; font-size: 1.6rem; font-weight: bold;
-            letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.05);
-            background: rgba(0,0,0,0.2);
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.2);
         }
 
         /* ==========================================================================
            【折叠信息面板】 Collapsible Content Blocks
            ========================================================================== */
-        .info-panel { padding: 35px 55px; transition: transform 0.4s ease, border-color 0.4s ease; }
-        .info-panel:hover { transform: translateY(-3px); border-color: rgba(79, 172, 254, 0.3); }
+        .info-panel {
+            padding: 35px 55px;
+            transition: transform 0.4s ease, border-color 0.4s ease;
+        }
+
+        .info-panel:hover {
+            transform: translateY(-3px);
+            border-color: rgba(79, 172, 254, 0.3);
+        }
 
         /* 面板标题控制区 */
         .block-heading {
-            display: flex; justify-content: center; align-items: center; gap: 15px;
-            font-size: 1.7rem; color: #fff; margin: 0;
-            letter-spacing: 2px; padding-bottom: 20px;
-            border-bottom: 1px dashed rgba(255,255,255,0.15);
-            cursor: pointer; user-select: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.7rem;
+            color: #fff;
+            margin: 0;
+            letter-spacing: 2px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            user-select: none;
             transition: color 0.3s ease;
         }
-        .block-heading:hover { color: var(--text-accent); }
+
+        .block-heading:hover {
+            color: var(--text-accent);
+        }
+
         .block-heading::after {
-            content: '▼'; font-size: 1rem; color: var(--text-secondary);
+            content: '▼';
+            font-size: 1rem;
+            color: var(--text-secondary);
             transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
+
         .block-heading.is-collapsed::after {
             transform: rotate(-90deg);
         }
-        .block-heading.is-collapsed { border-bottom-color: transparent; padding-bottom: 0; }
+
+        .block-heading.is-collapsed {
+            border-bottom-color: transparent;
+            padding-bottom: 0;
+        }
 
         /* 修改后：将 padding-top: 35px 改为 20px */
         .panel-collapse {
-            display: grid; grid-template-rows: 1fr;
+            display: grid;
+            grid-template-rows: 1fr;
             transition: grid-template-rows 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
-            opacity: 1; padding-top: 20px;
+            opacity: 1;
+            padding-top: 20px;
         }
-        .panel-collapse.is-collapsed {
-            grid-template-rows: 0fr; opacity: 0; padding-top: 0;
-        }
-        .collapse-inner { overflow: hidden; }
 
-        .grid-list { list-style: none; column-count: 2; column-gap: 50px; }
+        .panel-collapse.is-collapsed {
+            grid-template-rows: 0fr;
+            opacity: 0;
+            padding-top: 0;
+        }
+
+        .collapse-inner {
+            overflow: hidden;
+        }
+
+        .grid-list {
+            list-style: none;
+            column-count: 2;
+            column-gap: 50px;
+        }
 
         .grid-list li {
-            padding: 18px 22px; background: rgba(255,255,255,0.015);
-            border-radius: 12px; margin-bottom: 15px;
-            border: 1px solid rgba(255,255,255,0.03); color: var(--text-secondary);
-            font-size: 1.05rem; transition: var(--transition-smooth);
-            break-inside: avoid; display: flex; align-items: flex-start;
+            padding: 18px 22px;
+            background: rgba(255, 255, 255, 0.015);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            transition: var(--transition-smooth);
+            break-inside: avoid;
+            display: flex;
+            align-items: flex-start;
         }
-        .grid-list li::before { content: '◈'; color: var(--text-accent); margin-right: 14px; font-size: 1.1rem; line-height: 1.3; }
-        .grid-list li:hover { background: rgba(255,255,255,0.05); border-color: rgba(79, 172, 254, 0.35); color: #fff; transform: translateX(8px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
 
-        .tag-matrix { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; padding: 15px 5px; }
-        .matrix-node {
-            padding: 12px 26px; background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.08); border-radius: 30px;
-            color: var(--text-secondary); font-size: 1rem; transition: var(--transition-smooth);
-            position: relative; overflow: hidden; cursor: default;
+        .grid-list li::before {
+            content: '◈';
+            color: var(--text-accent);
+            margin-right: 14px;
+            font-size: 1.1rem;
+            line-height: 1.3;
         }
-        .matrix-node strong { color: #fff; font-weight: 700; }
-        .matrix-node::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transition: 0.6s; }
-        .matrix-node:hover { border-color: var(--text-accent); color: #fff; box-shadow: 0 8px 20px rgba(79, 172, 254, 0.25); transform: translateY(-3px); }
-        .matrix-node:hover::before { left: 100%; }
+
+        .grid-list li:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(79, 172, 254, 0.35);
+            color: #fff;
+            transform: translateX(8px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .tag-matrix {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            padding: 15px 5px;
+        }
+
+        .matrix-node {
+            padding: 12px 26px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            cursor: default;
+        }
+
+        .matrix-node strong {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .matrix-node::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: 0.6s;
+        }
+
+        .matrix-node:hover {
+            border-color: var(--text-accent);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .matrix-node:hover::before {
+            left: 100%;
+        }
 
         .protocol-box {
-            background: rgba(0,0,0,0.4); border-left: 5px solid var(--text-accent);
-            padding: 35px; border-radius: 0 12px 12px 0; color: var(--text-secondary);
-            font-size: 1.05rem; line-height: 1.9;
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 5px solid var(--text-accent);
+            padding: 35px;
+            border-radius: 0 12px 12px 0;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.9;
         }
-        .protocol-box strong { color: #fff; font-size: 1.3rem; display: block; margin-bottom: 18px; }
+
+        .protocol-box strong {
+            color: #fff;
+            font-size: 1.3rem;
+            display: block;
+            margin-bottom: 18px;
+        }
 
         /* 底部 */
         footer {
@@ -449,120 +651,457 @@
               【移动端响应式深度适配】 Mobile Responsive Optimization
               ========================================================================== */
         @media (max-width: 768px) {
-            .core-layout { padding: 30px 15px 80px; }
-            .sys-header { margin-bottom: 30px; }
-            .sys-title { font-size: 2.8rem; }
+            .core-layout {
+                padding: 30px 15px 80px;
+            }
 
-            .solar-system { width: 120vw; height: 120vw; bottom: -20vh; right: -30vw; }
+            .sys-header {
+                margin-bottom: 30px;
+            }
 
-            .ui-panel { border-radius: 18px; margin-bottom: 30px; }
+            .sys-title {
+                font-size: 2.8rem;
+            }
 
-            .info-panel { padding: 25px 20px; }
-            .block-heading { font-size: 1.3rem; }
-            .grid-list { column-count: 1; column-gap: 0; }
-            .grid-list li { font-size: 0.95rem; padding: 14px 16px; }
+            .solar-system {
+                width: 120vw;
+                height: 120vw;
+                bottom: -20vh;
+                right: -30vw;
+            }
 
-            .protocol-box { padding: 20px; font-size: 0.95rem; }
+            .ui-panel {
+                border-radius: 18px;
+                margin-bottom: 30px;
+            }
+
+            .info-panel {
+                padding: 25px 20px;
+            }
+
+            .block-heading {
+                font-size: 1.3rem;
+            }
+
+            .grid-list {
+                column-count: 1;
+                column-gap: 0;
+            }
+
+            .grid-list li {
+                font-size: 0.95rem;
+                padding: 14px 16px;
+            }
+
+            .protocol-box {
+                padding: 20px;
+                font-size: 0.95rem;
+            }
         }
 
         @keyframes slide-fade-down {
-            from { opacity: 0; transform: translateY(-40px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* 以下是自动展示样式，直接内联，无需额外文件。 */
-/* 纯自动播放：九个空间位置，主图逐张前移；展示区不接受图片操作。 */
-.playback {
-    --switch-ms: 1000ms;
-    position: relative;
-    margin: 0 auto 40px;
-    isolation: isolate;
-}
-.playback-stage {
-    height: clamp(430px, 68svh, 760px); position: relative; margin-top: 16px;
-    perspective: 1600px; overflow: hidden; overflow: clip;
-    border-radius: 22px;
-    background: radial-gradient(ellipse at center, #2b70aa22, transparent 67%);
-    user-select: none; -webkit-user-select: none; cursor: default;
-    touch-action: pan-y pinch-zoom;
-}
-.playback-stage::after { content: ''; position: absolute; inset: 12% 3% 0; pointer-events: none; border-bottom: 1px solid #8dc4ef29; border-radius: 50%; background: radial-gradient(ellipse at 50% 85%, #207db416, transparent 45%); z-index: -1; }
-.playback-scene { position: absolute; inset: 0; transform-style: preserve-3d; pointer-events: none; }
-.playback-card {
-    --x: 50%; --y: 50%; --z: -200px; --scale: .36; --rotate: 0deg;
-    position: absolute; top: var(--y); left: var(--x); width: min(60%, 70svh);
-    margin: 0; padding: 5px; border: 1px solid #9ac7e44a; border-radius: 13px;
-    background: linear-gradient(145deg, #21394c, #081421);
-    transform: translate(-50%, -50%) translateZ(var(--z)) rotateY(var(--rotate)) scale(var(--scale));
-    opacity: .46; visibility: visible; pointer-events: none;
-    box-shadow: 2px 3px 0 #44647d, 5px 8px 0 #091322, 12px 28px 45px #0009;
-    transition: top var(--switch-ms) cubic-bezier(.4,0,.2,1), left var(--switch-ms) cubic-bezier(.4,0,.2,1), transform var(--switch-ms) cubic-bezier(.4,0,.2,1), opacity var(--switch-ms) ease, visibility 0s;
-}
-.playback-card img { width: 100%; height: auto; aspect-ratio: 16 / 13; display: block; object-fit: contain; border-radius: 8px; background: #050a11; -webkit-user-drag: none; pointer-events: none; }
-.playback-card figcaption { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px 4px; color: #dcebf7; }
-.playback-card-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 500; letter-spacing: 1px; }
-.playback-card-number { color: #8eb4d0; font-size: 11px; font-variant-numeric: tabular-nums; }
-/* 8 张背景图围绕中间主图，依次从右侧前移，再向左侧退后。 */
-.playback-card[data-slot="-5"] { --x: 85%; --y: 84%; opacity: 0; }
-.playback-card[data-slot="-4"] { --x: 83%; --y: 83%; --z: -180px; --scale: .46; --rotate: -16deg; }
-.playback-card[data-slot="-3"] { --x: 50%; --y: 87%; --z: -240px; --scale: .43; }
-.playback-card[data-slot="-2"] { --x: 17%; --y: 83%; --z: -180px; --scale: .46; --rotate: 16deg; }
-.playback-card[data-slot="-1"] { --x: 13%; --y: 50%; --z: -140px; --scale: .50; --rotate: 22deg; }
-.playback-card[data-slot="0"] { --x: 50%; --y: 50%; --z: 65px; --scale: 1; --rotate: 0deg; opacity: 1; border-color: #b5dcf5a0; }
-.playback-card[data-slot="1"] { --x: 87%; --y: 50%; --z: -140px; --scale: .50; --rotate: -22deg; }
-.playback-card[data-slot="2"] { --x: 83%; --y: 17%; --z: -180px; --scale: .46; --rotate: -16deg; }
-.playback-card[data-slot="3"] { --x: 50%; --y: 13%; --z: -240px; --scale: .43; }
-.playback-card[data-slot="4"] { --x: 17%; --y: 17%; --z: -180px; --scale: .46; --rotate: 16deg; }
-.playback-card[data-slot="5"] { --x: 15%; --y: 16%; opacity: 0; }
-.playback-card[data-visible="false"] { opacity: 0; visibility: hidden; transition-delay: 0s, 0s, 0s, 0s, var(--switch-ms); }
-.playback-card.is-current { box-shadow: 2px 3px 0 #678ba5, 5px 8px 0 #142c40, 0 0 50px #61b6f122, 0 35px 70px #000b; }
-.playback-card.has-error img { opacity: 0; }
-.playback-card.has-error::after { content: '图片无法加载，请检查文件名'; position: absolute; inset: 0; display: grid; place-items: center; color: #a9c5dc; font-size: 14px; }
-.playback-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin: 20px 24px 0; }
-.playback-caption h3 { font-size: 21px; font-weight: 500; letter-spacing: 1px; }
-.playback-caption p { font-size: 13px; color: #9bb6ce; margin-top: 4px; }
-.playback-counter { font-size: 12px; color: #a8c8df; letter-spacing: 2px; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.playback-empty { position: absolute; inset: 0; display: grid; place-items: center; color: #a9c5dc; text-align: center; }
-.playback-noscript { text-align: center; padding: 30px; color: #a9c5dc; }
-.playback-noscript img { display: block; width: min(100%, 720px); height: auto; margin: 12px auto; }
+        /* 纯自动播放：九个空间位置，主图逐张前移；展示区不接受图片操作。 */
+        .playback {
+            --switch-ms: 1000ms;
+            position: relative;
+            margin: 0 auto 40px;
+            isolation: isolate;
+        }
 
-@media (max-width: 900px) {
-    .playback-stage { height: clamp(400px, 63vw, 600px); perspective: 1200px; }
-    .playback-card { width: 65%; }
-    .playback-card[data-slot="0"] { --z: 45px; }
-    .playback-footer { margin-left: 12px; margin-right: 12px; }
-}
-@media (max-width: 600px) {
-    header.nav-header { padding: 12px 16px; }
-    .core-layout { padding: 26px 10px 70px; }
-    .sys-header { margin-bottom: 26px; }
-    .sys-title { font-size: 2.7rem; margin-bottom: 0; }
-    .playback-stage { height: clamp(350px, 112vw, 530px); margin-top: 10px; perspective: 1200px; border-radius: 12px; }
-    .playback-card { width: 86%; border-radius: 9px; padding: 3px; }
-    .playback-card img { border-radius: 6px; }
-    .playback-card figcaption { padding: 6px 7px 3px; }
-    .playback-card-title { font-size: 12px; letter-spacing: .5px; }
-    .playback-card-number { font-size: 10px; }
-    .playback-card[data-slot="0"] { --z: 28px; }
-    .playback-card[data-slot="-1"] { --x: 12%; --scale: .38; }
-    .playback-card[data-slot="1"] { --x: 88%; --scale: .38; }
-    .playback-card[data-slot="-4"], .playback-card[data-slot="-2"], .playback-card[data-slot="2"], .playback-card[data-slot="4"] { --scale: .36; }
-    .playback-card[data-slot="-3"] { --y: 88%; --scale: .35; }
-    .playback-card[data-slot="3"] { --y: 12%; --scale: .35; }
-    .playback-footer { margin: 16px 8px 0; gap: 12px; }
-    .playback-caption h3 { font-size: 17px; }
-    .playback-caption p { font-size: 12px; }
-    .playback-counter { font-size: 10px; letter-spacing: 1px; }
-}
-@media (max-height: 600px) and (min-width: 601px) {
-    .playback-stage { height: 370px; }
-    .playback-card { width: min(52%, 350px); }
-}
-/* 保持自动逐张循环，只去掉空间移动，改为柔和淡入淡出。 */
-@media (prefers-reduced-motion: reduce) {
-    .playback-card { transition: opacity 250ms ease; }
-    .playback-card:not(.is-current) { opacity: 0; visibility: hidden; }
-}
+        .playback-stage {
+            height: clamp(430px, 68svh, 760px);
+            position: relative;
+            margin-top: 16px;
+            perspective: 1600px;
+            overflow: hidden;
+            overflow: clip;
+            border-radius: 22px;
+            background: radial-gradient(ellipse at center, #2b70aa22, transparent 67%);
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: default;
+            touch-action: pan-y pinch-zoom;
+        }
+
+        .playback-stage::after {
+            content: '';
+            position: absolute;
+            inset: 12% 3% 0;
+            pointer-events: none;
+            border-bottom: 1px solid #8dc4ef29;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at 50% 85%, #207db416, transparent 45%);
+            z-index: -1;
+        }
+
+        .playback-scene {
+            position: absolute;
+            inset: 0;
+            transform-style: preserve-3d;
+            pointer-events: none;
+        }
+
+        .playback-card {
+            --x: 50%;
+            --y: 50%;
+            --z: -200px;
+            --scale: .36;
+            --rotate: 0deg;
+            position: absolute;
+            top: var(--y);
+            left: var(--x);
+            width: min(60%, 70svh);
+            margin: 0;
+            padding: 5px;
+            border: 1px solid #9ac7e44a;
+            border-radius: 13px;
+            background: linear-gradient(145deg, #21394c, #081421);
+            transform: translate(-50%, -50%) translateZ(var(--z)) rotateY(var(--rotate)) scale(var(--scale));
+            opacity: .46;
+            visibility: visible;
+            pointer-events: none;
+            box-shadow: 2px 3px 0 #44647d, 5px 8px 0 #091322, 12px 28px 45px #0009;
+            transition: top var(--switch-ms) cubic-bezier(.4, 0, .2, 1), left var(--switch-ms) cubic-bezier(.4, 0, .2, 1), transform var(--switch-ms) cubic-bezier(.4, 0, .2, 1), opacity var(--switch-ms) ease, visibility 0s;
+        }
+
+        .playback-card img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 13;
+            display: block;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #050a11;
+            -webkit-user-drag: none;
+            pointer-events: none;
+        }
+
+        .playback-card figcaption {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 8px 10px 4px;
+            color: #dcebf7;
+        }
+
+        .playback-card-title {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .playback-card-number {
+            color: #8eb4d0;
+            font-size: 11px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* 8 张背景图围绕中间主图，依次从右侧前移，再向左侧退后。 */
+        .playback-card[data-slot="-5"] {
+            --x: 85%;
+            --y: 84%;
+            opacity: 0;
+        }
+
+        .playback-card[data-slot="-4"] {
+            --x: 83%;
+            --y: 83%;
+            --z: -180px;
+            --scale: .46;
+            --rotate: -16deg;
+        }
+
+        .playback-card[data-slot="-3"] {
+            --x: 50%;
+            --y: 87%;
+            --z: -240px;
+            --scale: .43;
+        }
+
+        .playback-card[data-slot="-2"] {
+            --x: 17%;
+            --y: 83%;
+            --z: -180px;
+            --scale: .46;
+            --rotate: 16deg;
+        }
+
+        .playback-card[data-slot="-1"] {
+            --x: 13%;
+            --y: 50%;
+            --z: -140px;
+            --scale: .50;
+            --rotate: 22deg;
+        }
+
+        .playback-card[data-slot="0"] {
+            --x: 50%;
+            --y: 50%;
+            --z: 65px;
+            --scale: 1;
+            --rotate: 0deg;
+            opacity: 1;
+            border-color: #b5dcf5a0;
+        }
+
+        .playback-card[data-slot="1"] {
+            --x: 87%;
+            --y: 50%;
+            --z: -140px;
+            --scale: .50;
+            --rotate: -22deg;
+        }
+
+        .playback-card[data-slot="2"] {
+            --x: 83%;
+            --y: 17%;
+            --z: -180px;
+            --scale: .46;
+            --rotate: -16deg;
+        }
+
+        .playback-card[data-slot="3"] {
+            --x: 50%;
+            --y: 13%;
+            --z: -240px;
+            --scale: .43;
+        }
+
+        .playback-card[data-slot="4"] {
+            --x: 17%;
+            --y: 17%;
+            --z: -180px;
+            --scale: .46;
+            --rotate: 16deg;
+        }
+
+        .playback-card[data-slot="5"] {
+            --x: 15%;
+            --y: 16%;
+            opacity: 0;
+        }
+
+        .playback-card[data-visible="false"] {
+            opacity: 0;
+            visibility: hidden;
+            transition-delay: 0s, 0s, 0s, 0s, var(--switch-ms);
+        }
+
+        .playback-card.is-current {
+            box-shadow: 2px 3px 0 #678ba5, 5px 8px 0 #142c40, 0 0 50px #61b6f122, 0 35px 70px #000b;
+        }
+
+        .playback-card.has-error img {
+            opacity: 0;
+        }
+
+        .playback-card.has-error::after {
+            content: '图片无法加载，请检查文件名';
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            color: #a9c5dc;
+            font-size: 14px;
+        }
+
+        .playback-footer {
+            display: none;
+        }
+
+        .playback-caption h3 {
+            font-size: 21px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .playback-caption p {
+            font-size: 13px;
+            color: #9bb6ce;
+            margin-top: 4px;
+        }
+
+        .playback-counter {
+            font-size: 12px;
+            color: #a8c8df;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .playback-empty {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            color: #a9c5dc;
+            text-align: center;
+        }
+
+        .playback-noscript {
+            text-align: center;
+            padding: 30px;
+            color: #a9c5dc;
+        }
+
+        .playback-noscript img {
+            display: block;
+            width: min(100%, 720px);
+            height: auto;
+            margin: 12px auto;
+        }
+
+        @media (max-width: 900px) {
+            .playback-stage {
+                height: clamp(400px, 63vw, 600px);
+                perspective: 1200px;
+            }
+
+            .playback-card {
+                width: 65%;
+            }
+
+            .playback-card[data-slot="0"] {
+                --z: 45px;
+            }
+
+            .playback-footer {
+                margin-left: 12px;
+                margin-right: 12px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header.nav-header {
+                padding: 12px 16px;
+            }
+
+            .core-layout {
+                padding: 26px 10px 70px;
+            }
+
+            .sys-header {
+                margin-bottom: 26px;
+            }
+
+            .sys-title {
+                font-size: 2.7rem;
+                margin-bottom: 0;
+            }
+
+            .playback-stage {
+                height: clamp(350px, 112vw, 530px);
+                margin-top: 10px;
+                perspective: 1200px;
+                border-radius: 12px;
+            }
+
+            .playback-card {
+                width: 86%;
+                border-radius: 9px;
+                padding: 3px;
+            }
+
+            .playback-card img {
+                border-radius: 6px;
+            }
+
+            .playback-card figcaption {
+                padding: 6px 7px 3px;
+            }
+
+            .playback-card-title {
+                font-size: 12px;
+                letter-spacing: .5px;
+            }
+
+            .playback-card-number {
+                font-size: 10px;
+            }
+
+            .playback-card[data-slot="0"] {
+                --z: 28px;
+            }
+
+            .playback-card[data-slot="-1"] {
+                --x: 12%;
+                --scale: .38;
+            }
+
+            .playback-card[data-slot="1"] {
+                --x: 88%;
+                --scale: .38;
+            }
+
+            .playback-card[data-slot="-4"], .playback-card[data-slot="-2"], .playback-card[data-slot="2"], .playback-card[data-slot="4"] {
+                --scale: .36;
+            }
+
+            .playback-card[data-slot="-3"] {
+                --y: 88%;
+                --scale: .35;
+            }
+
+            .playback-card[data-slot="3"] {
+                --y: 12%;
+                --scale: .35;
+            }
+
+            .playback-footer {
+                margin: 16px 8px 0;
+                gap: 12px;
+            }
+
+            .playback-caption h3 {
+                font-size: 17px;
+            }
+
+            .playback-caption p {
+                font-size: 12px;
+            }
+
+            .playback-counter {
+                font-size: 10px;
+                letter-spacing: 1px;
+            }
+        }
+
+        @media (max-height: 600px) and (min-width: 601px) {
+            .playback-stage {
+                height: 370px;
+            }
+
+            .playback-card {
+                width: min(52%, 350px);
+            }
+        }
+
+        /* 保持自动逐张循环，只去掉空间移动，改为柔和淡入淡出。 */
+        @media (prefers-reduced-motion: reduce) {
+            .playback-card {
+                transition: opacity 250ms ease;
+            }
+
+            .playback-card:not(.is-current) {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
 
     </style>
 </head>
@@ -607,20 +1146,30 @@
     </header>
 
     <!-- 纯自动影片式展示；图片清单和停留时长在本 HTML 的 GALLERY_ITEMS / GALLERY_OPTIONS 中维护。 -->
-    <section class="playback" id="main-carousel" aria-label="ToolKit 功能图片自动展示" aria-roledescription="自动循环图片展示">
+    <section class="playback" id="main-carousel" aria-label="ToolKit 功能图片自动展示"
+             aria-roledescription="自动循环图片展示">
         <div class="playback-stage">
             <div class="playback-scene"></div>
         </div>
         <div class="playback-footer">
-            <div class="playback-caption"><h3 id="playback-title"></h3><p id="playback-description"></p></div>
+            <div class="playback-caption"><h3 id="playback-title"></h3>
+                <p id="playback-description"></p></div>
             <span class="playback-counter" id="playback-counter"></span>
         </div>
-        <noscript><div class="playback-noscript">请启用 JavaScript 以自动播放图片。<img src="imgs/ToolKit控制中心.png" alt="ToolKit 控制中心"></div></noscript>
+        <noscript>
+            <div class="playback-noscript">请启用 JavaScript 以自动播放图片。<img src="imgs/ToolKit控制中心.png"
+                                                                                 alt="ToolKit 控制中心"></div>
+        </noscript>
     </section>
 
     <div class="download-engine">
         <a href="#" id="btn-download" class="btn-download-core">
-            <svg style="margin-right:10px;" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <svg style="margin-right:10px;" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
             下载 ToolKit 1.9.8版本
         </a>
     </div>
@@ -696,9 +1245,12 @@
                 <div class="protocol-box">
                     <strong>MIT 许可证</strong>
                     <p>版权所有 (c) 2026 TuKuai</p><br>
-                    <p>特此免费授予任何获得本软件及相关文档文件（以下简称“软件”）副本的人，不受限制地处理本软件的权利，包括但不限于使用、复制、修改、合并、发布、分发、再许可和/或出售本软件副本的权利，并允许向其提供本软件的人这样做，但须符合以下条件：</p><br>
+                    <p>
+                        特此免费授予任何获得本软件及相关文档文件（以下简称“软件”）副本的人，不受限制地处理本软件的权利，包括但不限于使用、复制、修改、合并、发布、分发、再许可和/或出售本软件副本的权利，并允许向其提供本软件的人这样做，但须符合以下条件：</p>
+                    <br>
                     <p>上述版权声明和本许可声明应包含在本软件的所有副本或主要部分中。</p><br>
-                    <p>本软件按“原样”提供，没有任何形式的明示或暗示的保证，包括但不限于对适销性、特定用途适用性和非侵权性的保证。在任何情况下，无论是在合同、侵权或其他诉讼中，作者或版权持有人均不对因本软件或本软件的使用或其他交易而产生、引起或与之相关的任何索赔、损害或其他责任负责。</p>
+                    <p>
+                        本软件按“原样”提供，没有任何形式的明示或暗示的保证，包括但不限于对适销性、特定用途适用性和非侵权性的保证。在任何情况下，无论是在合同、侵权或其他诉讼中，作者或版权持有人均不对因本软件或本软件的使用或其他交易而产生、引起或与之相关的任何索赔、损害或其他责任负责。</p>
                 </div>
             </div>
         </div>
@@ -708,8 +1260,13 @@
 
 <footer>
     <p style="color: #64748B; font-size: 0.95rem; letter-spacing: 1px;">
-        <a href="https://gallanttarry.github.io/TuKuai/" target="_blank" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <a href="https://gallanttarry.github.io/TuKuai/" target="_blank"
+           style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
 
         </a>
         &copy; 2026 Created by 土块. All rights reserved.
@@ -737,12 +1294,12 @@
     class CosmicEngine {
         constructor(canvasId) {
             this.canvas = document.getElementById(canvasId);
-            this.ctx = this.canvas.getContext('2d', { alpha: false });
+            this.ctx = this.canvas.getContext('2d', {alpha: false});
             this.stars = [];
             this.meteors = [];
             // 鼠标视差物理数据
-            this.parallax = { targetX: 0, targetY: 0, currentX: 0, currentY: 0 };
-            this.center = { x: 0, y: 0 };
+            this.parallax = {targetX: 0, targetY: 0, currentX: 0, currentY: 0};
+            this.center = {x: 0, y: 0};
             this.config = {
                 count: Math.floor(window.innerWidth / 2),
                 meteorRate: 0.003,
@@ -767,8 +1324,12 @@
         debounce(func, wait) {
             let timeout;
             return function executedFunction(...args) {
-                const later = () => { clearTimeout(timeout); func(...args); };
-                clearTimeout(timeout); timeout = setTimeout(later, wait);
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
             };
         }
 
@@ -876,130 +1437,130 @@
 
 
     /* 自动播放模块：所有图片、设置和逻辑均在本 HTML 内。 */
-/*
- * 自动影片展示的图片清单。新增图片：放入 imgs/，在下方增加一条配置。
- * 17 张截图逐一成为中间主图；两张 earth 纹理和 ToolKit.ico 仅作背景/图标。
- * 此展示没有点击、拖拽、悬停暂停或放大交互，打开页面后自动循环。
- */
-const GALLERY_ITEMS = [
-    { src: 'imgs/ToolKit控制中心.png', title: 'ToolKit 控制中心', description: '集中管理，让每一次操作井然有序' },
-    { src: 'imgs/主菜单.png', title: '主菜单', description: '常用工具，一目了然' },
-    { src: 'imgs/改名助手.png', title: '改名助手', description: '批量整理文件名称' },
-    { src: 'imgs/数据审核.png', title: '数据审核', description: '让数据核对更高效' },
-    { src: 'imgs/文件检索.png', title: '文件检索', description: '快速找到需要的文件' },
-    { src: 'imgs/智能导表.png', title: '智能导表', description: '轻松处理表格导入与导出' },
-    { src: 'imgs/替换助手.png', title: '替换助手', description: '批量处理文档内容替换' },
-    { src: 'imgs/公告比对助手.png', title: '公告比对助手', description: '辅助查看公告内容差异' },
-    { src: 'imgs/转换助手.png', title: '转换助手', description: '常用文档格式转换' },
-    { src: 'imgs/地区查询助手.png', title: '地区查询助手', description: '便捷查询地区信息' },
-    { src: 'imgs/文件传输助手.png', title: '文件传输助手', description: '让文件在设备间流转' },
-    { src: 'imgs/解压缩助手.png', title: '解压缩助手', description: '集中处理文件压缩与解压' },
-    { src: 'imgs/粘贴板助手.png', title: '粘贴板助手', description: '让复制与粘贴更顺手' },
-    { src: 'imgs/编程助手.png', title: '编程助手', description: '为日常编程提供辅助' },
-    { src: 'imgs/大声密谋.png', title: '大声密谋', description: '探索工具箱的更多可能' },
-    { src: 'imgs/拯救公猪.png', title: '拯救公猪', description: '工作间隙，换一种心情' },
-    { src: 'imgs/可恶的小猫MITI.png', title: '可恶的小猫 MITI', description: '桌面上的小猫伙伴' },
-];
+    /*
+     * 自动影片展示的图片清单。新增图片：放入 imgs/，在下方增加一条配置。
+     * 17 张截图逐一成为中间主图；两张 earth 纹理和 ToolKit.ico 仅作背景/图标。
+     * 此展示没有点击、拖拽、悬停暂停或放大交互，打开页面后自动循环。
+     */
+    const GALLERY_ITEMS = [
+        {src: 'imgs/ToolKit控制中心.png', title: 'ToolKit 控制中心', description: '集中管理，让每一次操作井然有序'},
+        {src: 'imgs/主菜单.png', title: '主菜单', description: '常用工具，一目了然'},
+        {src: 'imgs/改名助手.png', title: '改名助手', description: '批量整理文件名称'},
+        {src: 'imgs/数据审核.png', title: '数据审核', description: '让数据核对更高效'},
+        {src: 'imgs/文件检索.png', title: '文件检索', description: '快速找到需要的文件'},
+        {src: 'imgs/智能导表.png', title: '智能导表', description: '轻松处理表格导出'},
+        {src: 'imgs/替换助手.png', title: '替换助手', description: '批量处理文档内容替换'},
+        {src: 'imgs/公告比对助手.png', title: '公告比对助手', description: '辅助查看公告内容差异'},
+        {src: 'imgs/转换助手.png', title: '转换助手', description: '常用文档格式转换'},
+        {src: 'imgs/地区查询助手.png', title: '地区查询助手', description: '便捷查询地区信息'},
+        {src: 'imgs/文件传输助手.png', title: '文件传输助手', description: '让文件在设备间流转'},
+        {src: 'imgs/解压缩助手.png', title: '解压缩助手', description: '集中处理文件压缩与解压'},
+        {src: 'imgs/粘贴板助手.png', title: '粘贴板助手', description: '让复制与粘贴更顺手'},
+        {src: 'imgs/编程助手.png', title: '编程助手', description: '为日常编程提供辅助'},
+        {src: 'imgs/大声密谋.png', title: '大声密谋', description: '探索工具箱的更多可能'},
+        {src: 'imgs/拯救公猪.png', title: '拯救公猪', description: '工作间隙，换一种心情'},
+        {src: 'imgs/可恶的小猫MITI.png', title: '可恶的小猫 MITI', description: '桌面上的小猫伙伴'},
+    ];
 
-const GALLERY_OPTIONS = {
-    holdMs: 4000,       // 每张主图静止停留 4 秒。
-    transitionMs: 1000, // 再用 1 秒完成立体切换；一轮约 85 秒。
-};
+    const GALLERY_OPTIONS = {
+        holdMs: 4000,       // 每张主图静止停留 4 秒。
+        transitionMs: 1000, // 再用 1 秒完成立体切换；一轮约 85 秒。
+    };
 
-(() => {
-    'use strict';
+    (() => {
+        'use strict';
 
-    class AutomaticShowcase {
-        constructor(root, items, options) {
-            this.root = root;
-            this.items = items;
-            this.index = 0;
-            this.timer = null;
-            this.holdMs = Math.max(500, Number(options.holdMs) || 4000);
-            this.transitionMs = Math.max(0, Number(options.transitionMs) || 0);
-            this.cycleMs = this.holdMs + this.transitionMs;
-            this.scene = root.querySelector('.playback-scene');
-            this.motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-            root.style.setProperty('--switch-ms', `${this.transitionMs}ms`);
-            this.build();
-            this.render();
-            // 首张先停留 holdMs；之后每次是过渡 transitionMs + 停留 holdMs。
-            this.schedule(this.holdMs);
-            document.addEventListener('visibilitychange', () => {
+        class AutomaticShowcase {
+            constructor(root, items, options) {
+                this.root = root;
+                this.items = items;
+                this.index = 0;
+                this.timer = null;
+                this.holdMs = Math.max(500, Number(options.holdMs) || 4000);
+                this.transitionMs = Math.max(0, Number(options.transitionMs) || 0);
+                this.cycleMs = this.holdMs + this.transitionMs;
+                this.scene = root.querySelector('.playback-scene');
+                this.motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+                root.style.setProperty('--switch-ms', `${this.transitionMs}ms`);
+                this.build();
+                this.render();
+                // 首张先停留 holdMs；之后每次是过渡 transitionMs + 停留 holdMs。
+                this.schedule(this.holdMs);
+                document.addEventListener('visibilitychange', () => {
+                    clearTimeout(this.timer);
+                    this.timer = null;
+                    if (!document.hidden) {
+                        this.schedule(this.holdMs);
+                    }
+                });
+            }
+
+            build() {
+                this.cards = this.items.map((item, index) => {
+                    const figure = document.createElement('figure');
+                    figure.className = 'playback-card';
+                    figure.dataset.index = String(index);
+                    const img = document.createElement('img');
+                    img.alt = item.title;
+                    img.width = 960;
+                    img.height = 780;
+                    img.draggable = false;
+                    img.decoding = 'async';
+                    img.addEventListener('error', () => figure.classList.add('has-error'));
+                    img.src = item.src;
+                    const caption = document.createElement('figcaption');
+                    const title = document.createElement('span');
+                    title.className = 'playback-card-title';
+                    title.textContent = item.title;
+                    const number = document.createElement('span');
+                    number.className = 'playback-card-number';
+                    number.textContent = String(index + 1).padStart(2, '0');
+                    caption.append(title, number);
+                    figure.append(img, caption);
+                    this.scene.append(figure);
+                    return figure;
+                });
+                if (!this.items.length) {
+                    const message = document.createElement('p');
+                    message.className = 'playback-empty';
+                    message.textContent = '请在本文件的 GALLERY_ITEMS 中添加展示图片。';
+                    this.scene.append(message);
+                }
+            }
+
+            render() {
+                const count = this.items.length;
+                this.cards.forEach((card, index) => {
+                    let relative = (index - this.index + count) % count;
+                    if (relative > Math.floor(count / 2)) relative -= count;
+                    card.dataset.slot = String(Math.max(-5, Math.min(5, relative)));
+                    card.dataset.visible = String(Math.abs(relative) <= 4);
+                    card.classList.toggle('is-current', relative === 0);
+                    // 辅助阅读工具仅读取当前主图，避免同时读取九张截图。
+                    card.setAttribute('aria-hidden', String(relative !== 0));
+                });
+                const item = this.items[this.index];
+                this.root.querySelector('#playback-title').textContent = item?.title || '暂无图片';
+                this.root.querySelector('#playback-description').textContent = item?.description || '';
+                this.root.querySelector('#playback-counter').textContent = `${count ? String(this.index + 1).padStart(2, '0') : '00'} / ${String(count).padStart(2, '0')}`;
+                this.root.dataset.currentIndex = String(this.index);
+            }
+
+            schedule(delay = this.cycleMs) {
                 clearTimeout(this.timer);
                 this.timer = null;
-                if (!document.hidden) {
-                    this.schedule(this.holdMs);
-                }
-            });
-        }
-
-        build() {
-            this.cards = this.items.map((item, index) => {
-                const figure = document.createElement('figure');
-                figure.className = 'playback-card';
-                figure.dataset.index = String(index);
-                const img = document.createElement('img');
-                img.alt = item.title;
-                img.width = 960;
-                img.height = 780;
-                img.draggable = false;
-                img.decoding = 'async';
-                img.addEventListener('error', () => figure.classList.add('has-error'));
-                img.src = item.src;
-                const caption = document.createElement('figcaption');
-                const title = document.createElement('span');
-                title.className = 'playback-card-title';
-                title.textContent = item.title;
-                const number = document.createElement('span');
-                number.className = 'playback-card-number';
-                number.textContent = String(index + 1).padStart(2, '0');
-                caption.append(title, number);
-                figure.append(img, caption);
-                this.scene.append(figure);
-                return figure;
-            });
-            if (!this.items.length) {
-                const message = document.createElement('p');
-                message.className = 'playback-empty';
-                message.textContent = '请在本文件的 GALLERY_ITEMS 中添加展示图片。';
-                this.scene.append(message);
+                if (this.items.length < 2 || document.hidden) return;
+                this.timer = setTimeout(() => {
+                    this.index = (this.index + 1) % this.items.length;
+                    this.render();
+                    this.schedule();
+                }, delay);
             }
         }
 
-        render() {
-            const count = this.items.length;
-            this.cards.forEach((card, index) => {
-                let relative = (index - this.index + count) % count;
-                if (relative > Math.floor(count / 2)) relative -= count;
-                card.dataset.slot = String(Math.max(-5, Math.min(5, relative)));
-                card.dataset.visible = String(Math.abs(relative) <= 4);
-                card.classList.toggle('is-current', relative === 0);
-                // 辅助阅读工具仅读取当前主图，避免同时读取九张截图。
-                card.setAttribute('aria-hidden', String(relative !== 0));
-            });
-            const item = this.items[this.index];
-            this.root.querySelector('#playback-title').textContent = item?.title || '暂无图片';
-            this.root.querySelector('#playback-description').textContent = item?.description || '';
-            this.root.querySelector('#playback-counter').textContent = `${count ? String(this.index + 1).padStart(2, '0') : '00'} / ${String(count).padStart(2, '0')}`;
-            this.root.dataset.currentIndex = String(this.index);
-        }
-
-        schedule(delay = this.cycleMs) {
-            clearTimeout(this.timer);
-            this.timer = null;
-            if (this.items.length < 2 || document.hidden) return;
-            this.timer = setTimeout(() => {
-                this.index = (this.index + 1) % this.items.length;
-                this.render();
-                this.schedule();
-            }, delay);
-        }
-    }
-
-    const root = document.getElementById('main-carousel');
-    if (root) new AutomaticShowcase(root, GALLERY_ITEMS, GALLERY_OPTIONS);
-})();
+        const root = document.getElementById('main-carousel');
+        if (root) new AutomaticShowcase(root, GALLERY_ITEMS, GALLERY_OPTIONS);
+    })();
 
     /**
      * 模块三：环境音播放器逻辑
@@ -1138,15 +1699,15 @@ const GALLERY_OPTIONS = {
         }
     }
 
-        // 替换掉原有的 DOMContentLoaded 块
-        document.addEventListener('DOMContentLoaded', () => {
+    // 替换掉原有的 DOMContentLoaded 块
+    document.addEventListener('DOMContentLoaded', () => {
 
-            // 初始化下载节点竞速引擎，传入你的 Github 官方原文件 Release 链接
-            new DownloadRouter(
-                'btn-download',
-                'https://github.com/GallantTarry/TuKuai/releases/download/20260907/toolkit-1.9.8.msi'
-            );
-        });
+        // 初始化下载节点竞速引擎，传入你的 Github 官方原文件 Release 链接
+        new DownloadRouter(
+            'btn-download',
+            'https://github.com/GallantTarry/TuKuai/releases/download/20260907/toolkit-1.9.8.msi'
+        );
+    });
 </script>
 </body>
 </html>
