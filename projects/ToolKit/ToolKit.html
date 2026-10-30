@@ -797,18 +797,20 @@
         }
 
         .playback-card-title {
-            overflow: hidden;
-            text-overflow: ellipsis;
+            flex-shrink: 0;
             white-space: nowrap;
             font-size: 14px;
             font-weight: 500;
             letter-spacing: 1px;
         }
 
-        .playback-card-number {
+        .playback-card-description {
+            min-width: 0;
             color: #8eb4d0;
-            font-size: 11px;
-            font-variant-numeric: tabular-nums;
+            font-size: 12px;
+            line-height: 1.5;
+            text-align: right;
+            overflow-wrap: anywhere;
         }
 
         /* 8 张背景图围绕中间主图，依次从右侧前移，再向左侧退后。 */
@@ -920,30 +922,6 @@
             font-size: 14px;
         }
 
-        .playback-footer {
-            display: none;
-        }
-
-        .playback-caption h3 {
-            font-size: 21px;
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
-
-        .playback-caption p {
-            font-size: 13px;
-            color: #9bb6ce;
-            margin-top: 4px;
-        }
-
-        .playback-counter {
-            font-size: 12px;
-            color: #a8c8df;
-            letter-spacing: 2px;
-            white-space: nowrap;
-            font-variant-numeric: tabular-nums;
-        }
-
         .playback-empty {
             position: absolute;
             inset: 0;
@@ -980,10 +958,6 @@
                 --z: 45px;
             }
 
-            .playback-footer {
-                margin-left: 12px;
-                margin-right: 12px;
-            }
         }
 
         @media (max-width: 600px) {
@@ -1030,7 +1004,7 @@
                 letter-spacing: .5px;
             }
 
-            .playback-card-number {
+            .playback-card-description {
                 font-size: 10px;
             }
 
@@ -1062,23 +1036,6 @@
                 --scale: .35;
             }
 
-            .playback-footer {
-                margin: 16px 8px 0;
-                gap: 12px;
-            }
-
-            .playback-caption h3 {
-                font-size: 17px;
-            }
-
-            .playback-caption p {
-                font-size: 12px;
-            }
-
-            .playback-counter {
-                font-size: 10px;
-                letter-spacing: 1px;
-            }
         }
 
         @media (max-height: 600px) and (min-width: 601px) {
@@ -1150,11 +1107,6 @@
              aria-roledescription="自动循环图片展示">
         <div class="playback-stage">
             <div class="playback-scene"></div>
-        </div>
-        <div class="playback-footer">
-            <div class="playback-caption"><h3 id="playback-title"></h3>
-                <p id="playback-description"></p></div>
-            <span class="playback-counter" id="playback-counter"></span>
         </div>
         <noscript>
             <div class="playback-noscript">请启用 JavaScript 以自动播放图片。<img src="imgs/ToolKit控制中心.png"
@@ -1472,7 +1424,6 @@
 
         class AutomaticShowcase {
             constructor(root, items, options) {
-                this.root = root;
                 this.items = items;
                 this.index = 0;
                 this.timer = null;
@@ -1480,7 +1431,6 @@
                 this.transitionMs = Math.max(0, Number(options.transitionMs) || 0);
                 this.cycleMs = this.holdMs + this.transitionMs;
                 this.scene = root.querySelector('.playback-scene');
-                this.motion = window.matchMedia('(prefers-reduced-motion: reduce)');
                 root.style.setProperty('--switch-ms', `${this.transitionMs}ms`);
                 this.build();
                 this.render();
@@ -1496,10 +1446,9 @@
             }
 
             build() {
-                this.cards = this.items.map((item, index) => {
+                this.cards = this.items.map(item => {
                     const figure = document.createElement('figure');
                     figure.className = 'playback-card';
-                    figure.dataset.index = String(index);
                     const img = document.createElement('img');
                     img.alt = item.title;
                     img.width = 960;
@@ -1512,10 +1461,10 @@
                     const title = document.createElement('span');
                     title.className = 'playback-card-title';
                     title.textContent = item.title;
-                    const number = document.createElement('span');
-                    number.className = 'playback-card-number';
-                    number.textContent = String(index + 1).padStart(2, '0');
-                    caption.append(title, number);
+                    const description = document.createElement('span');
+                    description.className = 'playback-card-description';
+                    description.textContent = item.description;
+                    caption.append(title, description);
                     figure.append(img, caption);
                     this.scene.append(figure);
                     return figure;
@@ -1539,11 +1488,6 @@
                     // 辅助阅读工具仅读取当前主图，避免同时读取九张截图。
                     card.setAttribute('aria-hidden', String(relative !== 0));
                 });
-                const item = this.items[this.index];
-                this.root.querySelector('#playback-title').textContent = item?.title || '暂无图片';
-                this.root.querySelector('#playback-description').textContent = item?.description || '';
-                this.root.querySelector('#playback-counter').textContent = `${count ? String(this.index + 1).padStart(2, '0') : '00'} / ${String(count).padStart(2, '0')}`;
-                this.root.dataset.currentIndex = String(this.index);
             }
 
             schedule(delay = this.cycleMs) {
