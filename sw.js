@@ -1,5 +1,5 @@
 // 以后只有当你希望强制清空所有老用户的全站缓存时，才需要修改这个版本号
-const CACHE_VERSION = 'v1.0.1';
+const CACHE_VERSION = 'v1.0.2';
 const CACHE_NAME = `tukuai-smart-cache-${CACHE_VERSION}`;
 
 // 1. 安装时立即接管
