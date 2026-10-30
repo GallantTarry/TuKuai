@@ -112,7 +112,6 @@
         </div>
     </div>
 
-
     <div :class="['absolute inset-0 w-full h-full p-4 flex items-center justify-center z-50 bg-black/95 backdrop-blur-md select-none transition-opacity duration-700', isBooted ? 'opacity-0 pointer-events-none' : 'opacity-100']">
         <div
                 class="w-full max-w-2xl bg-black border border-[#333] rounded-md shadow-2xl overflow-hidden flex flex-col font-mono text-[11px] md:text-sm">
@@ -277,27 +276,32 @@
                     <div class="glass-card p-5 md:p-8 flex flex-wrap justify-center items-center gap-3 md:gap-4">
 
                         <!-- 蓝：寻际者 -->
-                        <span class="bg-[#38bdf8]/10 text-[#38bdf8] border border-[#38bdf8]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(56,189,248,0.1)] hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:bg-[#38bdf8]/20 hover:-translate-y-1 transition-all duration-300 cursor-default backdrop-blur-md">
+                        <span class="phile-btn bg-[#38bdf8]/10 text-[#38bdf8] border border-[#38bdf8]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(56,189,248,0.1)] hover:shadow-[0_0_25px_rgba(56,189,248,0.6)] hover:bg-[#38bdf8]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
+                              @click.stop="triggerPhileFusion(0, $event)">
             Hodophile
         </span>
 
                         <!-- 绿：逐美者 -->
-                        <span class="bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(74,222,128,0.1)] hover:shadow-[0_0_20px_rgba(74,222,128,0.4)] hover:bg-[#4ade80]/20 hover:-translate-y-1 transition-all duration-300 cursor-default backdrop-blur-md">
+                        <span class="phile-btn bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(74,222,128,0.1)] hover:shadow-[0_0_25px_rgba(74,222,128,0.6)] hover:bg-[#4ade80]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
+                              @click.stop="triggerPhileFusion(1, $event)">
             Philocalist
         </span>
 
                         <!-- 黄：游玩者 -->
-                        <span class="bg-[#facc15]/10 text-[#facc15] border border-[#facc15]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(250,204,21,0.1)] hover:shadow-[0_0_20px_rgba(250,204,21,0.4)] hover:bg-[#facc15]/20 hover:-translate-y-1 transition-all duration-300 cursor-default backdrop-blur-md">
+                        <span class="phile-btn bg-[#facc15]/10 text-[#facc15] border border-[#facc15]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(250,204,21,0.1)] hover:shadow-[0_0_25px_rgba(250,204,21,0.6)] hover:bg-[#facc15]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
+                              @click.stop="triggerPhileFusion(2, $event)">
             Ludophile
         </span>
 
                         <!-- 紫：亲水者 -->
-                        <span class="bg-[#a855f7]/10 text-[#a855f7] border border-[#a855f7]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(168,85,247,0.1)] hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:bg-[#a855f7]/20 hover:-translate-y-1 transition-all duration-300 cursor-default backdrop-blur-md">
+                        <span class="phile-btn bg-[#a855f7]/10 text-[#a855f7] border border-[#a855f7]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(168,85,247,0.1)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:bg-[#a855f7]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
+                              @click.stop="triggerPhileFusion(3, $event)">
             Aquaphile
         </span>
 
                         <!-- 红：极客 -->
-                        <span class="bg-[#ef4444]/10 text-[#ef4444] border border-[#ef4444]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(239,68,68,0.1)] hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] hover:bg-[#ef4444]/20 hover:-translate-y-1 transition-all duration-300 cursor-default backdrop-blur-md">
+                        <span class="phile-btn bg-[#ef4444]/10 text-[#ef4444] border border-[#ef4444]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(239,68,68,0.1)] hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] hover:bg-[#ef4444]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
+                              @click.stop="triggerPhileFusion(4, $event)">
             Technophile
         </span>
 
@@ -1851,6 +1855,43 @@
     <audio :src="currentTrack ? currentTrack.file : ''" @ended="onEnded" @loadedmetadata="onLoadedMetadata"
            @timeupdate="onTimeUpdate"
            preload="none" ref="audioRef"></audio>
+
+    <!-- ================= 5-Phile 聚变旋转跃迁顶层动效（最高层级，纯动效无任何文字） ================= -->
+    <div v-if="isPhileFusing"
+         id="phile-fusion-overlay"
+         :class="{'is-active': philePhase !== 'idle'}"
+         style="position: fixed; inset: 0; z-index: 2147483647; width: 100vw; height: 100vh;">
+
+        <!-- 核心舞台：包含 5 片光化花瓣与合成后的花朵原图 -->
+        <div class="phile-stage" :class="{'is-spinning': philePhase === 'spinning' || philePhase === 'bloomed'}">
+            
+            <!-- 5 片从板块飞出并在中心合拢的花瓣（纯视觉无文字） -->
+            <div v-for="(petal, index) in philePetals"
+                 :key="petal.id"
+                 class="phile-petal"
+                 :class="[
+                     'petal-' + index,
+                     philePhase === 'gathering' ? 'is-gathering' : 'is-converged',
+                     (philePhase === 'bloomed') ? 'is-bloomed' : ''
+                 ]"
+                 :style="{
+                     '--curr-x': (philePhase === 'gathering' ? petal.deltaX : 0) + 'px',
+                     '--curr-y': (philePhase === 'gathering' ? petal.deltaY : 0) + 'px',
+                     '--curr-w': (philePhase === 'gathering' ? petal.startW : 0) + 'px',
+                     '--curr-h': (philePhase === 'gathering' ? petal.startH : 0) + 'px',
+                     '--target-angle': petal.angle + 'deg',
+                     '--petal-color': petal.color,
+                     '--petal-gradient': petal.bgGradient
+                 }">
+            </div>
+
+            <!-- 旋转聚合后绽放的花朵高清图片（纯视觉无文字） -->
+            <img src="imgs/phile-flower.png"
+                 alt="Phile Flower"
+                 class="phile-flower-result-img"
+                 :class="{'is-visible': philePhase === 'bloomed'}" />
+        </div>
+    </div>
 </div>
 
 <script>
@@ -2645,6 +2686,119 @@
                 }, 4500);
             };
 
+            // ================= 5-Phile 聚变旋转跃迁逻辑（纯动效展示，无任何文字） =================
+            const isPhileFusing = ref(false);
+            const philePhase = ref('idle'); // 'idle' -> 'gathering' -> 'converged' -> 'spinning' -> 'bloomed' -> 'flash'
+            const philePetals = ref([]);
+            let phileTimers = [];
+
+            const philePetalsData = [
+                { id: 'hodophile', angle: 0, color: '#38bdf8', bgGradient: 'linear-gradient(180deg, #50bcf8 0%, rgba(56, 189, 248, 0.5) 85%)' },
+                { id: 'philocalist', angle: 72, color: '#2ec48e', bgGradient: 'linear-gradient(180deg, #2ec48e 0%, rgba(46, 196, 142, 0.5) 85%)' },
+                { id: 'ludophile', angle: 144, color: '#f5b326', bgGradient: 'linear-gradient(180deg, #f5b326 0%, rgba(245, 179, 38, 0.5) 85%)' },
+                { id: 'aquaphile', angle: 216, color: '#9648eb', bgGradient: 'linear-gradient(180deg, #9648eb 0%, rgba(150, 72, 235, 0.5) 85%)' },
+                { id: 'technophile', angle: 288, color: '#f86767', bgGradient: 'linear-gradient(180deg, #f86767 0%, rgba(248, 103, 103, 0.5) 85%)' },
+            ];
+
+            const playFusionSound = () => {
+                try {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (!AudioCtx) return;
+                    const ctx = new AudioCtx();
+                    if (ctx.state === 'suspended') ctx.resume();
+                    const now = ctx.currentTime;
+                    const freqs = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+                    freqs.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+                        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + 1.8);
+                        gain.gain.setValueAtTime(0, now + idx * 0.07);
+                        gain.gain.linearRampToValueAtTime(0.08, now + idx * 0.07 + 0.04);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + idx * 0.07);
+                        osc.stop(now + 2.3);
+                    });
+                } catch (_) {}
+            };
+
+            const triggerPhileFusion = (clickedIndex, event) => {
+                if (isPhileFusing.value) return;
+
+                phileTimers.forEach(t => clearTimeout(t));
+                phileTimers = [];
+
+                playFusionSound();
+
+                if (audioRef.value && isPlaying.value) {
+                    let vol = audioRef.value.volume;
+                    const fadeOut = setInterval(() => {
+                        vol -= 0.05;
+                        if (vol <= 0) {
+                            vol = 0;
+                            clearInterval(fadeOut);
+                        }
+                        audioRef.value.volume = vol;
+                    }, 30);
+                }
+
+                // 精准获取板块上 5 个按钮在当前视口中的绝对坐标（无论电脑端横排还是手机端换行）
+                const buttons = document.querySelectorAll('.phile-btn');
+                const cx = window.innerWidth / 2;
+                const cy = window.innerHeight / 2;
+
+                philePetals.value = philePetalsData.map((d, i) => {
+                    let startW = 120, startH = 40, deltaX = 0, deltaY = 0;
+                    if (buttons[i]) {
+                        const r = buttons[i].getBoundingClientRect();
+                        startW = r.width;
+                        startH = r.height;
+                        deltaX = (r.left + r.width / 2) - cx;
+                        deltaY = (r.top + r.height / 2) - cy;
+                    } else {
+                        deltaX = (i - 2) * 80;
+                        deltaY = 120;
+                    }
+                    return {
+                        ...d,
+                        startW,
+                        startH,
+                        deltaX,
+                        deltaY
+                    };
+                });
+
+                // 初始状态：5个光化胶囊挂载在板块按钮原位
+                isPhileFusing.value = true;
+                philePhase.value = 'gathering';
+
+                // 两帧 requestAnimationFrame 确保浏览器渲染好起始贴合状态，再平滑启动从板块飞向中心的动画
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        philePhase.value = 'converged';
+                    });
+                });
+
+                // 阶段2：750ms 飞抵中心并严丝合缝合拢后，启动高速旋转特效
+                phileTimers.push(setTimeout(() => {
+                    philePhase.value = 'spinning';
+                }, 750));
+
+                // 阶段3：1250ms 在高速旋转中无缝绽放合成高清花朵原图
+                phileTimers.push(setTimeout(() => {
+                    philePhase.value = 'bloomed';
+                }, 1250));
+
+                // 阶段4：2500ms 保持雾色透明背景，平滑跳转至目标网站
+                const targetUrl = 'https://xn--2esp7m.xn--udsye.art';
+                phileTimers.push(setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 2500));
+            };
+
 
 // 修改：彻底关闭逻辑（直接关闭窗口，不再调用存档通信）
             const closeGame = () => {
@@ -2752,6 +2906,10 @@
                     if (event.persisted) {
                         isWanderJumping.value = false;
                         isCollapsing.value = false;
+                        isPhileFusing.value = false;
+                        philePhase.value = 'idle';
+                        phileTimers.forEach(t => clearTimeout(t));
+                        phileTimers = [];
 
                         // 👇 核心修复：必须清理定时器，防止原有的跳转逻辑依然在后台倒数
                         if (collapseTimer) clearTimeout(collapseTimer);
@@ -2867,6 +3025,7 @@
                 activeGame, gameWindowRef, openGame, closeGame, toggleFullscreen, isGameVisible, minimizeGame,
                 playModeText, togglePlayMode,
                 isWanderJumping, isCollapsing, jumpKey, triggerWanderJump,
+                isPhileFusing, philePhase, philePetals, triggerPhileFusion,
                 // ...前面的变量
                 showMailModal, mailContent, isSendingMail, mailStatus, sendMail,
                 showPayQR, // <--- 【把变量加进 return 里】

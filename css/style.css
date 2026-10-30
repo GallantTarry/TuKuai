@@ -409,3 +409,154 @@ input[type=range]:focus {
     box-shadow: 0 0 20px rgba(74, 222, 128, 0.4);
     transform: translateY(-2px);
 }
+
+/* ========================================= */
+/* ====== 5-Phile 聚变旋转跃迁动效专属样式（最顶层、雾玻璃半透明背景） ====== */
+/* ========================================= */
+.phile-btn {
+    cursor: pointer !important;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.phile-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+}
+
+.phile-btn:active {
+    transform: translateY(0) scale(0.96);
+}
+
+#phile-fusion-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: 2147483647 !important; /* 最高层级，保证盖在一切板块之上 */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    pointer-events: auto !important;
+    cursor: default !important;
+    /* 纯净雾玻璃半透明背景，透出底层壁纸 */
+    background: rgba(10, 15, 28, 0.55) !important;
+    backdrop-filter: blur(16px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+    opacity: 0;
+    transition: opacity 0.4s ease, background-color 0.3s ease;
+}
+
+#phile-fusion-overlay.is-active {
+    opacity: 1;
+}
+
+/* 核心舞台（全自适应电脑端与手机端） */
+.phile-stage {
+    --stage-size: min(82vw, 82vh, 380px);
+    --petal-w: calc(var(--stage-size) * 0.255);
+    --petal-h: calc(var(--stage-size) * 0.375);
+    --petal-pivot-y: calc(var(--stage-size) * 0.336);
+
+    position: relative;
+    width: var(--stage-size);
+    height: var(--stage-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-origin: center center;
+    transform: rotate(0deg) scale(1);
+}
+
+.phile-stage.is-spinning {
+    animation: phileStageSpin 1.4s cubic-bezier(0.32, 0.06, 0.18, 1) forwards;
+}
+
+@keyframes phileStageSpin {
+    0% {
+        transform: rotate(0deg) scale(0.95);
+    }
+    45% {
+        transform: rotate(540deg) scale(1.08);
+    }
+    85% {
+        transform: rotate(980deg) scale(1.02);
+    }
+    100% {
+        transform: rotate(1080deg) scale(1);
+    }
+}
+
+/* 5 片独立花瓣（从板块飞出，并在中心合拢） */
+.phile-petal {
+    position: absolute;
+    box-sizing: border-box;
+    border-radius: 9999px;
+    border: 1.5px solid rgba(255, 255, 255, 0.55);
+    background: var(--petal-gradient);
+    box-shadow: 0 0 25px var(--petal-color), inset 0 0 15px rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    will-change: transform, left, top, width, height, opacity;
+    pointer-events: none;
+    transition: transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1),
+                left 0.75s cubic-bezier(0.2, 0.8, 0.2, 1),
+                top 0.75s cubic-bezier(0.2, 0.8, 0.2, 1),
+                width 0.75s cubic-bezier(0.2, 0.8, 0.2, 1),
+                height 0.75s cubic-bezier(0.2, 0.8, 0.2, 1),
+                opacity 0.6s ease;
+}
+
+/* 阶段 0：紧贴在板块上各个按钮的位置（从板块起飞起点） */
+.phile-petal.is-gathering {
+    left: calc(50% - var(--curr-w) / 2);
+    top: calc(50% - var(--curr-h) / 2);
+    width: var(--curr-w);
+    height: var(--curr-h);
+    transform: translate(var(--curr-x), var(--curr-y)) rotate(0deg);
+    transform-origin: center center;
+}
+
+/* 阶段 1 及以后：飞入中心并旋转对接成 5 瓣花朵 */
+.phile-petal.is-converged {
+    left: calc(50% - var(--petal-w) / 2);
+    top: calc(50% - var(--petal-pivot-y));
+    width: var(--petal-w);
+    height: var(--petal-h);
+    transform-origin: 50% var(--petal-pivot-y);
+    transform: translate(0px, 0px) rotate(var(--target-angle));
+}
+
+.phile-petal.petal-0 { z-index: 1; }
+.phile-petal.petal-1 { z-index: 2; }
+.phile-petal.petal-2 { z-index: 3; }
+.phile-petal.petal-3 { z-index: 4; }
+.phile-petal.petal-4 { z-index: 5; }
+
+/* 当花朵高清大图完全绽放后，CSS 胶囊柔和淡化，融入高清花朵 */
+.phile-petal.is-bloomed {
+    opacity: 0.15;
+}
+
+/* 最终融合生成的真实花朵图片（纯视觉无文字） */
+.phile-flower-result-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    filter: drop-shadow(0 0 35px rgba(56, 189, 248, 0.65)) drop-shadow(0 0 55px rgba(168, 85, 247, 0.55));
+    z-index: 25;
+}
+
+.phile-flower-result-img.is-visible {
+    opacity: 1;
+    transform: scale(1);
+}
