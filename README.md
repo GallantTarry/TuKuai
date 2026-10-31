@@ -1,7 +1,7 @@
 # 🌐 土块的主站 (TuKuai OS / 少侠别走)
 
 <p align="center">
-  <img src="imgs/favicon.png" alt="TuKuai Logo" width="128" height="128" />
+  <img src="imgs/favicon/favicon.png" alt="TuKuai Logo" width="128" height="128" />
 </p>
 
 <p align="center">
