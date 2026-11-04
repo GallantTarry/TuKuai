@@ -151,33 +151,44 @@
             });
 
             onMounted(async () => {
-                // 1. 放弃官方堵塞节点，换用高可用性的社区 RSSHub 节点
-                // 1. 临时替换为绝对稳定的 Hacker News 极客双语源进行渲染测试
-                const targetRssUrl = encodeURIComponent('https://hn.buzzing.cc/feed.xml');
-
-                // 2. 放弃受限的 rss2json，改用 allorigins 的原生数据透传，强行撕掉跨域限制 (CORS)
-                const apiUrl = `https://api.allorigins.win/raw?url=${targetRssUrl}`;
+                // 👑 直接请求你刚刚绑定好的高大上专属域名！
+                const apiUrl = 'https://daily.土块.art';
 
                 try {
                     const response = await fetch(apiUrl);
                     if (!response.ok) throw new Error('网络响应异常');
 
-                    // 3. 拿到纯净的 XML 文本
                     const xmlText = await response.text();
-
-                    // 4. 纯前端原生解析 XML 数据，不依赖任何第三方 JSON 转换服务
                     const parser = new DOMParser();
                     const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-                    const items = xmlDoc.querySelectorAll("item");
+                    // 兼容 RSS 的 item 和 Atom 的 entry
+                    const items = xmlDoc.querySelectorAll("item, entry");
 
                     if (items.length > 0) {
-                        const latestItem = items[0]; // 永远精准抓取今天的最新一篇
+                        const latestItem = items[0];
+
+                        // 标题
+                        let title = latestItem.querySelector("title")?.textContent || "未知标题";
+
+                        // 日期：兼容 RSS(pubDate) 与 Atom(published / updated)
+                        let pubDateNode = latestItem.querySelector("pubDate, published, updated");
+                        let pubDate = pubDateNode ? pubDateNode.textContent : "未知日期";
+
+                        // 正文：兼容 Atom(content / summary) 与 RSS(description / content:encoded)
+                        let contentNode = latestItem.querySelector("content, description, summary");
+                        let contentText = contentNode ? contentNode.textContent : "";
+
+                        if (!contentText || contentText.trim() === "") {
+                            const encodedNodes = latestItem.getElementsByTagNameNS("*", "encoded");
+                            if (encodedNodes.length > 0) {
+                                contentText = encodedNodes[0].textContent;
+                            }
+                        }
 
                         article.value = {
-                            title: latestItem.querySelector("title").textContent,
-                            pubDate: latestItem.querySelector("pubDate").textContent,
-                            // NYT 的正文通常包裹在 description 标签的 CDATA 中
-                            content: latestItem.querySelector("description").textContent
+                            title: title,
+                            pubDate: pubDate,
+                            content: contentText || "<p>文章正文解析失败。</p>"
                         };
                     } else {
                         throw new Error('未获取到文章节点');
@@ -185,8 +196,8 @@
                 } catch (error) {
                     console.error('拦截通讯失败:', error);
                     article.value = {
-                        title: 'SYSTEM ERROR: 深度防御已触发',
-                        content: '<p>纽约时报的反爬虫机制再次升级，当前社区节点 IP 暂时被墙。</p><p>建议替换为极客专属稳定源：<b>https://hn.buzzing.cc/feed.xml</b>，体验丝滑双语。</p>'
+                        title: 'SYSTEM ERROR: 链接中断',
+                        content: `<p>专属域名通讯异常: ${error.message}</p>`
                     };
                 } finally {
                     loading.value = false;
