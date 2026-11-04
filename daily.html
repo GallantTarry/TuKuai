@@ -383,12 +383,38 @@
 
                     const results = await Promise.all(chunks.map(async (chunk) => {
                         const batchQuery = chunk.join('\n\n');
-                        const transUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-CN&dt=t&q=${encodeURIComponent(batchQuery)}`;
-                        const res = await fetch(transUrl);
-                        if (!res.ok) return chunk;
-                        const data = await res.json();
-                        const fullZh = data[0].map(item => item[0]).join('');
-                        return fullZh.split('\n\n');
+                        let fullZh = '';
+
+                        // 1. 优先通过你的专属 Cloudflare Worker 代理翻译（国内免开代理直连！）
+                        try {
+                            const res = await fetch('https://daily.土块.art/translate', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ text: batchQuery })
+                            });
+                            if (res.ok) {
+                                const data = await res.json();
+                                fullZh = data.translation || '';
+                            }
+                        } catch (e) {
+                            // 忽略，尝试备用通道
+                        }
+
+                        // 2. 备用通道：若 Worker 未更新，则直连谷歌翻译（需开梯子）
+                        if (!fullZh) {
+                            try {
+                                const transUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-CN&dt=t&q=${encodeURIComponent(batchQuery)}`;
+                                const res = await fetch(transUrl);
+                                if (res.ok) {
+                                    const data = await res.json();
+                                    fullZh = data[0].map(item => item[0]).join('');
+                                }
+                            } catch (e) {
+                                return chunk; // 彻底不可用时保持原文
+                            }
+                        }
+
+                        return fullZh ? fullZh.split('\n\n') : chunk;
                     }));
 
                     const allZh = results.flat();
