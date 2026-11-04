@@ -228,12 +228,15 @@
                     </div>
                 </div>
                 <!-- ================= 新增：手机端专属时钟 (PC端自动隐藏) ================= -->
-                <div class="md:hidden flex flex-col items-end justify-center select-none">
+                <!-- 修改前：<div class="md:hidden flex flex-col items-end justify-center select-none"> -->
+
+                <!-- 修改后 -->
+                <div class="md:hidden flex flex-col items-end justify-center select-none cursor-pointer active:scale-95 transition-transform"
+                     @click="openGame('NYT 双语视界', './daily.html')">
                     <span class="text-white/40 text-[8px] tracking-widest mb-0.5">SYS_TIME</span>
-                    <span :style="{ color: activeColor, textShadow: `0 0 10px ${activeGlow}` }"
-                          class="font-bold text-xs tracking-widest transition-colors duration-500">
-                        {{ currentTime }}
-                    </span>
+                    <span :style="{ color: activeColor, textShadow: `0 0 10px ${activeGlow}` }" class="font-bold text-xs tracking-widest transition-colors duration-500">
+        {{ currentTime }}
+    </span>
                 </div>
                 <!-- ==================================================================== -->
             </div>
@@ -257,13 +260,14 @@
 
         <main class="flex-1 min-h-0 relative flex items-center justify-center overflow-hidden p-3 md:p-8">
             <!-- ================= 新增：PC端专属时钟 (手机端自动隐藏，打开游戏时隐藏) ================= -->
-            <div class="hidden md:flex absolute top-6 right-8 z-40 items-center space-x-2 pointer-events-none select-none transition-opacity duration-300"
-                 v-show="!activeGame">
+            <!-- 修改后 -->
+            <div class="hidden md:flex absolute top-6 right-8 z-40 items-center space-x-2 cursor-pointer hover:scale-105 active:scale-95 transition-all duration-300 select-none"
+                 v-show="!activeGame"
+                 @click="openGame('NYT 双语视界', './daily.html')">
                 <span class="text-white/40 text-[10px] tracking-widest">SYS_TIME</span>
-                <span :style="{ color: activeColor, textShadow: `0 0 10px ${activeGlow}` }"
-                      class="font-bold text-base tracking-widest transition-colors duration-500">
-                    {{ currentTime }}
-                </span>
+                <span :style="{ color: activeColor, textShadow: `0 0 10px ${activeGlow}` }" class="font-bold text-base tracking-widest transition-colors duration-500">
+        {{ currentTime }}
+    </span>
             </div>
             <!-- ================================================================================ -->
             <div

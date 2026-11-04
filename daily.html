@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYT 双语视界</title>
+    <script src="./js/vue.global.js"></script>
+    <style>
+        /* 深度契合 TuKuai OS 的暗黑玻璃拟态 */
+        body {
+            margin: 0;
+            padding: 20px 15px;
+            background: transparent;
+            color: #d8dee9;
+            font-family: 'JetBrains Mono', -apple-system, sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* 极客风滚动条 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(5, 5, 5, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .title {
+            color: #4ade80;
+            font-size: 1.25rem;
+            font-weight: bold;
+            line-height: 1.6;
+            margin-top: 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 15px;
+        }
+
+        .meta {
+            color: #88c0d0;
+            font-size: 11px;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 纽约时报正文排版深度优化 */
+        .content {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #eceff4;
+        }
+
+        .content img, .content figure {
+            max-width: 100%;
+            height: auto !important;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: block;
+        }
+
+        .content a {
+            color: #38bdf8;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+            transition: all 0.3s;
+        }
+
+        .content a:hover {
+            color: #facc15;
+            border-bottom-color: #facc15;
+        }
+
+        /* 中英双语层次区分：英文段落微透，中文段落高亮 */
+        .content p {
+            margin-bottom: 1em;
+        }
+        .content p:nth-child(odd) {
+            opacity: 0.7; /* 纽约时报双语通常奇数段是英文 */
+            font-size: 13px;
+        }
+        .content p:nth-child(even) {
+            opacity: 1; /* 偶数段是中文 */
+            font-weight: 500;
+        }
+
+        .loading-text {
+            text-align: center;
+            color: #38bdf8;
+            padding: 60px 0;
+            letter-spacing: 2px;
+            font-size: 12px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; text-shadow: 0 0 10px #38bdf8; }
+            50% { opacity: 0.5; text-shadow: none; }
+        }
+
+        /* 👇 把这段补充在这里 👇 */
+        /* 针对电脑端（中等屏幕及以上）的响应式间距 */
+        @media (min-width: 768px) {
+            body {
+                padding: 40px 15px;
+            }
+            .article-container {
+                padding: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="article-container">
+        <div v-if="loading" class="loading-text">
+            > ESTABLISHING CONNECTION TO NYT MAIN_FRAME...
+        </div>
+
+        <div v-else>
+            <h1 class="title">> {{ article.title }}</h1>
+            <div class="meta">
+                <span>DATE: {{ formattedDate }}</span>
+                <span>SOURCE: NYT DUAL</span>
+            </div>
+            <div class="content" v-html="article.content"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const { createApp, ref, computed, onMounted } = Vue;
+
+    createApp({
+        setup() {
+            const loading = ref(true);
+            const article = ref({});
+
+            const formattedDate = computed(() => {
+                if (!article.value.pubDate) return '';
+                const d = new Date(article.value.pubDate);
+                return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+            });
+
+            onMounted(async () => {
+                // 1. 放弃官方堵塞节点，换用高可用性的社区 RSSHub 节点
+                // 1. 临时替换为绝对稳定的 Hacker News 极客双语源进行渲染测试
+                const targetRssUrl = encodeURIComponent('https://hn.buzzing.cc/feed.xml');
+
+                // 2. 放弃受限的 rss2json，改用 allorigins 的原生数据透传，强行撕掉跨域限制 (CORS)
+                const apiUrl = `https://api.allorigins.win/raw?url=${targetRssUrl}`;
+
+                try {
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) throw new Error('网络响应异常');
+
+                    // 3. 拿到纯净的 XML 文本
+                    const xmlText = await response.text();
+
+                    // 4. 纯前端原生解析 XML 数据，不依赖任何第三方 JSON 转换服务
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                    const items = xmlDoc.querySelectorAll("item");
+
+                    if (items.length > 0) {
+                        const latestItem = items[0]; // 永远精准抓取今天的最新一篇
+
+                        article.value = {
+                            title: latestItem.querySelector("title").textContent,
+                            pubDate: latestItem.querySelector("pubDate").textContent,
+                            // NYT 的正文通常包裹在 description 标签的 CDATA 中
+                            content: latestItem.querySelector("description").textContent
+                        };
+                    } else {
+                        throw new Error('未获取到文章节点');
+                    }
+                } catch (error) {
+                    console.error('拦截通讯失败:', error);
+                    article.value = {
+                        title: 'SYSTEM ERROR: 深度防御已触发',
+                        content: '<p>纽约时报的反爬虫机制再次升级，当前社区节点 IP 暂时被墙。</p><p>建议替换为极客专属稳定源：<b>https://hn.buzzing.cc/feed.xml</b>，体验丝滑双语。</p>'
+                    };
+                } finally {
+                    loading.value = false;
+                }
+            });
+
+            return { loading, article, formattedDate };
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>
