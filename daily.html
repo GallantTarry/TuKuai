@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NYT 双语视界</title>
+    <title>极客技术视界 | 双语精读</title>
     <script src="./js/vue.global.js"></script>
     <style>
         /* 深度契合 TuKuai OS 的暗黑玻璃拟态 */
@@ -23,39 +23,90 @@
         ::-webkit-scrollbar-track { background: transparent; }
 
         .article-container {
-            max-width: 800px;
+            max-width: 860px;
             margin: 0 auto;
-            background: rgba(5, 5, 5, 0.6);
+            background: rgba(5, 5, 5, 0.72);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            padding: 20px 15px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            padding: 26px 22px;
+            box-shadow: 0 0 35px rgba(0, 0, 0, 0.85);
         }
 
+        /* 双语标题设计 */
         .title {
-            color: #4ade80;
-            font-size: 1.25rem;
-            font-weight: bold;
-            line-height: 1.6;
             margin-top: 0;
             border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-            padding-bottom: 15px;
+            padding-bottom: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .en-title {
+            color: #4ade80;
+            font-size: 1.35rem;
+            font-weight: bold;
+            line-height: 1.45;
+        }
+        .zh-title {
+            color: #a3e635;
+            font-size: 1.15rem;
+            font-weight: 500;
+            line-height: 1.45;
+            opacity: 0.95;
+            letter-spacing: 0.5px;
         }
 
+        /* 顶部元数据栏 */
         .meta {
             color: #88c0d0;
             font-size: 11px;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
             letter-spacing: 1px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .meta-left {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .meta-sep {
+            opacity: 0.35;
+        }
+        .author-tag {
+            color: #38bdf8;
+            font-weight: bold;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
         }
 
-        /* 纽约时报正文排版深度优化 */
+        /* 4K 主题封面大图展示 */
+        .article-hero {
+            margin: 20px 0 28px 0;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .hero-cover-img {
+            width: 100%;
+            max-height: 420px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* 正文排版与技术代码美化 */
         .content {
-            font-size: 14px;
-            line-height: 1.8;
+            font-size: 14.5px;
+            line-height: 1.85;
             color: #eceff4;
         }
 
@@ -63,8 +114,19 @@
             max-width: 100%;
             height: auto !important;
             border-radius: 12px;
-            margin: 20px 0;
+            margin: 24px 0 16px 0;
             display: block;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .content figcaption, .content small {
+            display: block;
+            font-size: 11.5px;
+            color: #88c0d0;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            opacity: 0.8;
         }
 
         .content a {
@@ -79,17 +141,120 @@
             border-bottom-color: #facc15;
         }
 
-        /* 中英双语层次区分：英文段落微透，中文段落高亮 */
-        .content p {
-            margin-bottom: 1em;
+        /* 标题、代码块与引用排版 */
+        .content h1, .content h2, .content h3, .content h4 {
+            color: #88c0d0;
+            margin-top: 36px;
+            margin-bottom: 16px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            padding-bottom: 8px;
+            line-height: 1.4;
         }
-        .content p:nth-child(odd) {
-            opacity: 0.7; /* 纽约时报双语通常奇数段是英文 */
+
+        .content pre {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 14px 18px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 13px;
+            margin: 22px 0;
+            color: #a3be8c;
+            line-height: 1.6;
         }
-        .content p:nth-child(even) {
-            opacity: 1; /* 偶数段是中文 */
+
+        .content code {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            color: #ebcb8b;
+        }
+
+        .content pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+        }
+
+        .content blockquote {
+            border-left: 3px solid #38bdf8;
+            margin: 20px 0;
+            color: #81a1c1;
+            font-style: italic;
+            background: rgba(56, 189, 248, 0.05);
+            padding: 12px 18px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .content ul, .content ol {
+            padding-left: 24px;
+            margin: 16px 0;
+        }
+
+        .content li {
+            margin-bottom: 8px;
+            line-height: 1.7;
+        }
+
+        /* 中英双语层次区分：英文段落微透，中文段落高亮，且中英成对分组 */
+        .content section p, .content p {
+            margin: 0;
+            line-height: 1.8;
+        }
+        
+        .content p.en-para {
+            opacity: 0.72;
+            font-size: 13.5px;
+            line-height: 1.65;
+            margin-bottom: 6px;
+        }
+
+        .content p.zh-para {
+            opacity: 1;
             font-weight: 500;
+            font-size: 14.8px;
+            color: #f8fafc;
+            margin-bottom: 26px; /* 中英文对读完后，拉开呼吸间距 */
+        }
+
+        /* 隐藏底部的外部推广与多余元素 */
+        .content hr, .content hr ~ * {
+            display: none !important;
+        }
+
+        /* 极简翻页控制器样式 */
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #88c0d0;
+            font-family: inherit;
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(56, 189, 248, 0.2);
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .page-indicator {
+            color: #4ade80;
+            font-weight: bold;
+            font-size: 11px;
         }
 
         .loading-text {
@@ -106,8 +271,6 @@
             50% { opacity: 0.5; text-shadow: none; }
         }
 
-        /* 👇 把这段补充在这里 👇 */
-        /* 针对电脑端（中等屏幕及以上）的响应式间距 */
         @media (min-width: 768px) {
             body {
                 padding: 40px 15px;
@@ -122,16 +285,38 @@
 <div id="app">
     <div class="article-container">
         <div v-if="loading" class="loading-text">
-            > ESTABLISHING CONNECTION TO NYT MAIN_FRAME...
+            > CONNECTING TO TECH STREAM & GENERATING DUAL TRANSLATION...
         </div>
 
         <div v-else>
-            <h1 class="title">> {{ article.title }}</h1>
+            <!-- 👑 双语对照标题 -->
+            <h1 class="title">
+                <div class="en-title">> {{ currentArticle.title }}</div>
+                <div class="zh-title" v-if="currentZhTitle">> {{ currentZhTitle }}</div>
+            </h1>
+
             <div class="meta">
-                <span>DATE: {{ formattedDate }}</span>
-                <span>SOURCE: NYT DUAL</span>
+                <div class="meta-left">
+                    <span class="meta-tag">📅 {{ formattedDate }}</span>
+                    <span class="meta-sep">|</span>
+                    <span class="meta-tag author-tag">✍️ BY: {{ currentArticle.author }}</span>
+                    <span class="meta-sep">|</span>
+                    <span class="meta-tag">GITHUB TECH</span>
+                </div>
+                <div class="nav-controls">
+                    <button class="nav-btn" @click="prevArticle" :disabled="currentIndex <= 0">&lt; PREV</button>
+                    <span class="page-indicator" v-if="articles.length > 0">{{ currentIndex + 1 }} / {{ articles.length }}</span>
+                    <button class="nav-btn" @click="nextArticle" :disabled="currentIndex >= articles.length - 1">NEXT &gt;</button>
+                </div>
             </div>
-            <div class="content" v-html="article.content"></div>
+
+            <!-- 👑 4K 主题封面大图（告别干瘪瘪文字） -->
+            <div class="article-hero" v-if="currentArticle.image">
+                <img :src="currentArticle.image" :alt="currentArticle.title" class="hero-cover-img" />
+            </div>
+
+            <!-- 正文中英双语对译 -->
+            <div class="content" v-html="displayContent"></div>
         </div>
     </div>
 </div>
@@ -142,69 +327,223 @@
     createApp({
         setup() {
             const loading = ref(true);
-            const article = ref({});
+            const articles = ref([]);
+            const currentIndex = ref(0);
+            const translatedMap = ref({});
+            const zhTitles = ref({});
+
+            const currentArticle = computed(() => {
+                return articles.value[currentIndex.value] || {};
+            });
+
+            const currentZhTitle = computed(() => {
+                return zhTitles.value[currentIndex.value] || '';
+            });
+
+            const displayContent = computed(() => {
+                const article = currentArticle.value;
+                if (!article || !article.content) return '';
+                if (translatedMap.value[currentIndex.value]) {
+                    return translatedMap.value[currentIndex.value];
+                }
+                return article.content;
+            });
 
             const formattedDate = computed(() => {
-                if (!article.value.pubDate) return '';
-                const d = new Date(article.value.pubDate);
+                if (!currentArticle.value.pubDate) return '';
+                const d = new Date(currentArticle.value.pubDate);
+                if (isNaN(d.getTime())) return currentArticle.value.pubDate;
                 return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
             });
 
+            // 👑 核心黑科技：全自动无感中英双语对译引擎（标题 + 正文段落一体化）
+            const autoTranslateCurrent = async (idx) => {
+                if (translatedMap.value[idx]) return; // 已翻译过直接复用
+                const art = articles.value[idx];
+                if (!art || !art.content) return;
+
+                try {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = art.content;
+
+                    const pNodes = Array.from(tempDiv.querySelectorAll('p')).filter(p => {
+                        const t = p.textContent.trim();
+                        return t.length > 15 && /[a-zA-Z]{3,}/.test(t);
+                    });
+
+                    // 将标题作为第一项一同发送翻译！
+                    const textsToTranslate = [art.title, ...pNodes.map(p => p.textContent.trim())];
+
+                    // 分批并发加速翻译（每批 8 个文本）
+                    const chunkSize = 8;
+                    const chunks = [];
+                    for (let i = 0; i < textsToTranslate.length; i += chunkSize) {
+                        chunks.push(textsToTranslate.slice(i, i + chunkSize));
+                    }
+
+                    const results = await Promise.all(chunks.map(async (chunk) => {
+                        const batchQuery = chunk.join('\n\n');
+                        const transUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-CN&dt=t&q=${encodeURIComponent(batchQuery)}`;
+                        const res = await fetch(transUrl);
+                        if (!res.ok) return chunk;
+                        const data = await res.json();
+                        const fullZh = data[0].map(item => item[0]).join('');
+                        return fullZh.split('\n\n');
+                    }));
+
+                    const allZh = results.flat();
+
+                    // 1. 设置中文标题
+                    zhTitles.value[idx] = allZh[0] ? allZh[0].trim() : '';
+
+                    // 2. 插入正文中英双语段落
+                    const pZhList = allZh.slice(1);
+                    pNodes.forEach((pNode, i) => {
+                        pNode.classList.add('en-para');
+                        if (pZhList[i]) {
+                            const zhP = document.createElement('p');
+                            zhP.className = 'zh-para';
+                            zhP.textContent = pZhList[i].trim();
+                            pNode.after(zhP);
+                        }
+                    });
+
+                    translatedMap.value[idx] = tempDiv.innerHTML;
+                } catch (e) {
+                    console.warn('双语自动对译异常，优雅回退为原文展示:', e);
+                }
+            };
+
+            const nextArticle = () => {
+                if (currentIndex.value < articles.value.length - 1) {
+                    currentIndex.value++;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    autoTranslateCurrent(currentIndex.value);
+                }
+            };
+
+            const prevArticle = () => {
+                if (currentIndex.value > 0) {
+                    currentIndex.value--;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    autoTranslateCurrent(currentIndex.value);
+                }
+            };
+
             onMounted(async () => {
-                // 👑 直接请求你刚刚绑定好的高大上专属域名！
+                // 自动双模接入：优先通过支持 4K 大图的官方接口，若受限则自动无缝回退你的专属 Cloudflare 代理
                 const apiUrl = 'https://daily.土块.art';
 
                 try {
-                    const response = await fetch(apiUrl);
+                    let response;
+                    // 先尝试直连或代理
+                    try {
+                        response = await fetch('https://github.blog/wp-json/wp/v2/posts?per_page=10');
+                        if (!response.ok) throw new Error('direct failed');
+                    } catch (e) {
+                        response = await fetch(apiUrl);
+                    }
+
                     if (!response.ok) throw new Error('网络响应异常');
 
-                    const xmlText = await response.text();
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-                    // 兼容 RSS 的 item 和 Atom 的 entry
-                    const items = xmlDoc.querySelectorAll("item, entry");
-
-                    if (items.length > 0) {
-                        const latestItem = items[0];
-
-                        // 标题
-                        let title = latestItem.querySelector("title")?.textContent || "未知标题";
-
-                        // 日期：兼容 RSS(pubDate) 与 Atom(published / updated)
-                        let pubDateNode = latestItem.querySelector("pubDate, published, updated");
-                        let pubDate = pubDateNode ? pubDateNode.textContent : "未知日期";
-
-                        // 正文：兼容 Atom(content / summary) 与 RSS(description / content:encoded)
-                        let contentNode = latestItem.querySelector("content, description, summary");
-                        let contentText = contentNode ? contentNode.textContent : "";
-
-                        if (!contentText || contentText.trim() === "") {
-                            const encodedNodes = latestItem.getElementsByTagNameNS("*", "encoded");
-                            if (encodedNodes.length > 0) {
-                                contentText = encodedNodes[0].textContent;
-                            }
+                    const responseText = await response.text();
+                    
+                    // 1. 尝试按超清 JSON 模式解析（包含 4K 封面大图与作者信息）
+                    let isJson = false;
+                    try {
+                        const jsonData = JSON.parse(responseText);
+                        if (Array.isArray(jsonData)) {
+                            isJson = true;
+                            articles.value = jsonData.map(p => ({
+                                title: (p.title?.rendered || '未知标题').replace(/&#8217;/g, "'").replace(/&amp;/g, "&"),
+                                author: p.yoast_head_json?.author || p._embedded?.author?.[0]?.name || 'GitHub Staff',
+                                image: p.jetpack_featured_media_url || p.yoast_head_json?.og_image?.[0]?.url || '',
+                                pubDate: p.date,
+                                content: p.content?.rendered || ''
+                            }));
                         }
-
-                        article.value = {
-                            title: title,
-                            pubDate: pubDate,
-                            content: contentText || "<p>文章正文解析失败。</p>"
-                        };
-                    } else {
-                        throw new Error('未获取到文章节点');
+                    } catch (e) {
+                        // 非 JSON 则进入标准 XML 解析
                     }
+
+                    // 2. 如果是标准 XML RSS，则提取 XML 数据与 dc:creator 作者
+                    if (!isJson) {
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(responseText, "text/xml");
+                        const items = xmlDoc.querySelectorAll("item, entry");
+
+                        if (items.length > 0) {
+                            const parsedList = [];
+                            items.forEach(item => {
+                                let title = item.querySelector("title")?.textContent || "未知标题";
+                                let pubDateNode = item.querySelector("pubDate, published, updated");
+                                let pubDate = pubDateNode ? pubDateNode.textContent : "未知日期";
+
+                                // 提取作者
+                                let creatorNode = item.getElementsByTagNameNS("*", "creator")[0] || item.querySelector("author");
+                                let author = creatorNode ? creatorNode.textContent.trim() : "GitHub Staff";
+
+                                // 优先提取全文内容
+                                let contentText = "";
+                                const encodedNodes = item.getElementsByTagNameNS("*", "encoded");
+                                if (encodedNodes.length > 0 && encodedNodes[0].textContent.trim().length > 100) {
+                                    contentText = encodedNodes[0].textContent;
+                                } else {
+                                    let contentNode = item.querySelector("content") || item.querySelector("description") || item.querySelector("summary");
+                                    contentText = contentNode ? contentNode.textContent : "";
+                                }
+
+                                // 尝试从正文中提取第一张图片作为封面图
+                                let firstImg = "";
+                                const tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = contentText;
+                                const imgTag = tempDiv.querySelector('img');
+                                if (imgTag) firstImg = imgTag.src;
+
+                                parsedList.push({
+                                    title: title.replace(/^<!\[CDATA\[|\]\]>$/g, ''),
+                                    author: author,
+                                    image: firstImg,
+                                    pubDate: pubDate,
+                                    content: contentText || "<p>文章正文解析失败。</p>"
+                                });
+                            });
+                            articles.value = parsedList;
+                        } else {
+                            throw new Error('未获取到文章节点');
+                        }
+                    }
+
+                    // 加载完毕立刻自动对译第一篇！
+                    if (articles.value.length > 0) {
+                        autoTranslateCurrent(0);
+                    }
+
                 } catch (error) {
                     console.error('拦截通讯失败:', error);
-                    article.value = {
+                    articles.value = [{
                         title: 'SYSTEM ERROR: 链接中断',
+                        author: 'SYSTEM',
+                        image: '',
+                        pubDate: '',
                         content: `<p>专属域名通讯异常: ${error.message}</p>`
-                    };
+                    }];
                 } finally {
                     loading.value = false;
                 }
             });
 
-            return { loading, article, formattedDate };
+            return {
+                loading,
+                articles,
+                currentIndex,
+                currentArticle,
+                currentZhTitle,
+                displayContent,
+                formattedDate,
+                nextArticle,
+                prevArticle
+            };
         }
     }).mount('#app');
 </script>
