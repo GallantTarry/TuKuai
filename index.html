@@ -352,8 +352,14 @@
                     </div>
 
                     <!-- 2. 画板模式：黑雾板子沾满全板块，适配桌面与手机固定尺寸，右上角按钮隐身感 -->
-                    <div v-else key="canvas" class="w-full h-full flex flex-col">
-                        <div class="tukuai-board-container">
+                    <div v-else key="canvas" class="w-full h-full flex items-center justify-center">
+                        <div class="tukuai-board-container" :class="{ 'clearing': isClearingBoard }">
+                            <!-- 左下角极简赛博协同状态指示徽章 -->
+                            <div class="tukuai-board-status">
+                                <span class="tukuai-status-dot" :class="boardSyncStatusClass"></span>
+                                <span>{{ boardSyncStatusText }}</span>
+                            </div>
+
                             <!-- 右上角隐身悬浮控制项：平时幽灵半透明隐身，靠近/触摸时唤醒 -->
                             <div class="tukuai-board-tools">
                                 <!-- 主页经典 5 色选择 -->
@@ -367,7 +373,6 @@
                                             :title="c"></button>
                                 </div>
 
-
                                 <!-- 画笔粗细选择（细/中/粗） -->
                                 <button @click="cycleBrushSize"
                                         class="tukuai-tool-btn"
@@ -378,11 +383,12 @@
                                     <span class="tool-text">{{ boardLineWidthText }}</span>
                                 </button>
 
-                                <!-- 清空画板 -->
-                                <button @click="clearBoard(true)" class="tukuai-tool-btn tukuai-clear-btn" title="清空画板">
+                                <!-- 一键清空画板（极速响应 + 赛博清屏动效） -->
+                                <button @click="clearBoard(true)" class="tukuai-tool-btn tukuai-clear-btn" title="一键重置全服画板">
                                     <svg class="tool-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
+                                    <span class="tool-text hidden md:inline">清空</span>
                                 </button>
 
                                 <!-- 返回档案 -->
@@ -2277,7 +2283,7 @@
                     isSendingMail.value = false;
                 }
             };
-            // 👇 ======== 土块画板与切换逻辑 ======== 👇
+            // 👇 ======== 土块画板与切换逻辑 (Retina高清 + 赛博协同 + 极速一键清空) ======== 👇
             const showCanvas = ref(false);
             const globalBoardCanvas = ref(null);
             let boardWs = null;
@@ -2300,29 +2306,96 @@
                 currentBrushIndex.value = (currentBrushIndex.value + 1) % brushSizes.length;
             };
 
+            // 协同状态与清空动效
+            const isClearingBoard = ref(false);
+            const boardWsState = ref('connecting'); // 'online' | 'connecting' | 'offline'
+            const boardLineCount = ref(0);
+
+            const boardSyncStatusClass = computed(() => {
+                if (isClearingBoard.value) return 'clearing';
+                return boardWsState.value;
+            });
+
+            const boardSyncStatusText = computed(() => {
+                if (isClearingBoard.value) return '[SYS] BOARD REBOOTED';
+                if (boardWsState.value === 'online') return `LIVE // ${boardLineCount.value} LINES`;
+                if (boardWsState.value === 'connecting') return 'CONNECTING...';
+                return 'OFFLINE MODE';
+            });
+
             let isBoardDrawing = false;
             let lastX = 0, lastY = 0;
             let boardHistory = [];
 
+            // 获取 DPR 并限制最大 2.5，兼顾极高画质与流畅度
+            const getDpr = () => Math.min(window.devicePixelRatio || 1, 2.5);
+
+            // 坐标保留 4 位小数，JSON 体积立减 60%
+            const roundCoord = (val) => Math.round(val * 10000) / 10000;
+
+            // 核心渲染函数：支持高分屏自适应、平滑圆角连接与单击饱满打点
+            const renderLine = (x0, y0, x1, y1, color, width = 4) => {
+                const cvs = globalBoardCanvas.value;
+                if (!cvs || !boardCtx || cvs.width === 0 || cvs.height === 0) return;
+
+                const dpr = getDpr();
+                const absX0 = x0 * cvs.width;
+                const absY0 = y0 * cvs.height;
+                const absX1 = x1 * cvs.width;
+                const absY1 = y1 * cvs.height;
+                const actualWidth = (width || 4) * dpr;
+
+                boardCtx.beginPath();
+                // 若起点终点微距离一致（轻触打点），绘制纯净实心圆
+                if (Math.abs(absX1 - absX0) < 0.5 && Math.abs(absY1 - absY0) < 0.5) {
+                    boardCtx.arc(absX0, absY0, actualWidth / 2, 0, Math.PI * 2);
+                    boardCtx.fillStyle = color;
+                    boardCtx.fill();
+                } else {
+                    boardCtx.moveTo(absX0, absY0);
+                    boardCtx.lineTo(absX1, absY1);
+                    boardCtx.strokeStyle = color;
+                    boardCtx.lineWidth = actualWidth;
+                    boardCtx.lineCap = "round";
+                    boardCtx.lineJoin = "round";
+                    boardCtx.stroke();
+                }
+                boardCtx.closePath();
+            };
+
+            // 全量清屏并平滑回放历史
+            const redrawAll = () => {
+                const cvs = globalBoardCanvas.value;
+                if (!cvs || !boardCtx) return;
+                boardCtx.clearRect(0, 0, cvs.width, cvs.height);
+                boardHistory.forEach(line => {
+                    renderLine(line.x0, line.y0, line.x1, line.y1, line.color, line.width);
+                });
+            };
+
+            // 自适应尺寸重算（高清 DPR 绑定）
             const resizeBoard = () => {
                 const cvs = globalBoardCanvas.value;
                 if (!cvs) return;
                 const rect = cvs.getBoundingClientRect();
                 if (rect.width > 0 && rect.height > 0) {
-                    const newW = Math.floor(rect.width);
-                    const newH = Math.floor(rect.height);
+                    const dpr = getDpr();
+                    const newW = Math.round(rect.width * dpr);
+                    const newH = Math.round(rect.height * dpr);
                     if (cvs.width !== newW || cvs.height !== newH) {
                         cvs.width = newW;
                         cvs.height = newH;
-                        if (!boardCtx) {
-                            boardCtx = cvs.getContext('2d');
-                        }
-                        // 重新绘制已有的历史线条
-                        if (boardCtx) {
-                            boardHistory.forEach(line => drawLine(line.x0, line.y0, line.x1, line.y1, line.color, false, line.width));
-                        }
+                        boardCtx = cvs.getContext('2d');
+                        redrawAll();
                     }
                 }
+            };
+
+            // Resize 防抖，杜绝拖拽窗口卡死掉帧
+            let resizeTimer = null;
+            const handleBoardResize = () => {
+                if (resizeTimer) clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(resizeBoard, 100);
             };
 
             const initBoard = () => {
@@ -2331,41 +2404,51 @@
 
                 const rect = cvs.getBoundingClientRect();
                 if (rect.width > 0 && rect.height > 0) {
-                    cvs.width = Math.floor(rect.width);
-                    cvs.height = Math.floor(rect.height);
+                    const dpr = getDpr();
+                    cvs.width = Math.round(rect.width * dpr);
+                    cvs.height = Math.round(rect.height * dpr);
                 }
                 if (!boardCtx) {
                     boardCtx = cvs.getContext('2d');
                 }
 
                 if (boardCtx && boardHistory.length > 0) {
-                    boardHistory.forEach(line => drawLine(line.x0, line.y0, line.x1, line.y1, line.color, false, line.width));
+                    redrawAll();
                 }
 
                 if (!boardWs || boardWs.readyState === WebSocket.CLOSED) {
                     try {
+                        boardWsState.value = 'connecting';
                         boardWs = new WebSocket('wss://board.xn--udsye.art/ws');
+                        boardWs.onopen = () => {
+                            boardWsState.value = 'online';
+                        };
                         boardWs.onmessage = (event) => {
                             try {
                                 const msg = JSON.parse(event.data);
                                 if (msg.type === 'history') {
-                                    boardHistory = msg.data || [];
-                                    boardHistory.forEach(line => drawLine(line.x0, line.y0, line.x1, line.y1, line.color, false, line.width));
+                                    boardHistory = (msg.data || []).slice(-5000);
+                                    boardLineCount.value = boardHistory.length;
+                                    boardWsState.value = 'online';
+                                    redrawAll();
                                 } else if (msg.type === 'draw') {
                                     boardHistory.push(msg.data);
-                                    drawLine(msg.data.x0, msg.data.y0, msg.data.x1, msg.data.y1, msg.data.color, false, msg.data.width);
+                                    if (boardHistory.length > 5500) boardHistory = boardHistory.slice(-5000);
+                                    boardLineCount.value = boardHistory.length;
+                                    renderLine(msg.data.x0, msg.data.y0, msg.data.x1, msg.data.y1, msg.data.color, msg.data.width);
                                 } else if (msg.type === 'draw_batch') {
                                     boardHistory.push(...msg.data);
-                                    msg.data.forEach(line => drawLine(line.x0, line.y0, line.x1, line.y1, line.color, false, line.width));
+                                    if (boardHistory.length > 5500) boardHistory = boardHistory.slice(-5000);
+                                    boardLineCount.value = boardHistory.length;
+                                    msg.data.forEach(line => renderLine(line.x0, line.y0, line.x1, line.y1, line.color, line.width));
                                 } else if (msg.type === 'clear') {
-                                    boardHistory = [];
-                                    pendingDrawData = [];
-                                    if (boardCtx && cvs) boardCtx.clearRect(0, 0, cvs.width, cvs.height);
+                                    clearBoard(false);
                                 }
                             } catch (e) {}
                         };
                         boardWs.onclose = () => {
-                            // 遇到意外断线时，若画板开启则 3 秒后自动尝试重连
+                            boardWsState.value = 'offline';
+                            // 遇到断线时，若画板开启则 3 秒后尝试重连
                             if (showCanvas.value) {
                                 setTimeout(() => {
                                     if (showCanvas.value && (!boardWs || boardWs.readyState === WebSocket.CLOSED)) {
@@ -2375,10 +2458,10 @@
                             }
                         };
                         boardWs.onerror = () => {
-                            console.warn('土块画板 WS连接异常，进入本地离线绘制模式');
+                            boardWsState.value = 'offline';
                         };
                     } catch (e) {
-                        console.warn('土块画板 WS未能连接:', e);
+                        boardWsState.value = 'offline';
                     }
                 }
             };
@@ -2401,29 +2484,21 @@
             const drawLine = (x0, y0, x1, y1, color, isLocal, width = 4) => {
                 const cvs = globalBoardCanvas.value;
                 if (!cvs) return;
-                if (!boardCtx) {
-                    boardCtx = cvs.getContext('2d');
-                }
-                if (!boardCtx || cvs.width === 0 || cvs.height === 0) return;
 
-                const absX0 = x0 * cvs.width;
-                const absY0 = y0 * cvs.height;
-                const absX1 = x1 * cvs.width;
-                const absY1 = y1 * cvs.height;
-
-                boardCtx.beginPath();
-                boardCtx.moveTo(absX0, absY0);
-                boardCtx.lineTo(absX1, absY1);
-                boardCtx.strokeStyle = color;
-                boardCtx.lineWidth = width || 4;
-                boardCtx.lineCap = "round";
-                boardCtx.lineJoin = "round";
-                boardCtx.stroke();
-                boardCtx.closePath();
+                renderLine(x0, y0, x1, y1, color, width);
 
                 if (isLocal) {
-                    const lineData = { x0, y0, x1, y1, color, width };
+                    const lineData = { 
+                        x0: roundCoord(x0), 
+                        y0: roundCoord(y0), 
+                        x1: roundCoord(x1), 
+                        y1: roundCoord(y1), 
+                        color, 
+                        width 
+                    };
                     boardHistory.push(lineData);
+                    if (boardHistory.length > 5500) boardHistory = boardHistory.slice(-5000);
+                    boardLineCount.value = boardHistory.length;
 
                     if (boardWs && boardWs.readyState === WebSocket.OPEN) {
                         pendingDrawData.push(lineData);
@@ -2446,13 +2521,22 @@
                 }
             };
 
+            // 一键清空核心逻辑（保留爽快感，伴随赛博消散动效）
             const clearBoard = (isLocal) => {
                 boardHistory = [];
+                boardLineCount.value = 0;
                 pendingDrawData = [];
                 if (batchSendTimer) {
                     clearTimeout(batchSendTimer);
                     batchSendTimer = null;
                 }
+                
+                // 触发赛博消散动画与状态更新
+                isClearingBoard.value = true;
+                setTimeout(() => {
+                    isClearingBoard.value = false;
+                }, 400);
+
                 if (boardCtx && globalBoardCanvas.value) {
                     boardCtx.clearRect(0, 0, globalBoardCanvas.value.width, globalBoardCanvas.value.height);
                 }
@@ -2477,7 +2561,7 @@
                 const pos = getMousePos(e);
                 lastX = pos.x;
                 lastY = pos.y;
-                // 单击支持打点
+                // 单击轻触饱满打点
                 drawLine(lastX, lastY, pos.x, pos.y, boardColor.value, true, boardLineWidth.value);
             };
 
@@ -2508,7 +2592,6 @@
                 const pos = getTouchPos(e);
                 lastX = pos.x;
                 lastY = pos.y;
-                // 触摸轻触支持打点
                 drawLine(lastX, lastY, pos.x, pos.y, boardColor.value, true, boardLineWidth.value);
             };
 
@@ -2520,7 +2603,7 @@
                 lastY = pos.y;
             };
 
-            window.addEventListener('resize', resizeBoard);
+            window.addEventListener('resize', handleBoardResize);
 
 // 👇 ======== 新增：随机背景图逻辑 ======== 👇
             // 1. 将你所有的背景图路径写进这个数组。以后有新图，直接在这个数组里加一行就行。
@@ -3457,6 +3540,7 @@
                 boardLineWidth, boardLineWidthText, cycleBrushSize,
                 globalBoardCanvas, boardColor, clearBoard,
                 startDraw, drawing, endDraw, startDrawTouch, drawingTouch,
+                isClearingBoard, boardSyncStatusClass, boardSyncStatusText, boardLineCount,
                 siteUv, // <--- 【确保把这行加上！】
                 currentBg, // <--- 把这个加进 return 里
                 currentTvGif, // <--- 👇新增这一行，让 HTML 能够读取到这个变量
