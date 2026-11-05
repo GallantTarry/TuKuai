@@ -271,54 +271,144 @@
             </div>
             <!-- ================================================================================ -->
             <div
-                    class="relative z-20 w-full md:w-4/5 max-w-3xl max-h-full overflow-y-auto hide-scrollbar glass-panel p-5 md:p-10 flex flex-col">
+                    :class="[
+                        'relative z-20 w-full md:w-4/5 max-w-3xl glass-panel transition-all duration-300 flex flex-col',
+                        (currentTab === 'about' && showCanvas)
+                            ? 'h-[480px] md:h-[580px] p-2.5 md:p-3.5 overflow-hidden'
+                            : 'max-h-full overflow-y-auto hide-scrollbar p-5 md:p-10'
+                    ]">
 
-                <div class="space-y-6" v-if="currentTab === 'about'">
-                    <h2 class="text-lg md:text-xl tab-title mb-6 font-bold">> 身份档案</h2>
+                <div :class="(currentTab === 'about' && showCanvas) ? 'w-full h-full' : 'w-full space-y-6'" v-if="currentTab === 'about'">
+                    <transition name="board-fade" mode="out-in">
+                        <!-- 1. 档案模式：保留原有标题、艺术切换按钮、5性格胶囊与跃迁卡片 -->
+                        <div v-if="!showCanvas" key="profile" class="space-y-6 w-full">
+                        <div class="flex justify-between items-center mb-6 shrink-0 relative z-20">
+                            <h2 class="text-lg md:text-xl tab-title font-bold m-0 tracking-wide">> 身份档案</h2>
 
-                    <!-- 优化后的动态色彩与居中排版 -->
-                    <div class="glass-card p-5 md:p-8 flex flex-wrap justify-center items-center gap-3 md:gap-4">
+                            <!-- 🎨 艺术画板切换按钮（手绘赛博调色盘 + 霓虹画笔） -->
+                            <button @click="toggleCanvas"
+                                    class="group relative flex items-center space-x-2 px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[var(--theme-color)] transition-all duration-300 cursor-pointer shadow-lg hover:shadow-[0_0_15px_var(--theme-glow)] active:scale-95 select-none"
+                                    title="切换到土块画板">
+                                <!-- 悬浮光效指示微条 -->
+                                <span class="absolute -top-px left-3 right-3 h-px bg-gradient-to-r from-transparent via-[var(--theme-color)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
 
-                        <!-- 蓝：寻际者 -->
-                        <span class="phile-btn bg-[#38bdf8]/10 text-[#38bdf8] border border-[#38bdf8]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(56,189,248,0.1)] hover:shadow-[0_0_25px_rgba(56,189,248,0.6)] hover:bg-[#38bdf8]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
-                              @click.stop="triggerPhileFusion(0, $event)">
-            Hodophile
-        </span>
+                                <svg class="w-4 h-4 md:w-5 md:h-5 transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C6.477 2 2 6.477 2 12c0 2.89 1.23 5.49 3.2 7.3.38.35.98.31 1.32-.1.43-.52.79-1.1 1.08-1.72.33-.71 1.08-1.15 1.86-1.15h1.54c3.866 0 7-3.134 7-7 0-3.866-3.134-7-7-7z" 
+                                          stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="text-white/80 group-hover:text-white transition-colors"/>
+                                    <circle cx="7.5" cy="8.5" r="1.3" fill="#38bdf8"/>
+                                    <circle cx="11.5" cy="6.5" r="1.3" fill="#4ade80"/>
+                                    <circle cx="15.5" cy="8.5" r="1.3" fill="#facc15"/>
+                                    <circle cx="9" cy="12.5" r="1.3" fill="#ec4899"/>
+                                    <path d="M19.5 13.5l2.5-2.5a1.414 1.414 0 0 0-2-2l-2.5 2.5m2 2l-6 6h-2v-2l6-6m2 2l-2-2" 
+                                          stroke="var(--theme-color)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                                          style="filter: drop-shadow(0 0 4px var(--theme-glow));"/>
+                                </svg>
+                                <span class="text-[11px] md:text-xs font-pixel tracking-wider text-gray-300 group-hover:text-white transition-colors">
+                                    公告
+                                </span>
+                            </button>
+                        </div>
 
-                        <!-- 绿：逐美者 -->
-                        <span class="phile-btn bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(74,222,128,0.1)] hover:shadow-[0_0_25px_rgba(74,222,128,0.6)] hover:bg-[#4ade80]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
-                              @click.stop="triggerPhileFusion(1, $event)">
-            Philocalist
-        </span>
+                        <!-- 5个胶囊按钮卡片 (优化后的动态色彩与居中排版) -->
+                        <div class="glass-card p-5 md:p-8 flex flex-wrap justify-center items-center gap-3 md:gap-4">
+                            <!-- 蓝：寻际者 -->
+                            <span class="phile-btn bg-[#38bdf8]/10 text-[#38bdf8] border border-[#38bdf8]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(56,189,248,0.1)] hover:shadow-[0_0_25px_rgba(56,189,248,0.6)] hover:bg-[#38bdf8]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
+                                  @click.stop="triggerPhileFusion(0, $event)">
+                                Hodophile
+                            </span>
 
-                        <!-- 黄：游玩者 -->
-                        <span class="phile-btn bg-[#facc15]/10 text-[#facc15] border border-[#facc15]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(250,204,21,0.1)] hover:shadow-[0_0_25px_rgba(250,204,21,0.6)] hover:bg-[#facc15]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
-                              @click.stop="triggerPhileFusion(2, $event)">
-            Ludophile
-        </span>
+                            <!-- 绿：逐美者 -->
+                            <span class="phile-btn bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(74,222,128,0.1)] hover:shadow-[0_0_25px_rgba(74,222,128,0.6)] hover:bg-[#4ade80]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
+                                  @click.stop="triggerPhileFusion(1, $event)">
+                                Philocalist
+                            </span>
 
-                        <!-- 紫：亲水者 -->
-                        <span class="phile-btn bg-[#a855f7]/10 text-[#a855f7] border border-[#a855f7]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(168,85,247,0.1)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:bg-[#a855f7]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
-                              @click.stop="triggerPhileFusion(3, $event)">
-            Aquaphile
-        </span>
+                            <!-- 黄：游玩者 -->
+                            <span class="phile-btn bg-[#facc15]/10 text-[#facc15] border border-[#facc15]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(250,204,21,0.1)] hover:shadow-[0_0_25px_rgba(250,204,21,0.6)] hover:bg-[#facc15]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
+                                  @click.stop="triggerPhileFusion(2, $event)">
+                                Ludophile
+                            </span>
 
-                        <!-- 红：极客 -->
-                        <span class="phile-btn bg-[#ef4444]/10 text-[#ef4444] border border-[#ef4444]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(239,68,68,0.1)] hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] hover:bg-[#ef4444]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
-                              @click.stop="triggerPhileFusion(4, $event)">
-            Technophile
-        </span>
+                            <!-- 紫：亲水者 -->
+                            <span class="phile-btn bg-[#a855f7]/10 text-[#a855f7] border border-[#a855f7]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(168,85,247,0.1)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:bg-[#a855f7]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
+                                  @click.stop="triggerPhileFusion(3, $event)">
+                                Aquaphile
+                            </span>
 
+                            <!-- 红：极客 -->
+                            <span class="phile-btn bg-[#ef4444]/10 text-[#ef4444] border border-[#ef4444]/30 px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full shadow-[0_0_10px_rgba(239,68,68,0.1)] hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] hover:bg-[#ef4444]/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none"
+                                  @click.stop="triggerPhileFusion(4, $event)">
+                                Technophile
+                            </span>
+                        </div>
+
+                        <!-- 跃迁文字块 -->
+                        <div class="glass-card p-6">
+                            <a @click.prevent="triggerWanderJump"
+                               class="leading-loose text-gray-300 hover:text-white hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] transition-all duration-300 text-xs md:text-sm text-center font-bold tracking-widest block cursor-pointer select-none">
+                                Not all those who wander are lost.
+                            </a>
+                        </div>
                     </div>
 
-                    <div class="glass-card p-6">
-                        <a @click.prevent="triggerWanderJump"
-                           class="leading-loose text-gray-300 hover:text-white hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] transition-all duration-300 text-xs md:text-sm text-center font-bold tracking-widest block cursor-pointer select-none">
-                            Not all those who wander are lost.
-                        </a>
-                    </div>
-                </div>
+                    <!-- 2. 画板模式：黑雾板子沾满全板块，适配桌面与手机固定尺寸，右上角按钮隐身感 -->
+                    <div v-else key="canvas" class="w-full h-full flex flex-col">
+                        <div class="tukuai-board-container">
+                            <!-- 右上角隐身悬浮控制项：平时幽灵半透明隐身，靠近/触摸时唤醒 -->
+                            <div class="tukuai-board-tools">
+                                <!-- 主页经典 5 色选择 -->
+                                <div class="tukuai-colors-wrap">
+                                    <button v-for="c in homeColors"
+                                            :key="c"
+                                            @click="boardColor = c"
+                                            class="tukuai-color-dot"
+                                            :class="{ 'active': boardColor === c }"
+                                            :style="{ backgroundColor: c, '--dot-color': c }"
+                                            :title="c"></button>
+                                </div>
 
+
+                                <!-- 画笔粗细选择（细/中/粗） -->
+                                <button @click="cycleBrushSize"
+                                        class="tukuai-tool-btn"
+                                        :title="`画笔粗细: ${boardLineWidthText} (点击切换)`">
+                                    <svg class="tool-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                    <span class="tool-text">{{ boardLineWidthText }}</span>
+                                </button>
+
+                                <!-- 清空画板 -->
+                                <button @click="clearBoard(true)" class="tukuai-tool-btn tukuai-clear-btn" title="清空画板">
+                                    <svg class="tool-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+
+                                <!-- 返回档案 -->
+                                <button @click="toggleCanvas" class="tukuai-tool-btn tukuai-back-btn" title="返回身份档案">
+                                    <svg class="tool-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                    </svg>
+                                    <span class="tool-text">档案</span>
+                                </button>
+                            </div>
+
+                            <!-- 画布本体：黑雾板子内部填满 -->
+                            <canvas ref="globalBoardCanvas"
+                                    class="board-canvas"
+                                    @mousedown="startDraw"
+                                    @mousemove="drawing"
+                                    @mouseup="endDraw"
+                                    @mouseleave="endDraw"
+                                    @touchstart="startDrawTouch"
+                                    @touchmove.prevent="drawingTouch"
+                                    @touchend="endDraw"
+                                    @touchcancel="endDraw"></canvas>
+                        </div>
+                    </div>
+                </transition>
+            </div>
                 <!--在线使用-->
                 <div class="space-y-4 flex flex-col h-full max-h-full" v-if="currentTab === 'online'">
                     <h2 class="text-lg md:text-xl tab-title mb-4 font-bold shrink-0">> 在线工具</h2>
@@ -2187,6 +2277,251 @@
                     isSendingMail.value = false;
                 }
             };
+            // 👇 ======== 土块画板与切换逻辑 ======== 👇
+            const showCanvas = ref(false);
+            const globalBoardCanvas = ref(null);
+            let boardWs = null;
+            let boardCtx = null;
+            
+            // 主页经典的 5 种核心颜色（蓝、绿、黄、紫、红）
+            const homeColors = ['#38bdf8', '#4ade80', '#facc15', '#a855f7', '#ef4444'];
+            const boardColor = ref('#4ade80');
+            
+            // 画笔粗细控制（细/中/粗）
+            const brushSizes = [
+                { label: '细', size: 2 },
+                { label: '中', size: 4 },
+                { label: '粗', size: 8 }
+            ];
+            const currentBrushIndex = ref(1); // 默认“中”
+            const boardLineWidth = computed(() => brushSizes[currentBrushIndex.value].size);
+            const boardLineWidthText = computed(() => brushSizes[currentBrushIndex.value].label);
+            const cycleBrushSize = () => {
+                currentBrushIndex.value = (currentBrushIndex.value + 1) % brushSizes.length;
+            };
+
+            let isBoardDrawing = false;
+            let lastX = 0, lastY = 0;
+            let boardHistory = [];
+
+            const resizeBoard = () => {
+                const cvs = globalBoardCanvas.value;
+                if (!cvs) return;
+                const rect = cvs.getBoundingClientRect();
+                if (rect.width > 0 && rect.height > 0) {
+                    const newW = Math.floor(rect.width);
+                    const newH = Math.floor(rect.height);
+                    if (cvs.width !== newW || cvs.height !== newH) {
+                        cvs.width = newW;
+                        cvs.height = newH;
+                        if (!boardCtx) {
+                            boardCtx = cvs.getContext('2d');
+                        }
+                        // 重新绘制已有的历史线条
+                        if (boardCtx) {
+                            boardHistory.forEach(line => drawLine(line.x0, line.y0, line.x1, line.y1, line.color, false, line.width));
+                        }
+                    }
+                }
+            };
+
+            const initBoard = () => {
+                const cvs = globalBoardCanvas.value;
+                if (!cvs) return;
+
+                const rect = cvs.getBoundingClientRect();
+                if (rect.width > 0 && rect.height > 0) {
+                    cvs.width = Math.floor(rect.width);
+                    cvs.height = Math.floor(rect.height);
+                }
+                if (!boardCtx) {
+                    boardCtx = cvs.getContext('2d');
+                }
+
+                if (boardCtx && boardHistory.length > 0) {
+                    boardHistory.forEach(line => drawLine(line.x0, line.y0, line.x1, line.y1, line.color, false, line.width));
+                }
+
+                if (!boardWs || boardWs.readyState === WebSocket.CLOSED) {
+                    try {
+                        boardWs = new WebSocket('wss://board.xn--udsye.art/ws');
+                        boardWs.onmessage = (event) => {
+                            try {
+                                const msg = JSON.parse(event.data);
+                                if (msg.type === 'history') {
+                                    boardHistory = msg.data || [];
+                                    boardHistory.forEach(line => drawLine(line.x0, line.y0, line.x1, line.y1, line.color, false, line.width));
+                                } else if (msg.type === 'draw') {
+                                    boardHistory.push(msg.data);
+                                    drawLine(msg.data.x0, msg.data.y0, msg.data.x1, msg.data.y1, msg.data.color, false, msg.data.width);
+                                } else if (msg.type === 'draw_batch') {
+                                    boardHistory.push(...msg.data);
+                                    msg.data.forEach(line => drawLine(line.x0, line.y0, line.x1, line.y1, line.color, false, line.width));
+                                } else if (msg.type === 'clear') {
+                                    boardHistory = [];
+                                    pendingDrawData = [];
+                                    if (boardCtx && cvs) boardCtx.clearRect(0, 0, cvs.width, cvs.height);
+                                }
+                            } catch (e) {}
+                        };
+                        boardWs.onclose = () => {
+                            // 遇到意外断线时，若画板开启则 3 秒后自动尝试重连
+                            if (showCanvas.value) {
+                                setTimeout(() => {
+                                    if (showCanvas.value && (!boardWs || boardWs.readyState === WebSocket.CLOSED)) {
+                                        initBoard();
+                                    }
+                                }, 3000);
+                            }
+                        };
+                        boardWs.onerror = () => {
+                            console.warn('土块画板 WS连接异常，进入本地离线绘制模式');
+                        };
+                    } catch (e) {
+                        console.warn('土块画板 WS未能连接:', e);
+                    }
+                }
+            };
+
+            const toggleCanvas = () => {
+                showCanvas.value = !showCanvas.value;
+                isBoardDrawing = false;
+                if (showCanvas.value) {
+                    nextTick(() => {
+                        initBoard();
+                        setTimeout(resizeBoard, 100);
+                        setTimeout(resizeBoard, 350);
+                    });
+                }
+            };
+
+            let pendingDrawData = [];
+            let batchSendTimer = null;
+
+            const drawLine = (x0, y0, x1, y1, color, isLocal, width = 4) => {
+                const cvs = globalBoardCanvas.value;
+                if (!cvs) return;
+                if (!boardCtx) {
+                    boardCtx = cvs.getContext('2d');
+                }
+                if (!boardCtx || cvs.width === 0 || cvs.height === 0) return;
+
+                const absX0 = x0 * cvs.width;
+                const absY0 = y0 * cvs.height;
+                const absX1 = x1 * cvs.width;
+                const absY1 = y1 * cvs.height;
+
+                boardCtx.beginPath();
+                boardCtx.moveTo(absX0, absY0);
+                boardCtx.lineTo(absX1, absY1);
+                boardCtx.strokeStyle = color;
+                boardCtx.lineWidth = width || 4;
+                boardCtx.lineCap = "round";
+                boardCtx.lineJoin = "round";
+                boardCtx.stroke();
+                boardCtx.closePath();
+
+                if (isLocal) {
+                    const lineData = { x0, y0, x1, y1, color, width };
+                    boardHistory.push(lineData);
+
+                    if (boardWs && boardWs.readyState === WebSocket.OPEN) {
+                        pendingDrawData.push(lineData);
+
+                        if (!batchSendTimer) {
+                            batchSendTimer = setTimeout(() => {
+                                try {
+                                    if (boardWs && boardWs.readyState === WebSocket.OPEN && pendingDrawData.length > 0) {
+                                        boardWs.send(JSON.stringify({
+                                            type: 'draw_batch',
+                                            data: pendingDrawData
+                                        }));
+                                    }
+                                } catch (e) {}
+                                pendingDrawData = [];
+                                batchSendTimer = null;
+                            }, 40);
+                        }
+                    }
+                }
+            };
+
+            const clearBoard = (isLocal) => {
+                boardHistory = [];
+                pendingDrawData = [];
+                if (batchSendTimer) {
+                    clearTimeout(batchSendTimer);
+                    batchSendTimer = null;
+                }
+                if (boardCtx && globalBoardCanvas.value) {
+                    boardCtx.clearRect(0, 0, globalBoardCanvas.value.width, globalBoardCanvas.value.height);
+                }
+                if (isLocal && boardWs && boardWs.readyState === WebSocket.OPEN) {
+                    boardWs.send(JSON.stringify({ type: 'clear' }));
+                }
+            };
+
+            const getMousePos = (e) => {
+                const cvs = globalBoardCanvas.value;
+                if (!cvs) return { x: 0, y: 0 };
+                const rect = cvs.getBoundingClientRect();
+                return {
+                    x: Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)),
+                    y: Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height))
+                };
+            };
+
+            const startDraw = (e) => {
+                if (e.button !== 0) return;
+                isBoardDrawing = true;
+                const pos = getMousePos(e);
+                lastX = pos.x;
+                lastY = pos.y;
+                // 单击支持打点
+                drawLine(lastX, lastY, pos.x, pos.y, boardColor.value, true, boardLineWidth.value);
+            };
+
+            const drawing = (e) => {
+                if (!isBoardDrawing) return;
+                const pos = getMousePos(e);
+                drawLine(lastX, lastY, pos.x, pos.y, boardColor.value, true, boardLineWidth.value);
+                lastX = pos.x;
+                lastY = pos.y;
+            };
+
+            const endDraw = () => {
+                isBoardDrawing = false;
+            };
+
+            const getTouchPos = (e) => {
+                const cvs = globalBoardCanvas.value;
+                if (!cvs || !e.touches || !e.touches[0]) return { x: 0, y: 0 };
+                const rect = cvs.getBoundingClientRect();
+                return {
+                    x: Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width)),
+                    y: Math.max(0, Math.min(1, (e.touches[0].clientY - rect.top) / rect.height))
+                };
+            };
+
+            const startDrawTouch = (e) => {
+                isBoardDrawing = true;
+                const pos = getTouchPos(e);
+                lastX = pos.x;
+                lastY = pos.y;
+                // 触摸轻触支持打点
+                drawLine(lastX, lastY, pos.x, pos.y, boardColor.value, true, boardLineWidth.value);
+            };
+
+            const drawingTouch = (e) => {
+                if (!isBoardDrawing) return;
+                const pos = getTouchPos(e);
+                drawLine(lastX, lastY, pos.x, pos.y, boardColor.value, true, boardLineWidth.value);
+                lastX = pos.x;
+                lastY = pos.y;
+            };
+
+            window.addEventListener('resize', resizeBoard);
+
 // 👇 ======== 新增：随机背景图逻辑 ======== 👇
             // 1. 将你所有的背景图路径写进这个数组。以后有新图，直接在这个数组里加一行就行。
             const bgImages = [
@@ -2286,6 +2621,15 @@
             ]);
 
             const currentTab = ref('about');
+
+
+// 监听切页，确保切回 about 页面且画板开启时画布尺寸准确
+            watch(currentTab, (newTab) => {
+                if (newTab === 'about' && showCanvas.value) {
+                    nextTick(() => { initBoard(); setTimeout(resizeBoard, 200); });
+                }
+            });
+// 👆 ======================================== 👆
 
             const activeColor = computed(() => {
                 const item = menuItems.value.find(i => i.id === currentTab.value);
@@ -2923,7 +3267,9 @@
 
             onMounted(() => {
                 initParticleSystem();
-                // 👇 新增：Cookie 弹窗的监听与处理
+
+                // 👇 加入这一行，在系统加载完毕后安全唤醒画板
+                setTimeout(() => { if (showCanvas.value) initBoard(); }, 500);
                 // 👇 新增：Cookie 弹窗的监听与处理
                 const initCookieBanner = () => {
                     const banner = document.getElementById('cookieConsentBanner');
@@ -3106,6 +3452,11 @@
             }, {immediate: true});
             // 👆 ---------------------------------------- 👆
             return {
+                // 土块画板与切换导出的参数
+                showCanvas, toggleCanvas, homeColors,
+                boardLineWidth, boardLineWidthText, cycleBrushSize,
+                globalBoardCanvas, boardColor, clearBoard,
+                startDraw, drawing, endDraw, startDrawTouch, drawingTouch,
                 siteUv, // <--- 【确保把这行加上！】
                 currentBg, // <--- 把这个加进 return 里
                 currentTvGif, // <--- 👇新增这一行，让 HTML 能够读取到这个变量

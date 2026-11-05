@@ -560,3 +560,226 @@ input[type=range]:focus {
     opacity: 1;
     transform: scale(1);
 }
+
+/* 身份档案与土块画板丝滑切换动画 (微位移动态淡入淡出，零坐标形变) */
+.board-fade-enter-active,
+.board-fade-leave-active {
+    transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.board-fade-enter-from {
+    opacity: 0;
+    transform: translateY(6px);
+}
+
+.board-fade-leave-to {
+    opacity: 0;
+    transform: translateY(-6px);
+}
+
+/* ========================================================
+   土块画板专属样式 (高品质黑雾磨砂毛玻璃 & 隐身悬浮控制项)
+   ======================================================== */
+.tukuai-board-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* 与主页胶囊按钮和文字底板完全相同的半透明黑雾毛玻璃质感 */
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 右上角隐身悬浮工具栏：平时幽灵半隐身，悬停或触控时清晰唤醒 */
+.tukuai-board-tools {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.35;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto;
+}
+
+@media (min-width: 768px) {
+    .tukuai-board-tools {
+        top: 16px;
+        right: 18px;
+        gap: 10px;
+    }
+}
+
+.tukuai-board-tools:hover,
+.tukuai-board-tools:focus-within {
+    opacity: 1;
+}
+
+/* 主页经典 5 色选择圆点 */
+.tukuai-colors-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+@media (min-width: 768px) {
+    .tukuai-colors-wrap {
+        gap: 8px;
+    }
+}
+
+.tukuai-color-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0;
+    outline: none;
+}
+
+@media (min-width: 768px) {
+    .tukuai-color-dot {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+.tukuai-color-dot:hover {
+    transform: scale(1.25);
+    border-color: #fff;
+}
+
+.tukuai-color-dot.active {
+    transform: scale(1.25);
+    border-color: #ffffff;
+    box-shadow: 0 0 10px var(--dot-color), 0 0 4px #ffffff;
+}
+
+/* 扩展自定义拾色器 */
+.tukuai-color-picker-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.tukuai-color-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.tukuai-color-picker-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px dashed rgba(255, 255, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+@media (min-width: 768px) {
+    .tukuai-color-picker-btn {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+.tukuai-color-picker-wrap:hover .tukuai-color-picker-btn {
+    transform: scale(1.2);
+    border-color: #fff;
+}
+
+.tukuai-color-picker-btn svg {
+    width: 10px;
+    height: 10px;
+    color: #fff;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+}
+
+/* 悬浮微型功能按钮通用样式 (画笔粗细、清空、返回档案) */
+.tukuai-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    outline: none;
+    line-height: 1;
+}
+
+@media (min-width: 768px) {
+    .tukuai-tool-btn {
+        padding: 5px 10px;
+        font-size: 12px;
+        gap: 5px;
+    }
+}
+
+.tukuai-tool-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.tukuai-tool-btn:active {
+    transform: scale(0.95);
+}
+
+.tukuai-tool-btn .tool-icon {
+    width: 13px;
+    height: 13px;
+}
+
+.tukuai-tool-btn .tool-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+}
+
+.tukuai-clear-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #f87171;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+.tukuai-back-btn:hover {
+    border-color: var(--theme-color);
+    box-shadow: 0 0 12px var(--theme-glow);
+}
+
+/* 画布样式 */
+.board-canvas, canvas.board-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+}
