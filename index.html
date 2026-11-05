@@ -279,7 +279,7 @@
                     ]">
 
                 <div :class="(currentTab === 'about' && showCanvas) ? 'w-full h-full' : 'w-full space-y-6'" v-if="currentTab === 'about'">
-                    <transition name="board-fade" mode="out-in">
+                    <transition name="board-fade" mode="out-in" @after-enter="initBoard">
                         <!-- 1. 档案模式：保留原有标题、艺术切换按钮、5性格胶囊与跃迁卡片 -->
                         <div v-if="!showCanvas" key="profile" class="space-y-6 w-full">
                         <div class="flex justify-between items-center mb-6 shrink-0 relative z-20">
@@ -2398,81 +2398,111 @@
                 resizeTimer = setTimeout(resizeBoard, 100);
             };
 
-            const initBoard = () => {
+            const initBoardCanvas = () => {
                 const cvs = globalBoardCanvas.value;
                 if (!cvs) return;
 
                 const rect = cvs.getBoundingClientRect();
                 if (rect.width > 0 && rect.height > 0) {
                     const dpr = getDpr();
-                    cvs.width = Math.round(rect.width * dpr);
-                    cvs.height = Math.round(rect.height * dpr);
-                }
-                if (!boardCtx) {
+                    const newW = Math.round(rect.width * dpr);
+                    const newH = Math.round(rect.height * dpr);
+                    if (cvs.width !== newW || cvs.height !== newH || !boardCtx) {
+                        cvs.width = newW;
+                        cvs.height = newH;
+                        boardCtx = cvs.getContext('2d');
+                        redrawAll();
+                    }
+                } else if (!boardCtx) {
                     boardCtx = cvs.getContext('2d');
                 }
+            };
 
-                if (boardCtx && boardHistory.length > 0) {
-                    redrawAll();
+            let reconnectTimer = null;
+            const connectBoardWs = () => {
+                if (boardWs && (boardWs.readyState === WebSocket.OPEN || boardWs.readyState === WebSocket.CONNECTING)) {
+                    if (boardWs.readyState === WebSocket.OPEN) {
+                        boardWsState.value = 'online';
+                    }
+                    return;
                 }
 
-                if (!boardWs || boardWs.readyState === WebSocket.CLOSED) {
-                    try {
-                        boardWsState.value = 'connecting';
-                        boardWs = new WebSocket('wss://board.xn--udsye.art/ws');
-                        boardWs.onopen = () => {
-                            boardWsState.value = 'online';
-                        };
-                        boardWs.onmessage = (event) => {
-                            try {
-                                const msg = JSON.parse(event.data);
-                                if (msg.type === 'history') {
-                                    boardHistory = (msg.data || []).slice(-5000);
-                                    boardLineCount.value = boardHistory.length;
-                                    boardWsState.value = 'online';
-                                    redrawAll();
-                                } else if (msg.type === 'draw') {
-                                    boardHistory.push(msg.data);
-                                    if (boardHistory.length > 5500) boardHistory = boardHistory.slice(-5000);
-                                    boardLineCount.value = boardHistory.length;
-                                    renderLine(msg.data.x0, msg.data.y0, msg.data.x1, msg.data.y1, msg.data.color, msg.data.width);
-                                } else if (msg.type === 'draw_batch') {
-                                    boardHistory.push(...msg.data);
-                                    if (boardHistory.length > 5500) boardHistory = boardHistory.slice(-5000);
-                                    boardLineCount.value = boardHistory.length;
-                                    msg.data.forEach(line => renderLine(line.x0, line.y0, line.x1, line.y1, line.color, line.width));
-                                } else if (msg.type === 'clear') {
-                                    clearBoard(false);
-                                }
-                            } catch (e) {}
-                        };
-                        boardWs.onclose = () => {
-                            boardWsState.value = 'offline';
-                            // 遇到断线时，若画板开启则 3 秒后尝试重连
-                            if (showCanvas.value) {
-                                setTimeout(() => {
-                                    if (showCanvas.value && (!boardWs || boardWs.readyState === WebSocket.CLOSED)) {
-                                        initBoard();
-                                    }
-                                }, 3000);
+                try {
+                    boardWsState.value = 'connecting';
+                    boardWs = new WebSocket('wss://board.xn--udsye.art/ws');
+                    boardWs.onopen = () => {
+                        boardWsState.value = 'online';
+                        if (reconnectTimer) {
+                            clearTimeout(reconnectTimer);
+                            reconnectTimer = null;
+                        }
+                    };
+                    boardWs.onmessage = (event) => {
+                        try {
+                            const msg = JSON.parse(event.data);
+                            if (msg.type === 'history') {
+                                boardHistory = (msg.data || []).slice(-5000);
+                                boardLineCount.value = boardHistory.length;
+                                boardWsState.value = 'online';
+                                redrawAll();
+                            } else if (msg.type === 'draw') {
+                                boardHistory.push(msg.data);
+                                if (boardHistory.length > 5500) boardHistory = boardHistory.slice(-5000);
+                                boardLineCount.value = boardHistory.length;
+                                renderLine(msg.data.x0, msg.data.y0, msg.data.x1, msg.data.y1, msg.data.color, msg.data.width);
+                            } else if (msg.type === 'draw_batch') {
+                                boardHistory.push(...msg.data);
+                                if (boardHistory.length > 5500) boardHistory = boardHistory.slice(-5000);
+                                boardLineCount.value = boardHistory.length;
+                                msg.data.forEach(line => renderLine(line.x0, line.y0, line.x1, line.y1, line.color, line.width));
+                            } else if (msg.type === 'clear') {
+                                clearBoard(false);
                             }
-                        };
-                        boardWs.onerror = () => {
-                            boardWsState.value = 'offline';
-                        };
-                    } catch (e) {
+                        } catch (e) {}
+                    };
+                    boardWs.onclose = () => {
                         boardWsState.value = 'offline';
-                    }
+                        if (showCanvas.value && !reconnectTimer) {
+                            reconnectTimer = setTimeout(() => {
+                                reconnectTimer = null;
+                                if (showCanvas.value) {
+                                    connectBoardWs();
+                                }
+                            }, 3000);
+                        }
+                    };
+                    boardWs.onerror = () => {
+                        boardWsState.value = 'offline';
+                    };
+                } catch (e) {
+                    boardWsState.value = 'offline';
                 }
             };
+
+            const initBoard = () => {
+                initBoardCanvas();
+                connectBoardWs();
+            };
+
+            // 监听画布 DOM 节点挂载，确保一进入画板立刻初始化尺寸并重绘
+            watch(globalBoardCanvas, (cvs) => {
+                if (cvs) {
+                    initBoardCanvas();
+                    setTimeout(initBoardCanvas, 80);
+                    setTimeout(initBoardCanvas, 260);
+                }
+            });
 
             const toggleCanvas = () => {
                 showCanvas.value = !showCanvas.value;
                 isBoardDrawing = false;
                 if (showCanvas.value) {
+                    // 立即启动 WebSocket 连接握手（无需等待 220ms 切换动画结束）
+                    connectBoardWs();
                     nextTick(() => {
-                        initBoard();
-                        setTimeout(resizeBoard, 100);
+                        initBoardCanvas();
+                        setTimeout(initBoardCanvas, 100);
+                        setTimeout(initBoardCanvas, 260);
                         setTimeout(resizeBoard, 350);
                     });
                 }
@@ -3536,7 +3566,7 @@
             // 👆 ---------------------------------------- 👆
             return {
                 // 土块画板与切换导出的参数
-                showCanvas, toggleCanvas, homeColors,
+                showCanvas, toggleCanvas, initBoard, homeColors,
                 boardLineWidth, boardLineWidthText, cycleBrushSize,
                 globalBoardCanvas, boardColor, clearBoard,
                 startDraw, drawing, endDraw, startDrawTouch, drawingTouch,
