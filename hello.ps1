@@ -1,34 +1,51 @@
-﻿# PowerShell Script - Tukuai Monologue (Synced Audio + Hacker Green Terminal)
+﻿Add-Type -AssemblyName presentationCore
 
-# 1. 优先使用本地音频（若存在），否则流式播放云端直链
-$scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Get-Location }
-$localAudio = Join-Path $scriptDir "msg.mp3"
-$audioSource = if (Test-Path $localAudio) { $localAudio } else { "https://xn--udsye.art/msg.mp3" }
+# 1. 确保音频就绪（优先使用本地同目录文件或快速缓存到系统临时目录）
+$tempAudio = Join-Path $env:TEMP "tukuai_msg.mp3"
+$audioUrl = "https://xn--udsye.art/msg.mp3"
+$localAudio = if ($PSScriptRoot) { Join-Path $PSScriptRoot "msg.mp3" } else { Join-Path (Get-Location) "msg.mp3" }
 
-# 2. 启动 Windows 媒体播放器内核（原生异步播放，无需额外后台作业）
-$wmp = New-Object -ComObject WMPlayer.OCX
-$wmp.settings.volume = 100
-$wmp.URL = $audioSource
-$wmp.controls.play()
+$audioPath = ""
+if (Test-Path $localAudio) {
+    $audioPath = $localAudio
+} elseif (Test-Path $tempAudio -and (Get-Item $tempAudio).Length -ge 1000000) {
+    $audioPath = $tempAudio
+} else {
+    try {
+        (New-Object System.Net.WebClient).DownloadFile($audioUrl, $tempAudio)
+        $audioPath = $tempAudio
+    } catch {
+        $audioPath = $audioUrl
+    }
+}
+
+# 2. 启动 .NET 原生高品质媒体播放器
+$player = New-Object System.Windows.Media.MediaPlayer
+$player.Open([System.Uri]$audioPath)
+$player.Volume = 1.0
+$player.Play()
+
+# 备用播放方案（双重冗余）
+$wmp = $null
+try {
+    $wmp = New-Object -ComObject WMPlayer.OCX
+    $wmp.settings.volume = 100
+    $wmp.URL = $audioPath
+    $wmp.controls.play()
+} catch {}
 
 # 3. 营造终端黑客极客绿氛围
 Clear-Host
 $Host.UI.RawUI.WindowTitle = "Tukuai - Terminal Monologue [Audio Synced]"
 Write-Host "[ESTABLISHING SECURE AUDIO LINK...]" -ForegroundColor DarkGreen
-Start-Sleep -Milliseconds 500
-Write-Host "[CONNECTED TO AUDIO SOURCE: $audioSource]" -ForegroundColor DarkGreen
 Start-Sleep -Milliseconds 300
-Write-Host "[AUDIO BUFFERING & SYNCHRONIZING...]" -ForegroundColor DarkGreen
-Start-Sleep -Milliseconds 400
+Write-Host "[CONNECTED TO AUDIO SOURCE: $audioPath]" -ForegroundColor DarkGreen
+Start-Sleep -Milliseconds 200
+Write-Host "[INITIALIZING AUDIO DECRYPTION STREAM...]" -ForegroundColor DarkGreen
+Start-Sleep -Milliseconds 300
 Write-Host ""
 
-# 4. 等待音频进入播放状态（最多等待 6 秒缓冲）
-$waitSw = [System.Diagnostics.Stopwatch]::StartNew()
-while ($wmp.playState -ne 3 -and $waitSw.Elapsed.TotalSeconds -lt 6) {
-    Start-Sleep -Milliseconds 100
-}
-
-# 5. 精确时间轴（匹配音频 04:20 真实语速与停顿）
+# 4. 精确时间轴（匹配音频 04:20 真实语速与停顿）
 $timeline = @(
     # --- 序言 ---
     @{ t = 0.0;   text = "Hello World... "; br = $false },
@@ -101,15 +118,17 @@ $timeline = @(
     @{ t = 258.0; text = "And when your time comes... you won't be looking back with a mountain of regrets."; br = $true }
 )
 
-# 6. 开始逐句同步打印
+# 5. 开始逐句同步打印
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 try {
     for ($i = 0; $i -lt $timeline.Count; $i++) {
         $item = $timeline[$i]
         
-        # 等待音频播放进度到达该句子的开始时间点
-        while ($stopwatch.Elapsed.TotalSeconds -lt $item.t) {
+        # 等待音频播放进度到达该句子的开始时间点（结合硬件播放器进度与秒表）
+        while ($true) {
+            $currentPos = if ($player.Position.TotalSeconds -gt 0) { $player.Position.TotalSeconds } else { $stopwatch.Elapsed.TotalSeconds }
+            if ($currentPos -ge $item.t) { break }
             Start-Sleep -Milliseconds 25
         }
         
@@ -135,12 +154,16 @@ try {
     Write-Host ""
     Write-Host "[END OF TRANSMISSION]" -ForegroundColor DarkGreen
 
-    # 7. 等待音频自然播放结束（避免掐断最后几秒伴奏）
-    while ($wmp.playState -eq 3) {
+    # 6. 等待音频彻底放完（避免掐断音乐）
+    while ($player.Position.TotalSeconds -lt 259.0 -and $stopwatch.Elapsed.TotalSeconds -lt 262.0) {
         Start-Sleep -Milliseconds 500
     }
 }
 finally {
+    if ($player) {
+        $player.Stop()
+        $player.Close()
+    }
     if ($wmp) {
         $wmp.controls.stop()
     }
