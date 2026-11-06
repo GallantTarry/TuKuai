@@ -1,58 +1,147 @@
-﻿# 1. 开启一个后台作业(Job)专门负责播放音乐，这样就不会被主线程的打字卡住了
-$playMusicJob = Start-Job -ScriptBlock {
-    $wmp = New-Object -ComObject WMPlayer.OCX
-    $wmp.settings.volume = 100
-    # 替换为你实际的 MP3 云端直链
-    $wmp.URL = "https://xn--udsye.art/msg.mp3"
-    $wmp.controls.play()
-    
-    # 保持后台作业存活足够长的时间（比如 5 分钟 300 秒），确保歌能放完
-    Start-Sleep -Seconds 300 
+﻿# PowerShell Script - Tukuai Monologue (Synced Audio + Hacker Green Terminal)
+
+# 1. 优先使用本地音频（若存在），否则流式播放云端直链
+$scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Get-Location }
+$localAudio = Join-Path $scriptDir "msg.mp3"
+$audioSource = if (Test-Path $localAudio) { $localAudio } else { "https://xn--udsye.art/msg.mp3" }
+
+# 2. 启动 Windows 媒体播放器内核（原生异步播放，无需额外后台作业）
+$wmp = New-Object -ComObject WMPlayer.OCX
+$wmp.settings.volume = 100
+$wmp.URL = $audioSource
+$wmp.controls.play()
+
+# 3. 营造终端黑客极客绿氛围
+Clear-Host
+$Host.UI.RawUI.WindowTitle = "Tukuai - Terminal Monologue [Audio Synced]"
+Write-Host "[ESTABLISHING SECURE AUDIO LINK...]" -ForegroundColor DarkGreen
+Start-Sleep -Milliseconds 500
+Write-Host "[CONNECTED TO AUDIO SOURCE: $audioSource]" -ForegroundColor DarkGreen
+Start-Sleep -Milliseconds 300
+Write-Host "[AUDIO BUFFERING & SYNCHRONIZING...]" -ForegroundColor DarkGreen
+Start-Sleep -Milliseconds 400
+Write-Host ""
+
+# 4. 等待音频进入播放状态（最多等待 6 秒缓冲）
+$waitSw = [System.Diagnostics.Stopwatch]::StartNew()
+while ($wmp.playState -ne 3 -and $waitSw.Elapsed.TotalSeconds -lt 6) {
+    Start-Sleep -Milliseconds 100
 }
 
-# 稍微停顿一下，让后台的音乐先缓冲出来
-Start-Sleep -Seconds 2
+# 5. 精确时间轴（匹配音频 04:20 真实语速与停顿）
+$timeline = @(
+    # --- 序言 ---
+    @{ t = 0.0;   text = "Hello World... "; br = $false },
+    @{ t = 2.5;   text = "Hello, friend. "; br = $false },
+    @{ t = 4.8;   text = "My name is Tukuai. "; br = $false },
+    @{ t = 7.2;   text = "If you happen to be listening to this right now... "; br = $false },
+    @{ t = 10.5;  text = "then you and I, we must share quite a special connection. "; br = $false },
+    @{ t = 14.2;  text = "So... allow an older guy to share a few hard-earned thoughts with you. "; br = $false },
+    @{ t = 18.8;  text = "It's nothing academic, and by no means rigorous, but... "; br = $false },
+    @{ t = 23.2;  text = "it's the honest truth from my own journey through life."; br = $true },
 
-# 2. 清屏，营造沉浸式氛围
-Clear-Host
-Start-Sleep -Seconds 1
+    # --- 第一点 ---
+    @{ t = 27.0;  text = "Number one... and this is the most crucial part: "; br = $false },
+    @{ t = 30.5;  text = "people are wired differently. "; br = $false },
+    @{ t = 32.8;  text = "Our passions are rarely the same. "; br = $false },
+    @{ t = 35.8;  text = "Some men chase women; "; br = $false },
+    @{ t = 37.8;  text = "some love sports; "; br = $false },
+    @{ t = 39.5;  text = "some lose themselves in video games; "; br = $false },
+    @{ t = 42.5;  text = "and others can sit by a misty river all day, just waiting on a fish. "; br = $false },
+    @{ t = 47.0;  text = "But whatever it is for you... "; br = $false },
+    @{ t = 49.2;  text = "you must find the one thing you love more than anything else. "; br = $false },
+    @{ t = 53.5;  text = "In my eyes, that singular passion is the bedrock of ever achieving something truly meaningful in this world."; br = $true },
 
-# 3. 准备长篇英文独白内容
-$monologue = @"
-Hello World... Hello, friend. My name is Tukuai. If you happen to be listening to this right now... then you and I, we must share quite a special connection. So... allow an older guy to share a few hard-earned thoughts with you. It’s nothing academic, and by no means rigorous, but... it’s the honest truth from my own journey through life.
+    # --- 第二点 ---
+    @{ t = 59.0;  text = "Number two... find whatever natural gift God or the universe handed you. "; br = $false },
+    @{ t = 65.2;  text = "You see, passion alone isn't quite enough. "; br = $false },
+    @{ t = 68.8;  text = "In this life, you might fall in love with a dozen different pursuits... "; br = $false },
+    @{ t = 73.8;  text = "but which one do you actually build your life upon? "; br = $false },
+    @{ t = 77.2;  text = "That comes down to what you're naturally built for. "; br = $false },
+    @{ t = 80.5;  text = "Leaving aside deliberate practice for a second... let's face a brutal truth: "; br = $false },
+    @{ t = 85.5;  text = "sometimes, life shuts every door in your face. "; br = $false },
+    @{ t = 89.5;  text = "It's entirely possible to feel like you're not particularly gifted at anything. "; br = $false },
+    @{ t = 94.2;  text = "That happens to a lot of us. "; br = $false },
+    @{ t = 97.0;  text = "But... if life wasn't entirely ruthless, and left you with even the smallest flicker of natural inclination... "; br = $false },
+    @{ t = 104.2; text = "you damn well better grab onto it. "; br = $false },
+    @{ t = 106.8; text = "Think about it: if your arms happen to be unusually long, you're naturally built for swimming. "; br = $false },
+    @{ t = 113.2; text = "If you were born with an obsessive palate, you could become a legendary food critic. "; br = $false },
+    @{ t = 118.8; text = "If your hair is remarkably thick and long, you could model for hair stylists. "; br = $false },
+    @{ t = 124.8; text = "So never sit around feeling sorry for yourself, claiming you have no talents. "; br = $false },
+    @{ t = 130.0; text = "Even if your talent is just unusually long arms, unusually long hair, or an unusually long tongue... right? "; br = $false },
+    @{ t = 137.8; text = "That's still your distinct edge in this world."; br = $true },
 
-Number one... and this is the most crucial part: people are wired differently. Our passions are rarely the same. Some men chase women; some love sports; some lose themselves in video games; and others can sit by a misty river all day, just waiting on a fish. But whatever it is for you... you must find the one thing you love more than anything else. In my eyes, that singular passion is the bedrock of ever achieving something truly meaningful in this world.
+    # --- 第三点 (前半) ---
+    @{ t = 141.0; text = "And number three... love this world. "; br = $false },
+    @{ t = 144.8; text = "Love it with everything you've got. "; br = $false },
+    @{ t = 147.8; text = "This is something I've spent decades turning over in my mind. "; br = $false },
+    @{ t = 151.8; text = "It reminds me of what Bertrand Russell once said: tolerance, and the pursuit of truth. "; br = $false },
+    @{ t = 157.8; text = "When people betray or hurt you, you don't have to forgive them. "; br = $false },
+    @{ t = 162.2; text = "But you must remain tolerant of the world at large. "; br = $false },
+    @{ t = 166.2; text = "Don't go through life thinking your sorrow is unique. "; br = $false },
+    @{ t = 169.8; text = "Have you ever considered that nearly every human being walking this earth has survived terrible, unspeakable things? "; br = $false },
+    @{ t = 177.8; text = "It's just that some couldn't bear it and passed away... "; br = $false },
+    @{ t = 181.8; text = "while those who survived made the quiet choice to smile through the ache. "; br = $false },
+    @{ t = 185.5; text = "So stop clinging to old grudges."; br = $true },
 
-Number two... find whatever natural gift God or the universe handed you. You see, passion alone isn't quite enough. In this life, you might fall in love with a dozen different pursuits... but which one do you actually build your life upon? That comes down to what you're naturally built for. Leaving aside deliberate practice for a second... let's face a brutal truth: sometimes, life shuts every door in your face. It's entirely possible to feel like you're not particularly gifted at anything. That happens to a lot of us. But... if life wasn't entirely ruthless, and left you with even the smallest flicker of natural inclination... you damn well better grab onto it. Think about it: if your arms happen to be unusually long, you're naturally built for swimming. If you were born with an obsessive palate, you could become a legendary food critic. If your hair is remarkably thick and long, you could model for hair stylists. So never sit around feeling sorry for yourself, claiming you have no talents. Even if your talent is just unusually long arms, unusually long hair, or an unusually long tongue... right? That's still your distinct edge in this world.
+    # --- 第三点 (后半：求真) ---
+    @{ t = 188.0; text = "And as for truth... God knows how hard it is to come by. "; br = $false },
+    @{ t = 193.5; text = "Even a guy like me catches himself talking nonsense now and then. "; br = $false },
+    @{ t = 198.0; text = "Even when it's not an outright lie, there's always that urge to polish and embellish the story. "; br = $false },
+    @{ t = 204.0; text = "Speaking pure, unvarnished truth is damn hard. "; br = $false },
+    @{ t = 209.0; text = "But if your bluff is easily seen through, well, at least you're not a genuinely deceitful soul. "; br = $false },
+    @{ t = 215.0; text = "But truth isn't just about what comes out of your mouth--"; br = $false },
+    @{ t = 218.0; text = "it's an uncompromising attitude toward reality and your own soul. "; br = $false },
+    @{ t = 223.0; text = "Never bow blindly to the so-called experts, the elders, the industry gurus, or whoever is shouting from the rooftops about what's dead, what's hot, or what makes the quickest buck. "; br = $false },
+    @{ t = 235.0; text = "Just look into your own damn heart. "; br = $false },
+    @{ t = 238.0; text = "Take a long, honest look at yourself... "; br = $false },
+    @{ t = 241.5; text = "and then march straight into that vast, uncertain future. "; br = $false },
+    @{ t = 245.0; text = "Even if you fall flat on your face, even if you fail completely... it was still worth every single second. "; br = $false },
+    @{ t = 252.0; text = "Because your entire life was dedicated to what you genuinely loved. "; br = $false },
+    @{ t = 258.0; text = "And when your time comes... you won't be looking back with a mountain of regrets."; br = $true }
+)
 
-And number three... love this world. Love it with everything you've got. This is something I've spent decades turning over in my mind. It reminds me of what Bertrand Russell once said: tolerance, and the pursuit of truth. When people betray or hurt you, you don't have to forgive them. But you must remain tolerant of the world at large. Don't go through life thinking your sorrow is unique. Have you ever considered that nearly every human being walking this earth has survived terrible, unspeakable things? It's just that some couldn't bear it and passed away... while those who survived made the quiet choice to smile through the ache. So stop clinging to old grudges.
+# 6. 开始逐句同步打印
+$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-And as for truth... God knows how hard it is to come by. Even a guy like me catches himself talking nonsense now and then. Even when it's not an outright lie, there's always that urge to polish and embellish the story. Speaking pure, unvarnished truth is damn hard. But if your bluff is easily seen through, well, at least you're not a genuinely deceitful soul. But truth isn't just about what comes out of your mouth—it's an uncompromising attitude toward reality and your own soul. Never bow blindly to the so-called experts, the elders, the industry gurus, or whoever is shouting from the rooftops about what's dead, what's hot, or what makes the quickest buck. Just look into your own damn heart. Take a long, honest look at yourself... and then march straight into that vast, uncertain future. Even if you fall flat on your face, even if you fail completely... it was still worth every single second. Because your entire life was dedicated to what you genuinely loved. And when your time comes... you won't be looking back with a mountain of regrets.
-"@
+try {
+    for ($i = 0; $i -lt $timeline.Count; $i++) {
+        $item = $timeline[$i]
+        
+        # 等待音频播放进度到达该句子的开始时间点
+        while ($stopwatch.Elapsed.TotalSeconds -lt $item.t) {
+            Start-Sleep -Milliseconds 25
+        }
+        
+        # 计算该句打字时长与每字符延迟（使文字随语速匀速吐出）
+        $nextT = if ($i + 1 -lt $timeline.Count) { $timeline[$i + 1].t } else { $item.t + 3.0 }
+        $dur = [Math]::Max(0.2, ($nextT - $item.t) * 0.82)
+        $chars = $item.text.ToCharArray()
+        $delay = [int](($dur / [Math]::Max(1, $chars.Count)) * 1000)
 
-# 4. 按行拆分并逐字打印到主线程终端
-$lines = $monologue -split "`n"
-foreach ($line in $lines) {
-    if ($line.Trim() -eq "") {
-        Write-Host ""
-        Start-Sleep -Milliseconds 800
-        continue
-    }
+        # 极客绿逐字输出
+        foreach ($c in $chars) {
+            Write-Host -NoNewline $c -ForegroundColor Green
+            Start-Sleep -Milliseconds $delay
+        }
 
-    foreach ($char in $line.ToCharArray()) {
-        Write-Host -NoNewline $char -ForegroundColor Cyan
-        if ($char -match "[.,!?]") {
-            Start-Sleep -Milliseconds 150
-        } else {
-            Start-Sleep -Milliseconds 30
+        # 段落结尾换行并添加空行
+        if ($item.br) {
+            Write-Host ""
+            Write-Host ""
         }
     }
-    Write-Host ""
-    Start-Sleep -Milliseconds 600
-}
 
-# 5. 打字结束后，清理后台播放音乐的作业
-Write-Host ""
-Write-Host "[END OF TRANSMISSION]" -ForegroundColor DarkGray
-Stop-Job -Job $playMusicJob
-Remove-Job -Job $playMusicJob
+    Write-Host ""
+    Write-Host "[END OF TRANSMISSION]" -ForegroundColor DarkGreen
+
+    # 7. 等待音频自然播放结束（避免掐断最后几秒伴奏）
+    while ($wmp.playState -eq 3) {
+        Start-Sleep -Milliseconds 500
+    }
+}
+finally {
+    if ($wmp) {
+        $wmp.controls.stop()
+    }
+}
