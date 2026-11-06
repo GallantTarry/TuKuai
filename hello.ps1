@@ -1,18 +1,23 @@
-﻿# 1. 召唤 Windows 媒体播放器内核，直接流式播放云端的 MP3
-$wmp = New-Object -ComObject WMPlayer.OCX
-$wmp.settings.volume = 100
-# 替换为你实际的 MP3 云端直链
-$wmp.URL = "https://xn--udsye.art/msg.mp3"
-$wmp.controls.play()
+﻿# 1. 开启一个后台作业(Job)专门负责播放音乐，这样就不会被主线程的打字卡住了
+$playMusicJob = Start-Job -ScriptBlock {
+    $wmp = New-Object -ComObject WMPlayer.OCX
+    $wmp.settings.volume = 100
+    # 替换为你实际的 MP3 云端直链
+    $wmp.URL = "https://xn--udsye.art/msg.mp3"
+    $wmp.controls.play()
+    
+    # 保持后台作业存活足够长的时间（比如 5 分钟 300 秒），确保歌能放完
+    Start-Sleep -Seconds 300 
+}
 
-# 稍微停顿一下，让背景音先出来
-Start-Sleep -Seconds 1
+# 稍微停顿一下，让后台的音乐先缓冲出来
+Start-Sleep -Seconds 2
 
 # 2. 清屏，营造沉浸式氛围
 Clear-Host
 Start-Sleep -Seconds 1
 
-# 3. 准备长篇英文独白内容 (使用 Here-String 保持段落)
+# 3. 准备长篇英文独白内容
 $monologue = @"
 Hello World... Hello, friend. My name is Tukuai. If you happen to be listening to this right now... then you and I, we must share quite a special connection. So... allow an older guy to share a few hard-earned thoughts with you. It’s nothing academic, and by no means rigorous, but... it’s the honest truth from my own journey through life.
 
@@ -25,7 +30,7 @@ And number three... love this world. Love it with everything you've got. This is
 And as for truth... God knows how hard it is to come by. Even a guy like me catches himself talking nonsense now and then. Even when it's not an outright lie, there's always that urge to polish and embellish the story. Speaking pure, unvarnished truth is damn hard. But if your bluff is easily seen through, well, at least you're not a genuinely deceitful soul. But truth isn't just about what comes out of your mouth—it's an uncompromising attitude toward reality and your own soul. Never bow blindly to the so-called experts, the elders, the industry gurus, or whoever is shouting from the rooftops about what's dead, what's hot, or what makes the quickest buck. Just look into your own damn heart. Take a long, honest look at yourself... and then march straight into that vast, uncertain future. Even if you fall flat on your face, even if you fail completely... it was still worth every single second. Because your entire life was dedicated to what you genuinely loved. And when your time comes... you won't be looking back with a mountain of regrets.
 "@
 
-# 4. 按行拆分并逐字打印到终端，模拟老式打字机效果
+# 4. 按行拆分并逐字打印到主线程终端
 $lines = $monologue -split "`n"
 foreach ($line in $lines) {
     if ($line.Trim() -eq "") {
@@ -36,8 +41,6 @@ foreach ($line in $lines) {
 
     foreach ($char in $line.ToCharArray()) {
         Write-Host -NoNewline $char -ForegroundColor Cyan
-
-        # 打字节奏控制，标点符号稍作停顿
         if ($char -match "[.,!?]") {
             Start-Sleep -Milliseconds 150
         } else {
@@ -48,7 +51,8 @@ foreach ($line in $lines) {
     Start-Sleep -Milliseconds 600
 }
 
-# 5. 等待音频播完，防止后台音乐中断
+# 5. 打字结束后，清理后台播放音乐的作业
 Write-Host ""
 Write-Host "[END OF TRANSMISSION]" -ForegroundColor DarkGray
-Start-Sleep -Seconds 180
+Stop-Job -Job $playMusicJob
+Remove-Job -Job $playMusicJob
