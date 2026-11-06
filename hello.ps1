@@ -2,7 +2,7 @@
 $wmp = New-Object -ComObject WMPlayer.OCX
 $wmp.settings.volume = 100
 # 替换为你实际的 MP3 云端直链
-$wmp.URL = "https://xn--udsye.art/土块留言.mp3"
+$wmp.URL = "https://xn--udsye.art/msg.mp3"
 $wmp.controls.play()
 
 # 稍微停顿一下，让背景音先出来
@@ -33,10 +33,10 @@ foreach ($line in $lines) {
         Start-Sleep -Milliseconds 800
         continue
     }
-    
+
     foreach ($char in $line.ToCharArray()) {
         Write-Host -NoNewline $char -ForegroundColor Cyan
-        
+
         # 打字节奏控制，标点符号稍作停顿
         if ($char -match "[.,!?]") {
             Start-Sleep -Milliseconds 150
