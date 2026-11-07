@@ -1,376 +1,290 @@
-# 🕳️ BlackHole 操作说明＆更新日志
+# BlackHole User Manual & Changelog
+
+Official Website: `https://土块.art`  
+Purchase & Download: `https://wolverine624.gumroad.com/l/blackhole`
 
 ---
 
-> 🌐 **官方主页获取**：在浏览器地址栏输入 **土块.art** 进入主页，点击文件下载即可获取本软件。
-> ⚠️ **重要安全提示**：本系统由 **土块 (GallantTarry)** 独立研发，软件可能有漏洞从而损坏文件，请备份重要文件后再使用，因软件错误造成的文件丢失与系统错误等负面后果，作者概不负责。
+> ### 🛡️ Security & Commercial License Notice
+> **1. Windows SmartScreen & Digital Signature**  
+> **BlackHole v1.2.5** is digitally signed with an Authenticode certificate and DigiCert SHA-256 trusted timestamp. If Windows Defender SmartScreen displays an *"Windows protected your PC"* prompt on first launch, click **"More info"** and then click **"Run anyway"**.  
+> **2. Commercial Proprietary Software**  
+> BlackHole is a closed-source commercial software product. All rights are reserved by the author (`TuKuai / 土块`). Redistribution, reverse engineering, decompilation, or unauthorized commercial sharing of the installer or binaries is strictly prohibited.  
+> **3. 100% Local Privacy Guarantee**  
+> All file sorting, screenshots, sticky notes, and todo reminders are processed **100% locally on your device**. BlackHole never uploads your personal files or private notes to any external server.
 
 ---
 
-BlackHole 是一款 Windows 桌面悬浮工具，可以帮助你分类收纳文件、保存临时文字、截图贴图、设置待办提醒和收藏常用网址。
+# BlackHole User Manual (v1.2.5)
 
-启动后，桌面会出现一个黑洞悬浮窗口，任务栏右下角的通知区域也会出现 **BlackHole** 图标。
-
-## 一、先了解几个基本操作
-
-| 操作 | 作用 |
-|---|---|
-| 按住黑洞左键拖动 | 移动黑洞的位置 |
-| 右键点击黑洞 | 打开文件、待办和网址菜单 |
-| 左键双击黑洞 | 尝试释放内存 |
-| 将文件拖到黑洞中央 | 分类收纳文件 |
-| `Ctrl + Alt + Q` | 开始区域截图 |
-| `Ctrl + Alt + E` | 隐藏或显示黑洞 |
-| 右键任务栏通知区域的 BlackHole 图标 | 打开截图、外观、自启动和退出等设置 |
-
-**打开收纳文件夹时，请选择“打开黑洞入口”。双击黑洞对应的是释放内存。**
-
-如果通知区域没有直接显示图标，可以展开任务栏右下角的隐藏图标区域查找。
-
-## 二、整理文件和文件夹
-
-### 1. 怎样收纳文件
-
-1. 在桌面或资源管理器中，选中需要整理的文件。
-2. 按住鼠标左键，将文件拖到黑洞的圆形中央。
-3. 松开鼠标，软件会尝试按文件类型分类。
-4. 右键黑洞，选择 **“打开黑洞入口”**，检查整理结果。
-
-支持一次拖入多个文件，也支持拖入整个文件夹。
-
-**这里的“收纳”会移动原文件。成功后，文件会从原来的位置移到“黑洞入口”中。** 如果希望保留原件，请先制作副本，再将副本拖入。
-
-### 2. 文件保存在哪里
-
-默认保存位置为：
-
-`%USERPROFILE%\Documents\黑洞入口`
-
-日常使用时，直接通过 **“打开黑洞入口”** 访问即可。
-
-软件会自动建立以下分类：
-
-| 分类文件夹 | 收纳内容举例 |
-|---|---|
-| `001_总文件夹` | 拖入的整个文件夹 |
-| `002_办公表格` | Excel、CSV、TSV、ODS、Numbers 等 |
-| `003_日常文档` | Word、PDF、PowerPoint、TXT、Markdown 等 |
-| `004_程序应用` | EXE、MSI、BAT、CMD、APK 等 |
-| `005_压缩文件` | ZIP、RAR、7Z、TAR、GZ、ISO 等 |
-| `006_图片素材` | JPG、PNG、GIF、WebP、SVG、PSD 等 |
-| `007_视频影音` | MP4、MOV、AVI、MKV，以及 MP3、WAV 等 |
-| `008_代码相关` | Python、HTML、CSS、JavaScript、JSON、C、Java 等 |
-| `009_不明物质` | 尚未匹配到分类的其他文件 |
-
-分类依据是文件后缀。**整个文件夹会被整体收纳，其中的文件不会再被逐个拆开分类。**
-
-遇到同名目标时，软件会尝试在名称后增加时间标记。第一次使用时，建议先用几个测试文件熟悉操作。
-
-### 3. 怎样找回或移出文件
-
-右键黑洞，选择 **“打开黑洞入口”**，进入对应分类后，正常打开、复制或剪切文件即可。
-
-需要恢复原来的位置时，将文件手动剪切、粘贴回去。当前没有一键撤销归档功能。
-
-### 4. 使用“近期吞噬”
-
-右键黑洞，展开 **“近期吞噬”**，可以快速访问最近的最多 5 项内容。
-
-| 操作 | 作用 |
-|---|---|
-| 左键点击某一项 | 打开文件或文件夹 |
-| 右键点击某一项 | 在资源管理器中定位该项目 |
-
-列表按收纳目录中项目的修改时间排列。长文件名可能显示为省略形式，实际文件名不会因此改变。
-
-### 5. 文件没有成功收纳怎么办
-
-被其他程序占用、权限不足等情况，可能导致文件无法移动。
-
-可以先关闭正在使用该文件的软件，再检查原位置和收纳目录。**播放吞噬动画并不一定代表所有文件都处理成功，批量整理后请核对结果。**
-
-## 三、保存文字、网址和网页图片
-
-### 保存临时文字
-
-在支持拖动文字的程序中选中文字，将其拖入黑洞。
-
-软件会把文字保存到 **“003_日常文档”**，文件名类似：
-
-`闪念笔记_20261030_153000.md`
-
-适合保存临时摘录、想法和待整理的信息。
-
-### 保存普通网页链接
-
-将普通网页链接拖入黑洞时，通常会作为文字写入闪念笔记。
-
-如果希望以后从菜单直接打开这个网址，请使用后面的 **“快捷网络”** 功能添加收藏。
-
-### 保存图片
-
-可以尝试将浏览器中的图片或图片链接拖入黑洞。支持识别的内容会保存到 **“006_图片素材”**。
-
-| 来源 | 常见文件名 |
-|---|---|
-| 直接拖入的图片内容 | `Image_时间.png` |
-| 下载的网页图片 | `WebImage_时间.扩展名` |
-
-部分网站可能限制图片下载。如果拖入后没有保存成功，可以先将图片下载到本地，再拖入黑洞整理。
-
-## 四、区域截图
-
-### 1. 开始截图
-
-任选一种方式：
-
-- 按 **`Ctrl + Alt + Q`**。
-- 右键通知区域的 BlackHole 图标，选择 **“区域截图 (Ctrl+Alt+Q)”**。
-
-屏幕变暗后，按住鼠标左键拖出矩形区域，松开鼠标即可确定选区。
-
-### 2. 选择截图结果的用途
-
-| 按键 | 作用 |
-|---|---|
-| `Enter` | 将截图复制到剪贴板，同时保存为 PNG 文件 |
-| `Ctrl + T` | 将截图变成置顶的屏幕贴图 |
-| `Esc` 或鼠标右键 | 取消本次截图 |
-
-按 `Enter` 后，可以在聊天窗口、文档或其他支持图片的程序中按 `Ctrl + V` 粘贴。
-
-自动保存的截图文件名类似：
-
-`PerfectSnip_20261030_153000.png`
-
-**截图默认保存到当前用户目录下的 `Desktop` 文件夹，与“黑洞入口”中的图片分类分开。** 如果你的桌面经过 OneDrive 等方式重定向，找不到截图时，可以改用贴图的“另存为...”自行选择保存位置。
-
-### 3. 截图时需要注意
-
-- 当前截图范围是主显示器。
-- 框选完成后，不能继续拖动边框调整选区；框错了可以取消后重新截图。
-- 截图界面下方的文字和图标是快捷键提示，需要按键操作。
-- `Ctrl + T` 生成贴图时，不会同时自动保存文件或复制到剪贴板。
-
-## 五、使用屏幕贴图
-
-贴图适合将参考资料、操作步骤或对照图片固定在屏幕上，一边查看，一边工作。
-
-操作步骤：
-
-1. 按 `Ctrl + Alt + Q`，框选需要的内容。
-2. 松开鼠标后，按 **`Ctrl + T`**。
-3. 截图会变成一个始终置顶的图片窗口。
-
-| 操作 | 作用 |
-|---|---|
-| 按住贴图左键拖动 | 移动贴图 |
-| 向上滚动鼠标滚轮 | 放大贴图 |
-| 向下滚动鼠标滚轮 | 缩小贴图 |
-| 右键 → “复制图像” | 将原始截图复制到剪贴板 |
-| 右键 → “另存为...” | 选择位置保存图片，支持 PNG、JPG、BMP |
-| 右键 → “关闭” | 关闭这一张贴图 |
-
-滚轮缩放只改变显示大小，复制和保存仍使用原始截图。
-
-**需要长期保留的贴图，请主动选择“另存为...”。贴图不会在下次启动时自动恢复。** 隐藏黑洞主窗口也不会一并隐藏贴图。
-
-## 六、添加和处理待办提醒
-
-### 1. 新建待办
-
-1. 右键黑洞，选择 **“注入待办事项...”**。
-2. 输入需要提醒的事情，可以输入多行文字。
-3. 设置提醒日期和时间。
-4. 点击 **“设定提醒”**。
-
-新建时，默认时间约为当前时间的 5 分钟后，请按需要调整。内容不能为空。
-
-### 2. 到时间后会怎样
-
-时间到达后：
-
-- 黑洞会切换为提醒动画。
-- 右键菜单中，对应待办的图标会变为红色铃铛。
-
-软件约每 2 秒检查一次待办时间。重新启动后，已经到期但尚未完成的事项也会进入提醒状态。
-
-**当前到期提醒依靠动画和菜单标记，没有声音提醒。** 请让软件保持运行；黑洞被隐藏时，提醒动画也不可见。
-
-### 3. 完成与删除的区别
-
-未完成待办显示在黑洞右键菜单的上方。
-
-| 对未完成待办的操作 | 结果 |
-|---|---|
-| 左键点击 | 直接标记完成，并保留在历史记录中 |
-| 右键点击 | 直接删除这条待办 |
-
-**这两种操作都没有二次确认。左键点击未完成待办会立即完成它，请留意点击位置。**
-
-长事项在菜单中会显示摘要。将鼠标停在事项上，可以查看设定的提醒时间。
-
-### 4. 查看历史记录
-
-右键通知区域的 BlackHole 图标，展开 **“已完成/历史待办”**。
-
-| 操作 | 作用 |
-|---|---|
-| 左键点击历史事项 | 查看完整内容和原先设定的任务时间 |
-| 右键点击历史事项 | 删除这一条历史记录 |
-| 点击“清空所有已完成记录” | 清除全部已完成记录，保留未完成事项 |
-
-删除和清空不会再次询问，也没有内置恢复入口。
-
-当前没有直接编辑待办的入口。内容或时间设错时，可以删除后重新添加。
-
-## 七、收藏常用网址
-
-### 添加网址
-
-1. 右键黑洞，展开 **“快捷网络”**。
-2. 点击 **“添加地址”**。
-3. 输入方便辨认的名称，点击 **“确认注入”**。
-4. 输入网址，再次点击 **“确认注入”**。
-
-添加后，重新打开“快捷网络”，点击对应名称即可通过默认浏览器访问。
-
-建议填写完整网址，例如包含 `https://` 的地址。省略协议时，软件会尝试自动补上 `https://`。
-
-### 修改或删除网址
-
-进入 **“快捷网络 → 编辑配置”**，软件会打开网址配置文本。
-
-每行保存一条网址，格式为：
-
-`名称|完整网址`
-
-修改对应行可以更改名称或地址；删除整行可以移除收藏。保存后，重新打开“快捷网络”菜单即可读取更新后的内容。
-
-## 八、调整黑洞的位置与外观
-
-### 移动和贴边收起
-
-按住黑洞左键拖动，松开后会保存位置。
-
-靠近屏幕顶部、左侧或右侧松开时，黑洞会收拢到边缘，只露出一小部分。将待整理的文件拖到露出的黑洞边缘，它会展开接收。
-
-当前没有底部贴边收起功能，普通鼠标悬停也不会自动展开。多显示器使用时，贴边位置可能需要手动调整。
-
-### 调整大小和透明度
-
-右键通知区域的 BlackHole 图标，选择相应项目：
-
-| 菜单项目 | 输入范围 | 说明 |
-|---|---|---|
-| “重塑尺寸” | 80～200 的整数 | 数值越大，黑洞窗口越大；默认 80 |
-| “调节透明度” | 20～100 的整数 | 数值越小越透明；100 表示完全显示 |
-
-输入数字后点击 **“确认注入”**。超出范围或输入格式不正确时，设置不会生效。
-
-### 设置开机自启
-
-在通知区域菜单中点击 **“开机自启”**，可以切换开启与关闭，菜单文字会显示当前状态。
-
-当前默认设置为开启。此功能用于打包后的 Windows 可执行程序版本；直接运行源码时，不会建立自启动项。
-
-## 九、查看系统占用与释放内存
-
-右键通知区域的 BlackHole 图标，展开 **“系统健康看板”**，可以查看 CPU 和内存使用率，数据约每 2 秒刷新一次。
-
-需要整理内存时，可以：
-
-- 左键双击桌面的黑洞。
-- 在“系统健康看板”中选择 **“吞噬系统冗余 (释放内存)”**。
-
-该功能会尝试释放部分进程的驻留内存，实际效果取决于系统权限和应用状态。操作后可以在看板中观察占用变化。
-
-## 十、隐藏、退出和备份
-
-### 暂时隐藏
-
-按 **`Ctrl + Alt + E`**，或在通知区域菜单中选择 **“隐藏 / 唤醒”**。
-
-再次操作即可切换显示状态。隐藏期间程序仍在后台运行。
-
-### 完全退出
-
-右键通知区域的 BlackHole 图标，选择 **“彻底退出”**。
-
-退出后，截图快捷键和待办检查会停止。退出前，请先保存需要保留的临时贴图。
-
-软件同一时间只运行一个实例。重复启动时，如果没有出现新窗口，可以先检查通知区域，再尝试使用隐藏／唤醒操作。
-
-### 备份数据
-
-需要备份或迁移时，建议先退出软件，再备份整个 **“黑洞入口”** 文件夹。
-
-其中除了分类收纳的文件，还包含：
-
-| 文件 | 保存内容 |
-|---|---|
-| `config.json` | 黑洞位置、大小、透明度和自启动设置 |
-| `todos.json` | 待办事项及完成历史 |
-| `bookmarks.txt` | 收藏的网址 |
-
-这些配置文件可能被设置为隐藏。需要查看时，可以在资源管理器中开启 **“显示隐藏的项目”**，备份时也请一并保留。
+**BlackHole** is a cosmic desktop productivity companion for Windows 10 & Windows 11. It floats quietly on your desktop as an interactive singularity and combines **Drag-and-Drop Smart File Archiving**, **Flash Notes & Web Image Capture**, **Lossless Region Snipping & Screen Pinning**, **Scheduled Todo Reminders**, **Quick Bookmarks**, **Edge Auto-Docking**, **Bilingual Switching (English & 中文)**, and **One-Click Deep RAM Purge**.
 
 ---
 
-### 📌 V1.1.0 文件安全与退出稳定性修复
+## 1. Quick Start & Basic Controls
 
-- 修复拖入被占用文件时的异常，增加跳过处理机制。
-- 增加同名文件保护，避免覆盖已有文件。
-- 修复退出时动画与资源释放冲突导致的报错。
-- 优化拖入反馈，文件处理失败时也能正常结束动画。
-- 将尺寸调节下限设为 80，避免窗口过小影响操作。
-
----
-
-### 📌 V1.2.0 拖拽识别与动画体验优化
-
-- 新增独立粒子动画图层，支持多文件拖入特效。
-- 将拖放有效区域调整为圆形，减少透明边角误触。
-- 修复拖入被占用文件后，吞噬动画持续播放的问题。
-- 重名文件增加秒级时间戳，降低文件覆盖风险。
+1. **Move Position**: Hold the **Left Mouse Button** on BlackHole and drag it anywhere on your screen.
+2. **Open Main Context Menu**: **Right-click** directly on the BlackHole widget.
+3. **Quick RAM Purge**: **Double-click** the BlackHole widget with the Left Mouse Button to immediately free dormant system memory.
+4. **Swallow & Archive Anything**: Drag files, folders, selected text, URLs, or web images toward the center of BlackHole and release.
+5. **Quick Region Snipping**: Press `Ctrl + Alt + Q` at any time.
+6. **Hide / Wake BlackHole**: Press `Ctrl + Alt + E` at any time.
+7. **System Tray Menu**: Right-click the BlackHole icon in the bottom-right Windows System Tray to access:
+   - **Open BlackHole Portal**: Immediately open the archive root folder in Windows File Explorer.
+   - **System Health**: View live CPU & RAM load (with hardware gauge icons) and trigger a deep RAM purge.
+   - **Completed Todos**: Review or clear completed todo tasks.
+   - **Settings**: Access **Language** (`English` / `中文`), **Reshape Size**, **Adjust Opacity**, **Snipping Tool**, and **Autostart (On/Off)**.
+   - **Quit BlackHole**: Safely exit the application.
 
 ---
 
-### 📌 V1.2.1 待办交互与时间设置优化
+## 2. Smart File & Folder Archiving (Core Feature)
 
-- 时间输入框新增上下调节按钮，支持鼠标调整日期和时间。
-- 简化待办菜单，移除事项名称后的时间文字。
-- 支持悬停查看待办事项的完整提醒时间。
+### 2.1 Where Do Swallowed Files Go?
+
+When you first run BlackHole, it automatically creates a dedicated portal directory inside your Windows `Documents` folder:
+
+- **English Mode Default**: `%USERPROFILE%\Documents\BlackHole_Portal` (e.g., `C:\Users\<YourUsername>\Documents\BlackHole_Portal`)
+- **Chinese Mode Default**: `%USERPROFILE%\Documents\黑洞入口`
+
+Inside the portal directory, BlackHole maintains **9 categorized matter realms** and routes every dropped item automatically based on its file type:
+
+| Category Folder (English) | Category Folder (中文) | Supported File Types & Extensions |
+| :--- | :--- | :--- |
+| `001_Master_Folders` | `001_总文件夹` | Any folder dragged and dropped into BlackHole |
+| `002_Spreadsheets` | `002_数据报表` | `.xlsx`, `.xls`, `.csv`, `.tsv`, `.ods`, `.numbers`, `.db`, `.sqlite`, `.sql`, `.accdb`, `.mdb`, `.parquet`, `.feather` |
+| `003_Daily_Docs` | `003_日常文档` | `.txt`, `.md`, `.markdown`, `.rst`, `.doc`, `.docx`, `.wps`, `.rtf`, `.odt`, `.pages`, `.pdf`, `.epub`, `.mobi`, `.azw3`, `.djvu`, `.chm`, `.log`, `.tex`, `.ppt`, `.pptx`, `.key`, `.odp`, `.pps`, `.ppsx` (plus Flash Notes `Accretion_*.md`) |
+| `004_Applications` | `004_软件应用` | `.exe`, `.msi`, `.bat`, `.cmd`, `.ps1`, `.vbs`, `.wsf`, `.apk`, `.aab`, `.ipa`, `.dmg`, `.pkg`, `.deb`, `.rpm`, `.appimage`, `.jar`, `.gadget`, `.scr` |
+| `005_Archives` | `005_压缩归档` | `.zip`, `.rar`, `.7z`, `.tar`, `.gz`, `.tgz`, `.bz2`, `.tbz2`, `.xz`, `.txz`, `.zst`, `.lz`, `.lzma`, `.cab`, `.iso`, `.img`, `.vhd`, `.vhdx`, `.wim`, `.udf`, `.ace`, `.arj`, `.lzh`, `.uue`, `.z` |
+| `006_Image_Assets` | `006_图像素材` | `.jpg`, `.jpeg`, `.png`, `.gif`, `.bmp`, `.webp`, `.svg`, `.ico`, `.tif`, `.tiff`, `.psd`, `.psb`, `.ai`, `.eps`, `.cdr`, `.indd`, `.raw`, `.cr2`, `.cr3`, `.nef`, `.arw`, `.dng`, `.orf`, `.rw2`, `.pef`, `.heic`, `.heif`, `.avif`, `.jxl`, `.dds`, `.tga`, `.exr`, `.hdr` |
+| `007_Video_Media` | `007_视频媒体` | `.mp4`, `.mkv`, `.avi`, `.mov`, `.wmv`, `.flv`, `.webm`, `.m4v`, `.mpg`, `.mpeg`, `.3gp`, `.3g2`, `.ts`, `.mts`, `.m2ts`, `.vob`, `.ogv`, `.rm`, `.rmvb`, `.asf`, `.divx`, `.f4v`, `.swf`, `.mp3`, `.wav`, `.flac`, `.aac`, `.ogg`, `.m4a`, `.wma`, `.ape`, `.alac`, `.opus`, `.aiff`, `.mid`, `.midi`, `.amr` |
+| `008_Source_Code` | `008_工程代码` | `.py`, `.pyw`, `.ipynb`, `.js`, `.mjs`, `.cjs`, `.ts`, `.jsx`, `.tsx`, `.vue`, `.svelte`, `.html`, `.htm`, `.css`, `.scss`, `.sass`, `.less`, `.c`, `.h`, `.cpp`, `.hpp`, `.cc`, `.cxx`, `.cs`, `.java`, `.kt`, `.kts`, `.scala`, `.groovy`, `.go`, `.rs`, `.rb`, `.php`, `.swift`, `.m`, `.mm`, `.dart`, `.lua`, `.r`, `.jl`, `.pl`, `.pm`, `.sh`, `.bash`, `.zsh`, `.fish`, `.asm`, `.s`, `.vb`, `.vbs`, `.pas`, `.f90`, `.f95`, `.clj`, `.ex`, `.exs`, `.erl`, `.hrl`, `.hs`, `.ml`, `.fs`, `.fsx`, `.v`, `.sv`, `.vhd`, `.vhdl`, `.sol`, `.json`, `.jsonc`, `.json5`, `.xml`, `.yaml`, `.yml`, `.toml`, `.ini`, `.cfg`, `.conf`, `.env`, `.properties`, `.gradle`, `.cmake`, `.mk`, `.dockerfile`, `.lock` |
+| `009_Unknown_Matter` | `009_不明物质` | Any other file extension or extensionless file not listed above |
+
+### 2.2 What Happens When a File Is Swallowed?
+
+1. The file or folder is **moved** (not duplicated) from its original location into its matching category folder inside `BlackHole_Portal`.
+2. If a file with the same name already exists in the destination folder, BlackHole never overwrites your existing file. Instead, it automatically appends a timestamp suffix:
+   - Example: `Report_20260405_153012.xlsx`
+3. You can drag and drop a **single file**, **multiple files at once**, or **entire folders**.
+
+### 2.3 How to Retrieve Your Archived Files
+
+- **Method 1**: Right-click BlackHole -> `Open BlackHole Portal` (or right-click the System Tray icon -> `Open BlackHole Portal`) to open the archive directory directly.
+- **Method 2**: Right-click BlackHole -> hover over `Recent Swallowed`:
+  - **Left-click a recent item**: Opens the file or folder immediately.
+  - **Right-click a recent item**: Opens Windows File Explorer and highlights the exact file location.
+- **Method 3**: Open `Documents\BlackHole_Portal` directly in Windows File Explorer.
 
 ---
 
-### 📌 V1.2.2 全局快捷键与退出机制优化
+## 3. Flash Notes, Web Links & Web Images
 
-- 截图与隐藏／唤醒改用全局快捷键，支持跨应用调用。
-- 修复连续触发快捷键时的动画异常及信号解绑报错。
-- 完善退出清理，释放全局键盘监听等资源。
+BlackHole can absorb more than local files—you can also drag text selections, web URLs, and images straight from your browser or other apps.
 
----
+### 3.1 Dragging Text or Web URLs (Accretion Notes)
 
-### 📌 V1.2.3 菜单修复与安装体验优化
+1. Highlight a paragraph of text in any browser, document, or chat window, or drag a URL from your browser's address bar.
+2. Drag it into the center of BlackHole and release.
+3. BlackHole automatically generates a Markdown note inside `003_Daily_Docs` (or `003_日常文档`):
+   - Filename format: `Accretion_YYYYMMDD_HHMMSS.md`
 
-- 修复程序分类图标配置错误导致“近期吞噬”菜单无法正常打开的问题。
-- 移除托盘图标的默认悬停提示。
-- 添加自签名代码签名，发布者名称设为“土块”。
-- 安装程序改用 Inno Setup，支持通过控制面板卸载。
+### 3.2 Dragging Images & Dynamic Web Images
 
----
-
----
-
-### 📌 V1.2.4 菜单修复与安装体验优化
-
-- 修复了图标的空隙。
-- 修复了全屏游戏隐藏唤出失效。
-- 修复了图标不清晰且不居中。
-- 修复了锯齿因此新增外边框。
+1. Drag an image from your browser (including dynamic WebP images, Baidu image results, or `data:image/...` base64 images) or another app into BlackHole.
+2. BlackHole automatically inspects the binary magic bytes and HTTP `Content-Type` headers to preserve the true image format and saves it into `006_Image_Assets` (or `006_图像素材`):
+   - Direct/Clipboard Image Data: `Image_YYYYMMDD_HHMMSS.png`
+   - Downloaded Web Image: `WebImage_YYYYMMDD_HHMMSS.<ext>` (`.png`, `.jpg`, `.webp`, `.gif`, `.bmp`, or `.svg`)
+3. If a remote web image blocks direct downloading, BlackHole automatically falls back to saving its source link inside `003_Daily_Docs` as `Accretion_YYYYMMDD_HHMMSS.md` so you never lose the reference.
 
 ---
 
+## 4. Lossless Region Snipping Tool (`Horizon` Capture)
 
-© 2026 Created by 土块. All rights reserved.
+### 4.1 How to Start a Screenshot
+
+- **Global Hotkey**: Press `Ctrl + Alt + Q` at any time.
+- **Tray Menu**: Right-click the System Tray icon -> `Settings` -> `Snipping Tool`.
+
+### 4.2 Snipping Controls
+
+1. After triggering the snipping tool, the screen dims slightly.
+2. **Hold Left Mouse Button and drag** to select the capture region.
+3. Once a region is selected, choose your action:
+   - Press `Enter`: Copies the screenshot to your **Clipboard** AND automatically saves a lossless PNG file to your **Desktop** named `Horizon_YYYYMMDD_HHMMSS.png`.
+   - Press `Ctrl + T`: Turns the selected region into a floating **Screen Sticky Note (Pin)** directly on your screen.
+   - Press `Esc` or **Right-click**: Cancels and exits snipping mode.
+
+---
+
+## 5. Screen Pinning (Floating Sticky Notes)
+
+After pressing `Ctrl + T` during snipping, your capture stays pinned above all windows as a borderless reference card:
+
+1. **Move Pin**: Hold the **Left Mouse Button** and drag it anywhere.
+2. **Zoom In / Out**: Scroll the **Mouse Wheel** over the pinned image (scales smoothly by 10% per step).
+3. **Right-Click Pin Menu**:
+   - `Copy Image`: Copy the pinned image to the system clipboard.
+   - `Save As...`: Save the pinned image to a custom path (defaults to `Horizon_YYYYMMDD_HHMMSS.png`).
+   - `Close`: Dismiss the pinned sticky note.
+
+---
+
+## 6. Scheduled Todo Reminders
+
+### 6.1 Adding a Todo Task
+
+1. Right-click BlackHole -> click `Add Todo Task...`.
+2. Enter the **Task Description** and select a **Reminder Time** (defaults to 10 minutes from now).
+3. Click `OK` to save.
+
+### 6.2 What Happens When a Task Is Due?
+
+1. When the scheduled time arrives, BlackHole triggers an **event horizon alert animation** and pops up a system notification.
+2. In the right-click menu, due tasks are highlighted with a red alert bell icon.
+
+### 6.3 Completing, Deleting & Viewing History
+
+1. Right-click BlackHole to view up to 5 active pending tasks right inside the main menu:
+   - **Left-click a task**: Marks it as **Completed** and moves it to history.
+   - **Right-click a task**: Permanently **Shreds (Deletes)** the task.
+2. To review completed tasks: Right-click the **System Tray Icon** -> `Completed Todos`.
+3. To clear history: Click `Clear Records` at the bottom of the `Completed Todos` submenu.
+
+---
+
+## 7. Quick Links (Cosmic Bookmarks)
+
+Keep your most-visited websites one click away from your desktop singularity:
+
+1. **Open a Link**: Right-click BlackHole -> `Quick Links` -> click any bookmark to open it in your default browser.
+2. **Add a Link**: Right-click BlackHole -> `Quick Links` -> `Add Link`, then enter the **Title** and **URL** (if `http://` or `https://` is omitted, BlackHole automatically prefixes `https://`).
+3. **Batch Edit / Delete Links**: Right-click BlackHole -> `Quick Links` -> `Edit Links`. This opens `bookmarks.txt` in Notepad.
+   - Format: One bookmark per line as `Title|URL`, for example:
+     ```text
+     TuKuai Official|https://土块.art
+     BlackHole Store|https://wolverine624.gumroad.com/l/blackhole
+     ```
+   - Save `bookmarks.txt` and your menu updates automatically.
+
+---
+
+## 8. Edge Auto-Docking, Appearance & Bilingual Switch
+
+### 8.1 Smart 3-Edge Auto-Docking & Taskbar Avoidance
+
+1. Drag BlackHole near the **Left, Right, Top, or Bottom edge** of your monitor and release.
+2. BlackHole automatically tucks itself into the screen border, leaving only a sleek strip visible.
+3. Move your mouse cursor over the exposed strip and BlackHole smoothly slides out; move your cursor away and it tucks back in automatically.
+4. **Smart Windows Taskbar Avoidance**: BlackHole automatically detects whether your Windows Taskbar is docked at the **Bottom, Top, Left, or Right** of your screen and disables auto-hiding on that specific edge so the widget is never blocked by the taskbar.
+
+### 8.2 Reshape Size & Adjust Opacity
+
+Right-click the **System Tray Icon** -> `Settings`:
+- **Reshape Size**: Adjust the diameter of BlackHole from `80` to `200` (default is `80`).
+- **Adjust Opacity**: Adjust transparency from `20%` to `100%` (default is `100%`).
+
+### 8.3 Launch on Windows Startup (`Autostart`)
+
+- Right-click the **System Tray Icon** -> `Settings` -> `Autostart (On)` / `Autostart (Off)`.
+- Autostart is **enabled by default** (`Autostart (On)`) so BlackHole is always ready when you boot into Windows.
+
+### 8.4 Instant Bilingual Switch (`English` / `中文`)
+
+1. Right-click the **System Tray Icon** -> `Settings` -> `Language` (globe icon).
+2. Choose between **`English`** and **`中文`**.
+3. When switched, BlackHole automatically renames the portal folder (`BlackHole_Portal` ↔ `黑洞入口`) and all 9 category folders (`001_Master_Folders`..`009_Unknown_Matter` ↔ `001_总文件夹`..`009_不明物质`) while keeping every single file intact, and seamlessly restarts the application in the selected language.
+
+---
+
+## 9. System Health & Deep RAM Purge
+
+1. **Live Hardware Telemetry**: Right-click the **System Tray Icon** -> hover over `System Health` to inspect real-time **CPU Usage** and **Memory (RAM) Usage**, refreshed every 2 seconds with dedicated hardware icons.
+2. **Deep RAM Purge**:
+   - **Method 1**: **Double-click** the BlackHole widget on your desktop.
+   - **Method 2**: Right-click the **System Tray Icon** -> `System Health` -> `Purge System RAM`.
+   - BlackHole safely trims redundant background working sets across Windows processes and displays a cosmic notification showing the exact amount of memory reclaimed (in `MB`).
+
+---
+
+## 10. Hide / Wake, Exit & Data Backup
+
+1. **Hide / Wake (`Ctrl + Alt + E`)**:
+   - Press `Ctrl + Alt + E` at any time to hide BlackHole completely; press `Ctrl + Alt + E` again to summon it back.
+   - Powered by a gaming-grade triple-layer Win32 hotkey filter (`MOD_NOREPEAT` + `GetAsyncKeyState` verification) so it never causes key-repeat loops or interferes with full-screen games.
+2. **Quit Application**:
+   - Right-click the **System Tray Icon** -> `Quit BlackHole`.
+3. **Configuration & Data Files**:
+   - In the application directory, BlackHole stores your personal preferences in three lightweight files:
+     - `config.json`: Widget size, opacity, coordinates, autostart state, language preference, and recent swallowed file list.
+     - `todos.json`: Pending and completed todo items.
+     - `bookmarks.txt`: Custom quick links.
+   - Backing up these three files preserves all of your custom settings across updates or PC migrations.
+
+---
+
+# BlackHole Changelog (Release Notes)
+
+## V1.2.5 (Latest Commercial Release)
+
+1. **Bilingual Interface & Smart Folder Migration (`English` & `中文`)**:
+   - Added a `Language` switcher with a globe icon inside `System Tray -> Settings`.
+   - Switching between `English` and `中文` automatically migrates and renames the archive portal (`BlackHole_Portal` ↔ `黑洞入口`) and all 9 category folders (`001_Master_Folders`..`009_Unknown_Matter` ↔ `001_总文件夹`..`009_不明物质`), then restarts BlackHole cleanly without menu freezes.
+2. **Flawless Edge Auto-Docking & Automatic Taskbar Avoidance**:
+   - Fixed the 1px dark border line artifact that could appear when BlackHole tucked into screen edges.
+   - Added automatic Windows Taskbar edge detection (supporting Bottom, Top, Left, and Right taskbars). BlackHole now prevents docking on the taskbar edge while allowing smooth auto-docking on the other three screen borders.
+3. **Enhanced Web Image Drag-and-Drop Engine**:
+   - Added binary magic-byte inspection (`PNG`, `JPEG`, `GIF`, `WebP`, `BMP`, `SVG`) and HTTP `Content-Type` header parsing with browser `User-Agent`/`Referer` headers. Dragging dynamic WebP or Baidu images from browsers now saves them accurately into `006_Image_Assets` instead of falling back to markdown notes.
+4. **Unified Cosmic File Naming**:
+   - Region screenshots saved to Desktop or via Sticky Note `Save As...` now use the `Horizon_{timestamp}.png` naming scheme.
+   - Dragged text snippets and flash notes saved to `003_Daily_Docs` now use the `Accretion_{timestamp}.md` naming scheme.
+5. **Streamlined System Tray Menu & Hardware Icons**:
+   - Consolidated configuration options into a clean `Settings` submenu in the System Tray.
+   - Added vector hardware icons (`chip` & `gauge`) to live CPU and RAM telemetry inside `System Health`.
+6. **Official Code Signing & Setup Wizard**:
+   - Signed both the main executable and Windows installer (`BlackHolev1.2.5.exe`) with an Authenticode certificate and DigiCert SHA-256 timestamp, and added detached PKCS#7 verification (`BlackHolev1.2.5.zip.p7s`).
+
+---
+
+## V1.2.4
+
+1. **Full-Screen Gaming Anti-Conflict Hotkey Engine**:
+   - Upgraded global hotkeys (`Ctrl+Alt+E` and `Ctrl+Alt+Q`) to a triple-layer Win32 hardware filter: `RegisterHotKey` with `MOD_NOREPEAT` (`0x4000`) + real-time `GetAsyncKeyState` physical key verification + 400ms cooldown debounce, eliminating accidental triggers in full-screen games.
+2. **4x Supersampled Anti-Aliasing & Per-Monitor V2 High-DPI**:
+   - Enabled Windows `Per-Monitor V2` DPI awareness and `QImage` 4x supersampled offscreen rendering for razor-sharp visuals on 1080p, 2K, and 4K displays (100%–250% scaling).
+   - Changed default widget size from `150` to a compact `80` (`80–200` adjustable range).
+3. **Expanded 9-Category Sorter & Default Autostart**:
+   - Expanded file classification rules to cover **170+ file extensions** across 9 categories.
+   - Enabled `Autostart (On)` by default on first run with automatic registry path self-healing.
+4. **Menu & Tray Refinement**:
+   - Moved `Completed Todos`, `Reshape Size`, `Adjust Opacity`, `Snipping Tool`, and `Autostart` into the System Tray menu to keep the right-click BlackHole menu ultra-compact.
+   - Added right-click support on `Recent Swallowed` items to reveal and highlight files directly in Windows File Explorer.
+
+---
+
+## V1.2.2
+
+1. **Architecture Refactoring**:
+   - Decoupled core physics, rendering, file routing, and system telemetry modules from `BlackHole.py` into `core.py` for faster startup and cleaner maintainability.
+2. **Code Cleanup**:
+   - Removed legacy experimental hooks and redundant dead code paths.
+
+---
+
+## V1.2.0
+
+1. **System Health Telemetry & Deep RAM Purge**:
+   - Added live CPU and Memory usage monitoring in the System Tray menu (updated every 2 seconds).
+   - Added one-click / double-click `Purge System RAM` to reclaim background working set memory and display the exact MB freed.
+2. **Quick Links & Recent Swallowed History**:
+   - Added customizable `Quick Links` (`bookmarks.txt`) and `Recent Swallowed` history (stores up to 10 recent items).
+3. **Top & Bottom Edge Auto-Docking**:
+   - Extended edge auto-hiding from left/right borders to support top and bottom screen edges as well.
+
+---
+
+## V1.1.0
+
+1. **Core Event Horizon Release**:
+   - Desktop floating black hole widget with custom gravitational particle rendering and 9-category drag-and-drop automatic file sorting (`001`–`009`).
+   - Built-in Region Snipping Tool (`Ctrl + Alt + Q`), Screen Pinning (`Ctrl + T`), Scheduled Todo Reminders, Size/Opacity adjustment, and Global Hide/Wake (`Ctrl + Alt + E`).
