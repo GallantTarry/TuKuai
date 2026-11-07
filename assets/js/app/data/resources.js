@@ -68,6 +68,7 @@
         {name: 'gitingest', desc: '仓库提取给LLM', url: 'https://gitingest.com/'},
         {name: 'remove', desc: '阿尔法通道', url: 'https://www.remove.bg/'},
         {name: 'Gumroad', desc: '数字商品交易平台', url: 'https://gumroad.com/'},
+        {name: 'DeepSeekAPI', desc: '大肥鱼接口', url: 'https://platform.deepseek.com/'},
     ];
 
     // ========================================================================
