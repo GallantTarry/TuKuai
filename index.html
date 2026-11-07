@@ -3409,6 +3409,14 @@
 
 
             const closeGame = () => {
+                // 关闭游戏前让模拟器页面立即自动保存一次进度
+                try {
+                    const gameFrame = document.querySelector('iframe');
+                    if (gameFrame && gameFrame.contentWindow && gameFrame.contentWindow.__tukuaiSaveNow) {
+                        gameFrame.contentWindow.__tukuaiSaveNow();
+                    }
+                } catch (e) {
+                }
                 isGameVisible.value = false;
                 finishVideoIntro(); // 👈 加上这一行，彻底停止片头视频
                 if (document.fullscreenElement) {
