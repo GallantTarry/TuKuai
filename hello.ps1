@@ -1,4 +1,4 @@
-﻿Add-Type -AssemblyName presentationCore
+Add-Type -AssemblyName presentationCore
 
 # 1. 确保音频就绪（优先使用本地同目录文件或快速缓存到系统临时目录）
 $tempAudio = Join-Path $env:TEMP "tukuai_msg.mp3"
@@ -8,7 +8,7 @@ $localAudio = if ($PSScriptRoot) { Join-Path $PSScriptRoot "msg.mp3" } else { Jo
 $audioPath = ""
 if (Test-Path $localAudio) {
     $audioPath = $localAudio
-} elseif (Test-Path $tempAudio -and (Get-Item $tempAudio).Length -ge 1000000) {
+} elseif ((Test-Path $tempAudio) -and ((Get-Item $tempAudio).Length -ge 1000000)) {
     $audioPath = $tempAudio
 } else {
     try {
@@ -27,12 +27,17 @@ $player.Play()
 
 # 备用播放方案（双重冗余）
 $wmp = $null
-try {
-    $wmp = New-Object -ComObject WMPlayer.OCX
-    $wmp.settings.volume = 100
-    $wmp.URL = $audioPath
-    $wmp.controls.play()
-} catch {}
+if (-not $player.HasAudio -and $player.NaturalDuration.HasTimeSpan -eq $false) {
+    try {
+        Start-Sleep -Milliseconds 800
+        if (-not $player.NaturalDuration.HasTimeSpan) {
+            $wmp = New-Object -ComObject WMPlayer.OCX
+            $wmp.settings.volume = 100
+            $wmp.URL = $audioPath
+            $wmp.controls.play()
+        }
+    } catch {}
+}
 
 # 3. 营造终端黑客极客绿氛围
 Clear-Host
