@@ -276,7 +276,7 @@
             <!-- ================================================================================ -->
             <div
                     :class="[
-                        'relative z-20 w-full md:w-4/5 max-w-3xl glass-panel transition-all duration-300 flex flex-col',
+                        'relative z-20 w-full md:w-4/5 max-w-3xl glass-panel transition-all duration-300 flex flex-col', panelJelly ? 'panel-jelly' : '',
                         (currentTab === 'about' && showCanvas)
                             ? 'h-[480px] md:h-[580px] p-2.5 md:p-3.5 overflow-hidden'
                             : 'max-h-full overflow-y-auto hide-scrollbar p-5 md:p-10'
@@ -2527,7 +2527,20 @@
                 }
             });
 
+            // 果冻回弹：每次切换档案/画板时让面板重新播放一次弹性动画
+            const panelJelly = ref(false);
+            let panelJellyTimer = null;
+            const triggerPanelJelly = () => {
+                panelJelly.value = false;
+                clearTimeout(panelJellyTimer);
+                requestAnimationFrame(() => {
+                    panelJelly.value = true;
+                    panelJellyTimer = setTimeout(() => { panelJelly.value = false; }, 800);
+                });
+            };
+
             const toggleCanvas = () => {
+                triggerPanelJelly();
                 showCanvas.value = !showCanvas.value;
                 isBoardDrawing = false;
                 if (showCanvas.value) {
@@ -3613,7 +3626,7 @@
             // 👆 ---------------------------------------- 👆
             return {
                 // 土块画板与切换导出的参数
-                showCanvas, toggleCanvas, initBoard, homeColors,
+                showCanvas, toggleCanvas, panelJelly, initBoard, homeColors,
                 boardLineWidth, boardLineWidthText, cycleBrushSize,
                 globalBoardCanvas, boardColor, clearBoard,
                 startDraw, drawing, endDraw, startDrawTouch, drawingTouch,
