@@ -1,10 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // 扫描根目录 HTML、js 目录下所有脚本、以及子模块的 HTML
+  // 扫描根目录 HTML、assets/js 下所有业务脚本、以及各大子模块（projects / games / models）的 HTML
   content: [
     "./index.html",
-    "./js/**/*.js",
-    "./{projects,game,models}/**/*.html"
+    "./daily.html",
+    "./assets/js/**/*.js",
+    "./{projects,games,models}/**/*.html"
   ],
   theme: {
     extend: {
@@ -14,4 +15,4 @@ module.exports = {
     }
   },
   plugins: [],
-}
+};

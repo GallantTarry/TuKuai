@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>KuaiDrive | 挂载磁盘与文件传输七巧板</title>
+    <link rel="icon" href="imgs/kuaidrive.ico" type="image/x-icon">
+    <style>
+        /* CSS 变量：顶级纯粹的“红、黑、金”调色板 */
+        :root {
+            --primary: #D4AF37; /* 纯正的高贵香槟金 */
+            --accent: #7A0000;  /* 沉稳的深赤红（拒绝血红） */
+            --bg-color: #030303; /* 极致深邃的纯黑底色 */
+            --glass-bg: rgba(10, 10, 10, 0.6); /* 纯黑毛玻璃 */
+            --glass-border: rgba(212, 175, 55, 0.2); /* 金色极细边框 */
+            --glow-color: rgba(122, 0, 0, 0.5); /* 暗红光晕 */
+            --glow-gold: rgba(212, 175, 55, 0.35); /* 金色光晕 */
+
+            /* 殿堂级真实丝绒幕布：黑与深红的极致过渡，沉重、吸光 */
+            --velvet-gradient: linear-gradient(
+                    to right,
+                    #000000 0%,     /* 极深阴影 */
+                    #1A0000 15%,    /* 凹陷过渡 */
+                    #4A0000 25%,    /* 隆起迎光面（深赤红） */
+                    #1A0000 35%,    /* 凹陷阴影 */
+                    #000000 50%,    /* 极深阴影 */
+                    #1A0000 65%,    /* 凹陷过渡 */
+                    #4A0000 75%,    /* 隆起迎光面（深赤红） */
+                    #1A0000 85%,    /* 凹陷阴影 */
+                    #000000 100%
+            );
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "-apple-system", "Microsoft YaHei", "Segoe UI", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 🟢 终极修复：恢复原生 body 滚动，夺回最顶层滚动条 */
+        body {
+            background-color: var(--bg-color);
+            color: #E4E4E7;
+            line-height: 1.6;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* ==========================================================================
+            【全局滚动条定制】 对齐 ToolKit 亚克力悬浮质感（偏红的红+黄配色）
+            ========================================================================== */
+        ::-webkit-scrollbar {
+            width: 8px;  /* 对齐 ToolKit 8px 黄金尺寸，更好触发鼠标悬停 */
+            height: 8px;
+        }
+
+        /* 轨道定制：极致半透明深红黑底，无缝融入背景 */
+        ::-webkit-scrollbar-track {
+            background: rgba(25, 5, 5, 0.25);
+            border-radius: 4px;
+        }
+
+        /* 滑块定制：常态 0.45 半透明亚克力质感（偏红+明黄收尾），带轻微描边与立体内发光 */
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, rgba(230, 0, 18, 0.45) 0%, rgba(255, 42, 0, 0.45) 75%, rgba(255, 208, 0, 0.45) 100%);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 120, 80, 0.18);
+            box-shadow: inset 0 0 4px rgba(255, 220, 180, 0.2);
+        }
+
+        /* 滑块悬浮态：鼠标移上去亮度大幅提升（0.95），并爆出红黄外发光交互感 */
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, rgba(255, 0, 25, 0.95) 0%, rgba(255, 55, 0, 0.95) 70%, rgba(255, 220, 0, 0.95) 100%);
+            border-color: rgba(255, 208, 0, 0.5);
+            box-shadow: 0 0 12px rgba(255, 30, 0, 0.75), inset 0 0 4px rgba(255, 255, 255, 0.35);
+        }
+
+        /* 隐藏滚动条两端无用的箭头按钮 */
+        ::-webkit-scrollbar-button {
+            display: none;
+            height: 0;
+            width: 0;
+        }
+
+        /* 清理右下角交界处的原生白块 */
+        ::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        /* === 1. 顶部标题栏 (对齐 ToolKit 80px 黄金高度与 header.nav-header 规范) === */
+        header.nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(5, 5, 5, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .logo-container:hover { transform: scale(1.05); }
+
+        .logo-container img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10%; /* 苹果 iOS 连续曲率平滑圆角 (Squircle) */
+            object-fit: cover;
+            box-shadow: 0 0 15px var(--glow-gold);
+            transition: transform 0.3s ease, box-shadow 0.5s ease;
+        }
+        .logo-container img.playing {
+            animation: breathe 3s ease-in-out infinite;
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        @keyframes breathe {
+            0% { transform: scale(1); box-shadow: 0 0 10px var(--primary); }
+            50% { transform: scale(1.05); box-shadow: 0 0 25px var(--primary); }
+            100% { transform: scale(1); box-shadow: 0 0 10px var(--primary); }
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            background: linear-gradient(270deg, var(--primary), #fff, var(--primary));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 6s ease infinite;
+            opacity: 0.9;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .buy-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+        .buy-btn:hover {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: rgba(212, 175, 55, 0.6);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+            transform: translateY(-2px);
+        }
+        .price-tag {
+            background: linear-gradient(135deg, var(--accent), #2A0000);
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: inset 0 0 5px rgba(255,255,255,0.1);
+        }
+
+        /* === 2. 视觉特效层（分离出来，固定死，绝不拉出空气） === */
+        #visual-bg {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none;
+        }
+        .spotlight {
+            position: absolute; top: -10%; left: 50%; transform: translateX(-50%);
+            width: 80vw; height: 120%;
+            background: radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.12) 0%, rgba(122, 0, 0, 0.05) 40%, transparent 75%);
+            animation: soft-breathe 8s infinite alternate ease-in-out;
+        }
+        .stage-floor {
+            position: absolute; bottom: -30%; left: 0%; width: 100%; height: 60%;
+            background: radial-gradient(ellipse at 50% 100%, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
+        }
+        .grain-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+        }
+        @keyframes soft-breathe {
+            from { opacity: 0.6; transform: translateX(-50%) scale(0.98); }
+            to { opacity: 1; transform: translateX(-50%) scale(1.02); }
+        }
+
+        /* === 3. 核心内容区 (依赖 body 滚动) === */
+        #ui-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 80px); /* 减去 80px 黄金顶栏高度 */
+        }
+
+        .hero {
+            margin: auto 0; /* 这是 Flexbox 防截断的究极绝招 */
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .hero-img-container {
+            position: relative; width: 90%; max-width: 170px; height: auto; margin-bottom: 35px;
+            animation: gentle-float 8s ease-in-out infinite;
+            display: flex;
+        }
+
+        .hero-img-container::after {
+            content: ''; position: absolute; inset: 0;
+            border-radius: 12px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+            box-shadow: 0 0 60px 25px rgba(212, 175, 55, 0.15);
+            z-index: -1;
+            animation: pulse-aura 5s ease-in-out infinite alternate;
+        }
+        .hero-img-container img {
+            width: 100%; height: auto; display: block; object-fit: contain; border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(212, 175, 55, 0.15);
+        }
+
+        @keyframes gentle-float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes pulse-aura {
+            from { opacity: 0.5; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1.1); }
+        }
+
+        .hero h1.cosmic-title {
+            font-size: 4rem; margin-bottom: 12px; letter-spacing: 8px;
+            font-weight: 900;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 40px rgba(212, 175, 55, 0.3);
+            background: linear-gradient(135deg, #fff, var(--primary), #AA8000);
+            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: text-shine 8s linear infinite;
+        }
+        @keyframes text-shine { to { background-position: 200% center; } }
+
+        .hero p.cosmic-subtitle {
+            font-family: "-apple-system", "Microsoft YaHei", sans-serif;
+            font-size: 1.05rem; color: rgba(212, 175, 55, 0.8); letter-spacing: 8px;
+            text-transform: uppercase; font-weight: 300;
+            margin: 0 auto 40px auto;
+        }
+
+        .lock-btn {
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: rgba(212, 175, 55, 0.95);
+            padding: 12px 35px; border-radius: 30px;
+            font-size: 1.05rem; font-weight: 600; letter-spacing: 3px;
+            text-decoration: none;
+            display: inline-flex; align-items: center; gap: 12px; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+        }
+        .lock-btn:hover {
+            background: rgba(212, 175, 55, 0.18);
+            border-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+        .lock-btn.pulse {
+            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6);
+            animation: pulse-ring 2s infinite;
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.55);
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+
+        /* ================= 节点竞速引擎：空间折跃状态 ================= */
+        .lock-btn.is-routing {
+            pointer-events: none;
+            background: rgba(122, 0, 0, 0.55);
+            border-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 35px rgba(212, 175, 55, 0.5), inset 0 0 15px rgba(212, 175, 55, 0.25);
+            transform: scale(0.98);
+            animation: none;
+        }
+
+        .icon-spin {
+            animation: routing-spin 1.2s cubic-bezier(0.5, 0.1, 0.1, 0.9) infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes routing-spin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(0.8); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        footer {
+            flex-shrink: 0;
+            text-align: center; padding: 20px 20px 30px;
+            opacity: 0.6; transition: opacity 0.3s;
+        }
+        footer:hover { opacity: 1; }
+        footer p {
+            color: var(--primary); font-size: 0.85rem; letter-spacing: 3px; font-weight: 300;
+        }
+
+        /* === 4. 舞台前景特效 (花瓣与幕布，固定死) === */
+        #visual-fg {
+            position: fixed; inset: 0; z-index: 30; pointer-events: none;
+        }
+        #petal-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+        }
+        .valance {
+            position: absolute; top: 0; left: 0; width: 100%; height: 4vh;
+            background: var(--velvet-gradient);
+            border-bottom: 2px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+        }
+        .curtain-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+        }
+        .curtain-left, .curtain-right {
+            width: 50%; height: 100%;
+            background: var(--velvet-gradient);
+            box-shadow: 0 0 50px rgba(0,0,0,1);
+            transition: transform 3.5s cubic-bezier(0.25, 1, 0.3, 1);
+            pointer-events: auto; /* 闭合时拦截点击 */
+        }
+        .curtain-left {
+            border-right: 2px solid rgba(212, 175, 55, 0.5);
+            transform-origin: left;
+            box-shadow: inset -20px 0 40px rgba(0,0,0,0.8), 10px 0 30px rgba(0,0,0,0.9);
+        }
+        .curtain-right {
+            border-left: 2px solid rgba(212, 175, 55, 0.5);
+            transform-origin: right;
+            box-shadow: inset 20px 0 40px rgba(0,0,0,0.8), -10px 0 30px rgba(0,0,0,0.9);
+        }
+
+        .curtain-open .curtain-left { transform: translateX(-90%); pointer-events: none; }
+        .curtain-open .curtain-right { transform: translateX(90%); pointer-events: none; }
+
+        /* === 移动端适配（对齐 ToolKit 甜点位比例，满足触控热区规范） === */
+        @media (max-width: 768px) {
+            header.nav-header { padding: 15px 20px; }
+            .logo-text { font-size: 1.2rem; }
+            .logo-container img { width: 32px; height: 32px; }
+            .buy-btn { padding: 8px 16px; font-size: 0.95rem; }
+            .price-tag { padding: 2px 8px; font-size: 0.75rem; }
+
+            #ui-content { min-height: calc(100vh - 62px); }
+
+            .hero { padding: 40px 20px; }
+            .hero-img-container { max-width: 110px; margin-bottom: 20px; }
+            .hero h1.cosmic-title { font-size: 2.2rem; letter-spacing: 3px; margin-bottom: 8px; }
+            .hero p.cosmic-subtitle { font-size: 0.8rem; letter-spacing: 3px; margin-bottom: 30px; }
+            .lock-btn { padding: 10px 20px; font-size: 0.9rem; gap: 8px; }
+
+            footer { padding: 10px 15px 20px; }
+            footer p { font-size: 0.75rem; letter-spacing: 1px; }
+        }
+
+        @media (max-width: 400px) {
+            .hero h1.cosmic-title { font-size: 1.8rem; letter-spacing: 2px; }
+            .hero p.cosmic-subtitle { font-size: 0.75rem; letter-spacing: 2px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 1. 舞台底层光影 (固定脱离文档流，永不穿帮) -->
+<div id="visual-bg">
+    <div class="spotlight"></div>
+    <div class="stage-floor"></div>
+    <div class="grain-overlay"></div>
+</div>
+
+<!-- 2. 顶部导航 (吸顶) -->
+<header class="nav-header">
+    <div class="logo-container" id="music-toggle">
+        <img src="imgs/kuaidrive.ico" alt="KuaiDrive Logo" id="music-disk">
+        <div class="logo-text">BGM</div>
+        <audio id="bg-music" src="music/西西里舞曲.mp3" loop></audio>
+    </div>
+
+    <a href="docs/manual.md" download="KuaiDrive操作说明＆更新日志.md" class="buy-btn">
+        获取说明
+        <span class="price-tag">下载</span>
+    </a>
+</header>
+
+<!-- 3. 主角内容 (随网页滚动) -->
+<main id="ui-content">
+    <section class="hero">
+        <div class="hero-img-container">
+            <img src="imgs/main.png" alt="KuaiDrive 软件主界面">
+        </div>
+        <h1 class="cosmic-title">KUAIDRIVE</h1>
+        <p class="cosmic-subtitle">安全 · 简洁 · 迅速 · 稳定</p>
+
+        <a href="#" id="btn-download" class="lock-btn pulse">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            立即下载1.0.1先行体验版
+        </a>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Created by 土块. The Mech is Awakening.</p>
+    </footer>
+</main>
+
+<!-- 4. 舞台顶层特效 (花瓣与幕布，固定覆盖) -->
+<div id="visual-fg">
+    <canvas id="petal-canvas"></canvas>
+    <div class="valance"></div>
+    <div class="curtain-container" id="curtain">
+        <div class="curtain-left"></div>
+        <div class="curtain-right"></div>
+    </div>
+</div>
+
+<script>
+    // --- 1. 音乐播放器 ---
+    const musicToggle = document.getElementById('music-toggle');
+    const bgMusic = document.getElementById('bg-music');
+    const musicDisk = document.getElementById('music-disk');
+
+    musicToggle.addEventListener('click', () => {
+        if (bgMusic.paused) {
+            bgMusic.play();
+            musicDisk.classList.add('playing');
+        } else {
+            bgMusic.pause();
+            musicDisk.classList.remove('playing');
+        }
+    });
+
+    // --- 2. 印象派原生花瓣引擎 ---
+    const canvas = document.getElementById('petal-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let petals = [];
+
+    function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // 专属红黑金配色花瓣
+    const petalColors = ['#7A0000', '#4A0000', '#D4AF37', '#FFDF00', '#111111'];
+
+    class Petal {
+        constructor() { this.reset(); this.y = Math.random() * height; }
+        reset() {
+            this.x = Math.random() * width;
+            this.y = -Math.random() * 200 - 50;
+            this.size = Math.random() * 8 + 4;
+            this.speedY = Math.random() * 0.8 + 0.3;
+            this.speedX = Math.random() * 0.8 - 0.4;
+            this.angle = Math.random() * Math.PI * 2;
+            this.spin = Math.random() * 0.02 - 0.01;
+            this.sway = Math.random() * 0.015;
+            this.swayOffset = Math.random() * Math.PI * 2;
+            this.color = petalColors[Math.floor(Math.random() * petalColors.length)];
+            this.opacity = Math.random() * 0.5 + 0.3;
+        }
+        update() {
+            this.y += this.speedY;
+            this.x += this.speedX + Math.sin(this.y * this.sway + this.swayOffset);
+            this.angle += this.spin;
+            if (this.y > height + this.size) { this.reset(); }
+        }
+        draw() {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.angle);
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.quadraticCurveTo(this.size * 1.5, this.size * 0.5, this.size, this.size * 1.5);
+            ctx.quadraticCurveTo(this.size * 0.2, this.size * 1.2, 0, 0);
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = this.opacity;
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    const petalCount = window.innerWidth < 768 ? 25 : 50;
+    for (let i = 0; i < petalCount; i++) { petals.push(new Petal()); }
+
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+        for (let petal of petals) {
+            petal.update();
+            petal.draw();
+        }
+        requestAnimationFrame(animate);
+    }
+
+    // --- 3. 舞台演出时间轴 ---
+    window.addEventListener('load', () => {
+        animate();
+        setTimeout(() => {
+            document.getElementById('curtain').classList.add('curtain-open');
+        }, 1200);
+    });
+
+    // --- 4. 全球节点智能竞速分配引擎 ---
+    class DownloadRouter {
+        constructor(btnId, targetUrl) {
+            this.btn = document.getElementById(btnId);
+            this.targetUrl = targetUrl;
+
+            // 10大白嫖加速节点池
+            this.nodes = [
+                'https://gh-proxy.com/',
+                'https://ghfast.top/',
+                'https://ghproxy.net/',
+                'https://ghp.ci/',
+                'https://ghproxy.homeboyc.cn/',
+                'https://github.akams.cn/',
+                'https://moeyy.cn/gh-proxy/',
+                'https://gh.monlor.com/',
+                'https://ghproxy.imciel.com/',
+                'https://fastgit.cc/'
+            ];
+
+            if (this.btn) {
+                this.originalHtml = this.btn.innerHTML;
+                this.init();
+            }
+        }
+
+        init() {
+            this.btn.addEventListener('click', (e) => this.startRace(e));
+        }
+
+        probeNode(url, timeoutMs = 4000) {
+            return new Promise((resolve, reject) => {
+                const controller = new AbortController();
+                const timer = setTimeout(() => {
+                    controller.abort();
+                    reject(new Error('Timeout'));
+                }, timeoutMs);
+
+                fetch(url, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-store',
+                    referrerPolicy: 'no-referrer',
+                    signal: controller.signal
+                }).then(async (res) => {
+                    if (!res.ok && res.status !== 206) throw new Error('Bad status');
+                    const ct = (res.headers.get('content-type') || '').toLowerCase();
+                    if (ct.includes('text/html') || ct.includes('application/json')) throw new Error('HTML error page');
+                    const cl = parseInt(res.headers.get('content-length') || '0', 10);
+                    if (cl > 0 && cl < 500 * 1024) throw new Error('Too small');
+                    if (res.body) {
+                        const reader = res.body.getReader();
+                        await reader.read();
+                    }
+                    clearTimeout(timer);
+                    controller.abort();
+                    resolve(url);
+                }).catch(err => {
+                    clearTimeout(timer);
+                    controller.abort();
+                    reject(err);
+                });
+            });
+        }
+
+        async startRace(e) {
+            e.preventDefault();
+            if (this.btn.classList.contains('is-routing')) return;
+
+            this.btn.classList.add('is-routing');
+            this.btn.classList.remove('pulse');
+
+            this.btn.innerHTML = `
+                    <svg class="icon-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        <path d="M2 12h20"></path>
+                    </svg>
+                    节点智能寻优中...`;
+
+            const testUrls = this.nodes.map(prefix => prefix + this.targetUrl);
+
+            let fastestUrl = null;
+            try {
+                fastestUrl = await Promise.any(testUrls.map(u => this.probeNode(u, 4000)));
+            } catch (_) {
+                fastestUrl = this.nodes[0] + this.targetUrl;
+            }
+
+            this.btn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2" style="vertical-align:middle;">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    最佳节点分配成功`;
+
+            setTimeout(() => {
+                const a = document.createElement('a');
+                a.href = fastestUrl;
+                a.rel = 'noreferrer noopener';
+                a.referrerPolicy = 'no-referrer';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                this.resetBtn();
+            }, 500);
+        }
+
+        resetBtn() {
+            setTimeout(() => {
+                this.btn.classList.remove('is-routing');
+                this.btn.classList.add('pulse');
+                this.btn.innerHTML = this.originalHtml;
+            }, 2500);
+        }
+    }
+
+    new DownloadRouter(
+        'btn-download',
+        'https://github.com/GallantTarry/TuKuai/releases/download/20260907/KuaiDrive_Setup_v1.0.1.exe'
+    );
+</script>
+</body>
+</html>
