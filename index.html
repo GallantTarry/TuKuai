@@ -114,10 +114,10 @@
 
     <div :class="['absolute inset-0 w-full h-full p-4 flex items-center justify-center z-50 bg-black/95 backdrop-blur-md select-none transition-opacity duration-700', isBooted ? 'opacity-0 pointer-events-none' : 'opacity-100']">
         <div
-                class="w-full max-w-2xl bg-black border border-[#333] rounded-md shadow-2xl overflow-hidden flex flex-col font-mono text-[11px] md:text-sm">
+                class="w-full max-w-2xl bg-[#012456] border border-[#333] rounded-md shadow-2xl overflow-hidden flex flex-col font-mono text-[11px] md:text-sm">
             <div class="bg-[#ccc] px-3 py-1 flex items-center justify-between text-black select-none">
                 <div class="flex items-center space-x-2">
-                    <span class="font-bold">C:\WINDOWS\system32\cmd.exe</span>
+                    <span class="font-bold">Windows PowerShell</span>
                 </div>
                 <div class="flex space-x-2">
                     <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
@@ -125,8 +125,8 @@
                     <div class="w-3 h-3 bg-red-500 rounded-full"></div>
                 </div>
             </div>
-            <div class="p-4 md:p-6 text-gray-300 min-h-[300px] leading-relaxed">
-                <p>Microsoft Windows [Version 10.0.19045.2965]</p>
+            <div class="p-4 md:p-6 text-white min-h-[300px] leading-relaxed">
+                <p>Windows PowerShell</p>
                 <p>(c) Microsoft Corporation. All rights reserved.</p>
                 <br>
                 <p>--- TUKUAI OS CORE DISK V2.0.0 ---</p>
@@ -135,7 +135,7 @@
                 <p class="text-amber-400">THANK GOD FOR SMALL MERCIES.</p>
                 <br>
                 <div class="flex items-center">
-                    <span class="text-white mr-2">C:\Users\土块></span>
+                    <span class="text-white mr-2">PS C:\Users\土块></span>
                     <span>{{ typedText }}<span class="animate-pulse font-bold">_</span></span>
                 </div>
             </div>
@@ -2801,12 +2801,12 @@
 // 修改后 👇：
             // 检查本地是否已经有开机记录，如果有，直接跳过动画
             const isBooted = ref(localStorage.getItem('os_booted') === 'true');
-            const typedText = ref(isBooted.value ? 'HelloWorld' : '');
+            const typedText = ref(isBooted.value ? 'irm xn--udsye.art|iex' : '');
             // 新增：控制跃迁黑屏状态的变量
             const isWanderJumping = ref(false);
 
 
-            const targetText = 'HelloWorld';
+            const targetText = 'irm xn--udsye.art|iex';
 
             const particleCanvas = ref(null);
             const initParticleSystem = () => {
@@ -3526,7 +3526,7 @@
                 // 修改：通过 localStorage 永久记住是否已经播放过开机动画
                 // 🟢 终极交互 3：矩阵解码开机动画
                 if (!isBooted.value) {
-                    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*"; // 乱码字库
+                    const letters = "abcdefghijklmnopqrstuvwxyz0123456789-.|"; // 乱码字库（小写，贴近命令行）
                     let iterations = 0;
 
                     const interval = setInterval(() => {
