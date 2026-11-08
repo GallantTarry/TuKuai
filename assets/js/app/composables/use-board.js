@@ -576,12 +576,17 @@
             }
         };
 
-        // 当 <canvas> 元素真正挂载到 DOM 树上时，立即初始化画布尺寸
+        // 当 <canvas> 元素真正挂载到 DOM 树上时，立即初始化画布尺寸，并在切换动画结束时校准
         watch(globalBoardCanvas, (cvs) => {
-            if (!cvs) return;
+            if (!cvs) {
+                boardCtx = null;
+                return;
+            }
             initBoardCanvas();
-            setTimeout(initBoardCanvas, 80);
-            setTimeout(initBoardCanvas, 260);
+            setTimeout(initBoardCanvas, 100);
+            setTimeout(initBoardCanvas, 300);
+            setTimeout(initBoardCanvas, 500);
+            setTimeout(resizeBoard, 850);
         });
 
         // 当用户从其他菜单标签切回「我的简介（about）」且画板正开着时，重新校准一次画布尺寸
