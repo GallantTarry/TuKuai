@@ -278,18 +278,19 @@
 
             // 读取画布在网页上当前实际占用的 CSS 像素宽高
             const rect = cvs.getBoundingClientRect();
+            const needNewCtx = !boardCtx || boardCtx.canvas !== cvs;
             if (rect.width > 0 && rect.height > 0) {
                 const dpr = getDpr();
                 const newW = Math.round(rect.width * dpr);
                 const newH = Math.round(rect.height * dpr);
-                // 只有当分辨率确实发生变化（或尚未拿到绘图上下文）时才重置画布并重绘
-                if (cvs.width !== newW || cvs.height !== newH || (ensureContext && !boardCtx)) {
+                // 只有当分辨率确实发生变化（或尚未拿到绘图上下文 / 画布已更换）时才重置画布并重绘
+                if (cvs.width !== newW || cvs.height !== newH || (ensureContext && needNewCtx)) {
                     cvs.width = newW;
                     cvs.height = newH;
                     boardCtx = cvs.getContext('2d');
                     redrawAll();
                 }
-            } else if (ensureContext && !boardCtx) {
+            } else if (ensureContext && needNewCtx) {
                 // 如果画布刚创建、动画还没展开（宽高暂时为 0），先拿到 2D 上下文备用
                 boardCtx = cvs.getContext('2d');
             }
@@ -576,12 +577,24 @@
             }
         };
 
-        // 当 <canvas> 元素真正挂载到 DOM 树上时，立即初始化画布尺寸
+        let canvasResizeObserver = null;
+
+        // 当 <canvas> 元素挂载或卸载时触发：清理旧上下文，使用 ResizeObserver 实时跟随面板动画与尺寸变化
         watch(globalBoardCanvas, (cvs) => {
-            if (!cvs) return;
+            if (canvasResizeObserver) {
+                canvasResizeObserver.disconnect();
+                canvasResizeObserver = null;
+            }
+            if (!cvs) {
+                boardCtx = null;
+                return;
+            }
             initBoardCanvas();
-            setTimeout(initBoardCanvas, 80);
-            setTimeout(initBoardCanvas, 260);
+            if (typeof ResizeObserver !== 'undefined') {
+                canvasResizeObserver = new ResizeObserver(() => syncCanvasSize(false));
+                canvasResizeObserver.observe(cvs);
+                if (cvs.parentElement) canvasResizeObserver.observe(cvs.parentElement);
+            }
         });
 
         // 当用户从其他菜单标签切回「我的简介（about）」且画板正开着时，重新校准一次画布尺寸
