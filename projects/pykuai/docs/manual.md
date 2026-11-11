@@ -1,74 +1,13 @@
 # 🐍 PyKuai 操作说明＆更新日志
 
----
 
-> 🌐 **官方主页获取**：在浏览器地址栏输入 **土块.art** 进入主页，点击文件下载即可获取本软件。
-> ⚠️ **重要安全提示**：本系统由 **土块 (GallantTarry)** 独立研发，软件可能有漏洞从而损坏文件，请备份重要文件后再使用，因软件错误造成的文件丢失与系统错误等负面后果，作者概不负责。
-
----
-### 📥 系统获取与初始化
-
-* **核心配置项说明**：
-* **收藏夹记忆矩阵**：在您的 `C:\Users\用户名\Documents`（我的文档）目录下，系统会自动生成一个名为 `.pykuai_fav.json` 的隐藏记忆文件。它记录了您在工作台中点亮的“⭐ 我的收藏夹”星标配置。**请切记不要删除它**，否则您的快捷启动偏好将被重置。
-* **可放大窗口**：当您用鼠标停留在软件右下角就可以放大了，以方便查看日志和脚本可视化内容。
-
-
+### 中文版
+> `pykuai` 的许多技术灵感与底层能力都汲取自全球开源社区，而英语作为世界最通用的语言，让软件本身不该止步于封闭或局部，而应以更开放的姿态回馈给全世界的开发者。因此，`pykuai` 彻底转向纯英文与单一官方国际源，并从过去大而全的泛办公脚本盒子，正式聚焦为面向计算机专业领域的控制台可视化工作台：我们摒弃重复造轮子，站在各行业最优秀的开源引擎之上并坦诚注明每一处依赖来源；不再捆绑臃肿的内置环境，将安装控制权交还给用户、只提供清晰直观的引导；坚持以 **极简、高质、精准、可视化** 为准则，做纯粹、克制、真正好用的开源工具。
 
 ---
 
-### 📁 当前涵盖脚本矩阵
+### English Version
+> Built upon ideas and breakthroughs shared by the global open-source community, `pykuai` adopts pure English—the universal language of computing—and a single official international upstream so it can give back to the wider world rather than remain closed off. Moving away from a bloated, catch-all office script box, `pykuai` is refocused into a precision visual console workbench for computing and engineering: we refuse to reinvent the wheel, build directly on best-in-class open-source engines with clear upstream attribution, and ship zero bundled runtime bloat—keeping environment control in your hands with clean guidance, anchored by four core principles: **minimalism, quality, precision, and visual clarity**.
 
-#### 🌐 泛用性工具
-
-* `001_多表合并工具`
-* `002_总表条件拆分`
-* `003_矩阵解压引擎`
-* `004_图片转黑白扫描件`
-* `005_png转ico多格式`
-* `006_PDF断点拆分引擎`
-* `007_万能图片压缩`
-* `008_万能视频压缩`
-* `009_音视频链接获取引擎`
-
-
-#### 🎯 针对性工具
-
-* `001_专家获取粘贴板`
-* `002_多表定式合并`
-
----
-### 📌 版本说明与作者寄语
-
-* **版本号**：v1.2.4
-* **发布日期**：2026/09/20
-
-> 之前的版本更迭已经失传了，这次的更新就算软件的起点吧。这其实就是一个脚本盒子，它并没有说明书。
-> 本软件完全基于 Python 代码编写，服务于桌面端未接触过 Python 的使用者。为确保您能先确认是否需要再进行下载，我将功能写在上方，更新日志写在下方。
-> 当然，我的测试时间有限，如有重大 Bug 或具体的业务需求，欢迎通过我主页点击我的头像给我发送具体的反馈和新的需求。
-> 再次感谢您的使用和支持！
-
----
-### 📌 
-
-* **版本号**：v1.2.5
-* **发布日期**：2026/09/20
-
-> 新增视频获取脚本，可以输入网页链接获取音频与视频。
-> 修复靛蓝色不和谐色为 color: #FF9800。
-> 修复多开报错没有图标的先后顺序出错bug。
-
----
-### 📌 
-
-* **版本号**：v1.2.6
-* **发布日期**：2026/09/25
-
-> 优化主界面标题栏图标渲染机制，弃用强制平滑缩放，接入 QIcon 原生多尺寸智能提取算法，彻底解决高清大图压缩导致的边缘发虚与马赛克问题。
-> 修复系统托盘区（任务栏）小图标缺失悬停提示文本的漏洞，补全程序在后台静默运行时的状态反馈。
-> 底层专属署名：成功注入自签发代码证书，软件发布者正式认证为“土块”。
-> 放弃单文件启动转用inno安装，启动更快更安全。卸载请调用控制面板进行卸载。
-
-
----
 
 © 2026 Created by 土块. All rights reserved.
