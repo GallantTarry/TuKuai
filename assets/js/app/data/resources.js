@@ -104,11 +104,11 @@
     });
 
     TK.data.projects = [
-        project('blackhole', 'BlackHole', '多功能归纳悬浮黑洞', {title: 'Blackhole'}),
-        project('toolkit', 'ToolKit', '办公辅助应用'),
-        project('pykuai', 'PyKuai', '可视化脚本盒子'),
-        project('kuaidrive', 'KuaiDrive', '挂载磁盘七巧板'),
-        project('clod-and-gold', 'Clod＆Gold', '土块与金苹果', {largeIcon: true})
+        project('blackhole', 'BlackHole', '桌面悬浮效率中枢', {title: 'Blackhole'}),
+        project('toolkit', 'ToolKit', '自动化办公效率套件'),
+        project('pykuai', 'PyKuai', '微内核 CLI 工作台'),
+        project('kuaidrive', 'KuaiDrive', '跨网磁盘挂载工具'),
+        project('clod-and-gold', 'Clod＆Gold', '原创独立游戏作品', {largeIcon: true})
     ];
 
     // ========================================================================
