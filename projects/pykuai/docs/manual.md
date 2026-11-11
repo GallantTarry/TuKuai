@@ -10,4 +10,7 @@
 > Built upon ideas and breakthroughs shared by the global open-source community, `pykuai` adopts pure English—the universal language of computing—and a single official international upstream so it can give back to the wider world rather than remain closed off. Moving away from a bloated, catch-all office script box, `pykuai` is refocused into a precision visual console workbench for computing and engineering: we refuse to reinvent the wheel, build directly on best-in-class open-source engines with clear upstream attribution, and ship zero bundled runtime bloat—keeping environment control in your hands with clean guidance, anchored by four core principles: **minimalism, quality, precision, and visual clarity**.
 
 
+>"First, solve the problem. Then, write the code." ——John Johnson
+
+
 © 2026 Created by 土块. All rights reserved.
