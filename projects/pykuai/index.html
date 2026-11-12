@@ -249,19 +249,32 @@
         }
 
         .tagline {
-            margin-top: 8px;
-            font-size: 0.92rem;
+            margin-top: 10px;
+            font-size: 0.96rem;
             color: var(--emerald-color);
-            letter-spacing: 1px;
-            opacity: 0.85;
+            letter-spacing: 0.8px;
         }
 
-        /* Pure-CSS ASCII Terminal Viewport Showcase */
+        .quote-author {
+            color: var(--amber-color);
+            font-weight: bold;
+        }
+
+        .origin-note {
+            max-width: 720px;
+            margin: 8px auto 0;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: #9ae6b4;
+            opacity: 0.88;
+        }
+
+        /* Unified Cyber Terminal & Native Console Showcase */
         .showcase {
             border: 2px solid var(--primary-color);
-            background: rgba(0, 12, 0, 0.88);
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.35), inset 0 0 24px rgba(0, 255, 0, 0.12);
-            margin-bottom: 36px;
+            background: rgba(4, 12, 6, 0.92);
+            box-shadow: 0 0 22px rgba(0, 255, 0, 0.32), inset 0 0 24px rgba(0, 255, 0, 0.12);
+            margin-bottom: 34px;
             position: relative;
             overflow: hidden;
         }
@@ -288,30 +301,37 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 16px;
+            gap: 12px;
+            padding: 9px 16px;
             border-bottom: 1px solid rgba(0, 255, 0, 0.35);
-            background: rgba(0, 32, 0, 0.75);
-            font-size: 0.82rem;
-            letter-spacing: 1px;
+            background: rgba(0, 32, 0, 0.78);
+            font-size: 0.84rem;
+            letter-spacing: 0.8px;
         }
 
-        .window-dots {
-            display: flex;
-            gap: 8px;
+        .wt-tab {
+            display: inline-flex;
             align-items: center;
+            gap: 8px;
         }
 
-        .window-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            border: 1px solid var(--primary-color);
-            display: inline-block;
+        .wt-icon {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            image-rendering: pixelated;
+            display: block;
         }
 
-        .window-dot.active {
-            background: var(--primary-color);
-            box-shadow: 0 0 8px var(--primary-color);
+        .wt-title {
+            color: #e6ffe6;
+            font-weight: bold;
+        }
+
+        .chrome-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .window-meta {
@@ -320,44 +340,64 @@
         }
 
         .viewport-body {
-            padding: 24px 20px 22px;
+            padding: 20px 22px 22px;
+            min-height: 365px;
             position: relative;
             z-index: 1;
         }
 
+        .console-cmd-row {
+            font-size: 0.98rem;
+            line-height: 1.5;
+            min-height: 1.5em;
+            white-space: pre-wrap;
+        }
+
+        .console-cmd-row + .console-install-out {
+            margin-top: 4px;
+            margin-bottom: 14px;
+            font-size: 0.92rem;
+            line-height: 1.55;
+        }
+
+        .console-launch-row {
+            margin-bottom: 14px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
         .ascii-banner {
             color: var(--primary-color);
-            text-shadow: 0 0 8px rgba(0, 255, 0, 0.65);
+            text-shadow: 0 0 8px rgba(0, 255, 0, 0.45);
             font-size: clamp(6.6px, 1.52vw, 13.5px);
             line-height: 1.15;
             white-space: pre;
             overflow-x: auto;
             text-align: center;
-            margin-bottom: 18px;
+            margin: 4px 0 16px;
         }
 
-        .telemetry-grid {
-            border-top: 1px dashed rgba(0, 255, 0, 0.35);
-            padding-top: 14px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 10px 18px;
-            font-size: 0.88rem;
-            line-height: 1.5;
+        .banner-top {
+            color: #00FF00;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.55);
         }
 
-        .telemetry-item {
-            color: #d8ffe0;
+        .banner-mid {
+            color: #10b981;
+            text-shadow: 0 0 8px rgba(16, 185, 129, 0.45);
         }
 
-        .telemetry-key {
-            color: var(--amber-color);
-            font-weight: bold;
+        .banner-bot {
+            color: #047857;
+            text-shadow: 0 0 6px rgba(4, 120, 87, 0.4);
         }
 
-        .telemetry-ok {
-            color: var(--primary-color);
-            font-weight: bold;
+        .console-repl-row {
+            font-size: 1rem;
+            line-height: 1.65;
+            overflow-wrap: anywhere;
         }
 
         /* Quick Install Shell Block */
@@ -476,17 +516,24 @@
             color: #b7ffb7;
         }
 
-        /* Terminal Typewriter Log Box */
-        .terminal {
-            background: var(--terminal-bg);
-            border: 1px solid var(--primary-color);
-            padding: 20px;
-            margin-bottom: 42px;
-            min-height: 230px;
-            box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.2);
-            font-size: 1rem;
-            line-height: 1.65;
-            overflow-wrap: anywhere;
+        /* Chrome Replay Button & Native Console Token Colors */
+        .term-replay {
+            background: transparent;
+            border: 1px solid rgba(0, 255, 0, 0.4);
+            color: rgba(0, 255, 0, 0.82);
+            font-family: inherit;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            padding: 2px 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .term-replay:hover {
+            border-color: var(--primary-color);
+            color: #000;
+            background: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
         }
 
         #typewriter {
@@ -494,13 +541,27 @@
             white-space: pre-wrap;
         }
 
+        .t-ps { color: #38BDF8; font-weight: bold; }
+        .t-cmd { color: #E0E0E0; }
+        .t-warn { color: #FF9800; font-weight: bold; }
+        .t-green { color: #00FF00; font-weight: bold; }
+        .t-emerald { color: #10b981; font-weight: bold; }
+        .t-light { color: #E0E0E0; }
+        .t-muted { color: #9ca3af; }
+        .t-red { color: #FF5252; font-weight: bold; }
+        .t-tele { color: #00FF00; font-weight: bold; }
+
         .cursor {
             display: inline-block;
-            width: 10px;
+            width: 9px;
             height: 1.15em;
             background-color: var(--primary-color);
             vertical-align: middle;
             animation: blink 1s step-end infinite;
+        }
+
+        .cursor.hidden {
+            display: none;
         }
 
         @keyframes blink {
@@ -601,7 +662,9 @@
             .buy-btn { padding: 8px 16px; font-size: 0.95rem; }
             .price-tag { padding: 2px 8px; font-size: 0.75rem; }
             .glitch { font-size: 2.5rem; }
-            .terminal { font-size: 0.95rem; min-height: 190px; }
+            .window-meta { display: none; }
+            .viewport-body { min-height: 330px; padding: 16px; }
+            .console-repl-row { font-size: 0.92rem; }
             .features { grid-template-columns: 1fr; }
             .pip-row { flex-direction: column; align-items: stretch; }
             .copy-btn { align-self: flex-end; }
@@ -630,33 +693,38 @@
     <header class="main-header">
         <h1 class="glitch" data-text="PyKuai">PyKuai</h1>
         <p class="author">v1.2.7 // Open-Source Micro-Kernel CLI &amp; TUI Workbench · by TuKuai</p>
-        <p class="tagline">"First, solve the problem. Then, write the code." — Plug-and-Play 3-Letter Python Engines</p>
+        <p class="tagline">"First, solve the problem. Then, write the code." <span class="quote-author">— John Johnson</span></p>
+        <p class="origin-note">Born to rescue everyday CS &amp; developer scripts from scattered folders—giving useful utilities a clean, bloat-free Python home built in English for global sharing.</p>
     </header>
 
     <main>
-        <!-- Zero-Image Cyber Terminal Banner & Telemetry -->
-        <section class="showcase" aria-label="PyKuai Terminal Banner">
+        <!-- Unified PowerShell Install & Native Console Preview -->
+        <section class="showcase" aria-label="PyKuai PowerShell Preview">
             <div class="window-chrome">
-                <div class="window-dots">
-                    <span class="window-dot active"></span>
-                    <span class="window-dot"></span>
-                    <span class="window-dot"></span>
-                    <span style="margin-left: 6px; color: #0f0; font-weight: bold;">PYKUAI://REPL_CORE</span>
+                <div class="wt-tab">
+                    <img src="imgs/script.ico" alt="PyKuai" class="wt-icon">
+                    <span class="wt-title">PowerShell</span>
                 </div>
-                <span class="window-meta">v1.2.7 · Python &gt;=3.9</span>
+                <div class="chrome-actions">
+                    <span class="window-meta">v1.2.7 · Python &gt;=3.9</span>
+                    <button type="button" class="term-replay" id="term-replay" title="Replay PowerShell session">[ REPLAY ]</button>
+                </div>
             </div>
             <div class="viewport-body">
-                <pre class="ascii-banner">██████╗ ██╗   ██╗██╗  ██╗██╗   ██╗ █████╗ ██╗
-██╔══██╗╚██╗ ██╔╝██║ ██╔╝██║   ██║██╔══██╗██║
-██████╔╝ ╚████╔╝ █████═╝ ██║   ██║███████║██║
-██╔═══╝   ╚██╔╝  ██╔═██╗ ██║   ██║██╔══██║██║
-██║        ██║   ██║  ██╗╚██████╔╝██║  ██║██║
-╚═╝        ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝</pre>
-                <div class="telemetry-grid">
-                    <div class="telemetry-item"><span class="telemetry-key">PYPI     :</span> pypi.org/project/pykuai <span class="telemetry-ok">[LIVE]</span></div>
-                    <div class="telemetry-item"><span class="telemetry-key">GLOBALS  :</span> tt · pp · vv · cc · hh · gg</div>
-                    <div class="telemetry-item"><span class="telemetry-key">ENGINES  :</span> ifc (Image) · ytd (Media)</div>
-                    <div class="telemetry-item"><span class="telemetry-key">CONTRACT :</span> ^[a-z]{3}$.py :: BaseEngine</div>
+                <div class="console-cmd-row" id="install-row"><span id="install-line"></span><span class="cursor" id="install-cursor"></span></div>
+                <div class="console-install-out hidden" id="install-out">
+                    <div class="t-muted" id="pip-collect">Collecting pykuai</div>
+                    <div class="t-muted hidden" id="pip-done">Successfully installed <span class="t-emerald">pykuai-1.2.7</span></div>
+                </div>
+                <div class="console-cmd-row console-launch-row hidden" id="launch-row"><span id="launch-line"></span><span class="cursor hidden" id="launch-cursor"></span></div>
+                <div class="native-stage hidden" id="native-stage">
+                    <pre class="ascii-banner"><span class="banner-top">██████╗ ██╗   ██╗██╗  ██╗██╗   ██╗ █████╗ ██╗
+██╔══██╗╚██╗ ██╔╝██║ ██╔╝██║   ██║██╔══██╗██║</span>
+<span class="banner-mid">██████╔╝ ╚████╔╝ █████═╝ ██║   ██║███████║██║
+██╔═══╝   ╚██╔╝  ██╔═██╗ ██║   ██║██╔══██║██║</span>
+<span class="banner-bot">██║        ██║   ██║  ██╗╚██████╔╝██║  ██║██║
+╚═╝        ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝</span></pre>
+                    <div class="console-repl-row"><span id="typewriter"></span><span class="cursor hidden" id="term-cursor"></span></div>
                 </div>
             </div>
         </section>
@@ -682,11 +750,6 @@
             <a href="https://github.com/GallantTarry/pykuai" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-secondary">
                 &gt;&gt; GITHUB SOURCE &lt;&lt;
             </a>
-        </section>
-
-        <!-- Terminal Typewriter Boot Trace -->
-        <section class="terminal" aria-label="Boot Log">
-            <div id="typewriter"></div><span class="cursor"></span>
         </section>
 
         <!-- Architecture & Built-In Engine Matrix -->
@@ -790,31 +853,169 @@
         }
     });
 
-    // --- 3. Boot Sequence Typewriter ---
-    const textToType = `root@TuKuai:~# pykuai --fast
-> Booting PyKuai Micro-Kernel v1.2.7 (Python >=3.9)... [OK]
-> Auto-registering 3-letter engines: [ifc] [ytd]... [OK]
-> Mounting Rich / Textual Cyber-Dark Studio + CC0 SFX... [OK]
-> Verifying PyPI upstream (pypi.org/project/pykuai)... [LIVE]
->
-> Minimalism. Quality. Precision. Visual Clarity.
-> Run \`pip install pykuai\` to deploy in seconds, or read
-> the User Manual above for full CLI flags & plugin specs.
->
-> Ready. Type \`tt\`, \`pp\`, or \`hh\` to begin...`;
-
+    // --- 3. PowerShell Install & Native Console Typewriter ---
+    const installLine = document.getElementById('install-line');
+    const installCursor = document.getElementById('install-cursor');
+    const installOut = document.getElementById('install-out');
+    const pipDone = document.getElementById('pip-done');
+    const launchRow = document.getElementById('launch-row');
+    const launchLine = document.getElementById('launch-line');
+    const launchCursor = document.getElementById('launch-cursor');
+    const nativeStage = document.getElementById('native-stage');
     const typeWriterElement = document.getElementById('typewriter');
-    let charIndex = 0;
+    const promptCursor = document.getElementById('term-cursor');
+    const replayBtn = document.getElementById('term-replay');
+    let demoRunId = 0;
 
-    function typeWriter() {
-        if (charIndex < textToType.length) {
-            typeWriterElement.textContent += textToType.charAt(charIndex);
-            charIndex++;
-            setTimeout(typeWriter, Math.random() * 28 + 14);
+    const GREETING_LINES = [
+        {
+            delayMs: 28,
+            segments: [
+                ['t-warn', 'Whoa! '],
+                ['t-green', 'pykuai'],
+                ['t-light', ' just slithered into your console!']
+            ]
+        },
+        {
+            delayMs: 24,
+            segments: [
+                ['t-muted', 'Type '],
+                ['t-green', 'hh'],
+                ['t-muted', ' for backup & tools — or '],
+                ['t-red', 'gg'],
+                ['t-muted', ' to quit the game.']
+            ]
         }
+    ];
+
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    function appendSegment(parent, cls, text) {
+        const span = document.createElement('span');
+        if (cls) span.className = cls;
+        span.textContent = text;
+        parent.appendChild(span);
     }
 
-    setTimeout(typeWriter, 650);
+    function appendReplPrompt(parent) {
+        parent.appendChild(document.createTextNode('\n\n'));
+        appendSegment(parent, 't-emerald', 'pykuai ');
+        appendSegment(parent, 't-green', '❯:');
+        parent.appendChild(document.createTextNode(' '));
+    }
+
+    async function typeSegments(targetEl, segments, charDelayMs, runId, beforeNode) {
+        for (const [cls, text] of segments) {
+            const span = document.createElement('span');
+            if (cls) span.className = cls;
+            if (beforeNode && beforeNode.parentNode === targetEl) {
+                targetEl.insertBefore(span, beforeNode);
+            } else {
+                targetEl.appendChild(span);
+            }
+            for (const ch of text) {
+                if (runId !== demoRunId) return false;
+                span.textContent += ch;
+                await sleep(charDelayMs);
+            }
+        }
+        return runId === demoRunId;
+    }
+
+    async function runPowerShellCommand(rowEl, lineEl, cursorEl, cmdText, charDelayMs, runId, instant) {
+        rowEl.classList.remove('hidden');
+        appendSegment(lineEl, 't-ps', 'PS > ');
+        if (instant) {
+            appendSegment(lineEl, 't-cmd', cmdText);
+            cursorEl.classList.add('hidden');
+            return true;
+        }
+        cursorEl.classList.remove('hidden');
+        await sleep(220);
+        if (runId !== demoRunId) return false;
+        if (!(await typeSegments(lineEl, [['t-cmd', cmdText]], charDelayMs, runId, null))) return false;
+        await sleep(240);
+        if (runId !== demoRunId) return false;
+        cursorEl.classList.add('hidden');
+        return true;
+    }
+
+    async function playConsoleDemo(instant = false) {
+        const runId = ++demoRunId;
+        installLine.textContent = '';
+        launchLine.textContent = '';
+        typeWriterElement.textContent = '';
+
+        installOut.classList.add('hidden');
+        pipDone.classList.add('hidden');
+        launchRow.classList.add('hidden');
+        launchCursor.classList.add('hidden');
+        nativeStage.classList.add('hidden');
+        promptCursor.classList.add('hidden');
+
+        if (instant) {
+            await runPowerShellCommand(document.getElementById('install-row'), installLine, installCursor, 'pip install pykuai', 0, runId, true);
+            installOut.classList.remove('hidden');
+            pipDone.classList.remove('hidden');
+            await runPowerShellCommand(launchRow, launchLine, launchCursor, 'pykuai', 0, runId, true);
+            nativeStage.classList.remove('hidden');
+            GREETING_LINES.forEach((line, idx) => {
+                if (idx > 0) typeWriterElement.appendChild(document.createTextNode('\n'));
+                for (const [cls, text] of line.segments) {
+                    appendSegment(typeWriterElement, cls, text);
+                }
+            });
+            appendReplPrompt(typeWriterElement);
+            promptCursor.classList.remove('hidden');
+            return;
+        }
+
+        if (!(await runPowerShellCommand(document.getElementById('install-row'), installLine, installCursor, 'pip install pykuai', 52, runId, false))) return;
+
+        installOut.classList.remove('hidden');
+        await sleep(320);
+        if (runId !== demoRunId) return;
+        pipDone.classList.remove('hidden');
+        await sleep(340);
+        if (runId !== demoRunId) return;
+
+        if (!(await runPowerShellCommand(launchRow, launchLine, launchCursor, 'pykuai', 78, runId, false))) return;
+
+        nativeStage.classList.remove('hidden');
+        const teleCursor = document.createElement('span');
+        teleCursor.className = 't-tele';
+        teleCursor.textContent = '▌';
+        typeWriterElement.appendChild(teleCursor);
+
+        for (let i = 0; i < GREETING_LINES.length; i++) {
+            if (i > 0) {
+                await sleep(220);
+                if (runId !== demoRunId) return;
+                typeWriterElement.insertBefore(document.createTextNode('\n'), teleCursor);
+            }
+            if (!(await typeSegments(typeWriterElement, GREETING_LINES[i].segments, GREETING_LINES[i].delayMs, runId, teleCursor))) {
+                return;
+            }
+        }
+
+        await sleep(160);
+        if (runId !== demoRunId) return;
+
+        teleCursor.remove();
+        appendReplPrompt(typeWriterElement);
+        promptCursor.classList.remove('hidden');
+    }
+
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+        playConsoleDemo(true);
+    } else {
+        setTimeout(() => playConsoleDemo(false), 350);
+    }
+
+    if (replayBtn) {
+        replayBtn.addEventListener('click', () => playConsoleDemo(false));
+    }
 
     // --- 4. One-Click Copy for pip Commands ---
     document.querySelectorAll('.copy-btn').forEach((btn) => {
