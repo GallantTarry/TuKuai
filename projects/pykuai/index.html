@@ -240,33 +240,55 @@
             100% { clip: rect(58px, 9999px, 33px, 0); }
         }
 
-        .author {
-            font-size: 1.05rem;
-            letter-spacing: 2px;
-            opacity: 0.9;
-            text-shadow: 0 0 6px rgba(0, 255, 0, 0.45);
-            color: #b7ffb7;
+        /* Stats Badges */
+        .stats-badges-container {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 12px;
+            flex-wrap: wrap;
         }
 
-        .tagline {
-            margin-top: 10px;
-            font-size: 0.96rem;
-            color: var(--emerald-color);
-            letter-spacing: 0.8px;
+        .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(0, 20, 0, 0.5);
+            border: 1px solid var(--emerald-color);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.5px;
         }
 
-        .quote-author {
-            color: var(--amber-color);
+        .stat-badge-left {
+            background: #2d2d2d;
+            color: #fff;
+            padding: 4px 6px;
+            font-weight: 500;
+            text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-badge-right {
+            background: linear-gradient(180deg, #10b981, #047857);
+            color: #fff;
+            padding: 4px 8px;
             font-weight: bold;
+            text-shadow: 0 1px 0 rgba(0,0,0,0.3);
         }
 
-        .origin-note {
-            max-width: 720px;
-            margin: 8px auto 0;
-            font-size: 0.88rem;
-            line-height: 1.6;
-            color: #9ae6b4;
-            opacity: 0.88;
+        .stat-badge-right.today {
+            background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+        }
+
+        .stat-icon {
+            width: 14px;
+            height: 14px;
+            fill: #fff;
         }
 
         /* Unified Cyber Terminal & Native Console Showcase */
@@ -692,9 +714,26 @@
 <div class="container">
     <header class="main-header">
         <h1 class="glitch" data-text="PyKuai">PyKuai</h1>
-        <p class="author">v1.2.7 // Open-Source Python Script Toolbox · by TuKuai</p>
-        <p class="tagline">"First, solve the problem. Then, write the code." <span class="quote-author">— John Johnson</span></p>
-        <p class="origin-note">Turning scattered dev scripts into one clean terminal toolbox.</p>
+        <div class="stats-badges-container" id="pypi-badges">
+            <div class="stat-badge">
+                <div class="stat-badge-left">
+                    <svg class="stat-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                    downloads
+                </div>
+                <div class="stat-badge-right" id="badge-total">loading</div>
+            </div>
+            <div class="stat-badge">
+                <div class="stat-badge-left">
+                    <svg class="stat-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                    </svg>
+                    today
+                </div>
+                <div class="stat-badge-right today" id="badge-today">loading</div>
+            </div>
+        </div>
     </header>
 
     <main>
@@ -706,7 +745,7 @@
                     <span class="wt-title">PowerShell</span>
                 </div>
                 <div class="chrome-actions">
-                    <span class="window-meta">v1.2.7 · Python &gt;=3.9</span>
+                    <span class="window-meta">v1.2.7 · Python >=3.9</span>
                     <button type="button" class="term-replay" id="term-replay" title="Replay PowerShell session">[ REPLAY ]</button>
                 </div>
             </div>
@@ -731,13 +770,13 @@
 
         <!-- One-Line PyPI Installation -->
         <section class="pip-panel" aria-label="Install via pip">
-            <div class="pip-panel-label">[ INSTALL FROM PYPI :: PYTHON &gt;= 3.9 ]</div>
+            <div class="pip-panel-label">[ INSTALL FROM PYPI :: PYTHON >= 3.9 ]</div>
             <div class="pip-row">
                 <code class="pip-cmd"><span class="prompt">$</span>pip install pykuai</code>
                 <button type="button" class="copy-btn" data-copy="pip install pykuai">[ COPY ]</button>
             </div>
             <div class="pip-row">
-                <code class="pip-cmd"><span class="prompt">$</span>pip install "pykuai[all]" &amp;&amp; pykuai --fast</code>
+                <code class="pip-cmd"><span class="prompt">$</span>pip install "pykuai[all]" && pykuai --fast</code>
                 <button type="button" class="copy-btn" data-copy='pip install "pykuai[all]" && pykuai --fast'>[ COPY ]</button>
             </div>
         </section>
@@ -745,10 +784,10 @@
         <!-- Primary Upstream Actions -->
         <section class="download-wrapper">
             <a href="https://pypi.org/project/pykuai/" target="_blank" rel="noopener noreferrer" class="download-btn">
-                &gt;&gt; PYPI RELEASE (v1.2.7) &lt;&lt;
+                >> PYPI RELEASE (v1.2.7) <<
             </a>
             <a href="https://github.com/GallantTarry/pykuai" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-secondary">
-                &gt;&gt; GITHUB SOURCE &lt;&lt;
+                >> GITHUB SOURCE <<
             </a>
         </section>
 
@@ -760,11 +799,11 @@
             </div>
             <div class="feature-card">
                 <h3>[02] 2-Letter Ergonomics</h3>
-                <p>Navigate with six doubled commands inside the REPL: <code>tt</code> (Tool Tray), <code>pp</code> (Pull Packages), <code>vv</code>, <code>cc</code>, <code>hh</code>, and <code>gg</code> — or run any tool headlessly via <code>pykuai tt &lt;tool&gt;</code>.</p>
+                <p>Navigate with six doubled commands inside the REPL: <code>tt</code> (Tool Tray), <code>pp</code> (Pull Packages), <code>vv</code>, <code>cc</code>, <code>hh</code>, and <code>gg</code> — or run any tool headlessly via <code>pykuai tt <tool></code>.</p>
             </div>
             <div class="feature-card">
                 <h3>[03] Cyber-Dark TUI</h3>
-                <p>Mouse-clickable <code>Rich</code> &amp; <code>Textual</code> studios with <code>?</code> / <code>F1</code> help modals, drag-and-drop image auto-routing, pixel-snake launch intro (<code>--fast</code> to skip), and toggleable CC0 arcade SFX.</p>
+                <p>Mouse-clickable <code>Rich</code> & <code>Textual</code> studios with <code>?</code> / <code>F1</code> help modals, drag-and-drop image auto-routing, pixel-snake launch intro (<code>--fast</code> to skip), and toggleable CC0 arcade SFX.</p>
             </div>
             <div class="feature-card">
                 <h3>[04] Engine :: ifc</h3>
@@ -782,7 +821,7 @@
 
         <footer>
             <p style="color: #64748B; font-size: 0.95rem; letter-spacing: 1px;">
-                &copy; 2026 PyKuai v1.2.7 // Created by <a href="https://github.com/GallantTarry/pykuai" target="_blank" rel="noopener noreferrer">TuKuai (GallantTarry)</a>. Open-Source Python Toolbox.
+                © 2026 PyKuai v1.2.7 // Created by <a href="https://github.com/GallantTarry/pykuai" target="_blank" rel="noopener noreferrer">TuKuai (GallantTarry)</a>. Open-Source Python Toolbox.
             </p>
         </footer>
     </main>
@@ -1051,6 +1090,36 @@
             }, 1600);
         });
     });
+
+    // --- 5. Fetch Real PyPI Installs ---
+    (async function loadPyPiStats() {
+        const badgeTotal = document.getElementById('badge-total');
+        const badgeToday = document.getElementById('badge-today');
+        if (!badgeTotal || !badgeToday) return;
+
+        try {
+            // Fetch real non-mirror data via your Cloudflare Worker
+            const res = await fetch('https://pykuai.xn--udsye.art');
+            if (!res.ok) throw new Error('Network response error');
+            const json = await res.json();
+
+            if (json && json.data && json.data.length > 0) {
+                const totalInstalls = json.data.reduce((sum, item) => sum + item.downloads, 0);
+                const latestDay = json.data[json.data.length - 1];
+                const todayInstalls = latestDay.downloads;
+
+                badgeTotal.textContent = totalInstalls.toLocaleString();
+                badgeToday.textContent = `+${todayInstalls.toLocaleString()}`;
+            } else {
+                badgeTotal.textContent = 'pending';
+                badgeToday.textContent = 'pending';
+            }
+        } catch (error) {
+            console.error('Failed to fetch PyPI stats:', error);
+            badgeTotal.textContent = 'active';
+            badgeToday.textContent = 'active';
+        }
+    })();
 </script>
 </body>
 </html>
