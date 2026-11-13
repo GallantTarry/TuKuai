@@ -41,13 +41,16 @@
         ::-webkit-scrollbar {
             width: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: transparent;
         }
+
         ::-webkit-scrollbar-thumb {
             background: rgba(0, 255, 0, 0.4);
             border-radius: 10px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: var(--primary-color);
             box-shadow: 0 0 10px var(--primary-color);
@@ -87,7 +90,7 @@
             left: 0;
             bottom: 0;
             right: 0;
-            background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.6) 100%);
+            background: radial-gradient(circle, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.6) 100%);
             z-index: 998;
             pointer-events: none;
         }
@@ -136,7 +139,9 @@
         }
 
         @keyframes spin-slow {
-            100% { transform: rotate(360deg); }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .logo-text {
@@ -178,7 +183,7 @@
             border-radius: 12px;
             font-size: 0.85rem;
             font-weight: bold;
-            box-shadow: inset 0 0 5px rgba(255,255,255,0.4);
+            box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.4);
         }
 
         /* ================= Main Content Container ================= */
@@ -232,12 +237,24 @@
         }
 
         @keyframes glitch-anim {
-            0% { clip: rect(20px, 9999px, 85px, 0); }
-            20% { clip: rect(92px, 9999px, 14px, 0); }
-            40% { clip: rect(43px, 9999px, 55px, 0); }
-            60% { clip: rect(10px, 9999px, 93px, 0); }
-            80% { clip: rect(71px, 9999px, 2px, 0); }
-            100% { clip: rect(58px, 9999px, 33px, 0); }
+            0% {
+                clip: rect(20px, 9999px, 85px, 0);
+            }
+            20% {
+                clip: rect(92px, 9999px, 14px, 0);
+            }
+            40% {
+                clip: rect(43px, 9999px, 55px, 0);
+            }
+            60% {
+                clip: rect(10px, 9999px, 93px, 0);
+            }
+            80% {
+                clip: rect(71px, 9999px, 2px, 0);
+            }
+            100% {
+                clip: rect(58px, 9999px, 33px, 0);
+            }
         }
 
         /* Stats Badges */
@@ -267,7 +284,7 @@
             color: #fff;
             padding: 4px 6px;
             font-weight: 500;
-            text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
             gap: 4px;
@@ -278,7 +295,7 @@
             color: #fff;
             padding: 4px 8px;
             font-weight: bold;
-            text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
         }
 
         .stat-badge-right.today {
@@ -308,15 +325,19 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(to bottom, rgba(0,255,0,0) 0%, rgba(0,255,0,0.12) 50%, rgba(0,255,0,0) 100%);
+            background: linear-gradient(to bottom, rgba(0, 255, 0, 0) 0%, rgba(0, 255, 0, 0.12) 50%, rgba(0, 255, 0, 0) 100%);
             animation: scan 3.5s infinite linear;
             pointer-events: none;
             z-index: 2;
         }
 
         @keyframes scan {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100%);
+            }
         }
 
         .window-chrome {
@@ -525,7 +546,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
             transition: 0.5s;
         }
 
@@ -563,15 +584,47 @@
             white-space: pre-wrap;
         }
 
-        .t-ps { color: #38BDF8; font-weight: bold; }
-        .t-cmd { color: #E0E0E0; }
-        .t-warn { color: #FF9800; font-weight: bold; }
-        .t-green { color: #00FF00; font-weight: bold; }
-        .t-emerald { color: #10b981; font-weight: bold; }
-        .t-light { color: #E0E0E0; }
-        .t-muted { color: #9ca3af; }
-        .t-red { color: #FF5252; font-weight: bold; }
-        .t-tele { color: #00FF00; font-weight: bold; }
+        .t-ps {
+            color: #38BDF8;
+            font-weight: bold;
+        }
+
+        .t-cmd {
+            color: #E0E0E0;
+        }
+
+        .t-warn {
+            color: #FF9800;
+            font-weight: bold;
+        }
+
+        .t-green {
+            color: #00FF00;
+            font-weight: bold;
+        }
+
+        .t-emerald {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .t-light {
+            color: #E0E0E0;
+        }
+
+        .t-muted {
+            color: #9ca3af;
+        }
+
+        .t-red {
+            color: #FF5252;
+            font-weight: bold;
+        }
+
+        .t-tele {
+            color: #00FF00;
+            font-weight: bold;
+        }
 
         .cursor {
             display: inline-block;
@@ -587,8 +640,12 @@
         }
 
         @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
         }
 
         /* Features Grid */
@@ -678,18 +735,58 @@
 
         /* Responsive Rules (ToolKit Nav-Header Spec Preserved) */
         @media (max-width: 768px) {
-            header.nav-header { padding: 15px 20px; }
-            .logo-text { font-size: 1.2rem; }
-            .logo-container img { width: 32px; height: 32px; }
-            .buy-btn { padding: 8px 16px; font-size: 0.95rem; }
-            .price-tag { padding: 2px 8px; font-size: 0.75rem; }
-            .glitch { font-size: 2.5rem; }
-            .window-meta { display: none; }
-            .viewport-body { min-height: 330px; padding: 16px; }
-            .console-repl-row { font-size: 0.92rem; }
-            .features { grid-template-columns: 1fr; }
-            .pip-row { flex-direction: column; align-items: stretch; }
-            .copy-btn { align-self: flex-end; }
+            header.nav-header {
+                padding: 15px 20px;
+            }
+
+            .logo-text {
+                font-size: 1.2rem;
+            }
+
+            .logo-container img {
+                width: 32px;
+                height: 32px;
+            }
+
+            .buy-btn {
+                padding: 8px 16px;
+                font-size: 0.95rem;
+            }
+
+            .price-tag {
+                padding: 2px 8px;
+                font-size: 0.75rem;
+            }
+
+            .glitch {
+                font-size: 2.5rem;
+            }
+
+            .window-meta {
+                display: none;
+            }
+
+            .viewport-body {
+                min-height: 330px;
+                padding: 16px;
+            }
+
+            .console-repl-row {
+                font-size: 0.92rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .pip-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .copy-btn {
+                align-self: flex-end;
+            }
         }
     </style>
 </head>
@@ -746,16 +843,22 @@
                 </div>
                 <div class="chrome-actions">
                     <span class="window-meta">v1.2.7 · Python >=3.9</span>
-                    <button type="button" class="term-replay" id="term-replay" title="Replay PowerShell session">[ REPLAY ]</button>
+                    <button type="button" class="term-replay" id="term-replay" title="Replay PowerShell session">[
+                        REPLAY ]
+                    </button>
                 </div>
             </div>
             <div class="viewport-body">
-                <div class="console-cmd-row" id="install-row"><span id="install-line"></span><span class="cursor" id="install-cursor"></span></div>
+                <div class="console-cmd-row" id="install-row"><span id="install-line"></span><span class="cursor"
+                                                                                                   id="install-cursor"></span>
+                </div>
                 <div class="console-install-out hidden" id="install-out">
                     <div class="t-muted" id="pip-collect">Collecting pykuai</div>
-                    <div class="t-muted hidden" id="pip-done">Successfully installed <span class="t-emerald">pykuai-1.2.7</span></div>
+                    <div class="t-muted hidden" id="pip-done">Successfully installed <span class="t-emerald">pykuai-1.2.7</span>
+                    </div>
                 </div>
-                <div class="console-cmd-row console-launch-row hidden" id="launch-row"><span id="launch-line"></span><span class="cursor hidden" id="launch-cursor"></span></div>
+                <div class="console-cmd-row console-launch-row hidden" id="launch-row"><span
+                        id="launch-line"></span><span class="cursor hidden" id="launch-cursor"></span></div>
                 <div class="native-stage hidden" id="native-stage">
                     <pre class="ascii-banner"><span class="banner-top">██████╗ ██╗   ██╗██╗  ██╗██╗   ██╗ █████╗ ██╗
 ██╔══██╗╚██╗ ██╔╝██║ ██╔╝██║   ██║██╔══██╗██║</span>
@@ -763,7 +866,8 @@
 ██╔═══╝   ╚██╔╝  ██╔═██╗ ██║   ██║██╔══██║██║</span>
 <span class="banner-bot">██║        ██║   ██║  ██╗╚██████╔╝██║  ██║██║
 ╚═╝        ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝</span></pre>
-                    <div class="console-repl-row"><span id="typewriter"></span><span class="cursor hidden" id="term-cursor"></span></div>
+                    <div class="console-repl-row"><span id="typewriter"></span><span class="cursor hidden"
+                                                                                     id="term-cursor"></span></div>
                 </div>
             </div>
         </section>
@@ -777,7 +881,8 @@
             </div>
             <div class="pip-row">
                 <code class="pip-cmd"><span class="prompt">$</span>pip install "pykuai[all]" && pykuai --fast</code>
-                <button type="button" class="copy-btn" data-copy='pip install "pykuai[all]" && pykuai --fast'>[ COPY ]</button>
+                <button type="button" class="copy-btn" data-copy='pip install "pykuai[all]" && pykuai --fast'>[ COPY ]
+                </button>
             </div>
         </section>
 
@@ -786,36 +891,47 @@
             <a href="https://pypi.org/project/pykuai/" target="_blank" rel="noopener noreferrer" class="download-btn">
                 >> PYPI RELEASE (v1.2.7) <<
             </a>
-            <a href="https://github.com/GallantTarry/pykuai" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-secondary">
+            <a href="https://github.com/GallantTarry/pykuai" target="_blank" rel="noopener noreferrer"
+               class="download-btn download-btn-secondary">
                 >> GITHUB SOURCE <<
             </a>
         </section>
 
-        <!-- Architecture & Built-In Engine Matrix -->
         <section class="features">
             <div class="feature-card">
-                <h3>[01] Micro-Kernel Core</h3>
-                <p>Drop any three-lowercase-letter module (<code>^[a-z]{3}$</code>) subclassing <code>BaseEngine</code> into <code>pykuai/engines/</code>. Auto-wired into the tray, CLI router, and dependency scanner with zero boilerplate.</p>
+                <h3>[01] Premium Quality</h3>
+                <p>Engineered with a robust and reliable architecture, ensuring high-tier performance and stability
+                    across all workflows.</p>
             </div>
+
             <div class="feature-card">
-                <h3>[02] 2-Letter Ergonomics</h3>
-                <p>Navigate with six doubled commands inside the REPL: <code>tt</code> (Tool Tray), <code>pp</code> (Pull Packages), <code>vv</code>, <code>cc</code>, <code>hh</code>, and <code>gg</code> — or run any tool headlessly via <code>pykuai tt <tool></tool></code>.</p>
+                <h3>[02] Simple & Convenient</h3>
+                <p>Designed for a frictionless, plug-and-play experience. Enjoy an intuitive interface that works
+                    seamlessly right out of the box.</p>
             </div>
+
             <div class="feature-card">
-                <h3>[03] Cyber-Dark TUI</h3>
-                <p>Mouse-clickable <code>Rich</code> & <code>Textual</code> studios with <code>?</code> / <code>F1</code> help modals, drag-and-drop image auto-routing, pixel-snake launch intro (<code>--fast</code> to skip), and toggleable CC0 arcade SFX.</p>
+                <h3>[03] Rich, Zero Bloat</h3>
+                <p>A comprehensive toolbox packed with powerful features, yet completely modular. Install only what you
+                    need with no forced bundling.</p>
             </div>
+
             <div class="feature-card">
-                <h3>[04] Engine :: ifc</h3>
-                <p>Image Format Converter supporting <code>ICO</code>, <code>PNG</code>, <code>JPG</code>, <code>WEBP</code>, <code>AVIF</code>, <code>GIF</code>, <code>BMP</code>, and <code>TIFF</code> — EXIF auto-orient, atomic temp writes, quality presets, and <code>8..256px</code> multi-res <code>.ico</code> packing.</p>
+                <h3>[04] No Reinventing Wheels</h3>
+                <p>Seamlessly wraps and integrates industry-standard solutions, allowing you to focus on productivity
+                    instead of rewriting core logic from scratch.</p>
             </div>
+
             <div class="feature-card">
-                <h3>[05] Engine :: ytd</h3>
-                <p>Media downloader powered by <code>yt-dlp</code> + <code>FFmpeg</code>: <code>best</code>/<code>1080p</code>/<code>mp3</code>/<code>m4a</code> profiles, bilingual <code>--subs</code>, isolated <code>--login</code> YouTube auth to <code>~/.pykuai/cookies.txt</code>, and verified <code>--install-ffmpeg</code>.</p>
+                <h3>[05] Community Driven</h3>
+                <p>Tailor-made specifically for computer science learners, software engineers, and the modern developer
+                    community.</p>
             </div>
+
             <div class="feature-card">
-                <h3>[06] Lean PyPI Runtime</h3>
-                <p>Ships cleanly on PyPI with zero 200+ MiB FFmpeg bloat. External tools resolve from system <code>PATH</code> or download SHA256-verified on demand into <code>~/.pykuai/tools/</code>.</p>
+                <h3>[06] Smart Ergonomics</h3>
+                <p>Navigate instantly via 2-letter repeated global commands (e.g., <code>tt</code> or <code>hh</code>)
+                    and drop in any modular 3-letter tool engine.</p>
             </div>
         </section>
 
@@ -1075,7 +1191,8 @@
                     await navigator.clipboard.writeText(cmd);
                     copied = true;
                 }
-            } catch (_) {}
+            } catch (_) {
+            }
 
             if (!copied) {
                 const ta = document.createElement('textarea');
@@ -1086,7 +1203,8 @@
                 ta.select();
                 try {
                     copied = document.execCommand('copy');
-                } catch (_) {}
+                } catch (_) {
+                }
                 document.body.removeChild(ta);
             }
 
