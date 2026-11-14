@@ -574,6 +574,9 @@
             list-style: none;
             column-count: 2;
             column-gap: 50px;
+            /* 新增以下两行：为悬浮动画和阴影留出安全空间 */
+            padding-top: 5px;    /* 留出向上浮动 4px 的空间，避免顶部被切断 */
+            padding-bottom: 15px; /* 给最底下的项目留出外发光阴影的空间 */
         }
 
         .grid-list li {
@@ -602,10 +605,9 @@
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(79, 172, 254, 0.35);
             color: #fff;
-            transform: translateX(8px);
+            transform: translateY(-4px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-
         .tag-matrix {
             display: flex;
             flex-wrap: wrap;
