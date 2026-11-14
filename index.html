@@ -466,7 +466,7 @@
 
                 <!-- ==================== 标签页 3：文件下载 / 资源库（自研应用，点击 OPEN 先播片头再打开） ==================== -->
                 <tab-section title="&gt; 资源库" v-if="currentTab === 'download'">
-                    <launch-card :desc="app.desc" :icon-class="app.iconClass" :icon-src="app.icon" :key="app.name"
+                    <launch-card :desc="app.desc" :href="app.url" :icon-class="app.iconClass" :icon-src="app.icon" :key="app.name"
                                  :name="app.name" @open="openGame(app.title, app.url, app.video)"
                                  accent="yellow" label="OPEN"
                                  v-for="app in projects"></launch-card>
@@ -815,6 +815,24 @@
 
 <script src="./assets/js/app/core/page-behaviors.js"></script>
 <script src="./assets/js/app/core/title-marquee.js"></script>
+<nav aria-label="自研软件与作品目录"
+     style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">
+    <a href="./projects/blackhole/">BlackHole - 桌面悬浮效率中枢 (blackhole)</a>
+    <a href="./projects/toolkit/">ToolKit - 办公辅助应用 (toolkit)</a>
+    <a href="./projects/pykuai/">PyKuai - 微内核 CLI 工作台 (pykuai)</a>
+    <a href="./projects/kuaidrive/">KuaiDrive - 跨网磁盘挂载工具 (kuaidrive)</a>
+    <a href="./projects/clod-and-gold/">Clod＆Gold - 土块与金苹果 (clod-and-gold)</a>
+</nav>
+<noscript>
+    <nav aria-label="作品直达链接">
+        <a href="./projects/blackhole/">BlackHole（桌面悬浮效率中枢）</a> |
+        <a href="./projects/toolkit/">ToolKit（办公辅助应用）</a> |
+        <a href="./projects/pykuai/">PyKuai（微内核 CLI 工作台）</a> |
+        <a href="./projects/kuaidrive/">KuaiDrive（跨网磁盘挂载工具）</a> |
+        <a href="./projects/clod-and-gold/">Clod＆Gold（土块与金苹果）</a>
+    </nav>
+</noscript>
+
 <script src="./assets/js/app/core/service-worker.js"></script>
 
 <script src="./assets/js/app/main.js"></script>

@@ -230,7 +230,8 @@
             label:     {type: String, default: 'OPEN'},
             emoji:     {type: String, default: ''},
             iconSrc:   {type: String, default: ''},
-            iconClass: {type: String, default: 'w-6 h-6'}
+            iconClass: {type: String, default: 'w-6 h-6'},
+            href:      {type: String, default: ''}
         },
         emits: ['open'],
         setup(props) {
@@ -251,7 +252,8 @@
                         <span class="text-xl" v-else>{{ emoji }}</span>
                     </div>
                     <div class="flex flex-col truncate">
-                        <span :class="nameClass">{{ name }}</span>
+                        <a :class="nameClass" :href="href" @click.prevent="$emit('open')" v-if="href">{{ name }}</a>
+                        <span :class="nameClass" v-else>{{ name }}</span>
                         <span :class="descClass">{{ desc }}</span>
                     </div>
                 </div>

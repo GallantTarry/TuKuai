@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, follow">
+    <meta name="theme-color" content="#050505">
+    <title>页面跳转中 · TuKuai | 土块</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/images/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png">
+    <script>
+        (function () {
+            var PROJECT_SLUGS = {
+                'blackhole': 'blackhole',
+                'black-hole': 'blackhole',
+                'toolkit': 'toolkit',
+                'pykuai': 'pykuai',
+                'kuaidrive': 'kuaidrive',
+                'clod-and-gold': 'clod-and-gold',
+                'clodandgold': 'clod-and-gold',
+                'clod_and_gold': 'clod-and-gold',
+                'clodgold': 'clod-and-gold'
+            };
+
+            function resolveCanonicalPath(pathname) {
+                var cleanPath = (pathname || '/').replace(/\/{2,}/g, '/');
+                var lower = cleanPath.toLowerCase();
+                var stripped = lower.replace(/\/+$/, '');
+
+                if (stripped === '/daily' || stripped === '/daily.html') {
+                    return '/daily.html';
+                }
+                if (stripped === '/emulator' || stripped === '/games/emulator') {
+                    return '/games/emulator.html';
+                }
+
+                var segments = lower.split('/').filter(Boolean);
+                if (segments.length === 1) {
+                    var single = segments[0].replace(/\.html$/i, '');
+                    if (Object.prototype.hasOwnProperty.call(PROJECT_SLUGS, single)) {
+                        return '/projects/' + PROJECT_SLUGS[single] + '/';
+                    }
+                }
+
+                if (segments.length >= 2 && (segments[0] === 'projects' || segments[0] === 'project')) {
+                    var rawSlug = segments[1].replace(/\.html$/i, '');
+                    if (Object.prototype.hasOwnProperty.call(PROJECT_SLUGS, rawSlug)) {
+                        var slug = PROJECT_SLUGS[rawSlug];
+                        var rest = segments.slice(2);
+                        if (
+                            rest.length === 0 ||
+                            (rest.length === 1 && (
+                                rest[0] === 'index.html' ||
+                                rest[0] === slug + '.html' ||
+                                rest[0] === rawSlug + '.html'
+                            ))
+                        ) {
+                            return '/projects/' + slug + '/';
+                        }
+                        var origSegments = cleanPath.split('/').filter(Boolean);
+                        return '/projects/' + slug + '/' + origSegments.slice(2).join('/');
+                    }
+                }
+
+                return null;
+            }
+
+            window.__TK_RESOLVE_404__ = resolveCanonicalPath;
+
+            var target = resolveCanonicalPath(window.location.pathname);
+            if (target && target !== window.location.pathname) {
+                window.location.replace(target + window.location.search + window.location.hash);
+            }
+        })();
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 20% 20%, #151926 0%, #050505 70%);
+            color: #f3f4f6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .card {
+            width: 100%;
+            max-width: 560px;
+            background: rgba(18, 20, 28, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 32px 28px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+        }
+        .badge {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.12);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            padding: 4px 10px;
+            border-radius: 999px;
+            margin-bottom: 14px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #9ca3af;
+            margin-bottom: 22px;
+        }
+        .links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        a.nav-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #f9fafb;
+            text-decoration: none;
+            transition: border-color 0.2s, background 0.2s, transform 0.2s;
+        }
+        a.nav-item:hover {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: rgba(251, 191, 36, 0.45);
+            transform: translateY(-1px);
+        }
+        .nav-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .nav-sub {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        .home-link {
+            display: inline-block;
+            font-size: 13px;
+            color: #fbbf24;
+            text-decoration: none;
+        }
+        .home-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <span class="badge">TuKuai · 导航</span>
+        <h1>没有直接匹配到该地址</h1>
+        <p id="status-desc">如果你想打开土块（TuKuai）自研软件或作品宣传页，可以直接从下方入口进入：</p>
+        <nav class="links" aria-label="自研软件与作品目录">
+            <a class="nav-item" href="/projects/blackhole/">
+                <span class="nav-title">BlackHole</span>
+                <span class="nav-sub">桌面悬浮效率中枢</span>
+            </a>
+            <a class="nav-item" href="/projects/toolkit/">
+                <span class="nav-title">ToolKit</span>
+                <span class="nav-sub">办公辅助应用</span>
+            </a>
+            <a class="nav-item" href="/projects/pykuai/">
+                <span class="nav-title">PyKuai</span>
+                <span class="nav-sub">微内核 CLI 工作台</span>
+            </a>
+            <a class="nav-item" href="/projects/kuaidrive/">
+                <span class="nav-title">KuaiDrive</span>
+                <span class="nav-sub">跨网磁盘挂载工具</span>
+            </a>
+            <a class="nav-item" href="/projects/clod-and-gold/">
+                <span class="nav-title">Clod＆Gold</span>
+                <span class="nav-sub">土块与金苹果</span>
+            </a>
+        </nav>
+        <a class="home-link" href="/">← 返回 TuKuai 首页</a>
+    </main>
+</body>
+</html>

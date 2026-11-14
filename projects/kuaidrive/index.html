@@ -3,8 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>KuaiDrive | 挂载磁盘与文件传输七巧板</title>
-    <link rel="icon" href="imgs/kuaidrive.ico" type="image/x-icon">
+    <title>KuaiDrive | 跨网磁盘挂载与文件传输七巧板</title>
+    <meta name="description" content="KuaiDrive 是 TuKuai 开发的跨网磁盘挂载与文件传输工具，将远程存储挂载为本地磁盘，实现快速浏览、传输与统一管理。">
+    <meta name="keywords" content="KuaiDrive, kuaidrive, 跨网磁盘挂载工具, 挂载磁盘, 文件传输七巧板, TuKuai, 土块">
+    <meta name="theme-color" content="#0c0a0e">
+    <link rel="canonical" href="https://xn--udsye.art/projects/kuaidrive/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="KuaiDrive | 跨网磁盘挂载工具">
+    <meta property="og:description" content="KuaiDrive —— 跨网磁盘挂载与文件传输七巧板。">
+    <meta property="og:url" content="https://xn--udsye.art/projects/kuaidrive/">
+    <meta property="og:image" content="https://xn--udsye.art/projects/kuaidrive/imgs/music-cover.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://xn--udsye.art/projects/kuaidrive/imgs/music-cover.png">
+    <link rel="icon" href="imgs/kuaidrive.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="96x96" href="imgs/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="imgs/favicon-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="imgs/apple-touch-icon.png">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "KuaiDrive",
+            "alternateName": ["kuaidrive", "KuaiDrive 跨网磁盘挂载工具", "Kuai Drive"],
+            "applicationCategory": "UtilitiesApplication",
+            "operatingSystem": "Windows",
+            "url": "https://xn--udsye.art/projects/kuaidrive/",
+            "image": "https://xn--udsye.art/projects/kuaidrive/imgs/music-cover.png",
+            "description": "KuaiDrive 是 TuKuai 开发的跨网磁盘挂载与文件传输工具。",
+            "author": {
+                "@type": "Person",
+                "name": "TuKuai (土块)"
+            }
+        }
+    </script>
     <style>
         /* CSS 变量：顶级纯粹的“红、黑、金”调色板 */
         :root {
@@ -414,9 +445,9 @@
 <!-- 2. 顶部导航 (吸顶) -->
 <header class="nav-header">
     <div class="logo-container" id="music-toggle">
-        <img src="imgs/kuaidrive.ico" alt="KuaiDrive Logo" id="music-disk">
+        <img src="imgs/favicon-192x192.png" alt="KuaiDrive Logo" id="music-disk">
         <div class="logo-text">BGM</div>
-        <audio id="bg-music" src="music/西西里舞曲.mp3" loop></audio>
+        <audio id="bg-music" src="music/西西里舞曲.mp3" loop preload="metadata"></audio>
     </div>
 
     <a href="docs/manual.md" download="KuaiDrive操作说明＆更新日志.md" class="buy-btn">
@@ -470,20 +501,15 @@
     </div>
 </div>
 
+<script src="../shared/media-session.js"></script>
 <script>
     // --- 1. 音乐播放器 ---
-    const musicToggle = document.getElementById('music-toggle');
-    const bgMusic = document.getElementById('bg-music');
-    const musicDisk = document.getElementById('music-disk');
-
-    musicToggle.addEventListener('click', () => {
-        if (bgMusic.paused) {
-            bgMusic.play();
-            musicDisk.classList.add('playing');
-        } else {
-            bgMusic.pause();
-            musicDisk.classList.remove('playing');
-        }
+    window.initProjectBgm({
+        title: '西西里舞曲',
+        artist: 'KuaiDrive · TuKuai',
+        album: 'KuaiDrive Official Page',
+        cover: 'imgs/music-cover.png',
+        smallCover: 'imgs/apple-touch-icon.png'
     });
 
     // --- 2. 印象派原生花瓣引擎 ---

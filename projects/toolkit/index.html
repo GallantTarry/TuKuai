@@ -4,9 +4,40 @@
     <meta charset="UTF-8">
     <!-- 修改后 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ToolKit | 办公辅助应用</title>
+    <title>ToolKit | 办公辅助应用 · Desktop Efficiency Suite</title>
+    <meta name="description" content="ToolKit 是 TuKuai 开发的轻量级桌面办公辅助应用与多合一效率工具箱，集成本地工作流加速与实用桌面小工具。">
+    <meta name="keywords" content="ToolKit, toolkit, 办公辅助应用, 效率工具箱, 桌面工具, TuKuai, 土块">
+    <meta name="theme-color" content="#000103">
+    <link rel="canonical" href="https://xn--udsye.art/projects/toolkit/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ToolKit | 办公辅助应用">
+    <meta property="og:description" content="ToolKit —— 轻量级桌面办公辅助应用与多合一效率工具箱。">
+    <meta property="og:url" content="https://xn--udsye.art/projects/toolkit/">
+    <meta property="og:image" content="https://xn--udsye.art/projects/toolkit/imgs/music-cover.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://xn--udsye.art/projects/toolkit/imgs/music-cover.png">
     <!-- 精确指定的网页图标路径 -->
-    <link rel="icon" href="imgs/toolkit.ico" type="image/x-icon">
+    <link rel="icon" href="imgs/toolkit.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="96x96" href="imgs/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="imgs/favicon-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="imgs/apple-touch-icon.png">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "ToolKit",
+            "alternateName": ["toolkit", "ToolKit 办公辅助应用", "Toolkit"],
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Windows",
+            "url": "https://xn--udsye.art/projects/toolkit/",
+            "image": "https://xn--udsye.art/projects/toolkit/imgs/music-cover.png",
+            "description": "ToolKit 是 TuKuai 开发的轻量级桌面办公辅助应用与多合一效率工具箱。",
+            "author": {
+                "@type": "Person",
+                "name": "TuKuai (土块)"
+            }
+        }
+    </script>
     <style>
         /* ==========================================================================
            【核心系统架构】 CSS Variables & Global Reset
@@ -1080,11 +1111,11 @@
 <header class="nav-header">
     <!-- 将 music-toggle-container 改为 logo-container -->
     <div class="logo-container" id="music-toggle">
-        <img src="imgs/toolkit.ico" alt="Music Disk" id="music-disk">
+        <img src="imgs/favicon-192x192.png" alt="Music Disk" id="music-disk">
         <!-- 将 span class="music-text" 改为 div class="logo-text" -->
         <div class="logo-text">BGM</div>
         <!-- 指定你要求的音乐文件：去月球.mp3 -->
-        <audio id="bg-music" src="music/去月球.mp3" loop></audio>
+        <audio id="bg-music" src="music/去月球.mp3" loop preload="metadata"></audio>
     </div>
 
     <a href="docs/manual.md" download="ToolKit操作说明＆更新日志.md" class="buy-btn">
@@ -1228,6 +1259,7 @@
 <!-- ==========================================================================
      【底层 JavaScript 引擎】 Engine Controllers
      ========================================================================== -->
+<script src="../shared/media-session.js"></script>
 <script>
     /**
      * 模块零：控制面板折叠展开
@@ -1507,20 +1539,14 @@
     })();
 
     /**
-     * 模块三：环境音播放器逻辑
+     * 模块三：环境音播放器逻辑（同步系统媒体中心 / iOS 灵动岛）
      */
-    const musicToggle = document.getElementById('music-toggle');
-    const bgMusic = document.getElementById('bg-music');
-    const musicDisk = document.getElementById('music-disk');
-
-    musicToggle.addEventListener('click', () => {
-        if (bgMusic.paused) {
-            bgMusic.play();
-            musicDisk.classList.add('playing');
-        } else {
-            bgMusic.pause();
-            musicDisk.classList.remove('playing');
-        }
+    window.initProjectBgm({
+        title: '去月球',
+        artist: 'ToolKit · TuKuai',
+        album: 'ToolKit Official Page',
+        cover: 'imgs/music-cover.png',
+        smallCover: 'imgs/apple-touch-icon.png'
     });
 
     /**

@@ -3,8 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>BlackHole | Minimalist Desktop Event Horizon & Smart Sorter</title>
-    <link rel="icon" href="imgs/blackhole.ico" type="image/x-icon">
+    <title>BlackHole | 桌面悬浮效率中枢 · Minimalist Desktop Event Horizon & Smart Sorter</title>
+    <meta name="description" content="BlackHole（黑洞）是 TuKuai 推出的极简桌面悬浮效率中枢与智能文件分拣工具，支持拖拽即分类、自动化归档与沉浸式桌面交互。">
+    <meta name="keywords" content="BlackHole, blackhole, BLACK HOLE, 黑洞, 桌面悬浮效率中枢, 智能分拣, Desktop Sorter, TuKuai, 土块">
+    <meta name="theme-color" content="#030303">
+    <link rel="canonical" href="https://xn--udsye.art/projects/blackhole/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="BlackHole | 桌面悬浮效率中枢">
+    <meta property="og:description" content="BlackHole（黑洞）—— 极简桌面悬浮效率中枢与智能文件分拣工具。">
+    <meta property="og:url" content="https://xn--udsye.art/projects/blackhole/">
+    <meta property="og:image" content="https://xn--udsye.art/projects/blackhole/imgs/music-cover.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://xn--udsye.art/projects/blackhole/imgs/music-cover.png">
+    <link rel="icon" href="imgs/blackhole.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="96x96" href="imgs/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="imgs/favicon-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="imgs/apple-touch-icon.png">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "BlackHole",
+            "alternateName": ["blackhole", "BLACK HOLE", "Black Hole", "黑洞桌面悬浮效率中枢"],
+            "applicationCategory": "UtilitiesApplication",
+            "operatingSystem": "Windows",
+            "url": "https://xn--udsye.art/projects/blackhole/",
+            "image": "https://xn--udsye.art/projects/blackhole/imgs/music-cover.png",
+            "description": "BlackHole（黑洞）是 TuKuai 推出的极简桌面悬浮效率中枢与智能文件分拣工具。",
+            "author": {
+                "@type": "Person",
+                "name": "TuKuai (土块)"
+            }
+        }
+    </script>
     <style>
         /* Cosmic Title Styling */
         .hero h1.cosmic-title {
@@ -448,9 +479,9 @@
 
 <header class="nav-header">
     <div class="logo-container" id="music-toggle">
-        <img src="imgs/blackhole.png" alt="Black Hole Logo" id="music-disk">
+        <img src="imgs/favicon-192x192.png" alt="Black Hole Logo" id="music-disk">
         <div class="logo-text">BGM</div>
-        <audio id="bg-music" src="music/Travelers.mp3" loop></audio>
+        <audio id="bg-music" src="music/Travelers.mp3" loop preload="metadata"></audio>
     </div>
 
     <a href="docs/manual.md" download="BlackHole_User_Manual_&_Changelog.md" class="buy-btn">
@@ -533,19 +564,14 @@
     </p>
 </footer>
 
+<script src="../shared/media-session.js"></script>
 <script>
-    const musicToggle = document.getElementById('music-toggle');
-    const bgMusic = document.getElementById('bg-music');
-    const musicDisk = document.getElementById('music-disk');
-
-    musicToggle.addEventListener('click', () => {
-        if (bgMusic.paused) {
-            bgMusic.play();
-            musicDisk.classList.add('playing');
-        } else {
-            bgMusic.pause();
-            musicDisk.classList.remove('playing');
-        }
+    window.initProjectBgm({
+        title: 'Travelers',
+        artist: 'BlackHole · TuKuai',
+        album: 'BlackHole Official Page',
+        cover: 'imgs/music-cover.png',
+        smallCover: 'imgs/apple-touch-icon.png'
     });
 
     document.addEventListener("DOMContentLoaded", () => {

@@ -3,8 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>PyKuai | Terminal Script Toolbox</title>
-    <link rel="icon" href="imgs/script.ico">
+    <title>PyKuai | 微内核 CLI 工作台 · Terminal Script Toolbox</title>
+    <meta name="description" content="PyKuai 是 TuKuai 打造的微内核 CLI 终端工作台与 Python 脚本工具箱，专注于高频命令行效率操作与自动化脚本管理。">
+    <meta name="keywords" content="PyKuai, pykuai, 微内核 CLI 工作台, Terminal Script Toolbox, 命令行工具箱, Python 脚本, TuKuai, 土块">
+    <meta name="theme-color" content="#050505">
+    <link rel="canonical" href="https://xn--udsye.art/projects/pykuai/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="PyKuai | 微内核 CLI 工作台">
+    <meta property="og:description" content="PyKuai —— 极客向微内核 CLI 终端工作台与自动化脚本工具箱。">
+    <meta property="og:url" content="https://xn--udsye.art/projects/pykuai/">
+    <meta property="og:image" content="https://xn--udsye.art/projects/pykuai/imgs/music-cover.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://xn--udsye.art/projects/pykuai/imgs/music-cover.png">
+    <link rel="icon" href="imgs/script.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="96x96" href="imgs/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="imgs/favicon-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="imgs/apple-touch-icon.png">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "PyKuai",
+            "alternateName": ["pykuai", "PyKuai 微内核 CLI 工作台", "Terminal Script Toolbox"],
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Windows, macOS, Linux",
+            "url": "https://xn--udsye.art/projects/pykuai/",
+            "image": "https://xn--udsye.art/projects/pykuai/imgs/music-cover.png",
+            "description": "PyKuai 是 TuKuai 打造的微内核 CLI 终端工作台与 Python 脚本工具箱。",
+            "author": {
+                "@type": "Person",
+                "name": "TuKuai (土块)"
+            }
+        }
+    </script>
     <style>
         :root {
             --primary-color: #0f0;
@@ -797,9 +828,9 @@
 <!-- Top Glass Navigation Header -->
 <header class="nav-header">
     <div class="logo-container" id="music-toggle" title="Toggle Background Music">
-        <img src="imgs/script.ico" alt="PyKuai Logo" id="music-disk">
+        <img src="imgs/favicon-192x192.png" alt="PyKuai Logo" id="music-disk">
         <div class="logo-text">BGM</div>
-        <audio id="bg-music" src="music/Minecraft.mp3" loop></audio>
+        <audio id="bg-music" src="music/Minecraft.mp3" loop preload="metadata"></audio>
     </div>
 
     <a href="docs/manual.md" download="PyKuai_User_Manual_&_Changelog.md" class="buy-btn">
@@ -838,7 +869,7 @@
         <section class="showcase" aria-label="PyKuai PowerShell Preview">
             <div class="window-chrome">
                 <div class="wt-tab">
-                    <img src="imgs/script.ico" alt="PyKuai" class="wt-icon">
+                    <img src="imgs/favicon-96x96.png" alt="PyKuai" class="wt-icon">
                     <span class="wt-title">PowerShell</span>
                 </div>
                 <div class="chrome-actions">
@@ -952,20 +983,15 @@
     </main>
 </div>
 
+<script src="../shared/media-session.js"></script>
 <script>
     // --- 1. Header BGM Toggle ---
-    const musicToggle = document.getElementById('music-toggle');
-    const bgMusic = document.getElementById('bg-music');
-    const musicDisk = document.getElementById('music-disk');
-
-    musicToggle.addEventListener('click', () => {
-        if (bgMusic.paused) {
-            bgMusic.play();
-            musicDisk.classList.add('playing');
-        } else {
-            bgMusic.pause();
-            musicDisk.classList.remove('playing');
-        }
+    window.initProjectBgm({
+        title: 'Minecraft',
+        artist: 'PyKuai · TuKuai',
+        album: 'PyKuai Official Page',
+        cover: 'imgs/music-cover.png',
+        smallCover: 'imgs/apple-touch-icon.png'
     });
 
     // --- 2. Matrix Rain Background ---

@@ -3,8 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Clod＆Gold | 土块与金苹果</title>
-    <link rel="icon" href="imgs/clod-and-gold.ico" type="image/x-icon">
+    <title>Clod＆Gold | 土块与金苹果 · Indie Adventure Game</title>
+    <meta name="description" content="Clod＆Gold（土块与金苹果）是 TuKuai 创作的像素风独立游戏与互动作品，探索方块世界里的金苹果冒险故事。">
+    <meta name="keywords" content="Clod&Gold, Clod＆Gold, clod-and-gold, clodandgold, 土块与金苹果, 独立游戏, TuKuai, 土块">
+    <meta name="theme-color" content="#FBF2D8">
+    <link rel="canonical" href="https://xn--udsye.art/projects/clod-and-gold/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Clod＆Gold | 土块与金苹果">
+    <meta property="og:description" content="Clod＆Gold（土块与金苹果）—— TuKuai 像素风独立作品宣传页。">
+    <meta property="og:url" content="https://xn--udsye.art/projects/clod-and-gold/">
+    <meta property="og:image" content="https://xn--udsye.art/projects/clod-and-gold/imgs/music-cover.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://xn--udsye.art/projects/clod-and-gold/imgs/music-cover.png">
+    <link rel="icon" href="imgs/clod-and-gold.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="96x96" href="imgs/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="imgs/favicon-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="imgs/apple-touch-icon.png">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "VideoGame",
+            "name": "Clod＆Gold",
+            "alternateName": ["Clod&Gold", "clod-and-gold", "clodandgold", "土块与金苹果"],
+            "applicationCategory": "Game",
+            "url": "https://xn--udsye.art/projects/clod-and-gold/",
+            "image": "https://xn--udsye.art/projects/clod-and-gold/imgs/music-cover.png",
+            "description": "Clod＆Gold（土块与金苹果）是 TuKuai 创作的像素风独立游戏与互动作品。",
+            "author": {
+                "@type": "Person",
+                "name": "TuKuai (土块)"
+            }
+        }
+    </script>
     <style>
         :root {
             /* 原图提取的经典纯色温暖米黄背景 */
@@ -244,9 +274,9 @@
 <!-- 顶部导航栏 (ToolKit 按钮排版规范) -->
 <header class="nav-header">
     <div class="logo-container" id="music-toggle" title="播放/暂停音乐">
-        <img src="imgs/clod-and-gold.ico" alt="Music Disk" id="music-disk">
+        <img src="imgs/favicon-192x192.png" alt="Music Disk" id="music-disk">
         <div class="logo-text">BGM</div>
-        <audio id="bg-music" src="music/clod-and-gold.ogg" loop></audio>
+        <audio id="bg-music" src="music/clod-and-gold.ogg" loop preload="metadata"></audio>
     </div>
 
     <a href="docs/manual.md" download="Clod＆Gold操作说明.md" class="buy-btn">
@@ -297,23 +327,16 @@
     </p>
 </footer>
 
+<script src="../shared/media-session.js"></script>
 <script>
-    // 仅保留基础 BGM 播放器逻辑
-    const musicToggle = document.getElementById('music-toggle');
-    const bgMusic = document.getElementById('bg-music');
-    const musicDisk = document.getElementById('music-disk');
-
-    if (musicToggle && bgMusic && musicDisk) {
-        musicToggle.addEventListener('click', () => {
-            if (bgMusic.paused) {
-                bgMusic.play().catch(() => {});
-                musicDisk.classList.add('playing');
-            } else {
-                bgMusic.pause();
-                musicDisk.classList.remove('playing');
-            }
-        });
-    }
+    // BGM 播放器与系统媒体中心 / iOS 灵动岛联动
+    window.initProjectBgm({
+        title: 'Clod＆Gold BGM',
+        artist: 'Clod＆Gold · TuKuai',
+        album: '土块与金苹果',
+        cover: 'imgs/music-cover.png',
+        smallCover: 'imgs/apple-touch-icon.png'
+    });
 </script>
 </body>
 </html>
