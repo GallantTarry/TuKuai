@@ -1559,18 +1559,18 @@
             this.btn = document.getElementById(btnId);
             this.targetUrl = targetUrl;
 
-            // 10大白嫖加速节点池 (移除空前缀直连防抢跑，按稳定性与带宽排序)
+            // 10大白嫖加速节点池 (移除空前缀直连防抢跑，已验证南京/江苏低延迟 + 浏览器 CORS 跨域头 + .msi/.exe 二进制流支持)
             this.nodes = [
-                'https://gh-proxy.com/',
-                'https://ghfast.top/',
-                'https://ghproxy.net/',
-                'https://ghp.ci/',
-                'https://ghproxy.homeboyc.cn/',
-                'https://github.akams.cn/',
-                'https://moeyy.cn/gh-proxy/',
-                'https://gh.monlor.com/',
+                'https://v4.gh-proxy.org/',
+                'https://cdn.gh-proxy.org/',
+                'https://hk.gh-proxy.org/',
+                'https://edgeone.gh-proxy.org/',
+                'https://github.880824.xyz/',
+                'https://git.820828.xyz/',
                 'https://ghproxy.imciel.com/',
-                'https://fastgit.cc/'
+                'https://fastfile.asfd.cn/',
+                'https://github.ihnic.com/',
+                'https://gh-proxy.com/'
             ];
 
             if (this.btn) {
