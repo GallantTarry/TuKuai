@@ -71,6 +71,10 @@
 TuKuai/
 ├── .gitignore                          # Git 忽略规则配置 (忽略 node_modules/、.idea/、.vscode/ 等)
 ├── CNAME                               # GitHub Pages 自定义域名绑定 (xn--udsye.art)
+├── favicon.ico                         # 网站根目录兜底图标 (16/32/48px，供搜索引擎爬虫与旧浏览器抓取)
+├── robots.txt                          # 搜索引擎爬虫抓取规则 (允许全站收录并指向 sitemap.xml)
+├── sitemap.xml                         # 站点地图 (辅助 Google / Bing 快速索引主站与作品展厅)
+├── site.webmanifest                    # PWA Web 应用清单 (配置桌面快捷方式名称与 192/512px 图标)
 ├── README.md                           # 项目技术架构、调用关系与后期扩展维护文档
 ├── package.json                        # NPM 构建脚本与 Tailwind CSS 依赖配置
 ├── package-lock.json                   # NPM 依赖版本锁定文件
@@ -99,10 +103,13 @@ TuKuai/
 │   │   └── ...
 │   │
 │   ├── images/                         # 全站图像与矢量图标资产
-│   │   ├── favicon/                    # 浏览器标签页与 iOS 主屏幕图标
-│   │   │   ├── favicon.png
-│   │   │   ├── favicon.ico
-│   │   │   └── apple-touch-icon.png
+│   │   ├── favicon/                    # 浏览器标签页与 iOS/PWA 多尺寸图标资产
+│   │   │   ├── favicon.svg             # 像素风掌机无损矢量图标 (供现代浏览器标签页)
+│   │   │   ├── favicon-96x96.png       # 96x96 标准 PNG 图标 (符合 Google 搜索推荐尺寸)
+│   │   │   ├── favicon-192x192.png     # 192x192 PWA 主屏幕图标
+│   │   │   ├── favicon.png             # 512x512 高清 PNG 原图
+│   │   │   ├── favicon.ico             # 16/32/48px 多尺寸 ICO
+│   │   │   └── apple-touch-icon.png    # 180x180 iOS「添加到主屏幕」图标
 │   │   ├── avatars/                    # 8 态 24 小时作息像素小人矢量头像 (SVG)
 │   │   │   ├── coding-avatar.svg       # 14:00-17:59 敲代码
 │   │   │   ├── gaming-avatar.svg       # 21:00-23:59 打游戏

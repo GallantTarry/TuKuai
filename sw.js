@@ -1,5 +1,5 @@
 // 以后只有当你希望强制清空所有老用户的全站缓存时，才需要修改这个版本号
-const CACHE_VERSION = 'v2.0.0';
+const CACHE_VERSION = 'v2.0.1';
 const CACHE_NAME = `tukuai-smart-cache-${CACHE_VERSION}`;
 
 // 1. 安装时立即接管
@@ -36,7 +36,9 @@ self.addEventListener('fetch', event => {
         url.hostname.includes('google-analytics.com') ||
         url.hostname.includes('googletagmanager.com') ||
         url.hostname.includes('tukuai-kv') ||
-        url.pathname.includes('/api/')
+        url.pathname.includes('/api/') ||
+        url.pathname === '/robots.txt' ||
+        url.pathname === '/sitemap.xml'
     ) {
         return; // 直接放行，走浏览器原生网络与流式缓存
     }

@@ -1,0 +1,24 @@
+{
+  "name": "少侠别走 · 土块.art (TuKuai OS)",
+  "short_name": "少侠别走",
+  "description": "🎮 掌机微光中，少年读懂了大卫的诗篇 📜。古老音律化作星河航标 🧭，指引他戴上船长帽扬帆远航——去寻找属于求知者的无尽宝藏，赢回属于勇者的无上荣光 💎。",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "/assets/images/favicon/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/images/favicon/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
