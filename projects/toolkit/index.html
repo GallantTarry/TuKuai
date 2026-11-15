@@ -756,7 +756,7 @@
             height: clamp(430px, 68svh, 760px);
             position: relative;
             margin-top: 16px;
-            perspective: 1600px;
+            isolation: isolate;
             overflow: hidden;
             overflow: clip;
             border-radius: 22px;
@@ -781,7 +781,7 @@
         .playback-scene {
             position: absolute;
             inset: 0;
-            transform-style: preserve-3d;
+            perspective: 1600px;
             pointer-events: none;
         }
 
@@ -794,6 +794,7 @@
             position: absolute;
             top: var(--y);
             left: var(--x);
+            z-index: 0;
             width: min(60%, 70svh);
             margin: 0;
             padding: 5px;
@@ -801,6 +802,8 @@
             border-radius: 13px;
             background: linear-gradient(145deg, #21394c, #081421);
             transform: translate(-50%, -50%) translateZ(var(--z)) rotateY(var(--rotate)) scale(var(--scale));
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
             opacity: .46;
             visibility: visible;
             pointer-events: none;
@@ -850,6 +853,7 @@
         .playback-card[data-slot="-5"] {
             --x: 85%;
             --y: 84%;
+            z-index: 0;
             opacity: 0;
         }
 
@@ -859,6 +863,7 @@
             --z: -180px;
             --scale: .46;
             --rotate: -16deg;
+            z-index: 3;
         }
 
         .playback-card[data-slot="-3"] {
@@ -866,6 +871,7 @@
             --y: 87%;
             --z: -240px;
             --scale: .43;
+            z-index: 2;
         }
 
         .playback-card[data-slot="-2"] {
@@ -874,6 +880,7 @@
             --z: -180px;
             --scale: .46;
             --rotate: 16deg;
+            z-index: 4;
         }
 
         .playback-card[data-slot="-1"] {
@@ -882,6 +889,7 @@
             --z: -140px;
             --scale: .50;
             --rotate: 22deg;
+            z-index: 6;
         }
 
         .playback-card[data-slot="0"] {
@@ -890,6 +898,7 @@
             --z: 65px;
             --scale: 1;
             --rotate: 0deg;
+            z-index: 10;
             opacity: 1;
             border-color: #b5dcf5a0;
         }
@@ -900,6 +909,7 @@
             --z: -140px;
             --scale: .50;
             --rotate: -22deg;
+            z-index: 6;
         }
 
         .playback-card[data-slot="2"] {
@@ -908,6 +918,7 @@
             --z: -180px;
             --scale: .46;
             --rotate: -16deg;
+            z-index: 4;
         }
 
         .playback-card[data-slot="3"] {
@@ -915,6 +926,7 @@
             --y: 13%;
             --z: -240px;
             --scale: .43;
+            z-index: 2;
         }
 
         .playback-card[data-slot="4"] {
@@ -923,11 +935,13 @@
             --z: -180px;
             --scale: .46;
             --rotate: 16deg;
+            z-index: 3;
         }
 
         .playback-card[data-slot="5"] {
             --x: 15%;
             --y: 16%;
+            z-index: 0;
             opacity: 0;
         }
 
@@ -980,6 +994,9 @@
         @media (max-width: 900px) {
             .playback-stage {
                 height: clamp(400px, 63vw, 600px);
+            }
+
+            .playback-scene {
                 perspective: 1200px;
             }
 
@@ -1014,7 +1031,6 @@
             .playback-stage {
                 height: clamp(350px, 112vw, 530px);
                 margin-top: 10px;
-                perspective: 1200px;
                 border-radius: 12px;
             }
 
@@ -1083,13 +1099,29 @@
 
         /* 保持自动逐张循环，只去掉空间移动，改为柔和淡入淡出。 */
         @media (prefers-reduced-motion: reduce) {
-            .playback-card {
-                transition: opacity 250ms ease;
+            .playback-scene .playback-card {
+                top: 50%;
+                left: 50%;
+                --z: 0px;
+                --scale: 1;
+                --rotate: 0deg;
+                transform: translate(-50%, -50%);
+                transition: opacity 0s linear 250ms, visibility 0s linear 250ms;
             }
 
-            .playback-card:not(.is-current) {
+            .playback-scene .playback-card[data-visible="false"],
+            .playback-scene .playback-card:not(.is-current) {
+                z-index: 1;
                 opacity: 0;
                 visibility: hidden;
+                transition-delay: 250ms, 250ms;
+            }
+
+            .playback-scene .playback-card.is-current {
+                z-index: 10;
+                opacity: 1;
+                visibility: visible;
+                transition: opacity 250ms ease 0s, visibility 0s linear 0s;
             }
         }
 
@@ -1488,7 +1520,8 @@
                     img.width = 960;
                     img.height = 780;
                     img.draggable = false;
-                    img.decoding = 'async';
+                    img.decoding = 'sync';
+                    img.addEventListener('load', () => this.warmupImage(img));
                     img.addEventListener('error', () => figure.classList.add('has-error'));
                     img.src = item.src;
                     const caption = document.createElement('figcaption');
@@ -1511,6 +1544,12 @@
                 }
             }
 
+            warmupImage(img) {
+                if (img && img.complete && img.naturalWidth > 0 && typeof img.decode === 'function') {
+                    img.decode().catch(() => {});
+                }
+            }
+
             render() {
                 const count = this.items.length;
                 this.cards.forEach((card, index) => {
@@ -1521,6 +1560,10 @@
                     card.classList.toggle('is-current', relative === 0);
                     // 辅助阅读工具仅读取当前主图，避免同时读取九张截图。
                     card.setAttribute('aria-hidden', String(relative !== 0));
+                    // 提前预热即将进入视野或成为主图的位图，避免移动端回收后切换瞬间空白。
+                    if (relative >= 0 && relative <= 5) {
+                        this.warmupImage(card.firstElementChild);
+                    }
                 });
             }
 
