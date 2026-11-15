@@ -24,6 +24,7 @@
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
             "name": "PyKuai",
+            "softwareVersion": "1.2.8",
             "alternateName": ["pykuai", "PyKuai 微内核 CLI 工作台", "Terminal Script Toolbox"],
             "applicationCategory": "DeveloperApplication",
             "operatingSystem": "Windows, macOS, Linux",
@@ -61,6 +62,10 @@
             color: var(--primary-color);
             font-family: 'Courier New', Courier, monospace;
             overflow-x: hidden;
+        }
+
+        pre, code {
+            font-family: inherit;
         }
 
         /* Custom Cyber-Dark Scrollbar */
@@ -442,15 +447,37 @@
             display: none !important;
         }
 
+        .banner-layout {
+            display: flex;
+            align-items: flex-start;
+            gap: 22px;
+            margin: 4px 0 18px;
+            overflow-x: auto;
+        }
+
         .ascii-banner {
             color: var(--primary-color);
+            font-family: 'Cascadia Mono', 'Cascadia Code', 'Consolas', 'SF Mono', Menlo, Monaco, 'Noto Sans Mono', 'Roboto Mono', 'DejaVu Sans Mono', 'Liberation Mono', 'Courier New', monospace;
             text-shadow: 0 0 8px rgba(0, 255, 0, 0.45);
-            font-size: clamp(6.6px, 1.52vw, 13.5px);
+            font-size: clamp(6.6px, 1.38vw, 13px);
             line-height: 1.15;
             white-space: pre;
-            overflow-x: auto;
-            text-align: center;
-            margin: 4px 0 16px;
+            flex-shrink: 0;
+            margin: 0;
+        }
+
+        .banner-meta {
+            display: flex;
+            flex-direction: column;
+            font-family: 'Cascadia Mono', 'Cascadia Code', 'Consolas', 'SF Mono', Menlo, Monaco, 'Noto Sans Mono', 'Roboto Mono', 'DejaVu Sans Mono', 'Liberation Mono', 'Courier New', monospace;
+            font-size: clamp(10px, 1.38vw, 13px);
+            line-height: 1.15;
+            white-space: pre;
+            flex-shrink: 0;
+        }
+
+        .banner-meta-line {
+            min-height: 1.15em;
         }
 
         .banner-top {
@@ -468,13 +495,61 @@
             text-shadow: 0 0 6px rgba(4, 120, 87, 0.4);
         }
 
+        .t-dim {
+            color: #666666;
+        }
+
+        .t-quote {
+            color: #FF9800;
+            font-style: italic;
+        }
+
+        .banner-sfx-wrap {
+            display: inline-flex;
+            align-items: center;
+            background: transparent;
+            border: none;
+            padding: 0;
+            font: inherit;
+            line-height: 1.25;
+            cursor: pointer;
+            text-align: left;
+            transition: filter 0.15s ease;
+        }
+
+        .banner-sfx-wrap:hover {
+            filter: brightness(1.18);
+        }
+
+        .sfx-pill {
+            display: inline-block;
+            font-weight: bold;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        .sfx-pill.is-on {
+            color: #00FF00;
+            background: #0b2e1c;
+        }
+
+        .sfx-pill.is-off {
+            color: #FF5252;
+            background: #2b1414;
+        }
+
+        .sfx-hint {
+            color: #666666;
+            font-size: 0.92em;
+        }
+
         .console-repl-row {
             font-size: 1rem;
             line-height: 1.65;
             overflow-wrap: anywhere;
         }
 
-        /* Quick Install Shell Block */
+        /* Quick Install & Upgrade Shell Block */
         .pip-panel {
             background: rgba(0, 18, 0, 0.82);
             border: 1px solid rgba(0, 255, 0, 0.45);
@@ -502,11 +577,43 @@
             margin-top: 8px;
         }
 
+        .pip-row-upgrade {
+            border-color: rgba(255, 152, 0, 0.55);
+            background: rgba(28, 16, 0, 0.42);
+        }
+
         .pip-cmd {
             font-size: 0.98rem;
             color: #e6ffe6;
             overflow-x: auto;
             white-space: nowrap;
+        }
+
+        .pip-tag {
+            display: inline-block;
+            color: #10b981;
+            font-size: 0.78rem;
+            font-weight: bold;
+            margin-right: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .pip-tag-amber {
+            color: var(--amber-color);
+        }
+
+        .pip-note {
+            margin-top: 10px;
+            font-size: 0.78rem;
+            color: #9ae6b4;
+            opacity: 0.86;
+            line-height: 1.5;
+        }
+
+        .pip-note code {
+            color: #e6ffe6;
+            background: rgba(0, 255, 0, 0.12);
+            padding: 1px 5px;
         }
 
         .pip-cmd .prompt {
@@ -819,6 +926,27 @@
                 align-self: flex-end;
             }
         }
+
+        @media (max-width: 640px) {
+            .banner-layout {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .ascii-banner {
+                font-size: clamp(6px, 1.9vw, 10px);
+            }
+
+            .banner-meta {
+                font-size: 12px;
+                line-height: 1.45;
+            }
+
+            .banner-meta-line {
+                min-height: 1.45em;
+            }
+        }
+        }
     </style>
 </head>
 <body class="crt">
@@ -833,7 +961,7 @@
         <audio id="bg-music" src="music/Minecraft.mp3" loop preload="metadata"></audio>
     </div>
 
-    <a href="docs/manual.md" download="PyKuai_User_Manual_&_Changelog.md" class="buy-btn">
+    <a href="docs/manual.md?v=1.2.8" download="PyKuai_User_Manual_&_Changelog.md" class="buy-btn">
         User Manual
         <span class="price-tag">Download</span>
     </a>
@@ -873,7 +1001,7 @@
                     <span class="wt-title">PowerShell</span>
                 </div>
                 <div class="chrome-actions">
-                    <span class="window-meta">v1.2.7 · Python >=3.9</span>
+                    <span class="window-meta">v1.2.8 · Python >=3.9</span>
                     <button type="button" class="term-replay" id="term-replay" title="Replay PowerShell session">[
                         REPLAY ]
                     </button>
@@ -885,42 +1013,57 @@
                 </div>
                 <div class="console-install-out hidden" id="install-out">
                     <div class="t-muted" id="pip-collect">Collecting pykuai</div>
-                    <div class="t-muted hidden" id="pip-done">Successfully installed <span class="t-emerald">pykuai-1.2.7</span>
+                    <div class="t-muted hidden" id="pip-done">Successfully installed <span class="t-emerald">pykuai-1.2.8</span>
                     </div>
                 </div>
                 <div class="console-cmd-row console-launch-row hidden" id="launch-row"><span
                         id="launch-line"></span><span class="cursor hidden" id="launch-cursor"></span></div>
                 <div class="native-stage hidden" id="native-stage">
-                    <pre class="ascii-banner"><span class="banner-top">██████╗ ██╗   ██╗██╗  ██╗██╗   ██╗ █████╗ ██╗
+                    <div class="banner-layout">
+                        <pre class="ascii-banner"><span class="banner-top">██████╗ ██╗   ██╗██╗  ██╗██╗   ██╗ █████╗ ██╗
 ██╔══██╗╚██╗ ██╔╝██║ ██╔╝██║   ██║██╔══██╗██║</span>
 <span class="banner-mid">██████╔╝ ╚████╔╝ █████═╝ ██║   ██║███████║██║
 ██╔═══╝   ╚██╔╝  ██╔═██╗ ██║   ██║██╔══██║██║</span>
 <span class="banner-bot">██║        ██║   ██║  ██╗╚██████╔╝██║  ██║██║
 ╚═╝        ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝</span></pre>
+                        <div class="banner-meta">
+                            <div class="banner-meta-line"><span class="t-green">pykuai</span><span class="t-warn">  v1.2.8</span></div>
+                            <div class="banner-meta-line"><span class="t-dim">Author: </span><span class="t-warn">TuKuai</span><span class="t-dim"> | </span><span class="t-emerald">GallantTarry</span></div>
+                            <div class="banner-meta-line"><span class="t-quote">"The Lord is my shepherd."</span></div>
+                            <div class="banner-meta-line"><span class="t-dim">Audio:  Kenney &amp; CC0 SFX</span></div>
+                            <div class="banner-meta-line">&nbsp;</div>
+                            <div class="banner-meta-line"><button type="button" class="banner-sfx-wrap" id="banner-sfx-toggle" aria-pressed="true" title="Toggle Global Console SFX"><span class="sfx-pill is-on" id="banner-sfx-pill"> 🔊 SFX ON  </span><span class="sfx-hint"> click</span></button></div>
+                        </div>
+                    </div>
                     <div class="console-repl-row"><span id="typewriter"></span><span class="cursor hidden"
                                                                                      id="term-cursor"></span></div>
                 </div>
             </div>
         </section>
 
-        <!-- One-Line PyPI Installation -->
-        <section class="pip-panel" aria-label="Install via pip">
-            <div class="pip-panel-label">[ INSTALL FROM PYPI :: PYTHON >= 3.9 ]</div>
+        <!-- One-Line PyPI Installation & Upgrade -->
+        <section class="pip-panel" aria-label="Install or upgrade via pip">
+            <div class="pip-panel-label">[ INSTALL &amp; UPGRADE VIA PYPI :: v1.2.8 · PYTHON &gt;= 3.9 ]</div>
             <div class="pip-row">
-                <code class="pip-cmd"><span class="prompt">$</span>pip install pykuai</code>
+                <code class="pip-cmd"><span class="pip-tag">[NEW]</span><span class="prompt">$</span>pip install pykuai</code>
                 <button type="button" class="copy-btn" data-copy="pip install pykuai">[ COPY ]</button>
             </div>
             <div class="pip-row">
-                <code class="pip-cmd"><span class="prompt">$</span>pip install "pykuai[all]" && pykuai --fast</code>
+                <code class="pip-cmd"><span class="pip-tag">[FULL]</span><span class="prompt">$</span>pip install "pykuai[all]" && pykuai --fast</code>
                 <button type="button" class="copy-btn" data-copy='pip install "pykuai[all]" && pykuai --fast'>[ COPY ]
                 </button>
             </div>
+            <div class="pip-row pip-row-upgrade">
+                <code class="pip-cmd"><span class="pip-tag pip-tag-amber">[UPGRADE]</span><span class="prompt">$</span>pip install -U "pykuai[all]"</code>
+                <button type="button" class="copy-btn" data-copy='pip install -U "pykuai[all]"'>[ COPY ]</button>
+            </div>
+            <p class="pip-note">Upgrading from an older version? Always pass uppercase <code>-U</code> (core only: <code>pip install -U pykuai</code>). If a mirror lags, append <code>-i https://pypi.org/simple</code>.</p>
         </section>
 
         <!-- Primary Upstream Actions -->
         <section class="download-wrapper">
             <a href="https://pypi.org/project/pykuai/" target="_blank" rel="noopener noreferrer" class="download-btn">
-                >> PYPI RELEASE (v1.2.7) <<
+                >> PYPI RELEASE (v1.2.8) <<
             </a>
             <a href="https://github.com/GallantTarry/pykuai" target="_blank" rel="noopener noreferrer"
                class="download-btn download-btn-secondary">
@@ -961,11 +1104,10 @@
 
             <div class="feature-card">
                 <h3>[06] Smart Ergonomics</h3>
-                <p>Navigate instantly via 2-letter repeated global commands (e.g., <code>tt</code> or <code>hh</code>)
-                    and drop in any modular 3-letter tool engine.</p>
+                <p>Navigate instantly via 2-letter repeated global commands (e.g., <code>tt</code>, <code>pp</code>, or
+                    <code>xp</code>) and drop in any modular 3-letter tool engine.</p>
             </div>
         </section>
-
         <footer>
             <p style="color: #64748B; font-size: 0.95rem; letter-spacing: 1px;">
                 <a href="https://gallanttarry.github.io/TuKuai/" target="_blank"
@@ -986,13 +1128,15 @@
 <script src="../shared/media-session.js"></script>
 <script>
     // --- 1. Header BGM Toggle ---
-    window.initProjectBgm({
-        title: 'Minecraft',
-        artist: 'PyKuai · TuKuai',
-        album: 'PyKuai Official Page',
-        cover: 'imgs/music-cover.png',
-        smallCover: 'imgs/apple-touch-icon.png'
-    });
+    if (typeof window.initProjectBgm === 'function') {
+        window.initProjectBgm({
+            title: 'Minecraft',
+            artist: 'PyKuai · TuKuai',
+            album: 'PyKuai Official Page',
+            cover: 'imgs/music-cover.png',
+            smallCover: 'imgs/apple-touch-icon.png'
+        });
+    }
 
     // --- 2. Matrix Rain Background ---
     const canvas = document.getElementById('matrix-bg');
@@ -1070,10 +1214,10 @@
             delayMs: 24,
             segments: [
                 ['t-muted', 'Type '],
-                ['t-green', 'hh'],
-                ['t-muted', ' for backup & tools — or '],
+                ['t-green', 'help'],
+                ['t-muted', ' for commands — or '],
                 ['t-red', 'gg'],
-                ['t-muted', ' to quit the game.']
+                ['t-muted', ' to quit.']
             ]
         }
     ];
@@ -1205,6 +1349,19 @@
 
     if (replayBtn) {
         replayBtn.addEventListener('click', () => playConsoleDemo(false));
+    }
+
+    const bannerSfxToggle = document.getElementById('banner-sfx-toggle');
+    const bannerSfxPill = document.getElementById('banner-sfx-pill');
+    if (bannerSfxToggle && bannerSfxPill) {
+        let sfxEnabled = true;
+        bannerSfxToggle.addEventListener('click', () => {
+            sfxEnabled = !sfxEnabled;
+            bannerSfxToggle.setAttribute('aria-pressed', String(sfxEnabled));
+            bannerSfxPill.textContent = sfxEnabled ? ' 🔊 SFX ON  ' : ' 🔇 SFX OFF ';
+            bannerSfxPill.classList.toggle('is-on', sfxEnabled);
+            bannerSfxPill.classList.toggle('is-off', !sfxEnabled);
+        });
     }
 
     // --- 4. One-Click Copy for pip Commands ---
