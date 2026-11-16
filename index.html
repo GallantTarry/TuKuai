@@ -32,7 +32,7 @@
     · assets/js/app/config.js              全局命名空间 `window.TuKuai` 与配置常量
     · assets/js/app/utils/helpers.js       通用小工具函数（时间格式化、随机数、音量渐弱等）
     · assets/js/app/data/*.js              纯数据仓库（菜单、卡片、歌单、文案）
-    · assets/js/app/components/*.js        4 个可复用 Vue 组件：<tab-section> <link-card> <launch-card> <mail-modal>
+    · assets/js/app/components/*.js        5 个可复用 Vue 组件：<tab-section> <link-card> <launch-card> <mail-modal> <engine-help-modal>
     · assets/js/app/composables/use-*.js   13 个独立功能模块（主题、时钟、画板、音乐、游戏窗口、跃迁动效等）
     · assets/js/app/core/*.js              3 个与 Vue 无关的底层增强（禁缩放、标题跑马灯、Service Worker 缓存）
     · assets/js/app/main.js                总入口：把上面所有模块组装起来并挂载到 `#app`
@@ -632,6 +632,24 @@
 
                 <!-- ==================== 标签页 5：复古游戏（点击 START 在游戏窗口中启动，数据见 data/resources.js） ==================== -->
                 <tab-section spacing="4" title="&gt; 引擎启动" v-if="currentTab === 'games'">
+                    <template #title-extra>
+                        <button type="button"
+                                @click="showEngineHelp = true"
+                                class="engine-help-btn group font-pixel"
+                                aria-label="引擎依赖来源与使用说明">
+                            <span class="engine-help-glow-bar"></span>
+                            <svg class="engine-help-svg" viewBox="0 0 16 16" fill="currentColor"
+                                 shape-rendering="crispEdges" aria-hidden="true">
+                                <rect x="5" y="2" width="6" height="2"/>
+                                <rect x="4" y="3" width="2" height="3"/>
+                                <rect x="10" y="3" width="2" height="3"/>
+                                <rect x="9" y="6" width="2" height="1"/>
+                                <rect x="8" y="7" width="2" height="1"/>
+                                <rect x="7" y="8" width="2" height="2"/>
+                                <rect x="7" y="12" width="2" height="2"/>
+                            </svg>
+                        </button>
+                    </template>
                     <launch-card :desc="game.desc" :emoji="game.emoji" :key="game.url" :name="game.title"
                                  @open="openGame(game.title, game.url)"
                                  accent="red" label="START"
@@ -740,6 +758,10 @@
         <!-- ======================== 密函弹窗（点击头像打开，见 components/mail-modal.js） ======================== -->
         <mail-modal :active-color="activeColor" :active-glow="activeGlow" :avatar-svg="currentAvatarSvg"
                     v-model="showMailModal"></mail-modal>
+
+        <!-- ======================== 引擎说明弹窗（点击引擎启动右侧 ? 打开，置于 z-10 容器内以保持鼠标粒子在最上层） ======================== -->
+        <engine-help-modal :active-color="activeColor" :active-glow="activeGlow"
+                           v-model="showEngineHelp"></engine-help-modal>
     </div>
 
     <!-- 全站唯一的音频播放元素：由 use-music-player.js 通过 ref 控制；preload="none" 避免进站就下载音频 -->
@@ -798,6 +820,7 @@
 
 <script src="./assets/js/app/components/resource-cards.js"></script>
 <script src="./assets/js/app/components/mail-modal.js"></script>
+<script src="./assets/js/app/components/engine-help-modal.js"></script>
 
 <script src="./assets/js/app/composables/use-theme.js"></script>
 <script src="./assets/js/app/composables/use-clock-status.js"></script>

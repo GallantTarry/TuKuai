@@ -8,6 +8,25 @@
     <link href="/assets/images/favicon/favicon-96x96.png" rel="icon" type="image/png" sizes="96x96">
     <link href="/assets/images/favicon/favicon.svg" rel="icon" type="image/svg+xml">
     <style>
+        @font-face {
+            font-family: 'Silkscreen';
+            src: url('../assets/fonts/Silkscreen-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Silkscreen';
+            src: url('../assets/fonts/Silkscreen-Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'ChinesePixel';
+            src: url('../assets/fonts/zpix.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
         body, html {
             margin: 0;
             padding: 0;
@@ -18,7 +37,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: monospace;
+            font-family: 'Silkscreen', 'ChinesePixel', monospace;
             overscroll-behavior: none;
             touch-action: manipulation;
             -webkit-user-select: none;
@@ -121,8 +140,6 @@
             const STORE = 'states';
             const KEY = 'rom:' + romFile;
             const SAVE_INTERVAL = 30000; // 每 30 秒自动保存一次
-            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
-                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
             let enabled = false; // 玩家做出选择之前不自动保存，避免旧进度被新开局覆盖
             let timer = null;
@@ -165,6 +182,7 @@
                     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
                     color: #4ade80; padding: 10px 18px;
                     border: 1px solid rgba(74, 222, 128, 0.4); border-radius: 12px;
+                    font-family: 'Silkscreen', 'ChinesePixel', monospace;
                     font-size: 13px; z-index: 99998; pointer-events: none; opacity: 0;
                     transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
                 `;
@@ -217,18 +235,18 @@
                     display: flex; align-items: center; justify-content: center;
                     background: rgba(0, 0, 0, 0.72);
                     backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-                    font-family: 'ChinesePixel', monospace; padding: 16px; box-sizing: border-box;
+                    font-family: 'Silkscreen', 'ChinesePixel', monospace; padding: 16px; box-sizing: border-box;
                 `;
                 const box = document.createElement('div');
                 box.style.cssText = `
-                    width: 100%; max-width: 360px; box-sizing: border-box;
+                    width: 100%; max-width: 330px; box-sizing: border-box;
                     background: rgba(15, 20, 30, 0.92); color: #e2e8f0;
                     border: 1px solid rgba(74, 222, 128, 0.4); border-radius: 18px;
-                    padding: 22px 20px 18px; text-align: center;
+                    padding: 20px 18px; text-align: center;
                     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(74, 222, 128, 0.15);
                 `;
                 const btnCss = `
-                    display: block; width: 100%; margin-top: 10px; padding: 12px 10px;
+                    display: block; width: 100%; margin-top: 12px; padding: 12px 10px;
                     border-radius: 12px; cursor: pointer; font-family: inherit; font-size: 15px;
                     letter-spacing: 1px; -webkit-tap-highlight-color: transparent;
                 `;
@@ -243,13 +261,6 @@
                         ▶ 继续游戏
                         <div style="font-size:11px;opacity:.65;margin-top:2px;">不读取，直接开始（之后的自动存档会覆盖旧进度）</div>
                     </button>
-                    <div style="margin-top:14px;padding:10px;border-radius:10px;font-size:11px;line-height:1.7;text-align:left;
-                                background:${isIOS ? 'rgba(250,204,21,0.12)' : 'rgba(255,255,255,0.05)'};
-                                color:${isIOS ? '#facc15' : '#94a3b8'};
-                                border:1px solid ${isIOS ? 'rgba(250,204,21,0.35)' : 'rgba(255,255,255,0.1)'};">
-                        ⚠️ 进度保存在本浏览器里，<b>iOS Safari 超过 7 天不访问会被系统自动清理网站数据</b>，进度可能丢失；
-                        换设备、换浏览器或清除缓存也会丢失。重要进度请用控制栏的「保存存档」导出备份。
-                    </div>
                 `;
                 mask.appendChild(box);
                 document.body.appendChild(mask);
@@ -273,8 +284,6 @@
 
                 if (!rec || !rec.state) {
                     enable();
-                    toast('💾 本游戏会自动保存进度到浏览器<br>' +
-                        '<span style="font-size:11px;opacity:.8;">iOS Safari 超过 7 天不访问可能被清理，重要进度请手动导出</span>', 5000);
                     return;
                 }
 
@@ -285,7 +294,6 @@
                 if (choice === 'load') {
                     try {
                         emu.gameManager.loadState(rec.state);
-                        toast('📂 已读取上次进度', 2000);
                     } catch (e) {
                         console.warn('[resume] 读取存档失败:', e);
                         toast('⚠️ 读取存档失败，已为你直接开始游戏', 3500);
@@ -308,62 +316,9 @@
 
         window.EJS_onGameStart = function() {
             try { tukuaiResume.onStart(); } catch (e) { console.warn('[resume]', e); }
-            if (!document.getElementById('pixel-font-style')) {
-                const style = document.createElement('style');
-                style.id = 'pixel-font-style';
-                style.innerHTML = `
-                    @font-face {
-                        font-family: 'ChinesePixel';
-                        src: url('../assets/fonts/zpix.ttf') format('truetype');
-                        font-weight: normal;
-                        font-style: normal;
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-
-            const popup = document.createElement('div');
-            popup.innerHTML = '✨ 如果移动端导入失败，可以使用左上角的隐藏导入按钮哦~土块祝您玩的开心！';
-
-            popup.style.cssText = `
-                position: absolute;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%) translateY(-20px);
-                background: rgba(15, 20, 30, 0.85);
-                backdrop-filter: blur(8px);
-                -webkit-backdrop-filter: blur(8px);
-                color: #4ade80;
-                padding: 12px 24px;
-                border: 1px solid rgba(74, 222, 128, 0.4);
-                border-radius: 12px;
-                font-family: 'ChinesePixel', monospace;
-                font-size: 16px;
-                font-weight: normal;
-                letter-spacing: 2px;
-                z-index: 9999;
-                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8), 0 0 15px rgba(74, 222, 128, 0.2);
-                pointer-events: none;
-                opacity: 0;
-                transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            `;
-            document.body.appendChild(popup);
-
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    popup.style.opacity = '1';
-                    popup.style.transform = 'translateX(-50%) translateY(0)';
-                });
-            });
-
-            setTimeout(() => {
-                popup.style.opacity = '0';
-                popup.style.transform = 'translateX(-50%) translateY(-20px)';
-                setTimeout(() => popup.remove(), 600);
-            }, 3500);
 
             // =========================================================================
-            // 👇 极致隐形 + PC端彻底屏蔽的方案 👇
+            // 👇 极致隐形 + PC端彻底屏蔽的方案（说明已收拢至引擎启动右侧 ? 按钮中）👇
             // =========================================================================
 
             // 精准探测：只有包含移动设备标识，或者支持触控屏幕的设备，才会执行注入
@@ -407,7 +362,7 @@
                         successMsg.style.cssText = `
                             position: absolute; top: 20px; left: 20px;
                             background: rgba(74, 222, 128, 0.9); color: black;
-                            padding: 6px 12px; border-radius: 8px; font-family: monospace;
+                            padding: 6px 12px; border-radius: 8px; font-family: 'Silkscreen', 'ChinesePixel', monospace;
                             font-weight: bold; font-size: 12px; z-index: 999999;
                             transition: opacity 0.5s ease; box-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
                         `;

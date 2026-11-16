@@ -103,6 +103,12 @@
              */
             const showMailModal = ref(false);
 
+            /**
+             * 控制「引擎说明与依赖来源」弹窗是否显示：
+             * 点击「> 引擎启动」右侧的像素风 `?` SVG 图标时设为 `true` 打开。
+             */
+            const showEngineHelp = ref(false);
+
             // ----------------------------------------------------------------------------------
             // 8. 跨模块联动：处理浏览器「后退（bfcache 往返缓存）」返回本页时的状态还原
             // ----------------------------------------------------------------------------------
@@ -159,8 +165,9 @@
                 // 展开两大跃迁动效模块的所有属性和方法
                 ...wander,
                 ...phile,
-                // 密函弹窗开关
-                showMailModal
+                // 密函弹窗 & 引擎说明弹窗开关
+                showMailModal,
+                showEngineHelp
             };
         }
     });
@@ -168,9 +175,9 @@
     // ==========================================================================================
     // 二、自动注册 `TK.components` 里的所有自定义组件，并将应用挂载到 `#app`
     // ==========================================================================================
-    // 遍历我们在 `assets/js/app/components/` 下定义的 4 个组件（TabSection, LinkCard, LaunchCard, MailModal），
+    // 遍历我们在 `assets/js/app/components/` 下定义的 5 个组件（TabSection, LinkCard, LaunchCard, MailModal, EngineHelpModal），
     // 注册到 Vue 应用中。注册后，在 `index.html` 里就可以直接写 `<tab-section>`、`<link-card>`、
-    // `<launch-card>`、`<mail-modal>` 标签了！
+    // `<launch-card>`、`<mail-modal>`、`<engine-help-modal>` 标签了！
     Object.entries(TK.components).forEach(([name, component]) => app.component(name, component));
 
     // 正式启动 Vue 应用，接管 `index.html` 中的 `<div id="app">`！

@@ -877,3 +877,268 @@ input[type=range]:focus {
     touch-action: none;
     cursor: crosshair;
 }
+
+/* ========================================================
+   「引擎启动」右侧像素 SVG 问号按钮 & 说明弹窗样式
+   ======================================================== */
+.engine-help-btn {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: rgba(248, 250, 252, 0.78);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+@media (min-width: 768px) {
+    .engine-help-btn {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+.engine-help-btn:hover {
+    color: var(--theme-color);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--theme-color);
+    box-shadow: 0 0 15px var(--theme-glow);
+    transform: translateY(-1px) scale(1.06);
+}
+
+.engine-help-btn:active {
+    transform: scale(0.94);
+}
+
+.engine-help-glow-bar {
+    position: absolute;
+    top: -1px;
+    left: 5px;
+    right: 5px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--theme-color), transparent);
+    opacity: 0;
+    transition: opacity 0.28s ease;
+    pointer-events: none;
+}
+
+.engine-help-btn:hover .engine-help-glow-bar {
+    opacity: 1;
+}
+
+.engine-help-svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.12));
+    transition: filter 0.28s ease;
+}
+
+@media (min-width: 768px) {
+    .engine-help-svg {
+        width: 15px;
+        height: 15px;
+    }
+}
+
+.engine-help-btn:hover .engine-help-svg {
+    filter: drop-shadow(0 0 6px var(--theme-glow));
+}
+
+.engine-help-panel {
+    width: 100%;
+    max-width: 500px;
+    max-height: 82dvh;
+    padding: 18px;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-family: 'Silkscreen', 'ChinesePixel', cursive;
+}
+
+@media (min-width: 768px) {
+    .engine-help-panel {
+        padding: 22px 24px;
+    }
+}
+
+.engine-help-header {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.engine-help-title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    .engine-help-title {
+        font-size: 17px;
+    }
+}
+
+.engine-help-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 2px;
+}
+
+.engine-help-section {
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-family: inherit;
+}
+
+.engine-help-deps-box {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.engine-help-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #f8fafc;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+}
+
+.engine-help-dep-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.engine-help-dep-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.engine-help-dep-item:hover {
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.engine-help-dep-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.engine-help-dep-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+}
+
+.engine-help-dep-role {
+    font-size: 10px;
+    color: #94a3b8;
+    line-height: 1.5;
+    margin-top: 2px;
+}
+
+.engine-help-dep-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.engine-help-dep-link {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--theme-color);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 8px;
+    border-radius: 9999px;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+}
+
+.engine-help-dep-link:hover {
+    background: var(--theme-color);
+    border-color: var(--theme-color);
+    color: #050505;
+    box-shadow: 0 0 12px var(--theme-glow);
+}
+
+.engine-help-warn-box {
+    background: rgba(250, 204, 21, 0.1);
+    border: 1px solid rgba(250, 204, 21, 0.35);
+    color: #facc15;
+}
+
+.engine-help-warn-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+    color: #fde047;
+}
+
+.engine-help-warn-text {
+    font-size: 11px;
+    line-height: 1.65;
+    color: #facc15;
+    margin: 0;
+}
+
+.engine-help-tip-box {
+    background: rgba(74, 222, 128, 0.09);
+    border: 1px solid rgba(74, 222, 128, 0.32);
+    color: #4ade80;
+}
+
+.engine-help-tip-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+    color: #86efac;
+}
+
+.engine-help-tip-text {
+    font-size: 11px;
+    line-height: 1.65;
+    color: #4ade80;
+    margin: 0;
+}
+
+.engine-help-code {
+    font-family: inherit;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(74, 222, 128, 0.35);
+    padding: 1px 5px;
+    border-radius: 5px;
+    color: #bbf7d0;
+}

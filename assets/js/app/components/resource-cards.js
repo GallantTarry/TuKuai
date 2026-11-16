@@ -144,7 +144,11 @@
         // 说明：`<slot></slot>` 是 Vue 的“插槽”，意思是父页面写在 `<tab-section>...</tab-section>` 中间的内容，会原封不动地填到 `<slot>` 所在的位置
         template: `
             <div class="space-y-4 flex flex-col h-full max-h-full">
-                <h2 class="text-lg md:text-xl tab-title mb-4 font-bold shrink-0">{{ title }}</h2>
+                <div class="flex items-center gap-3 mb-4 shrink-0 relative z-20" v-if="$slots['title-extra']">
+                    <h2 class="text-lg md:text-xl tab-title font-bold shrink-0">{{ title }}</h2>
+                    <slot name="title-extra"></slot>
+                </div>
+                <h2 class="text-lg md:text-xl tab-title mb-4 font-bold shrink-0" v-else>{{ title }}</h2>
                 <div :class="listClass()" v-if="scroll"><slot></slot></div>
                 <slot v-else></slot>
             </div>
