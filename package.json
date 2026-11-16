@@ -23,7 +23,8 @@
     "pwa"
   ],
   "author": "TuKuai (GallantTarry)",
-  "license": "MIT",
+  "private": true,
+  "license": "UNLICENSED",
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/GallantTarry/TuKuai/issues"

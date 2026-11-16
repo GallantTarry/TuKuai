@@ -1,0 +1,25 @@
+Copyright (c) 2026 TuKuai (GallantTarry). All rights reserved.
+
+This repository makes its source code publicly visible on GitHub solely for
+viewing, learning, and technical reference.
+
+Except for the third-party components and assets noted below, NO license or
+permission is granted to copy, modify, publish, distribute, sublicense, sell,
+mirror, or re-host any part of this website, source code, UI design, copywriting,
+or original assets—for commercial or non-commercial purposes—without prior
+written permission from the copyright holder.
+
+Note: Viewing and forking within GitHub remain governed by the GitHub Terms of
+Service, which does not grant any redistribution or deployment rights outside
+those platform terms.
+
+Third-Party Components & Assets:
+The following third-party libraries, fonts, emulator files, and media/model
+assets included in this repository remain subject to their respective original
+licenses and copyright notices:
+- assets/js/vendor/vue.global.js — MIT License
+- assets/js/vendor/model-viewer.min.js — BSD-3-Clause / MIT (and bundled third-party notices within the file)
+- assets/fonts/OFL.txt (Silkscreen font) — SIL Open Font License 1.1
+- games/emulator_data/ (EmulatorJS v4.2.3) — GNU General Public License v3.0 (see games/emulator_data/src/license.js)
+- models/*/license.txt — Creative Commons Attribution 4.0 International (CC-BY-4.0)
+- Other third-party fonts, audio files, or ROMs remain the property of their respective copyright holders and are not covered by the author's copyright claim above.

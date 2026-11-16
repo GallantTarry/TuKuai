@@ -16,7 +16,7 @@
   <img src="https://img.shields.io/badge/PWA-Service%20Worker-ff5722.svg?style=flat-square" alt="PWA Ready" />
   <img src="https://img.shields.io/badge/WebAssembly-EmulatorJS-654ff0.svg?style=flat-square" alt="WebAssembly" />
   <img src="https://img.shields.io/badge/3D%20Engine-Model%20Viewer-yellow.svg?style=flat-square" alt="3D Model Viewer" />
-  <img src="https://img.shields.io/badge/License-MIT-green.svg?style=flat-square" alt="License" />
+  <img src="https://img.shields.io/badge/Copyright-All%20Rights%20Reserved-red.svg?style=flat-square" alt="All Rights Reserved" />
 </p>
 
 ---
@@ -503,10 +503,12 @@ python -m http.server 8080
 
 ---
 
-## 📄 开源许可证 (License)
-
-本项目基于 **MIT License** 授权开源。
+## 📄 版权与使用声明 (Copyright & Notice)
 
 ```text
-Copyright (c) 2026 TuKuai (GallantTarry)
+Copyright (c) 2026 TuKuai (GallantTarry). All rights reserved.
 ```
+
+本项目源码在 GitHub 公开仅用于**浏览、学习与技术交流**，**保留所有权利（非开源授权）**。未经作者书面许可，禁止复制、修改、镜像克隆重新部署，或将原创代码、UI 设计、文案与原创素材用于任何商业或非商业再分发。详见 [LICENSE](LICENSE)。
+
+> 第三方组件与素材例外声明：仓库中包含的第三方前端库（如 `vue.global.js`、`model-viewer.min.js`）、字体（`assets/fonts/OFL.txt`）、模拟器组件（`games/emulator_data/`，GPL-3.0）及 3D 模型（`models/*/license.txt`，CC-BY-4.0）等各自遵循其原始授权协议或原权利人版权。
