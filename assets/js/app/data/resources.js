@@ -71,6 +71,7 @@
         {name: 'DeepSeekAPI', desc: '大肥鱼接口', url: 'https://platform.deepseek.com/'},
         {name: 'GooGleSearch', desc: '谷歌站长', url: 'https://search.google.com/search-console/'},
         {name: 'Bing', desc: '必应站长', url: 'https://www.bing.com/webmasters/'},
+        {name: 'iCloud', desc: '苹果云', url: 'https://www.icloud.com/'},
     ];
 
     // ========================================================================
