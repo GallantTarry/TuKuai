@@ -72,6 +72,7 @@
         {name: 'GooGleSearch', desc: '谷歌站长', url: 'https://search.google.com/search-console/'},
         {name: 'Bing', desc: '必应站长', url: 'https://www.bing.com/webmasters/'},
         {name: 'iCloud', desc: '苹果云', url: 'https://www.icloud.com/'},
+        {name: 'HelloGitHub', desc: '中文开源圈', url: 'https://hellogithub.com/'},
     ];
 
     // ========================================================================
