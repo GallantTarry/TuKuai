@@ -867,7 +867,7 @@ XXXXXXXXXXX
 
 
 
-© 2026 Created by 土块. All rights reserved.
+© 2026 Created by 土块 · Released under the MIT License.
 
 
 
