@@ -72,6 +72,7 @@
         {name: 'GooGleSearch', desc: '谷歌站长', url: 'https://search.google.com/search-console/'},
         {name: 'Bing', desc: '必应站长', url: 'https://www.bing.com/webmasters/'},
         {name: 'iCloud', desc: '苹果云', url: 'https://www.icloud.com/'},
+        {name: 'npm', desc: 'jts组件', url: 'https://www.npmjs.com/'},
     ];
 
     // ========================================================================
