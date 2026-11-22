@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>KuaiDrive | 跨网磁盘挂载与文件传输七巧板</title>
-    <meta name="description" content="KuaiDrive 是 TuKuai 开发的跨网磁盘挂载与文件传输工具，将远程存储挂载为本地磁盘，实现快速浏览、传输与统一管理。">
-    <meta name="keywords" content="KuaiDrive, kuaidrive, 跨网磁盘挂载工具, 挂载磁盘, 文件传输七巧板, TuKuai, 土块">
-    <meta name="theme-color" content="#0c0a0e">
+    <meta name="description" content="KuaiDrive 是 TuKuai 开发的免驱动 Windows P2P 跨网磁盘挂载与局域网游戏联机七巧板，支持内嵌 tsnet 虚拟局域网与原生 IPv6/局域网满速直连，一键映射远程目录为本地 Z: 盘。">
+    <meta name="keywords" content="KuaiDrive, kuaidrive, 跨网磁盘挂载工具, 挂载磁盘, WebDAV, tsnet, P2P直连, 七巧板, TuKuai, 土块">
+    <meta name="theme-color" content="#14131a">
     <link rel="canonical" href="https://xn--udsye.art/projects/kuaidrive/">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="KuaiDrive | 跨网磁盘挂载工具">
-    <meta property="og:description" content="KuaiDrive —— 跨网磁盘挂载与文件传输七巧板。">
+    <meta property="og:title" content="KuaiDrive | 跨网磁盘挂载与文件传输七巧板">
+    <meta property="og:description" content="KuaiDrive —— 免驱动 P2P 跨网磁盘挂载、原生 IPv6 满速直连与局域网联机七巧板。">
     <meta property="og:url" content="https://xn--udsye.art/projects/kuaidrive/">
     <meta property="og:image" content="https://xn--udsye.art/projects/kuaidrive/imgs/music-cover.png">
     <meta name="twitter:card" content="summary_large_image">
@@ -24,12 +24,13 @@
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
             "name": "KuaiDrive",
+            "softwareVersion": "1.0.1",
             "alternateName": ["kuaidrive", "KuaiDrive 跨网磁盘挂载工具", "Kuai Drive"],
             "applicationCategory": "UtilitiesApplication",
             "operatingSystem": "Windows",
             "url": "https://xn--udsye.art/projects/kuaidrive/",
             "image": "https://xn--udsye.art/projects/kuaidrive/imgs/music-cover.png",
-            "description": "KuaiDrive 是 TuKuai 开发的跨网磁盘挂载与文件传输工具。",
+            "description": "KuaiDrive 是 TuKuai 开发的免驱动 Windows P2P 跨网磁盘挂载与局域网游戏联机七巧板工具。",
             "author": {
                 "@type": "Person",
                 "name": "TuKuai (土块)"
@@ -37,104 +38,152 @@
         }
     </script>
     <style>
-        /* CSS 变量：顶级纯粹的“红、黑、金”调色板 */
+        /* ==========================================================================
+           【核心配色系统】 取色自 KuaiDrive 像素玫瑰图标 (暗夜墨紫 / 珊瑚绯红 / 香槟鎏金 / 橄榄叶金)
+           ========================================================================== */
         :root {
-            --primary: #D4AF37; /* 纯正的高贵香槟金 */
-            --accent: #7A0000;  /* 沉稳的深赤红（拒绝血红） */
-            --bg-color: #030303; /* 极致深邃的纯黑底色 */
-            --glass-bg: rgba(10, 10, 10, 0.6); /* 纯黑毛玻璃 */
-            --glass-border: rgba(212, 175, 55, 0.2); /* 金色极细边框 */
-            --glow-color: rgba(122, 0, 0, 0.5); /* 暗红光晕 */
-            --glow-gold: rgba(212, 175, 55, 0.35); /* 金色光晕 */
+            --bg-abyss: #14131a;
+            --bg-surface: #1d1b24;
+            --bg-elevated: #25222d;
 
-            /* 殿堂级真实丝绒幕布：黑与深红的极致过渡，沉重、吸光 */
-            --velvet-gradient: linear-gradient(
-                    to right,
-                    #000000 0%,     /* 极深阴影 */
-                    #1A0000 15%,    /* 凹陷过渡 */
-                    #4A0000 25%,    /* 隆起迎光面（深赤红） */
-                    #1A0000 35%,    /* 凹陷阴影 */
-                    #000000 50%,    /* 极深阴影 */
-                    #1A0000 65%,    /* 凹陷过渡 */
-                    #4A0000 75%,    /* 隆起迎光面（深赤红） */
-                    #1A0000 85%,    /* 凹陷阴影 */
-                    #000000 100%
-            );
+            --rose-bright: #e2645d;
+            --rose-core: #c4464a;
+            --rose-deep: #8c2b36;
+
+            --gold-champagne: #f8d89a;
+            --gold-warm: #f0b670;
+            --gold-antique: #c99655;
+            --olive-leaf: #b8a432;
+
+            --text-primary: #fbf3e8;
+            --text-secondary: #b9adb4;
+            --text-muted: #8a7f88;
+
+            --glass-bg: rgba(29, 27, 36, 0.58);
+            --glass-bg-strong: rgba(24, 22, 31, 0.78);
+            --glass-border: rgba(246, 174, 111, 0.18);
+            --glass-border-hover: rgba(248, 216, 154, 0.45);
+            --shadow-deep: 0 28px 60px rgba(8, 7, 12, 0.65);
+
+            --radius-lg: 24px;
+            --transition-smooth: all 0.45s cubic-bezier(0.25, 1, 0.3, 1);
         }
 
-        * {
+        *, *::before, *::after {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: "-apple-system", "Microsoft YaHei", "Segoe UI", sans-serif;
-            -webkit-font-smoothing: antialiased;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 🟢 终极修复：恢复原生 body 滚动，夺回最顶层滚动条 */
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background-color: var(--bg-color);
-            color: #E4E4E7;
-            line-height: 1.6;
             overflow-x: hidden;
             overflow-y: auto;
+            font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, "Microsoft YaHei", sans-serif;
+            background-color: var(--bg-abyss);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(226, 100, 93, 0.75) var(--bg-abyss);
         }
 
         /* ==========================================================================
-            【全局滚动条定制】 对齐 ToolKit 亚克力悬浮质感（偏红的红+黄配色）
-            ========================================================================== */
+           【全局滚动条定制】 对齐 ToolKit 8px 亚克力悬浮质感（玫瑰绯红 -> 香槟金）
+           ========================================================================== */
         ::-webkit-scrollbar {
-            width: 8px;  /* 对齐 ToolKit 8px 黄金尺寸，更好触发鼠标悬停 */
+            width: 8px;
             height: 8px;
         }
 
-        /* 轨道定制：极致半透明深红黑底，无缝融入背景 */
         ::-webkit-scrollbar-track {
-            background: rgba(25, 5, 5, 0.25);
+            background: rgba(20, 19, 26, 0.35);
             border-radius: 4px;
         }
 
-        /* 滑块定制：常态 0.45 半透明亚克力质感（偏红+明黄收尾），带轻微描边与立体内发光 */
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, rgba(230, 0, 18, 0.45) 0%, rgba(255, 42, 0, 0.45) 75%, rgba(255, 208, 0, 0.45) 100%);
+            background: linear-gradient(180deg, rgba(196, 70, 74, 0.55) 0%, rgba(226, 100, 93, 0.55) 55%, rgba(240, 182, 112, 0.55) 100%);
             border-radius: 4px;
-            border: 1px solid rgba(255, 120, 80, 0.18);
-            box-shadow: inset 0 0 4px rgba(255, 220, 180, 0.2);
+            border: 1px solid rgba(248, 216, 154, 0.18);
+            box-shadow: inset 0 0 4px rgba(255, 240, 220, 0.18);
         }
 
-        /* 滑块悬浮态：鼠标移上去亮度大幅提升（0.95），并爆出红黄外发光交互感 */
         ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, rgba(255, 0, 25, 0.95) 0%, rgba(255, 55, 0, 0.95) 70%, rgba(255, 220, 0, 0.95) 100%);
-            border-color: rgba(255, 208, 0, 0.5);
-            box-shadow: 0 0 12px rgba(255, 30, 0, 0.75), inset 0 0 4px rgba(255, 255, 255, 0.35);
+            background: linear-gradient(180deg, rgba(226, 100, 93, 0.92) 0%, rgba(240, 182, 112, 0.95) 100%);
+            border-color: rgba(248, 216, 154, 0.55);
+            box-shadow: 0 0 12px rgba(226, 100, 93, 0.55);
         }
 
-        /* 隐藏滚动条两端无用的箭头按钮 */
         ::-webkit-scrollbar-button {
             display: none;
             height: 0;
             width: 0;
         }
 
-        /* 清理右下角交界处的原生白块 */
         ::-webkit-scrollbar-corner {
             background: transparent;
         }
 
-        /* === 1. 顶部标题栏 (对齐 ToolKit 80px 黄金高度与 header.nav-header 规范) === */
+        /* ==========================================================================
+           【像素玫瑰暗夜背景系统】 固定底层（光晕 + 木纹像素线 + Canvas 粒子引擎）
+           ========================================================================== */
+        #rose-engine {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -3;
+            pointer-events: none;
+        }
+
+        .bg-ambient-glow {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse 68% 54% at 84% 12%, rgba(246, 174, 111, 0.15) 0%, transparent 62%),
+                radial-gradient(ellipse 62% 58% at 14% 84%, rgba(196, 70, 74, 0.19) 0%, transparent 62%),
+                radial-gradient(circle at 50% 24%, rgba(226, 100, 93, 0.09) 0%, transparent 48%),
+                radial-gradient(circle at 76% 82%, rgba(184, 164, 50, 0.08) 0%, transparent 42%);
+        }
+
+        .bg-pixel-grain {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-image:
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(248, 216, 154, 0.018) 0px,
+                    rgba(248, 216, 154, 0.018) 2px,
+                    transparent 2px,
+                    transparent 10px
+                ),
+                radial-gradient(circle at 50% 45%, transparent 52%, rgba(10, 9, 14, 0.52) 100%);
+        }
+
+        /* ==========================================================================
+           【顶部导航栏】 严格对齐 ToolKit 尺寸规范 (padding / 图标 / 字号 / 按钮完全一致)
+           ========================================================================== */
         header.nav-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 50px;
-            background: rgba(5, 5, 5, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            background: rgba(20, 19, 26, 0.62);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 100;
         }
 
         .logo-container {
@@ -144,43 +193,44 @@
             cursor: pointer;
             transition: transform 0.3s ease;
         }
-        .logo-container:hover { transform: scale(1.05); }
+
+        .logo-container:hover {
+            transform: scale(1.05);
+        }
 
         .logo-container img {
             width: 40px;
             height: 40px;
-            border-radius: 10%; /* 苹果 iOS 连续曲率平滑圆角 (Squircle) */
-            object-fit: cover;
-            box-shadow: 0 0 15px var(--glow-gold);
-            transition: transform 0.3s ease, box-shadow 0.5s ease;
-        }
-        .logo-container img.playing {
-            animation: breathe 3s ease-in-out infinite;
-            box-shadow: 0 0 20px var(--primary);
+            border-radius: 0;
+            filter: drop-shadow(0 0 8px rgba(240, 182, 112, 0.48));
+            transition: transform 0.3s ease, filter 0.4s ease;
+            object-fit: contain;
         }
 
-        @keyframes breathe {
-            0% { transform: scale(1); box-shadow: 0 0 10px var(--primary); }
-            50% { transform: scale(1.05); box-shadow: 0 0 25px var(--primary); }
-            100% { transform: scale(1); box-shadow: 0 0 10px var(--primary); }
+        .logo-container img.playing {
+            animation: disk-spin 10s linear infinite;
+            filter: drop-shadow(0 0 14px rgba(226, 100, 93, 0.8));
         }
 
         .logo-text {
             font-weight: 800;
             font-size: 1.5rem;
-            letter-spacing: 2px;
-            background: linear-gradient(270deg, var(--primary), #fff, var(--primary));
-            background-size: 200% 200%;
+            background: linear-gradient(270deg, #fbf3e8, #f8d89a, #e2645d, #fbf3e8);
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: gradient-shift 6s ease infinite;
-            opacity: 0.9;
+            animation: gradient-shift 5s ease infinite;
+            text-shadow: 0 0 10px rgba(248, 216, 154, 0.3);
         }
 
         @keyframes gradient-shift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+        }
+
+        @keyframes disk-spin {
+            100% { transform: rotate(360deg); }
         }
 
         .buy-btn {
@@ -192,257 +242,980 @@
             font-weight: 600;
             text-decoration: none;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            backdrop-filter: blur(10px);
             position: relative;
         }
+
         .buy-btn:hover {
-            background: rgba(212, 175, 55, 0.15);
-            border-color: rgba(212, 175, 55, 0.6);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+            background: rgba(226, 100, 93, 0.18);
+            border-color: var(--gold-warm);
+            box-shadow: 0 0 20px rgba(226, 100, 93, 0.38);
             transform: translateY(-2px);
         }
+
         .price-tag {
-            background: linear-gradient(135deg, var(--accent), #2A0000);
+            background: linear-gradient(135deg, #c4464a, #e2645d 58%, #f0b670);
             padding: 2px 12px;
             border-radius: 12px;
             font-size: 0.85rem;
-            color: var(--primary);
-            font-weight: 600;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: inset 0 0 5px rgba(255,255,255,0.1);
+            box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.2);
+            color: #fff;
         }
 
-        /* === 2. 视觉特效层（分离出来，固定死，绝不拉出空气） === */
-        #visual-bg {
-            position: fixed; inset: 0; z-index: 1; pointer-events: none;
-        }
-        .spotlight {
-            position: absolute; top: -10%; left: 50%; transform: translateX(-50%);
-            width: 80vw; height: 120%;
-            background: radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.12) 0%, rgba(122, 0, 0, 0.05) 40%, transparent 75%);
-            animation: soft-breathe 8s infinite alternate ease-in-out;
-        }
-        .stage-floor {
-            position: absolute; bottom: -30%; left: 0%; width: 100%; height: 60%;
-            background: radial-gradient(ellipse at 50% 100%, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
-        }
-        .grain-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
-        }
-        @keyframes soft-breathe {
-            from { opacity: 0.6; transform: translateX(-50%) scale(0.98); }
-            to { opacity: 1; transform: translateX(-50%) scale(1.02); }
-        }
-
-        /* === 3. 核心内容区 (依赖 body 滚动) === */
-        #ui-content {
+        /* ==========================================================================
+           【主体容器布局】
+           ========================================================================== */
+        .core-layout {
             position: relative;
             z-index: 10;
-            display: flex;
-            flex-direction: column;
-            min-height: calc(100vh - 80px); /* 减去 80px 黄金顶栏高度 */
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 56px 24px 90px;
         }
 
-        .hero {
-            margin: auto 0; /* 这是 Flexbox 防截断的究极绝招 */
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
+        /* ==========================================================================
+           【Hero 首屏展示区】
+           ========================================================================== */
+        .hero-section {
+            display: grid;
+            grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
             align-items: center;
-            text-align: center;
-            padding: 40px 20px;
+            gap: 54px;
+            margin-bottom: 72px;
+            animation: fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        .hero-img-container {
-            position: relative; width: 90%; max-width: 170px; height: auto; margin-bottom: 35px;
-            animation: gentle-float 8s ease-in-out infinite;
+        @keyframes fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-copy {
             display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
-        .hero-img-container::after {
-            content: ''; position: absolute; inset: 0;
-            border-radius: 12px;
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
-            box-shadow: 0 0 60px 25px rgba(212, 175, 55, 0.15);
-            z-index: -1;
-            animation: pulse-aura 5s ease-in-out infinite alternate;
-        }
-        .hero-img-container img {
-            width: 100%; height: auto; display: block; object-fit: contain; border-radius: 8px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(212, 175, 55, 0.15);
-        }
-
-        @keyframes gentle-float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-12px); }
-            100% { transform: translateY(0px); }
-        }
-        @keyframes pulse-aura {
-            from { opacity: 0.5; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1.1); }
+        .version-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 16px;
+            border-radius: 999px;
+            background: rgba(29, 27, 36, 0.72);
+            border: 1px solid rgba(248, 216, 154, 0.28);
+            color: var(--gold-champagne);
+            font-size: 0.86rem;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            margin-bottom: 22px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
         }
 
-        .hero h1.cosmic-title {
-            font-size: 4rem; margin-bottom: 12px; letter-spacing: 8px;
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            background: var(--rose-bright);
+            box-shadow: 0 0 10px var(--rose-bright);
+        }
+
+        .hero-title {
+            font-size: clamp(2.9rem, 5.4vw, 4.5rem);
             font-weight: 900;
-            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 40px rgba(212, 175, 55, 0.3);
-            background: linear-gradient(135deg, #fff, var(--primary), #AA8000);
-            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: text-shine 8s linear infinite;
-        }
-        @keyframes text-shine { to { background-position: 200% center; } }
-
-        .hero p.cosmic-subtitle {
-            font-family: "-apple-system", "Microsoft YaHei", sans-serif;
-            font-size: 1.05rem; color: rgba(212, 175, 55, 0.8); letter-spacing: 8px;
-            text-transform: uppercase; font-weight: 300;
-            margin: 0 auto 40px auto;
+            letter-spacing: 5px;
+            line-height: 1.08;
+            margin-bottom: 16px;
+            background: linear-gradient(120deg, #fbf3e8 0%, #f8d89a 42%, #e2645d 78%, #f8d89a 100%);
+            background-size: 220% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine-flow 8s linear infinite;
+            filter: drop-shadow(0 10px 28px rgba(196, 70, 74, 0.28));
         }
 
-        .lock-btn {
-            background: rgba(10, 10, 10, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            color: rgba(212, 175, 55, 0.95);
-            padding: 12px 35px; border-radius: 30px;
-            font-size: 1.05rem; font-weight: 600; letter-spacing: 3px;
-            text-decoration: none;
-            display: inline-flex; align-items: center; gap: 12px; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        @keyframes shine-flow {
+            to { background-position: 220% center; }
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--gold-champagne);
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+        }
+
+        .hero-desc {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-width: 560px;
+            margin-bottom: 26px;
+        }
+
+        .hero-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 34px;
+        }
+
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 14px;
+            border-radius: 10px;
+            background: rgba(37, 34, 45, 0.68);
+            border: 1px solid rgba(248, 216, 154, 0.14);
+            color: var(--text-primary);
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .hero-pill i {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 2px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-download-core {
             position: relative;
-        }
-        .lock-btn:hover {
-            background: rgba(212, 175, 55, 0.18);
-            border-color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px 34px;
+            background: linear-gradient(135deg, #b83b42 0%, #e2645d 52%, #e8a45c 100%);
             color: #fff;
-            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
-            transform: translateY(-2px);
-        }
-        .lock-btn.pulse {
-            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6);
-            animation: pulse-ring 2s infinite;
-            background: rgba(212, 175, 55, 0.1);
-            border-color: rgba(212, 175, 55, 0.55);
-        }
-        @keyframes pulse-ring {
-            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6); }
-            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+            text-decoration: none;
+            font-size: 1.06rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            border-radius: 14px;
+            border: 1px solid rgba(248, 216, 154, 0.48);
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            box-shadow: 0 12px 32px rgba(196, 70, 74, 0.38), inset 0 1px 0 rgba(255, 245, 225, 0.35);
+            cursor: pointer;
         }
 
-        /* ================= 节点竞速引擎：空间折跃状态 ================= */
-        .lock-btn.is-routing {
+        .btn-download-core::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 248, 232, 0.42), transparent);
+            transform: skewX(-25deg);
+            transition: 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .btn-download-core:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 42px rgba(226, 100, 93, 0.5), 0 0 24px rgba(248, 216, 154, 0.25);
+        }
+
+        .btn-download-core:hover::before {
+            left: 155%;
+        }
+
+        .btn-download-core.is-routing {
             pointer-events: none;
-            background: rgba(122, 0, 0, 0.55);
-            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(140, 43, 54, 0.9), rgba(196, 70, 74, 0.95));
+            border-color: var(--gold-champagne);
+            box-shadow: 0 0 28px rgba(240, 182, 112, 0.45);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 24px;
+            border-radius: 14px;
+            background: rgba(29, 27, 36, 0.72);
+            border: 1px solid rgba(248, 216, 154, 0.22);
+            color: var(--gold-champagne);
+            text-decoration: none;
+            font-size: 0.98rem;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(248, 216, 154, 0.12);
+            border-color: var(--gold-champagne);
             color: #fff;
-            box-shadow: 0 0 35px rgba(212, 175, 55, 0.5), inset 0 0 15px rgba(212, 175, 55, 0.25);
-            transform: scale(0.98);
-            animation: none;
+            transform: translateY(-2px);
         }
 
         .icon-spin {
-            animation: routing-spin 1.2s cubic-bezier(0.5, 0.1, 0.1, 0.9) infinite;
+            animation: routing-spin 1.3s linear infinite;
             vertical-align: middle;
         }
 
         @keyframes routing-spin {
-            0% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(180deg) scale(0.8); }
-            100% { transform: rotate(360deg) scale(1); }
+            100% { transform: rotate(360deg); }
         }
 
-        footer {
-            flex-shrink: 0;
-            text-align: center; padding: 20px 20px 30px;
-            opacity: 0.6; transition: opacity 0.3s;
-        }
-        footer:hover { opacity: 1; }
-        footer p {
-            color: var(--primary); font-size: 0.85rem; letter-spacing: 3px; font-weight: 300;
-        }
-
-        /* === 4. 舞台前景特效 (花瓣与幕布，固定死) === */
-        #visual-fg {
-            position: fixed; inset: 0; z-index: 30; pointer-events: none;
-        }
-        #petal-canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
-        }
-        .valance {
-            position: absolute; top: 0; left: 0; width: 100%; height: 4vh;
-            background: var(--velvet-gradient);
-            border-bottom: 2px solid rgba(212, 175, 55, 0.4);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.9);
-        }
-        .curtain-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        /* Hero 右侧软件实机舞台 */
+        .hero-visual {
             display: flex;
-        }
-        .curtain-left, .curtain-right {
-            width: 50%; height: 100%;
-            background: var(--velvet-gradient);
-            box-shadow: 0 0 50px rgba(0,0,0,1);
-            transition: transform 3.5s cubic-bezier(0.25, 1, 0.3, 1);
-            pointer-events: auto; /* 闭合时拦截点击 */
-        }
-        .curtain-left {
-            border-right: 2px solid rgba(212, 175, 55, 0.5);
-            transform-origin: left;
-            box-shadow: inset -20px 0 40px rgba(0,0,0,0.8), 10px 0 30px rgba(0,0,0,0.9);
-        }
-        .curtain-right {
-            border-left: 2px solid rgba(212, 175, 55, 0.5);
-            transform-origin: right;
-            box-shadow: inset 20px 0 40px rgba(0,0,0,0.8), -10px 0 30px rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
 
-        .curtain-open .curtain-left { transform: translateX(-90%); pointer-events: none; }
-        .curtain-open .curtain-right { transform: translateX(90%); pointer-events: none; }
+        .hero-frame {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            padding: 12px;
+            border-radius: 20px;
+            background: linear-gradient(150deg, rgba(40, 36, 48, 0.86), rgba(22, 20, 29, 0.92));
+            border: 1px solid rgba(248, 216, 154, 0.34);
+            box-shadow:
+                0 28px 65px rgba(7, 6, 11, 0.78),
+                0 0 55px rgba(226, 100, 93, 0.14),
+                inset 0 1px 0 rgba(248, 216, 154, 0.26);
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+            will-change: transform;
+        }
 
-        /* === 移动端适配（对齐 ToolKit 甜点位比例，满足触控热区规范） === */
+        .hero-frame::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 22px;
+            background: radial-gradient(circle at 25% 20%, rgba(248, 216, 154, 0.25), transparent 55%),
+                        radial-gradient(circle at 80% 85%, rgba(226, 100, 93, 0.25), transparent 55%);
+            z-index: -1;
+            filter: blur(22px);
+            opacity: 0.7;
+        }
+
+        .hero-frame img.app-shot {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(248, 216, 154, 0.16);
+        }
+
+        /* ==========================================================================
+           【通用玻璃面板】 与 ToolKit 统一的高级磨砂质感
+           ========================================================================== */
+        .ui-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-deep);
+            margin-bottom: 42px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-head {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-eyebrow {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--gold-warm);
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: clamp(1.55rem, 2.8vw, 2.1rem);
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .section-sub {
+            font-size: 0.96rem;
+            color: var(--text-secondary);
+        }
+
+        /* ==========================================================================
+           【交互式七巧板探索台】 点击七块真实积木查看各模块闭环
+           ========================================================================== */
+        .tangram-panel {
+            padding: 40px 44px;
+        }
+
+        .tangram-workbench {
+            display: grid;
+            grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+            gap: 42px;
+            align-items: center;
+        }
+
+        .tangram-stage {
+            position: relative;
+            padding: 14px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, rgba(35, 31, 44, 0.92), rgba(20, 18, 26, 0.95));
+            border: 1px solid rgba(248, 216, 154, 0.26);
+            box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.45), 0 18px 36px rgba(0, 0, 0, 0.45);
+        }
+
+        .tangram-svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            overflow: visible;
+        }
+
+        .t-piece {
+            cursor: pointer;
+            transform-box: fill-box;
+            transform-origin: center;
+            transition: transform 0.24s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.24s ease, opacity 0.24s ease;
+            outline: none;
+        }
+
+        .t-piece polygon {
+            stroke: #17151e;
+            stroke-width: 4;
+            stroke-linejoin: round;
+            transition: stroke 0.24s ease, stroke-width 0.24s ease, fill-opacity 0.24s ease;
+            fill-opacity: 0.86;
+        }
+
+        .t-piece text {
+            fill: #14131a;
+            font-size: 16px;
+            font-weight: 800;
+            pointer-events: none;
+            user-select: none;
+            text-anchor: middle;
+            dominant-baseline: central;
+            opacity: 0.88;
+        }
+
+        .t-piece[data-id="purple"] text,
+        .t-piece[data-id="red"] text,
+        .t-piece[data-id="blue"] text {
+            fill: #fbf3e8;
+        }
+
+        .t-piece:hover,
+        .t-piece:focus-visible {
+            transform: scale(1.022);
+            filter: brightness(1.1);
+        }
+
+        .t-piece.is-active {
+            transform: scale(1.025);
+            filter: drop-shadow(0 0 12px rgba(248, 216, 154, 0.6));
+        }
+
+        .t-piece.is-active polygon {
+            stroke: var(--gold-champagne);
+            stroke-width: 5.5;
+            fill-opacity: 1;
+        }
+
+        .tangram-hint {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 0.6px;
+        }
+
+        .tangram-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .module-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .module-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 13px;
+            border-radius: 999px;
+            background: rgba(20, 19, 26, 0.65);
+            border: 1px solid rgba(248, 216, 154, 0.14);
+            color: var(--text-secondary);
+            font-size: 0.84rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+        }
+
+        .module-tab .swatch {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .module-tab:hover {
+            border-color: rgba(248, 216, 154, 0.36);
+            color: var(--text-primary);
+        }
+
+        .module-tab.is-active {
+            background: rgba(226, 100, 93, 0.16);
+            border-color: var(--gold-warm);
+            color: var(--gold-champagne);
+            box-shadow: 0 0 16px rgba(226, 100, 93, 0.22);
+        }
+
+        .detail-card {
+            background: rgba(20, 19, 26, 0.68);
+            border: 1px solid rgba(248, 216, 154, 0.2);
+            border-radius: 18px;
+            padding: 26px 28px;
+            position: relative;
+        }
+
+        .detail-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .detail-name {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.32rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .detail-color-bar {
+            width: 12px;
+            height: 22px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .detail-role {
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 999px;
+            background: rgba(248, 216, 154, 0.1);
+            border: 1px solid rgba(248, 216, 154, 0.26);
+            color: var(--gold-champagne);
+        }
+
+        .detail-summary {
+            color: var(--text-secondary);
+            font-size: 0.96rem;
+            line-height: 1.75;
+            margin-bottom: 18px;
+        }
+
+        .detail-steps {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .detail-steps li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(248, 216, 154, 0.08);
+            font-size: 0.92rem;
+            color: var(--text-primary);
+            line-height: 1.55;
+        }
+
+        .detail-steps li::before {
+            content: '◆';
+            color: var(--rose-bright);
+            font-size: 0.72rem;
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .detail-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .spec-chip {
+            font-family: "Consolas", "SFMono-Regular", ui-monospace, monospace;
+            font-size: 0.78rem;
+            padding: 4px 10px;
+            border-radius: 7px;
+            background: rgba(226, 100, 93, 0.1);
+            border: 1px solid rgba(226, 100, 93, 0.26);
+            color: var(--gold-champagne);
+        }
+
+        /* ==========================================================================
+           【三通道核心能力卡片】
+           ========================================================================== */
+        .channel-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+            margin-bottom: 42px;
+        }
+
+        .channel-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 28px 26px;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .channel-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--rose-core), var(--gold-warm));
+            opacity: 0.75;
+        }
+
+        .channel-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--glass-border-hover);
+            box-shadow: 0 22px 44px rgba(0, 0, 0, 0.48), 0 0 24px rgba(226, 100, 93, 0.14);
+        }
+
+        .channel-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--gold-warm);
+            letter-spacing: 0.8px;
+            margin-bottom: 10px;
+        }
+
+        .channel-card h3 {
+            font-size: 1.18rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .channel-card p {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.72;
+        }
+
+        /* ==========================================================================
+           【折叠信息面板】 与 ToolKit 一致的丝滑折叠网格交互
+           ========================================================================== */
+        .info-panel {
+            padding: 32px 46px;
+            transition: transform 0.35s ease, border-color 0.35s ease;
+        }
+
+        .info-panel:hover {
+            transform: translateY(-2px);
+            border-color: rgba(248, 216, 154, 0.32);
+        }
+
+        .block-heading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            font-size: 1.45rem;
+            color: var(--text-primary);
+            margin: 0;
+            letter-spacing: 1.5px;
+            padding-bottom: 18px;
+            border-bottom: 1px dashed rgba(248, 216, 154, 0.2);
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.3s ease;
+        }
+
+        .block-heading:hover {
+            color: var(--gold-champagne);
+        }
+
+        .block-heading::after {
+            content: '▼';
+            font-size: 0.9rem;
+            color: var(--gold-warm);
+            transition: transform 0.38s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .block-heading.is-collapsed::after {
+            transform: rotate(-90deg);
+        }
+
+        .block-heading.is-collapsed {
+            border-bottom-color: transparent;
+            padding-bottom: 0;
+        }
+
+        .panel-collapse {
+            display: grid;
+            grid-template-rows: 1fr;
+            transition: grid-template-rows 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+            opacity: 1;
+            padding-top: 20px;
+        }
+
+        .panel-collapse.is-collapsed {
+            grid-template-rows: 0fr;
+            opacity: 0;
+            padding-top: 0;
+        }
+
+        .collapse-inner {
+            overflow: hidden;
+        }
+
+        .grid-list {
+            list-style: none;
+            column-count: 2;
+            column-gap: 36px;
+            padding-top: 4px;
+            padding-bottom: 10px;
+        }
+
+        .grid-list li {
+            padding: 15px 18px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(248, 216, 154, 0.08);
+            color: var(--text-secondary);
+            font-size: 0.96rem;
+            transition: var(--transition-smooth);
+            break-inside: avoid;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .grid-list li::before {
+            content: '◈';
+            color: var(--rose-bright);
+            margin-right: 12px;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .grid-list li:hover {
+            background: rgba(226, 100, 93, 0.08);
+            border-color: rgba(248, 216, 154, 0.32);
+            color: var(--text-primary);
+            transform: translateY(-3px);
+        }
+
+        .grid-list strong {
+            color: var(--gold-champagne);
+            font-weight: 700;
+        }
+
+        .scenario-grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .scenario-card {
+            background: rgba(20, 19, 26, 0.58);
+            border: 1px solid rgba(248, 216, 154, 0.12);
+            border-left: 4px solid var(--rose-bright);
+            padding: 22px 26px;
+            border-radius: 0 14px 14px 0;
+        }
+
+        .scenario-card.is-green {
+            border-left-color: #06d6a0;
+        }
+
+        .scenario-card.is-purple {
+            border-left-color: #9d4edd;
+        }
+
+        .scenario-card.is-red {
+            border-left-color: var(--gold-warm);
+        }
+
+        .scenario-heading {
+            color: var(--gold-champagne);
+            font-size: 1.06rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .scenario-badge {
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 2px 9px;
+            border-radius: 999px;
+            background: rgba(248, 216, 154, 0.12);
+            border: 1px solid rgba(248, 216, 154, 0.25);
+            color: var(--gold-champagne);
+        }
+
+        .scenario-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.85;
+        }
+
+        .scenario-text + .scenario-text {
+            margin-top: 8px;
+        }
+
+        .scenario-text strong {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .scenario-text code {
+            font-family: "Consolas", "SFMono-Regular", ui-monospace, monospace;
+            font-size: 0.86rem;
+            padding: 1px 6px;
+            border-radius: 5px;
+            background: rgba(248, 216, 154, 0.1);
+            border: 1px solid rgba(248, 216, 154, 0.18);
+            color: var(--gold-champagne);
+        }
+
+        .mod-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 7px;
+            margin: 0 2px;
+            border-radius: 6px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            line-height: 1.55;
+            vertical-align: baseline;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+        }
+
+        .mod-chip.c-green  { color: #3ef0be; border-color: rgba(6, 214, 160, 0.38); background: rgba(6, 214, 160, 0.1); }
+        .mod-chip.c-purple { color: #c78dff; border-color: rgba(157, 78, 221, 0.42); background: rgba(157, 78, 221, 0.12); }
+        .mod-chip.c-orange { color: #ffb954; border-color: rgba(255, 159, 28, 0.4); background: rgba(255, 159, 28, 0.1); }
+        .mod-chip.c-yellow { color: #ffe08a; border-color: rgba(255, 209, 102, 0.4); background: rgba(255, 209, 102, 0.1); }
+        .mod-chip.c-pink   { color: #ff95b8; border-color: rgba(255, 107, 157, 0.4); background: rgba(255, 107, 157, 0.1); }
+        .mod-chip.c-red    { color: #ff6b7c; border-color: rgba(239, 35, 60, 0.42); background: rgba(239, 35, 60, 0.12); }
+
+        /* ==========================================================================
+           【页脚】
+           ========================================================================== */
+        footer {
+            text-align: center;
+            padding: 36px 20px 44px;
+            position: relative;
+            z-index: 10;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+
+        footer a {
+            color: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.25s ease;
+        }
+
+        footer a:hover {
+            color: var(--gold-champagne);
+        }
+
+        /* ==========================================================================
+           【响应式适配】 严格同步 ToolKit 768px / 600px 导航栏尺寸断点
+           ========================================================================== */
+        @media (max-width: 960px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 38px;
+            }
+
+            .hero-copy {
+                align-items: center;
+            }
+
+            .hero-pills,
+            .hero-actions {
+                justify-content: center;
+            }
+
+            .tangram-workbench {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+
+            .tangram-stage {
+                max-width: 320px;
+                margin: 0 auto;
+                width: 100%;
+            }
+
+            .channel-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
-            header.nav-header { padding: 15px 20px; }
-            .logo-text { font-size: 1.2rem; }
-            .logo-container img { width: 32px; height: 32px; }
-            .buy-btn { padding: 8px 16px; font-size: 0.95rem; }
-            .price-tag { padding: 2px 8px; font-size: 0.75rem; }
+            header.nav-header {
+                padding: 15px 20px;
+            }
 
-            #ui-content { min-height: calc(100vh - 62px); }
+            .logo-text {
+                font-size: 1.2rem;
+            }
 
-            .hero { padding: 40px 20px; }
-            .hero-img-container { max-width: 110px; margin-bottom: 20px; }
-            .hero h1.cosmic-title { font-size: 2.2rem; letter-spacing: 3px; margin-bottom: 8px; }
-            .hero p.cosmic-subtitle { font-size: 0.8rem; letter-spacing: 3px; margin-bottom: 30px; }
-            .lock-btn { padding: 10px 20px; font-size: 0.9rem; gap: 8px; }
+            .logo-container img {
+                width: 32px;
+                height: 32px;
+            }
 
-            footer { padding: 10px 15px 20px; }
-            footer p { font-size: 0.75rem; letter-spacing: 1px; }
+            .buy-btn {
+                padding: 8px 16px;
+                font-size: 0.95rem;
+            }
+
+            .price-tag {
+                padding: 2px 8px;
+                font-size: 0.75rem;
+            }
+
+            .core-layout {
+                padding: 34px 16px 64px;
+            }
+
+            .tangram-panel {
+                padding: 26px 20px;
+            }
+
+            .info-panel {
+                padding: 24px 20px;
+            }
+
+            .block-heading {
+                font-size: 1.2rem;
+            }
+
+            .grid-list {
+                column-count: 1;
+                column-gap: 0;
+            }
+
+            .detail-card {
+                padding: 20px 18px;
+            }
         }
 
-        @media (max-width: 400px) {
-            .hero h1.cosmic-title { font-size: 1.8rem; letter-spacing: 2px; }
-            .hero p.cosmic-subtitle { font-size: 0.75rem; letter-spacing: 2px; }
+        @media (max-width: 600px) {
+            header.nav-header {
+                padding: 12px 16px;
+            }
+
+            .hero-title {
+                letter-spacing: 3px;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+                letter-spacing: 1px;
+            }
+
+            .btn-download-core,
+            .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body>
 
-<!-- 1. 舞台底层光影 (固定脱离文档流，永不穿帮) -->
-<div id="visual-bg">
-    <div class="spotlight"></div>
-    <div class="stage-floor"></div>
-    <div class="grain-overlay"></div>
-</div>
+<!-- ==========================================================================
+     底层系统：像素玫瑰暗夜背景 + Canvas 鎏金微粒引擎
+     ========================================================================== -->
+<canvas id="rose-engine"></canvas>
+<div class="bg-ambient-glow"></div>
+<div class="bg-pixel-grain"></div>
 
-<!-- 2. 顶部导航 (吸顶) -->
+<!-- ==========================================================================
+     顶部导航栏（尺寸与 ToolKit 完全一致）
+     ========================================================================== -->
 <header class="nav-header">
     <div class="logo-container" id="music-toggle">
         <img src="imgs/favicon-192x192.png" alt="KuaiDrive Logo" id="music-disk">
@@ -456,54 +1229,243 @@
     </a>
 </header>
 
-<!-- 3. 主角内容 (随网页滚动) -->
-<main id="ui-content">
-    <section class="hero">
-        <div class="hero-img-container">
-            <img src="imgs/main.png" alt="KuaiDrive 软件主界面">
-        </div>
-        <h1 class="cosmic-title">KUAIDRIVE</h1>
-        <p class="cosmic-subtitle">安全 · 简洁 · 迅速 · 稳定</p>
+<!-- ==========================================================================
+     主体内容区
+     ========================================================================== -->
+<main class="core-layout">
 
-        <a href="#" id="btn-download" class="lock-btn pulse">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            立即下载1.0.1先行体验版
-        </a>
+    <!-- 1. Hero 展示区 -->
+    <section class="hero-section">
+        <div class="hero-copy">
+            <div class="version-badge">
+                <span class="badge-dot"></span>
+                Wails v2 + Go · Windows x64 · v1.0.1 先行体验版
+            </div>
+            <h1 class="hero-title">KUAIDRIVE</h1>
+            <p class="hero-subtitle">免驱动 P2P 跨网磁盘挂载与联机七巧板</p>
+            <p class="hero-desc">
+                一块七巧板，七个独立闭环。基于内嵌用户态 <strong>tsnet</strong> 与原生 <strong>IPv6 / 局域网 TCP</strong> 双通道，无需安装虚拟网卡驱动，凭 6 位口令即可将远端文件夹映射为本地 <strong>Z: 盘</strong> 直接浏览运行，并支持去 KV 化跨网局域网游戏端口透明转发。
+            </p>
+
+            <div class="hero-pills">
+                <span class="hero-pill"><i style="background:#06d6a0;"></i>原生 IPv6 / 局域网满速直连</span>
+                <span class="hero-pill"><i style="background:#ff9f1c;"></i>tsnet 用户态 NAT 穿透挂载</span>
+                <span class="hero-pill"><i style="background:#ffd166;"></i>跨网局域网游戏联机隧道</span>
+            </div>
+
+            <div class="hero-actions">
+                <a href="#" id="btn-download" class="btn-download-core">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    立即下载 v1.0.1 安装包
+                </a>
+                <a href="#tangram-explorer" class="btn-secondary">
+                    探索七巧板模块 ↓
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="hero-frame" id="hero-frame">
+                <img src="imgs/main.png" alt="KuaiDrive 原木七巧板软件主界面" class="app-shot">
+            </div>
+        </div>
     </section>
 
-    <footer>
-        <p style="color: #64748B; font-size: 0.95rem; letter-spacing: 1px;">
-            <a href="https://gallanttarry.github.io/TuKuai/" target="_blank"
-               style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+    <!-- 2. 交互式七巧板探索台 -->
+    <section class="ui-panel tangram-panel" id="tangram-explorer">
+        <div class="section-head">
+            <span class="section-eyebrow">Interactive Tangram Architecture</span>
+            <h2 class="section-title">七巧板功能全览 · 一块积木一个独立闭环</h2>
+            <p class="section-sub">点击下方任意颜色积木或标签，查看 KuaiDrive 对应模块的交互链路与底层实现</p>
+        </div>
 
-            </a>
-            &copy; 2026 Created by 土块. All rights reserved.
-        </p>
-    </footer>
+        <div class="tangram-workbench">
+            <div>
+                <div class="tangram-stage">
+                    <svg class="tangram-svg" id="tangram-svg" viewBox="-12 -12 424 424" role="img" aria-label="KuaiDrive 七巧板交互图">
+                        <!-- 🟠 橙色：顶部大三角 -->
+                        <g class="t-piece" data-id="orange" tabindex="0" role="button" aria-label="橙色模块：虚拟网磁盘挂载">
+                            <polygon points="0,0 400,0 200,200" fill="#FF9F1C" />
+                            <text x="200" y="72">橙 · 组网挂载</text>
+                        </g>
+                        <!-- 🟢 绿色：右侧大三角 -->
+                        <g class="t-piece is-active" data-id="green" tabindex="0" role="button" aria-label="绿色模块：原生高速直连挂载">
+                            <polygon points="400,0 400,400 200,200" fill="#06D6A0" />
+                            <text x="322" y="200">绿 · 高速直连</text>
+                        </g>
+                        <!-- 🩷 粉色：左上小三角 -->
+                        <g class="t-piece" data-id="pink" tabindex="0" role="button" aria-label="粉色模块：网络测速与稳定性">
+                            <polygon points="0,0 100,100 0,200" fill="#FF6B9D" />
+                            <text x="36" y="100">测速</text>
+                        </g>
+                        <!-- 🟡 黄色：左侧正方形 -->
+                        <g class="t-piece" data-id="yellow" tabindex="0" role="button" aria-label="黄色模块：跨网游戏联机">
+                            <polygon points="100,100 200,200 100,300 0,200" fill="#FFD166" />
+                            <text x="100" y="200">黄 · 联机</text>
+                        </g>
+                        <!-- 🔴 红色：左下中三角 -->
+                        <g class="t-piece" data-id="red" tabindex="0" role="button" aria-label="红色模块：卸载与深度清理">
+                            <polygon points="0,200 200,400 0,400" fill="#EF233C" />
+                            <text x="66" y="335">红 · 清理</text>
+                        </g>
+                        <!-- 🔵 蓝色：底中小三角 -->
+                        <g class="t-piece" data-id="blue" tabindex="0" role="button" aria-label="蓝色模块：单行日志控制台">
+                            <polygon points="100,300 300,300 200,200" fill="#00B4D8" />
+                            <text x="200" y="268">蓝 · 日志</text>
+                        </g>
+                        <!-- 🟣 紫色：底右平行四边形 -->
+                        <g class="t-piece" data-id="purple" tabindex="0" role="button" aria-label="紫色模块：虚拟局域网总闸门">
+                            <polygon points="100,300 300,300 400,400 200,400" fill="#9D4EDD" />
+                            <text x="255" y="352">紫 · 虚拟网</text>
+                        </g>
+                    </svg>
+                </div>
+                <p class="tangram-hint">✦ 坐标 1:1 复刻自 KuaiDrive 桌面客户端 SVG 七巧板</p>
+            </div>
+
+            <div class="tangram-detail">
+                <div class="module-tabs" id="module-tabs"></div>
+                <div class="detail-card" id="detail-card"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. 核心能力卡片 -->
+    <section class="channel-grid">
+        <article class="channel-card">
+            <span class="channel-kicker">● GREEN CHANNEL · ZERO OVERHEAD</span>
+            <h3>绕过虚拟网 · 原生 IPv6 / 局域网满速直连</h3>
+            <p>绿色模块不依赖任何虚拟网卡或中继节点，自动探测本机公网 IPv6 与局域网 IPv4 并发起 2.5 秒连通性优选，零隧道加密损耗跑满局域网或宽带物理上限，适合家庭多设备共享大容量硬盘。</p>
+        </article>
+        <article class="channel-card">
+            <span class="channel-kicker">● ORANGE &amp; PURPLE · DRIVER-FREE TSNET</span>
+            <h3>内嵌用户态 tsnet · 6 位口令一键挂 Z: 盘</h3>
+            <p>紫色板块在用户态启动嵌入式 Tailscale 节点，自动穿透复杂 NAT 并分配虚拟 IP；橙色板块通过 HTTP Basic 认证 WebDAV 与本地环回代理协同，自动完成 WebClient 4 GiB 配置并打开 <code>Z:\</code>。</p>
+        </article>
+        <article class="channel-card">
+            <span class="channel-kicker">● YELLOW &amp; RED · CLEAN LIFECYCLE</span>
+            <h3>跨网游戏联机 &amp; 五步零残留深度清理</h3>
+            <p>黄色板块无需 KV 信令即可将游戏端口（默认 25565）透明映射至本地回环；退出或点击红色板块时自动卸载 Z: 盘、关闭全部监听、清理临时 VBS 脚本与注册表并归还系统内存。</p>
+        </article>
+    </section>
+
+    <!-- 4. 折叠面板：核心技术栈 -->
+    <section class="ui-panel info-panel">
+        <h2 class="block-heading is-collapsed" onclick="toggleCollapse(this)">核心技术栈与底层机制</h2>
+        <div class="panel-collapse is-collapsed">
+            <div class="collapse-inner">
+                <ul class="grid-list">
+                    <li><span><strong>Wails v2.16.0 + Go 1.27</strong>：无边框透明 WebView2 容器与前端资产单文件内嵌。</span></li>
+                    <li><span><strong>Vue 3 + TypeScript + Vite 7</strong>：七巧板 SVG 交互面板、极简原木弹窗与实时日志流。</span></li>
+                    <li><span><strong>tailscale.com/tsnet (v1.104.0)</strong>：免驱动用户态加密组网栈，自动 NAT 穿透与 Disco 链路探测。</span></li>
+                    <li><span><strong>golang.org/x/net/webdav</strong>：内置 Basic 认证 WebDAV 文件服务与内存锁系统。</span></li>
+                    <li><span><strong>Win32 单实例互斥锁</strong>：通过 <code>Global\KuaiDrive_Absolute_Lock</code> 防止多开冲突。</span></li>
+                    <li><span><strong>WebClient + WSH 自动挂载</strong>：自动开启 BasicAuthLevel、4 GiB 上限并映射本地 <code>Z:</code> 盘。</span></li>
+                    <li><span><strong>getlantern/systray 托盘守护</strong>：独立协程常驻系统托盘，退出前自动触发卸载与清理钩子。</span></li>
+                    <li><span><strong>原生双栈网络探测</strong>：优先公网 IPv6、回退局域网 IPv4，结合本地环回桥接实现透明转发。</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. 折叠面板：典型场景说明 -->
+    <section class="ui-panel info-panel">
+        <h2 class="block-heading is-collapsed" onclick="toggleCollapse(this)">典型使用场景与快速上手</h2>
+        <div class="panel-collapse is-collapsed">
+            <div class="collapse-inner">
+                <div class="scenario-grid">
+                    <div class="scenario-card is-green">
+                        <h3 class="scenario-heading">
+                            场景一：同 Wi-Fi / 局域网 / 公网 IPv6 高速挂载
+                            <span class="scenario-badge">最推荐 · 免开虚拟网</span>
+                        </h3>
+                        <p class="scenario-text">
+                            适合家中两台电脑位于同一 Wi-Fi 或均具备公网 IPv6 的场景：主机存放大容量学习资料、视频或便携程序，轻薄本硬盘空间不足时，无需拷贝即可直接跨机打开运行。
+                        </p>
+                        <p class="scenario-text">
+                            <strong>操作步骤：</strong>无需点击紫色板块。在主力机点击 <span class="mod-chip c-green">绿色板块</span> → <strong>共享磁盘</strong> 选择目录并开启共享（自动复制 6 位口令）；在另一台电脑点击 <span class="mod-chip c-green">绿色板块</span> → <strong>挂载磁盘</strong> 输入口令，系统自动优选公网 IPv6 或局域网 IPv4 并映射为本地 <code>Z:</code> 盘，直接像本地磁盘一样浏览与打开文件。
+                        </p>
+                    </div>
+
+                    <div class="scenario-card is-purple">
+                        <h3 class="scenario-heading">
+                            场景二：异地跨网磁盘挂载与局域网游戏联机
+                            <span class="scenario-badge">穿透复杂 NAT · 内嵌 tsnet</span>
+                        </h3>
+                        <p class="scenario-text">
+                            适合双方处于不同运营商网络且缺少公网 IPv6 时，进行异地远程目录挂载，或与好友跨网联机《我的世界》（Minecraft）等支持局域网直连的游戏。
+                        </p>
+                        <p class="scenario-text">
+                            <strong>操作步骤：</strong>双方先点击 <span class="mod-chip c-purple">紫色板块</span> 执行「授权并接入网络」；随后使用 <span class="mod-chip c-orange">橙色板块</span> 凭 6 位口令挂载远端目录为 <code>Z:</code> 盘（若跨网未能打通直连而走中继转发，速度将受中继延迟影响）；联机游戏则点击 <span class="mod-chip c-yellow">黄色板块</span>，房主开放游戏端口（默认 <code>25565</code>）并将复制的 <code>虚拟IP:端口</code> 发给好友，好友建立本地桥接后直接在游戏内粘贴本地地址进房。
+                        </p>
+                    </div>
+
+                    <div class="scenario-card is-red">
+                        <h3 class="scenario-heading">
+                            场景三：链路状态自检与用后一键清理
+                            <span class="scenario-badge">零系统残留</span>
+                        </h3>
+                        <p class="scenario-text">
+                            连接过程中可随时点击 <span class="mod-chip c-pink">粉色板块</span> 发起 4 次探测查看当前延迟与稳定性；使用完毕后点击 <span class="mod-chip c-red">红色板块</span>（或在系统托盘选择「彻底退出」），一键卸载 <code>Z:</code> 盘、关闭所有监听端口并自动清理临时 VBS 脚本与注册表信任项。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 </main>
 
-<!-- 4. 舞台顶层特效 (花瓣与幕布，固定覆盖) -->
-<div id="visual-fg">
-    <canvas id="petal-canvas"></canvas>
-    <div class="valance"></div>
-    <div class="curtain-container" id="curtain">
-        <div class="curtain-left"></div>
-        <div class="curtain-right"></div>
-    </div>
-</div>
+<footer>
+    <p>
+        <a href="https://gallanttarry.github.io/TuKuai/" target="_blank" rel="noopener noreferrer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        </a>
+        &copy; 2026 Created by 土块. All rights reserved.
+    </p>
+</footer>
 
 <script src="../shared/media-session.js"></script>
 <script>
-    // --- 1. 音乐播放器 ---
+    // --- 0. 禁用整页原生悬停提示 (title tooltip) ---
+    (() => {
+        const stripTooltips = (root = document) => {
+            if (root.nodeType === 1 && root.hasAttribute && root.hasAttribute('title')) {
+                root.removeAttribute('title');
+            }
+            if (root.querySelectorAll) {
+                root.querySelectorAll('[title]').forEach(el => el.removeAttribute('title'));
+                root.querySelectorAll('svg title').forEach(el => el.remove());
+            }
+        };
+        stripTooltips(document);
+        new MutationObserver(mutations => {
+            for (const m of mutations) {
+                if (m.type === 'attributes' && m.attributeName === 'title' && m.target.hasAttribute('title')) {
+                    m.target.removeAttribute('title');
+                } else if (m.type === 'childList') {
+                    m.addedNodes.forEach(node => {
+                        if (node.nodeType === 1) stripTooltips(node);
+                    });
+                }
+            }
+        }).observe(document.documentElement, {
+            subtree: true,
+            childList: true,
+            attributes: true,
+            attributeFilter: ['title']
+        });
+    })();
+
+    // --- 1. 音乐播放器（同步系统媒体中心 / iOS 灵动岛） ---
     window.initProjectBgm({
         title: '西西里舞曲',
         artist: 'KuaiDrive · TuKuai',
@@ -512,87 +1474,355 @@
         smallCover: 'imgs/apple-touch-icon.png'
     });
 
-    // --- 2. 印象派原生花瓣引擎 ---
-    const canvas = document.getElementById('petal-canvas');
-    const ctx = canvas.getContext('2d');
-    let width, height;
-    let petals = [];
-
-    function resize() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
+    // --- 2. 折叠面板控制 ---
+    function toggleCollapse(headerElement) {
+        headerElement.classList.toggle('is-collapsed');
+        const collapseContent = headerElement.nextElementSibling;
+        if (collapseContent && collapseContent.classList.contains('panel-collapse')) {
+            collapseContent.classList.toggle('is-collapsed');
+        }
     }
-    window.addEventListener('resize', resize);
-    resize();
 
-    // 专属红黑金配色花瓣
-    const petalColors = ['#7A0000', '#4A0000', '#D4AF37', '#FFDF00', '#111111'];
+    // --- 3. 像素玫瑰暗夜背景引擎（取色自图标：珊瑚红 / 香槟金 / 橄榄叶金 + 微光文件像素） ---
+    (() => {
+        const canvas = document.getElementById('rose-engine');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    class Petal {
-        constructor() { this.reset(); this.y = Math.random() * height; }
-        reset() {
-            this.x = Math.random() * width;
-            this.y = -Math.random() * 200 - 50;
-            this.size = Math.random() * 8 + 4;
-            this.speedY = Math.random() * 0.8 + 0.3;
-            this.speedX = Math.random() * 0.8 - 0.4;
-            this.angle = Math.random() * Math.PI * 2;
-            this.spin = Math.random() * 0.02 - 0.01;
-            this.sway = Math.random() * 0.015;
-            this.swayOffset = Math.random() * Math.PI * 2;
-            this.color = petalColors[Math.floor(Math.random() * petalColors.length)];
-            this.opacity = Math.random() * 0.5 + 0.3;
+        let w = 0, h = 0, dpr = 1;
+        const parallax = { tx: 0, ty: 0, cx: 0, cy: 0 };
+        const motes = [];
+        const glyphs = [];
+
+        const palette = ['#f8d89a', '#f0b670', '#e2645d', '#c4464a', '#b8a432', '#fbf3e8'];
+
+        function resize() {
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = Math.floor(w * dpr);
+            canvas.height = Math.floor(h * dpr);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            seedScene();
         }
-        update() {
-            this.y += this.speedY;
-            this.x += this.speedX + Math.sin(this.y * this.sway + this.swayOffset);
-            this.angle += this.spin;
-            if (this.y > height + this.size) { this.reset(); }
+
+        function seedScene() {
+            motes.length = 0;
+            glyphs.length = 0;
+
+            const moteCount = w < 768 ? 36 : 72;
+            for (let i = 0; i < moteCount; i++) {
+                motes.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    size: Math.random() < 0.72 ? 2 : (Math.random() < 0.75 ? 3 : 4),
+                    speedY: -(0.12 + Math.random() * 0.34),
+                    speedX: (Math.random() - 0.5) * 0.16,
+                    depth: 0.4 + Math.random() * 1.4,
+                    alpha: 0.16 + Math.random() * 0.58,
+                    pulse: (Math.random() * 0.012 + 0.004) * (Math.random() < 0.5 ? 1 : -1),
+                    color: palette[Math.floor(Math.random() * palette.length)]
+                });
+            }
+
+            const glyphCount = w < 768 ? 6 : 12;
+            const types = ['folder', 'doc', 'bits'];
+            for (let i = 0; i < glyphCount; i++) {
+                glyphs.push({
+                    type: types[i % types.length],
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    scale: 0.85 + Math.random() * 0.55,
+                    depth: 0.5 + Math.random() * 0.9,
+                    driftY: -(0.06 + Math.random() * 0.12),
+                    alpha: 0.045 + Math.random() * 0.055,
+                    tint: i % 3 === 0 ? '#e2645d' : '#f8d89a'
+                });
+            }
         }
-        draw() {
+
+        function drawPixelGlyph(g, ox, oy) {
+            const x = Math.round(g.x + ox * g.depth);
+            const y = Math.round(g.y + oy * g.depth);
+            const s = g.scale;
+
             ctx.save();
-            ctx.translate(this.x, this.y);
-            ctx.rotate(this.angle);
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.quadraticCurveTo(this.size * 1.5, this.size * 0.5, this.size, this.size * 1.5);
-            ctx.quadraticCurveTo(this.size * 0.2, this.size * 1.2, 0, 0);
-            ctx.fillStyle = this.color;
-            ctx.globalAlpha = this.opacity;
-            ctx.fill();
+            ctx.translate(x, y);
+            ctx.scale(s, s);
+            ctx.globalAlpha = g.alpha;
+            ctx.strokeStyle = g.tint;
+            ctx.fillStyle = g.tint;
+            ctx.lineWidth = 2;
+
+            if (g.type === 'folder') {
+                ctx.strokeRect(0, 8, 34, 22);
+                ctx.fillRect(0, 3, 14, 5);
+            } else if (g.type === 'doc') {
+                ctx.strokeRect(0, 0, 26, 32);
+                ctx.fillRect(5, 8, 12, 2);
+                ctx.fillRect(5, 14, 16, 2);
+                ctx.fillRect(5, 20, 14, 2);
+            } else {
+                ctx.font = '700 10px Consolas, monospace';
+                ctx.fillText('10110', 0, 10);
+                ctx.fillText('01101', 0, 22);
+            }
             ctx.restore();
         }
-    }
 
-    const petalCount = window.innerWidth < 768 ? 25 : 50;
-    for (let i = 0; i < petalCount; i++) { petals.push(new Petal()); }
+        function render(step) {
+            ctx.clearRect(0, 0, w, h);
 
-    function animate() {
-        ctx.clearRect(0, 0, width, height);
-        for (let petal of petals) {
-            petal.update();
-            petal.draw();
+            parallax.cx += (parallax.tx - parallax.cx) * 0.06;
+            parallax.cy += (parallax.ty - parallax.cy) * 0.06;
+
+            for (const g of glyphs) {
+                if (step) {
+                    g.y += g.driftY;
+                    if (g.y < -50) {
+                        g.y = h + 40;
+                        g.x = Math.random() * w;
+                    }
+                }
+                drawPixelGlyph(g, parallax.cx * 18, parallax.cy * 18);
+            }
+
+            for (const m of motes) {
+                if (step) {
+                    m.y += m.speedY;
+                    m.x += m.speedX;
+                    m.alpha += m.pulse;
+                    if (m.alpha <= 0.1 || m.alpha >= 0.78) m.pulse = -m.pulse;
+                    if (m.y < -12) {
+                        m.y = h + 10;
+                        m.x = Math.random() * w;
+                    }
+                    if (m.x < -12) m.x = w + 10;
+                    if (m.x > w + 12) m.x = -10;
+                }
+
+                const px = Math.round(m.x + parallax.cx * 26 * m.depth);
+                const py = Math.round(m.y + parallax.cy * 26 * m.depth);
+                ctx.globalAlpha = Math.max(0.08, Math.min(0.85, m.alpha));
+                ctx.fillStyle = m.color;
+                ctx.fillRect(px, py, m.size, m.size);
+            }
+            ctx.globalAlpha = 1;
         }
-        requestAnimationFrame(animate);
-    }
 
-    // --- 3. 舞台演出时间轴 ---
-    window.addEventListener('load', () => {
-        animate();
-        setTimeout(() => {
-            document.getElementById('curtain').classList.add('curtain-open');
-        }, 1200);
-    });
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', (e) => {
+            parallax.tx = (e.clientX / Math.max(1, w) - 0.5) * -1.4;
+            parallax.ty = (e.clientY / Math.max(1, h) - 0.5) * -1.4;
+        }, { passive: true });
 
-    // --- 4. 全球节点智能竞速分配引擎 ---
+        resize();
+
+        if (reducedMotion) {
+            render(false);
+        } else {
+            const loop = () => {
+                render(true);
+                requestAnimationFrame(loop);
+            };
+            requestAnimationFrame(loop);
+        }
+    })();
+
+    // --- 4. Hero 实机窗口轻微 3D 悬浮视差 ---
+    (() => {
+        const frame = document.getElementById('hero-frame');
+        if (!frame || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        frame.addEventListener('mousemove', (e) => {
+            const rect = frame.getBoundingClientRect();
+            const nx = (e.clientX - rect.left) / rect.width - 0.5;
+            const ny = (e.clientY - rect.top) / rect.height - 0.5;
+            frame.style.transform = `perspective(900px) rotateY(${nx * 8}deg) rotateX(${-ny * 8}deg) translateY(-4px)`;
+        });
+
+        frame.addEventListener('mouseleave', () => {
+            frame.style.transform = '';
+        });
+    })();
+
+    // --- 5. 七巧板七大模块交互数据（100% 对齐 wails-kuaidrive-app 真实实现） ---
+    const TANGRAM_MODULES = [
+        {
+            id: 'green',
+            short: '绿 · 高速直连',
+            title: '绿色板块 · 原生 IPv6 / 局域网高速直连',
+            role: '推荐常用 · 零隧道损耗',
+            color: '#06D6A0',
+            summary: '彻底绕过 Tailscale 虚拟局域网，直接走操作系统原生公网 IPv6 或局域网 IPv4 网卡建立高速 TCP WebDAV 通道，无需开启紫色网络即可独立运行，跑满物理带宽上限。',
+            steps: [
+                '共享方：选择本地目录，系统自动探测公网 IPv6 与局域网 IPv4 并在 20000–29999 随机端口启动 Basic 认证 WebDAV，生成并复制 6 位口令。',
+                '挂载方：输入 6 位口令后顺序探活候选地址（2.5 秒超时，优先 IPv6 回退 IPv4），经本地环回代理自动挂载为 Windows Z: 盘并打开资源管理器。'
+            ],
+            specs: ['Bypass tsnet', 'TCP :20000-29999', '2.5s IPv6/IPv4 优选', 'Z: 盘映射']
+        },
+        {
+            id: 'orange',
+            short: '橙 · 组网挂载',
+            title: '橙色板块 · 虚拟局域网 P2P 磁盘挂载',
+            role: '跨网穿透 · 6 位口令',
+            color: '#FF9F1C',
+            summary: '依托紫色板块建立的用户态虚拟局域网，穿透对称型 NAT 与跨运营商网络屏障，通过 6 位口令完成远端目录发现、本地环回桥接与 Z: 盘自动化挂载。',
+            steps: [
+                '共享方：选取共享目录并在 tsnet 虚拟网（10000–19999 端口）启动 WebDAV 服务，将 VNET 虚拟地址与端口注册至信令 KV 并复制 6 位口令。',
+                '挂载方：凭口令解析目标虚拟地址，在本地建立 127.0.0.1 双向 io.Copy 代理桥，自动配置 WebClient 4 GiB 上限并映射为 Z: 盘。'
+            ],
+            specs: ['tsServer.Listen/Dial', 'WebDAV Basic Auth', '4 GiB 单文件上限', '127.0.0.1:0 桥接']
+        },
+        {
+            id: 'purple',
+            short: '紫 · 虚拟网',
+            title: '紫色板块 · 虚拟局域网总闸门',
+            role: '免驱动底座 · 一键通断',
+            color: '#9D4EDD',
+            summary: '负责内嵌用户态 tsnet 节点的全生命周期管理，无需在 Windows 安装任何虚拟网卡驱动，随时一键授权接入或彻底切断外部虚拟网连接。',
+            steps: [
+                '授权并接入：向信令端申请动态 Tailscale AuthKey（失败自动回退），初始化嵌入式 tsnet 节点并轮询获取专属 100.x.y.z 虚拟 IP。',
+                '退出网络：关闭全部关联游戏监听端口并调用 tsServer.Close()，即刻断开外部虚拟局域网通信。'
+            ],
+            specs: ['tailscale.com/tsnet', '100.x.y.z 虚拟 IP', '状态本地持久化', '一键切断公网']
+        },
+        {
+            id: 'yellow',
+            short: '黄 · 游戏联机',
+            title: '黄色板块 · 去 KV 化跨网游戏联机',
+            role: '透明端口映射 · 默认 25565',
+            color: '#FFD166',
+            summary: '专为《我的世界》等局域网联机游戏打造，完全不走 KV 信令，直接在紫色虚拟局域网之上完成本地游戏端口的透明双向转发。',
+            steps: [
+                '我是房主：填写游戏局域网端口（默认 25565），软件在虚拟 IP 监听并将流量转发至本机 127.0.0.1，自动复制 100.x.y.z:端口 发给好友。',
+                '加入房间：粘贴房主地址建立本地 127.0.0.1 桥接通道并自动复制，在游戏内直接粘贴本地地址即可秒连进房。'
+            ],
+            specs: ['零 KV 直连', '默认端口 25565', '全双工 io.Copy', '免改游戏配置']
+        },
+        {
+            id: 'pink',
+            short: '粉 · 测速仪',
+            title: '粉色板块 · 链路延迟与稳定性仪表盘',
+            role: '4 探针诊断 · 实时评级',
+            color: '#FF6B9D',
+            summary: '自动锁定最近一次挂载或联机的对端地址，通过四次连续探测评估通道延迟、抖动与丢包率，直观呈现当前链路传输稳定性。',
+            steps: [
+                '虚拟网对端（100.*）优先调用 Tailscale LocalClient PingDisco（失败自动回退 tsnet TCP 握手）；直连对端使用原生 TCP 1500ms 探针。',
+                '自动计算平均延迟（avgPingMs）、平均绝对偏差抖动（jitterMs）与丢包率，并输出四档链路稳定性评级。'
+            ],
+            specs: ['4×1500ms 探针', 'tailcfg.PingDisco', 'Ping & Jitter 测算', '四档稳定性评级']
+        },
+        {
+            id: 'red',
+            short: '红 · 深清理',
+            title: '红色板块 · 挂载卸载与五步深度清理',
+            role: '系统还原 · 零残留',
+            color: '#EF233C',
+            summary: '一键将系统恢复至挂载前的干净状态；从系统托盘点击「彻底退出」时也会自动触发同等清理流程，杜绝断联卡顿与配置残留。',
+            steps: [
+                '依次执行：net use Z: /delete /y 卸载网络驱动器 → 关闭全部 WebDAV 与本地环回监听器并重置共享口令。',
+                '清除临时脚本 %TEMP%\\KuaiDrive_Mount_Sync.vbs、移除 HKCU ZoneMap 信任项，并调用 debug.FreeOSMemory() 释放内存。'
+            ],
+            specs: ['卸载 Z: 盘', '释放全部端口', '清理 VBS & 注册表', 'FreeOSMemory']
+        },
+        {
+            id: 'blue',
+            short: '蓝 · 控制台',
+            title: '蓝色板块 · 底部 135px 单行实时控制台',
+            role: '事件流追踪 · 一键复制',
+            color: '#00B4D8',
+            summary: '将 Go 后端的全部连接、挂载、测速与清理状态去换行后结构化推送至前端，以不折行的紧凑列表呈现，排查问题一目了然。',
+            steps: [
+                '后端 CLog() 统一清洗换行并附加 HH:MM:SS 时间戳与模块标签，通过 Wails runtime.EventsEmit("console_log") 实时送达前端。',
+                '底部 135px 悬浮控制台支持悬停查看完整单行文本、一键复制全部日志与快速清空。'
+            ],
+            specs: ['Wails EventsEmit', '135px 紧凑视图', 'HH:MM:SS [模块]', '一键复制 / 清空']
+        }
+    ];
+
+    (() => {
+        const svgRoot = document.getElementById('tangram-svg');
+        const tabsRoot = document.getElementById('module-tabs');
+        const detailRoot = document.getElementById('detail-card');
+        const pieces = Array.from(document.querySelectorAll('.t-piece'));
+        if (!tabsRoot || !detailRoot) return;
+
+        let activeId = 'green';
+
+        function buildTabs() {
+            tabsRoot.innerHTML = '';
+            TANGRAM_MODULES.forEach(mod => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'module-tab' + (mod.id === activeId ? ' is-active' : '');
+                btn.dataset.id = mod.id;
+                btn.innerHTML = `<span class="swatch" style="background:${mod.color};"></span>${mod.short}`;
+                btn.addEventListener('click', () => selectModule(mod.id));
+                tabsRoot.appendChild(btn);
+            });
+        }
+
+        function renderDetail(mod) {
+            detailRoot.innerHTML = `
+                <div class="detail-top">
+                    <div class="detail-name">
+                        <span class="detail-color-bar" style="background:${mod.color}; box-shadow:0 0 12px ${mod.color}66;"></span>
+                        ${mod.title}
+                    </div>
+                    <span class="detail-role">${mod.role}</span>
+                </div>
+                <p class="detail-summary">${mod.summary}</p>
+                <ul class="detail-steps">
+                    ${mod.steps.map(step => `<li><span>${step}</span></li>`).join('')}
+                </ul>
+                <div class="detail-specs">
+                    ${mod.specs.map(spec => `<span class="spec-chip">${spec}</span>`).join('')}
+                </div>
+            `;
+        }
+
+        function selectModule(id) {
+            const mod = TANGRAM_MODULES.find(m => m.id === id) || TANGRAM_MODULES[0];
+            activeId = mod.id;
+
+            let activePiece = null;
+            pieces.forEach(p => {
+                const isActive = p.dataset.id === activeId;
+                p.classList.toggle('is-active', isActive);
+                if (isActive) activePiece = p;
+            });
+            // 将选中积木提升至 SVG 最顶层渲染，避免高亮边框被相邻积木遮挡
+            if (activePiece && svgRoot) {
+                svgRoot.appendChild(activePiece);
+            }
+            tabsRoot.querySelectorAll('.module-tab').forEach(tab => {
+                tab.classList.toggle('is-active', tab.dataset.id === activeId);
+            });
+            renderDetail(mod);
+        }
+
+        pieces.forEach(piece => {
+            piece.addEventListener('click', () => selectModule(piece.dataset.id));
+            piece.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    selectModule(piece.dataset.id);
+                }
+            });
+        });
+
+        buildTabs();
+        selectModule(activeId);
+    })();
+
+    // --- 6. 全球节点智能竞速分配引擎 (10 节点池 + 真实二进制流探测 + 防盗链满速) ---
     class DownloadRouter {
         constructor(btnId, targetUrl) {
             this.btn = document.getElementById(btnId);
             this.targetUrl = targetUrl;
 
-            // 10大白嫖加速节点池 (已验证南京/江苏低延迟 + 浏览器 CORS 跨域头 + .msi/.exe 二进制流支持)
             this.nodes = [
                 'https://v4.gh-proxy.org/',
                 'https://cdn.gh-proxy.org/',
@@ -656,15 +1886,11 @@
             if (this.btn.classList.contains('is-routing')) return;
 
             this.btn.classList.add('is-routing');
-            this.btn.classList.remove('pulse');
-
             this.btn.innerHTML = `
-                    <svg class="icon-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                        <path d="M2 12h20"></path>
-                    </svg>
-                    节点智能寻优中...`;
+                <svg class="icon-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                节点智能寻优中...`;
 
             const testUrls = this.nodes.map(prefix => prefix + this.targetUrl);
 
@@ -676,11 +1902,11 @@
             }
 
             this.btn.innerHTML = `
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2" style="vertical-align:middle;">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                    最佳节点分配成功`;
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f8d89a" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                最佳节点分配成功`;
 
             setTimeout(() => {
                 const a = document.createElement('a');
@@ -698,16 +1924,17 @@
         resetBtn() {
             setTimeout(() => {
                 this.btn.classList.remove('is-routing');
-                this.btn.classList.add('pulse');
                 this.btn.innerHTML = this.originalHtml;
             }, 2500);
         }
     }
 
-    new DownloadRouter(
-        'btn-download',
-        'https://github.com/GallantTarry/TuKuai/releases/download/20260907/KuaiDrive_Setup_v1.0.1.exe'
-    );
+    document.addEventListener('DOMContentLoaded', () => {
+        new DownloadRouter(
+            'btn-download',
+            'https://github.com/GallantTarry/TuKuai/releases/download/20260907/KuaiDrive_Setup_v1.0.1.exe'
+        );
+    });
 </script>
 </body>
 </html>
