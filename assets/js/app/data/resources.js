@@ -74,6 +74,7 @@
         {name: 'iCloud', desc: '苹果云服务', url: 'https://www.icloud.com/'},
         {name: 'npm', desc: 'JS/TS 包管理平台', url: 'https://www.npmjs.com/'},
         {name: 'Hacker News', desc: '硬核极客技术社区', url: 'https://news.ycombinator.com/'},
+        {name: 'AMD', desc: '驱动更新', url: 'https://www.amd.com/en/support/download/drivers.html'},
     ];
 
     // ========================================================================
