@@ -108,8 +108,7 @@ TuKuai/
 │   │   │   ├── favicon-96x96.png       # 96x96 标准 PNG 图标 (符合 Google 搜索推荐尺寸)
 │   │   │   ├── favicon-192x192.png     # 192x192 PWA 主屏幕图标
 │   │   │   ├── favicon.png             # 512x512 高清 PNG 原图
-│   │   │   ├── favicon.ico             # 16/32/48px 多尺寸 ICO
-│   │   │   └── apple-touch-icon.png    # 180x180 iOS「添加到主屏幕」图标
+│   │   │   └── apple-touch-icon.png    # 180x180 iOS「添加到主屏幕」实底图标
 │   │   ├── avatars/                    # 8 态 24 小时作息像素小人矢量头像 (SVG)
 │   │   │   ├── coding-avatar.svg       # 14:00-17:59 敲代码
 │   │   │   ├── gaming-avatar.svg       # 21:00-23:59 打游戏
@@ -129,8 +128,7 @@ TuKuai/
 │   │   │   ├── clod-and-gold.ico
 │   │   │   ├── kuaidrive.ico
 │   │   │   ├── pykuai.ico
-│   │   │   ├── toolkit.ico
-│   │   │   └── tukuai-studio.ico
+│   │   │   └── toolkit.ico
 │   │   └── ui/                         # 界面通用图标与特种视觉贴图
 │   │       ├── 3d-cube.svg             # 3D 模型展厅标签页图标
 │   │       ├── github-mark.svg         # 顶栏与侧栏时钟旁的 GitHub 徽标
