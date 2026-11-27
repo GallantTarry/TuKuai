@@ -130,11 +130,11 @@
     // ========================================================================
     TK.data.backgrounds = [
         './assets/images/backgrounds/bg-default.avif',
-        './assets/images/backgrounds/bg-01.jpg',
-        './assets/images/backgrounds/bg-02.jpg',
-        './assets/images/backgrounds/bg-03.jpg',
-        './assets/images/backgrounds/bg-04.jpg',
-        './assets/images/backgrounds/bg-05.jpg'
+        './assets/images/backgrounds/bg-01.avif',
+        './assets/images/backgrounds/bg-02.avif',
+        './assets/images/backgrounds/bg-03.avif',
+        './assets/images/backgrounds/bg-04.avif',
+        './assets/images/backgrounds/bg-05.avif'
     ];
 
     // ========================================================================

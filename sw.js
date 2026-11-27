@@ -1,5 +1,5 @@
 // 以后只有当你希望强制清空所有老用户的全站缓存时，才需要修改这个版本号
-const CACHE_VERSION = 'v2.1.4';
+const CACHE_VERSION = 'v2.1.7';
 const CACHE_NAME = `tukuai-smart-cache-${CACHE_VERSION}`;
 
 // 1. 安装时立即接管
@@ -72,7 +72,7 @@ self.addEventListener('fetch', event => {
     // 策略 B：大体积资产 (游戏 ROM、3D 模型、字体、模拟器内核) -> 【绝对缓存优先】
     // 已补全：nds/nes/gb/gbc 游戏格式 + glb/gltf/bin/hdr/ktx2 等 3D 模型格式
     // =========================================================================
-    const isHeavyAsset = url.pathname.match(/\.(gba|sfc|smc|nds|nes|gb|gbc|glb|gltf|bin|hdr|ktx2|ttf|woff2|wasm|zip)$/i) ||
+    const isHeavyAsset = url.pathname.match(/\.(gba|sfc|smc|nds|nes|gb|gbc|glb|gltf|bin|hdr|ktx2|ttf|woff2|wasm|zip|avif)$/i) ||
         url.pathname.includes('/emulator_data/');
 
     if (isHeavyAsset) {
