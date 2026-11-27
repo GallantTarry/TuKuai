@@ -23,13 +23,14 @@ self.addEventListener('activate', event => {
     );
 });
 
-// 3. 核心智能路由
+// 3. 核心三级智能缓存路由
 self.addEventListener('fetch', event => {
     const req = event.request;
     const url = new URL(req.url);
 
-    // 【排除项】非 GET 请求、浏览器插件、统计探针、API 接口以及带 Range 头的流媒体（如 <audio> 音乐）
-    // 注：将 Range 音频请求直接交由浏览器原生 HTTP 磁盘缓存与 Cloudflare 处理，既支持进度条拖拽又防 Safari 崩溃
+    // 【直接放行项】非 GET 请求、浏览器插件、统计探针、实时接口，以及 R2 云端媒体桶：
+    //   · music.xn--udsye.art：交由浏览器原生 <audio> HTTP 206 Range 流式缓冲，秒拖进度且兼容 Safari
+    //   · roms.xn--udsye.art ：交由 EmulatorJS 原生 XHR 进度条下载并存入其自带的 IndexedDB（EmulatorJS-roms），避免 CacheStorage 双倍占用存储
     if (req.method !== 'GET' ||
         req.headers.has('range') ||
         url.protocol.startsWith('chrome-extension') ||
@@ -69,8 +70,7 @@ self.addEventListener('fetch', event => {
     }
 
     // =========================================================================
-    // 策略 B：大体积资产 (游戏 ROM、3D 模型、字体、模拟器内核) -> 【绝对缓存优先】
-    // 已补全：nds/nes/gb/gbc 游戏格式 + glb/gltf/bin/hdr/ktx2 等 3D 模型格式
+    // 策略 B：站内重型静态资产 (模拟器 WASM 内核、3D 模型、像素字体、2K AVIF 壁纸) -> 【绝对缓存优先】
     // =========================================================================
     const isHeavyAsset = url.pathname.match(/\.(gba|sfc|smc|nds|nes|gb|gbc|glb|gltf|bin|hdr|ktx2|ttf|woff2|wasm|zip|avif)$/i) ||
         url.pathname.includes('/emulator_data/');

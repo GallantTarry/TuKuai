@@ -321,6 +321,7 @@
         window.EJS_color = '#4ade80';
         window.EJS_startOnLoaded = true;
 
+        // 云端 R2 ROM 加速源（tukuai-roms 桶，CORS 全端口放行；由 EmulatorJS 自带 IndexedDB 自动缓存 ROM 本体）
         const ROM_BASE_URL = 'https://roms.xn--udsye.art';
         window.EJS_pathtodata = './emulator_data/';
         window.EJS_gameUrl = `${ROM_BASE_URL}/${encodeURIComponent(romFile)}`;
@@ -352,10 +353,9 @@
             loadSavFiles: true  // 👈 核心按钮：将外部的 .sav 存档文件导入模拟器
         };
 
-        // 仅保留基础的加载完毕通知逻辑// 仅保留基础的加载完毕通知逻辑
         // =========================================================================
-        // 自动进度：定时 + 离开页面时自动保存「即时存档」到浏览器 IndexedDB，
-        // 下次进入游戏时弹窗让玩家选择：读取存档 / 继续游戏（不读取）
+        // 自动即时进度：每 30 秒及切后台/关闭窗口时自动保存快照至浏览器 IndexedDB（tukuai-resume），
+        // 下次进入游戏时弹出精简果冻卡片供玩家选择：「读取存档」（底部弹出果冻提示胶囊）或「重新开始」
         // =========================================================================
         const tukuaiResume = (() => {
             const DB_NAME = 'tukuai-resume';
@@ -443,7 +443,7 @@
                     ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
             };
 
-            // 弹窗：返回 'load'（读取存档）或 'continue'（继续游戏，不读取）
+            // 弹窗：返回 'load'（读取存档）或 'continue'（重新开始，不读取旧快照）
             const askUser = (rec) => new Promise((resolve) => {
                 const mask = document.createElement('div');
                 mask.className = 'tk-resume-mask';

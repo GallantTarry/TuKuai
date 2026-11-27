@@ -53,7 +53,7 @@
         /** 当前选中歌曲在 `playlist` 数组中的下标（从 0 开始，默认第 0 首） */
         const currentTrackIndex = ref(0);
 
-        /** 【自动计算】当前正在播放（或待播放）的那首歌对象 `{ title: '...', url: '...' }` */
+        /** 【自动计算】当前正在播放（或待播放）的那首歌对象 `{ title: '...', file: 'https://music.xn--udsye.art/...' }` */
         const currentTrack = computed(() => playlist.value[currentTrackIndex.value] || null);
 
         // ======================================================================================
@@ -123,7 +123,7 @@
             isPlaying.value = false;
             changeTvGif();
 
-            // 关键步骤：等待 Vue 把页面上 `<audio :src="currentTrack.url">` 的 src 属性更新为新歌的地址后，
+            // 关键步骤：等待 Vue 把页面上 `<audio :src="currentTrack.file">` 的 src 属性更新为新歌的地址后，
             // 再调用 audioRef.value.play()，否则播放的还会是上一首旧歌！
             await nextTick();
 

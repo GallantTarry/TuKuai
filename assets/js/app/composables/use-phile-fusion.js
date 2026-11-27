@@ -20,7 +20,7 @@
  *   · 阶段 3（`bloomed`，第 1250 毫秒）：
  *     在高速旋转的巅峰，高清花朵大图（`assets/images/ui/phile-flower.png`）无缝绽放浮现。
  *   · 最终跳转（第 2500 毫秒）：
- *     整页跳转到 `assets/js/app/config.js` 中配置的 `TK.config.links.phileJump`（默认是 `https://blog.tukuai.art/`）。
+ *     整页跳转到 `assets/js/app/config.js` 中配置的 `TK.config.links.phileJump`（`https://xn--2esp7m.xn--udsye.art/intro.html`）。
  * ==========================================================================================
  */
 (function (TK) {

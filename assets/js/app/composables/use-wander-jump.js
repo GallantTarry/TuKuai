@@ -15,7 +15,7 @@
  *     1. `isCollapsing` 变成 `true`，主界面像老式 CRT 显像管电视关机一样，向屏幕中心猛烈坍缩成一道亮线并消失（`.animate-implode`）；
  *     2. 全屏纯黑遮罩层浮现，中央出现 `"INITIATING WANDER JUMP..."` 字样与一根 4 秒填满的进度条。
  *   · 第 4500 毫秒（4.5 秒后）：
- *     浏览器整页跳转到 `assets/js/app/config.js` 中配置的 `TK.config.links.wanderJump`（默认是 `https://wander.tukuai.art`）。
+ *     浏览器整页跳转到 `assets/js/app/config.js` 中配置的 `TK.config.links.wanderJump`（`https://xn--9myv52d.xn--udsye.art/`）。
  *
  * 【为什么还需要一个 `resetWanderJump()` 复位函数？】
  *   当用户跳转到新网站后，如果点了浏览器的「后退（←）」按钮返回本页，现代浏览器会直接从内存快照（bfcache）

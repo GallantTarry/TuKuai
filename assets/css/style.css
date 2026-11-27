@@ -10,7 +10,7 @@
     display: none !important;
 }
 
-/* 1. 引入本地 Silkscreen (英数常规) - 注意路径已改为 ../font/ */
+/* 1. 引入本地 Silkscreen (英数常规) - 路径 ../fonts/ */
 @font-face {
     font-family: 'Silkscreen';
     src: url('../fonts/Silkscreen-Regular.ttf') format('truetype');
@@ -18,7 +18,7 @@
     font-display: swap;
 }
 
-/* 2. 引入本地 Silkscreen (英数加粗) - 注意路径已改为 ../font/ */
+/* 2. 引入本地 Silkscreen (英数加粗) - 路径 ../fonts/ */
 @font-face {
     font-family: 'Silkscreen';
     src: url('../fonts/Silkscreen-Bold.ttf') format('truetype');
@@ -26,7 +26,7 @@
     font-display: swap;
 }
 
-/* 3. 新增：引入本地 中文像素字体 - 注意路径已改为 ../font/ */
+/* 3. 引入本地 Zpix 中文像素字体 - 路径 ../fonts/ */
 @font-face {
     font-family: 'ChinesePixel';
     src: url('../fonts/zpix.ttf') format('truetype');

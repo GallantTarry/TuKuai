@@ -417,7 +417,7 @@
 
                                     <!-- 二维码图片本体：
                                          通过 CSS filter 滤镜组合（invert 反相 + sepia 复古 + hue-rotate(80deg) 色相旋转 + saturate 高饱和），
-                                         把原本普通的黑白微信收款码「./imgs/pay_qr.jpg」实时渲染成赛博朋克荧光绿风格！ -->
+                                         把原本普通的黑白微信收款码「./assets/images/ui/pay-qr.jpg」实时渲染成赛博朋克荧光绿风格！ -->
                                     <img alt="Payment QR"
                                          class="w-full h-full object-cover mix-blend-screen pointer-events-none select-none"
                                          draggable="false"
