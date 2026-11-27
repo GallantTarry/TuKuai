@@ -89,7 +89,7 @@ flowchart TD
     subgraph Client["2. Browser Zero-Bundler Runtime (GitHub Pages)"]
         BOOT["PowerShell Boot + SYSTEM ALERT Cookie Gate"]
         UI["index.html + Vue 3 Global Runtime (window.TuKuai)"]
-        SW["Service Worker (sw.js v2.1.7 3-Tier Cache)"]
+        SW["Service Worker (sw.js v2.1.8 3-Tier Cache)"]
         AUD["Hi-Fi Audio Deck + MediaSession API"]
         EMU["EmulatorJS WASM + Model Viewer Iframe"]
         IDB[("IndexedDB (EmulatorJS-roms & tukuai-resume)")]

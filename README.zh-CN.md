@@ -89,7 +89,7 @@ flowchart TD
     subgraph Client["2. 浏览器零打包运行时 (GitHub Pages)"]
         BOOT["PowerShell 开场动画 + SYSTEM ALERT Cookie 授权门禁"]
         UI["index.html + Vue 3 全局运行时 (window.TuKuai)"]
-        SW["Service Worker (sw.js v2.1.7 三级智能缓存)"]
+        SW["Service Worker (sw.js v2.1.8 三级智能缓存)"]
         AUD["Hi-Fi 播控舱 + MediaSession API"]
         EMU["EmulatorJS WASM + Model Viewer 悬浮窗"]
         IDB[("IndexedDB (EmulatorJS-roms 与 tukuai-resume)")]

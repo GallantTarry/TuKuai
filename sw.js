@@ -1,6 +1,41 @@
-// 以后只有当你希望强制清空所有老用户的全站缓存时，才需要修改这个版本号
-const CACHE_VERSION = 'v2.1.7';
+// 每次发版更新静态资源后，只需递增此版本号：
+//   1. 自动清空老访客浏览器中的旧版 CacheStorage；
+//   2. 同源回源请求自动附加 `?_v=${CACHE_VERSION}` 并绕过本地磁盘缓存，直接穿透 Cloudflare 旧边缘缓存（无需去后台手动点 Purge）！
+const CACHE_VERSION = 'v2.1.8';
 const CACHE_NAME = `tukuai-smart-cache-${CACHE_VERSION}`;
+
+/**
+ * 同源版本化回源请求器：
+ *   - 对本站同源资源自动拼上 `?_v=${CACHE_VERSION}`，刺穿 Cloudflare 边缘节点的旧 `HIT` 缓存；
+ *   - 使用 `cache: 'reload'` 绕过浏览器本地 `max-age=600` HTTP 磁盘缓存；
+ *   - 对未发生重定向的 HTML 导航请求剥离合成 URL，保证浏览器地址栏与 `location.search` 干净无额外参数。
+ *
+ * @param {Request} req 原始请求对象
+ * @returns {Promise<Response>}
+ */
+async function fetchVersioned(req) {
+    const url = new URL(req.url);
+    if (url.origin !== self.location.origin) {
+        return fetch(req);
+    }
+
+    url.searchParams.set('_v', CACHE_VERSION);
+    const res = await fetch(url.toString(), {
+        method: 'GET',
+        cache: 'reload',
+        credentials: 'same-origin',
+        redirect: 'follow'
+    });
+
+    if (req.mode === 'navigate' && res.ok && !res.redirected) {
+        return new Response(res.body, {
+            status: res.status,
+            statusText: res.statusText,
+            headers: res.headers
+        });
+    }
+    return res;
+}
 
 // 1. 安装时立即接管
 self.addEventListener('install', event => {
@@ -47,11 +82,11 @@ self.addEventListener('fetch', event => {
     }
 
     // =========================================================================
-    // 策略 A：网页框架 (HTML) -> 【网络优先，缓存兜底】
+    // 策略 A：网页框架 (HTML) -> 【版本化穿透回源优先，本地缓存离线兜底】
     // =========================================================================
     if (req.mode === 'navigate' || url.pathname.endsWith('.html')) {
         event.respondWith(
-            fetch(req)
+            fetchVersioned(req)
                 .then(networkRes => {
                     // 仅在状态码为 200-299 时写入缓存，防止 502/404 错误页污染离线兜底
                     if (networkRes && networkRes.ok) {
@@ -70,18 +105,17 @@ self.addEventListener('fetch', event => {
     }
 
     // =========================================================================
-    // 策略 B：站内重型静态资产 (模拟器 WASM 内核、3D 模型、像素字体、2K AVIF 壁纸) -> 【绝对缓存优先】
+    // 策略 B：站内重型静态资产 (模拟器 WASM 内核、3D 模型、像素字体、2K AVIF 壁纸) -> 【当前版本绝对缓存优先】
     // =========================================================================
     const isHeavyAsset = url.pathname.match(/\.(gba|sfc|smc|nds|nes|gb|gbc|glb|gltf|bin|hdr|ktx2|ttf|woff2|wasm|zip|avif)$/i) ||
         url.pathname.includes('/emulator_data/');
 
     if (isHeavyAsset) {
         event.respondWith(
-            // 注意：这里不加 ignoreSearch，保留你通过 ?v=2 更新单个大文件的能力
             caches.match(req).then(cachedRes => {
                 if (cachedRes) return cachedRes;
 
-                return fetch(req).then(networkRes => {
+                return fetchVersioned(req).then(networkRes => {
                     if (networkRes && networkRes.status === 200) {
                         const clone = networkRes.clone();
                         caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
@@ -94,11 +128,11 @@ self.addEventListener('fetch', event => {
     }
 
     // =========================================================================
-    // 策略 C：普通静态资源 (JS, CSS, 图片, SVG) -> 【Stale-While-Revalidate 异步热更新】
+    // 策略 C：普通静态资源 (JS, CSS, 图片, SVG) -> 【Stale-While-Revalidate + 版本化穿透回源】
     // =========================================================================
     event.respondWith(
         caches.match(req).then(cachedRes => {
-            const networkFetch = fetch(req)
+            const networkFetch = fetchVersioned(req)
                 .then(networkRes => {
                     if (networkRes && networkRes.status === 200) {
                         const clone = networkRes.clone();
@@ -107,7 +141,6 @@ self.addEventListener('fetch', event => {
                     return networkRes;
                 })
                 .catch(err => {
-                    // 若已有缓存则静默返回旧缓存；若无缓存则抛出原始错误，防止向 respondWith 传入 undefined
                     if (cachedRes) return cachedRes;
                     throw err;
                 });
