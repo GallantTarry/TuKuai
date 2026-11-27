@@ -68,7 +68,7 @@
 整个仓库遵循现代前端工程化规范：根目录仅保留入口页面与工程配置文件；所有样式、脚本、字体、音频、图片统一收拢至 `assets/`；所有子系统（`games/`、`models/`、`projects/`）及资源文件均采用纯英文小写 `kebab-case` 命名，子模块入口统一规范为 `index.html`。
 
 ```text
-TuKuai/
+tukuai-os/
 ├── .gitignore                          # Git 忽略规则配置 (忽略 node_modules/、.idea/、.vscode/ 等)
 ├── CNAME                               # GitHub Pages 自定义域名绑定 (xn--udsye.art)
 ├── favicon.ico                         # 网站根目录兜底图标 (16/32/48px，供搜索引擎爬虫与旧浏览器抓取)
@@ -254,38 +254,38 @@ flowchart LR
 
 | 层级 | 文件路径 | 挂载位置 | 核心职责与对外暴露接口 | 依赖/调用的模块 |
 | :--- | :--- | :--- | :--- | :--- |
-| **配置层** | [config.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/config.js) | `TK.config` | 初始化 `window.TuKuai`；集中管理后端 API 地址、跳转外链、localStorage 键名、开机命令文本、灵动岛封面与附件大小上限 | 无（首个加载） |
-| **工具层** | [helpers.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/utils/helpers.js) | `TK.utils` | 提供 `pad2`（两位数补零）、`formatTime`（秒转 `MM:SS`）、`randomItem`/`randomIndex`（随机抽取）、`clamp01`（0~1 夹取）、`clearTimers`（批量清理定时器）、`fadeOutAudio`（音频断电渐弱） | `TK` |
-| **数据层** | [menu.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/data/menu.js) | `TK.data.menuItems` | 定义左侧 6 个导航板块的 `id`、名称、Emoji 图标及三元组霓虹配色（`color` / `bg` / `glow`） | `TK` |
-| **数据层** | [resources.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/data/resources.js) | `TK.data.{onlineTools, projects, games, creativeWorks}` | 集中存放全站 79 张资源卡片数据，内置 `project()` 与 `rom()` 路径自动拼接工厂函数 | `TK` |
-| **数据层** | [media.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/data/media.js) | `TK.data.{playlist, playModes, tvGifs, backgrounds, avatarByStatus}` | 存放 50+ 首歌单、3 种播放模式、12 张小电视 GIF、6 张随机背景壁纸、8 种作息状态 SVG 头像路径 | `TK` |
-| **数据层** | [content.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/data/content.js) | `TK.data.{statusSchedule, quotes, titleVerse, phileButtons, philePetals, emojis, mailDisclaimer}` | 存放 24 小时作息时间表、103 条状态气泡语录、后台滚动标题诗句、5-Phile 胶囊样式与花瓣角度、密函免责声明与 Emoji 列表 | `TK` |
-| **组件层** | [resource-cards.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/components/resource-cards.js) | `TK.components.{TabSection, LinkCard, LaunchCard}` | 封装三大高频复用 UI 组件：`<tab-section>` 统一板块标题与滚动区；`<link-card>` 渲染外链卡片（`VISIT`）；`<launch-card>` 渲染内嵌启动卡片（`OPEN` / `START`） | `TK.components` |
-| **组件层** | [mail-modal.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/components/mail-modal.js) | `TK.components.MailModal` | 封装 `<mail-modal>` 密函弹窗：支持文本输入、Emoji 插入、多文件转 Base64 上传、`MediaRecorder` 麦克风语音录制与本地 `Blob URL` 试听、微信打赏码全息层切换 | `TK.config`, `TK.data` |
-| **逻辑层** | [use-theme.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-theme.js) | `TK.composables.useTheme` | 监听 `currentTab` 变化，实时计算 `activeColor`、`activeGlow` 及注入 `#app` 根节点的 `cssVars`（`--theme-color` / `--theme-bg` / `--theme-glow`） | Vue `computed` |
-| **逻辑层** | [use-clock-status.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-clock-status.js) | `TK.composables.useClockStatus` | 每秒更新 `currentTime`（`HH:MM:SS`），并根据当前小时匹配 `statusSchedule` 自动切换 `currentStatus` 与 `currentAvatarSvg` | `TK.data`, `TK.utils.pad2` |
-| **逻辑层** | [use-uv-counter.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-uv-counter.js) | `TK.composables.useUvCounter` | 在 `localStorage` 生成持久化设备 UUID，首次进站上报并拉取全站 UV（`fans`），随后每 30 秒静默轮询刷新 | `TK.config` |
-| **逻辑层** | [use-chat-bubble.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-chat-bubble.js) | `TK.composables.useChatBubble` | 当作息状态为 `'smoking'` 时，每 15 秒从 `TK.data.quotes` 随机抽取一句语录弹出气泡，展示 4 秒后自动收起 | `TK.data.quotes`, `TK.utils.randomItem` |
-| **逻辑层** | [use-particles.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-particles.js) | `TK.composables.useParticles` | 驱动全屏顶层 `<canvas>`（60fps）：绘制 45 颗背景漂浮微粒、鼠标/触摸彩色拖尾粒子（手机端半径减半），以及桌面端十字像素准星光标（点击瞬间红芯放大） | HTML5 Canvas 2D |
-| **逻辑层** | [use-boot-sequence.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-boot-sequence.js) | `TK.composables.useBootSequence` | 检查 `localStorage.getItem('os_booted')`：老访客直接跳过开机；新访客执行矩阵乱码逐字解码动画，完成后淡出终端并写入标记 | `TK.config` |
-| **逻辑层** | [use-cookie-consent.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-cookie-consent.js) | `TK.composables.useCookieConsent` | 等待 `isBooted` 变为 `true` 后延迟 800ms 检查 Cookie 授权记录，未授权则弹出底部毛玻璃横幅并绑定「同意 / 拒绝」按钮 | `TK.config` |
-| **逻辑层** | [use-scroll-reveal.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-scroll-reveal.js) | `TK.composables.useScrollReveal` | 结合 `MutationObserver`（监听标签页切换后新卡片挂载）与 `IntersectionObserver`（监听卡片滚入视口），为 `.glass-card` 和 `.song-item` 赋予阶梯式上浮渐显动效 | 浏览器 Observer API |
-| **逻辑层** | [use-board.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-board.js) | `TK.composables.useBoard` | 管理「土块画板」：档案/画板果冻翻转切换、Retina DPR 高清画布自适应、5 色 3 档画笔、0~1 比例坐标转换、40ms 笔触批量合并发送、历史回放（上限 5000 条）、全服清屏与 3s 断线自动重连 | `TK.config.api.boardWs`, `TK.utils.clamp01` |
-| **逻辑层** | [use-music-player.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-music-player.js) | `TK.composables.useMusicPlayer` | 控制全局唯一 `<audio>`：点歌、上一首/下一首、顺序/随机/单曲循环、进度拖拽、音量调节、小电视 GIF 切换，同步 `navigator.mediaSession` 元数据，并向跃迁模块暴露 `fadeOutMusic` 与 `restoreVolume` | `TK.data`, `TK.utils`, `TK.config.mediaSession` |
-| **逻辑层** | [use-game-window.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-game-window.js) | `TK.composables.useGameWindow` | 管理全站统一的悬浮 `<iframe>` 窗口：支持片头 `.mp4` 视频覆盖播放（点击跳过）、最小化后台保活（采用 `opacity/visibility` 隐藏而不销毁 DOM）、关闭前调用子页 `__tukuaiSaveNow()` 存档、全屏切换及模拟器键盘焦点同步 | `window.postMessage`, Fullscreen API |
-| **逻辑层** | [use-wander-jump.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-wander-jump.js) | `TK.composables.useWanderJump` | 控制名言跃迁：0ms 启动界面过载抖动与音乐渐弱 → 400ms 触发 CRT 坍缩与黑屏进度条 → 4500ms 跳转目标站点；提供 `resetWanderJump()` 供 bfcache 返回时复位 | `TK.config.links.wanderJump`, `fadeOutMusic` |
-| **逻辑层** | [use-phile-fusion.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-phile-fusion.js) | `TK.composables.usePhileFusion` | 控制 5-Phile 胶囊聚变：实时测量 5 个按钮 DOM 坐标 → 双帧 `rAF` 触发飞向中心合拢 → 750ms 高速旋转 → 1250ms 绽放花朵大图 → 2500ms 整页跳转；内置 Web Audio API 实时合成五音和弦 | `TK.data.philePetals`, `TK.config.links.phileJump`, `fadeOutMusic` |
-| **内核层** | [page-behaviors.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/core/page-behaviors.js) | 立即执行 | 拦截移动端双指捏合、300ms 内快速双击放大与 Safari `gesturestart` 缩放；捕获 `mouseover` 动态摘除元素的原生 `title` 属性以隐藏系统默认黄底提示框 | DOM Events |
-| **内核层** | [title-marquee.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/core/title-marquee.js) | 立即执行 | 监听 `visibilitychange`：切到后台时动态创建内联 `Blob Web Worker`，每 200ms 驱动标签页标题向左循环滚动诗句；切回前台时显示 `· ᴀᴍᴇɴ ·` 并在 2.5s 后恢复原标题 | `TK.data.titleVerse`, Web Worker |
-| **内核层** | [service-worker.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/core/service-worker.js) | 立即执行 | 在 `window.load` 后注册根目录 `./sw.js`；区分首次安装与版本更新，仅在老访客后台激活新版本 SW 时自动执行 `location.reload()` 热更新 | Service Worker API |
-| **入口层** | [main.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/main.js) | `app.mount('#app')` | 调用全部 `TK.composables.useXxx()`、监听 `pageshow (event.persisted)` 处理浏览器后退缓存（bfcache）状态复位、批量注册 `TK.components` 并挂载 Vue 根实例 | 以上全部模块 |
+| **配置层** | [config.js](./assets/js/app/config.js) | `TK.config` | 初始化 `window.TuKuai`；集中管理后端 API 地址、跳转外链、localStorage 键名、开机命令文本、灵动岛封面与附件大小上限 | 无（首个加载） |
+| **工具层** | [helpers.js](./assets/js/app/utils/helpers.js) | `TK.utils` | 提供 `pad2`（两位数补零）、`formatTime`（秒转 `MM:SS`）、`randomItem`/`randomIndex`（随机抽取）、`clamp01`（0~1 夹取）、`clearTimers`（批量清理定时器）、`fadeOutAudio`（音频断电渐弱） | `TK` |
+| **数据层** | [menu.js](./assets/js/app/data/menu.js) | `TK.data.menuItems` | 定义左侧 6 个导航板块的 `id`、名称、Emoji 图标及三元组霓虹配色（`color` / `bg` / `glow`） | `TK` |
+| **数据层** | [resources.js](./assets/js/app/data/resources.js) | `TK.data.{onlineTools, projects, games, creativeWorks}` | 集中存放全站 79 张资源卡片数据，内置 `project()` 与 `rom()` 路径自动拼接工厂函数 | `TK` |
+| **数据层** | [media.js](./assets/js/app/data/media.js) | `TK.data.{playlist, playModes, tvGifs, backgrounds, avatarByStatus}` | 存放 50+ 首歌单、3 种播放模式、12 张小电视 GIF、6 张随机背景壁纸、8 种作息状态 SVG 头像路径 | `TK` |
+| **数据层** | [content.js](./assets/js/app/data/content.js) | `TK.data.{statusSchedule, quotes, titleVerse, phileButtons, philePetals, emojis, mailDisclaimer}` | 存放 24 小时作息时间表、103 条状态气泡语录、后台滚动标题诗句、5-Phile 胶囊样式与花瓣角度、密函免责声明与 Emoji 列表 | `TK` |
+| **组件层** | [resource-cards.js](./assets/js/app/components/resource-cards.js) | `TK.components.{TabSection, LinkCard, LaunchCard}` | 封装三大高频复用 UI 组件：`<tab-section>` 统一板块标题与滚动区；`<link-card>` 渲染外链卡片（`VISIT`）；`<launch-card>` 渲染内嵌启动卡片（`OPEN` / `START`） | `TK.components` |
+| **组件层** | [mail-modal.js](./assets/js/app/components/mail-modal.js) | `TK.components.MailModal` | 封装 `<mail-modal>` 密函弹窗：支持文本输入、Emoji 插入、多文件转 Base64 上传、`MediaRecorder` 麦克风语音录制与本地 `Blob URL` 试听、微信打赏码全息层切换 | `TK.config`, `TK.data` |
+| **逻辑层** | [use-theme.js](./assets/js/app/composables/use-theme.js) | `TK.composables.useTheme` | 监听 `currentTab` 变化，实时计算 `activeColor`、`activeGlow` 及注入 `#app` 根节点的 `cssVars`（`--theme-color` / `--theme-bg` / `--theme-glow`） | Vue `computed` |
+| **逻辑层** | [use-clock-status.js](./assets/js/app/composables/use-clock-status.js) | `TK.composables.useClockStatus` | 每秒更新 `currentTime`（`HH:MM:SS`），并根据当前小时匹配 `statusSchedule` 自动切换 `currentStatus` 与 `currentAvatarSvg` | `TK.data`, `TK.utils.pad2` |
+| **逻辑层** | [use-uv-counter.js](./assets/js/app/composables/use-uv-counter.js) | `TK.composables.useUvCounter` | 在 `localStorage` 生成持久化设备 UUID，首次进站上报并拉取全站 UV（`fans`），随后每 30 秒静默轮询刷新 | `TK.config` |
+| **逻辑层** | [use-chat-bubble.js](./assets/js/app/composables/use-chat-bubble.js) | `TK.composables.useChatBubble` | 当作息状态为 `'smoking'` 时，每 15 秒从 `TK.data.quotes` 随机抽取一句语录弹出气泡，展示 4 秒后自动收起 | `TK.data.quotes`, `TK.utils.randomItem` |
+| **逻辑层** | [use-particles.js](./assets/js/app/composables/use-particles.js) | `TK.composables.useParticles` | 驱动全屏顶层 `<canvas>`（60fps）：绘制 45 颗背景漂浮微粒、鼠标/触摸彩色拖尾粒子（手机端半径减半），以及桌面端十字像素准星光标（点击瞬间红芯放大） | HTML5 Canvas 2D |
+| **逻辑层** | [use-boot-sequence.js](./assets/js/app/composables/use-boot-sequence.js) | `TK.composables.useBootSequence` | 检查 `localStorage.getItem('os_booted')`：老访客直接跳过开机；新访客执行矩阵乱码逐字解码动画，完成后淡出终端并写入标记 | `TK.config` |
+| **逻辑层** | [use-cookie-consent.js](./assets/js/app/composables/use-cookie-consent.js) | `TK.composables.useCookieConsent` | 等待 `isBooted` 变为 `true` 后延迟 800ms 检查 Cookie 授权记录，未授权则弹出底部毛玻璃横幅并绑定「同意 / 拒绝」按钮 | `TK.config` |
+| **逻辑层** | [use-scroll-reveal.js](./assets/js/app/composables/use-scroll-reveal.js) | `TK.composables.useScrollReveal` | 结合 `MutationObserver`（监听标签页切换后新卡片挂载）与 `IntersectionObserver`（监听卡片滚入视口），为 `.glass-card` 和 `.song-item` 赋予阶梯式上浮渐显动效 | 浏览器 Observer API |
+| **逻辑层** | [use-board.js](./assets/js/app/composables/use-board.js) | `TK.composables.useBoard` | 管理「土块画板」：档案/画板果冻翻转切换、Retina DPR 高清画布自适应、5 色 3 档画笔、0~1 比例坐标转换、40ms 笔触批量合并发送、历史回放（上限 5000 条）、全服清屏与 3s 断线自动重连 | `TK.config.api.boardWs`, `TK.utils.clamp01` |
+| **逻辑层** | [use-music-player.js](./assets/js/app/composables/use-music-player.js) | `TK.composables.useMusicPlayer` | 控制全局唯一 `<audio>`：点歌、上一首/下一首、顺序/随机/单曲循环、进度拖拽、音量调节、小电视 GIF 切换，同步 `navigator.mediaSession` 元数据，并向跃迁模块暴露 `fadeOutMusic` 与 `restoreVolume` | `TK.data`, `TK.utils`, `TK.config.mediaSession` |
+| **逻辑层** | [use-game-window.js](./assets/js/app/composables/use-game-window.js) | `TK.composables.useGameWindow` | 管理全站统一的悬浮 `<iframe>` 窗口：支持片头 `.mp4` 视频覆盖播放（点击跳过）、最小化后台保活（采用 `opacity/visibility` 隐藏而不销毁 DOM）、关闭前调用子页 `__tukuaiSaveNow()` 存档、全屏切换及模拟器键盘焦点同步 | `window.postMessage`, Fullscreen API |
+| **逻辑层** | [use-wander-jump.js](./assets/js/app/composables/use-wander-jump.js) | `TK.composables.useWanderJump` | 控制名言跃迁：0ms 启动界面过载抖动与音乐渐弱 → 400ms 触发 CRT 坍缩与黑屏进度条 → 4500ms 跳转目标站点；提供 `resetWanderJump()` 供 bfcache 返回时复位 | `TK.config.links.wanderJump`, `fadeOutMusic` |
+| **逻辑层** | [use-phile-fusion.js](./assets/js/app/composables/use-phile-fusion.js) | `TK.composables.usePhileFusion` | 控制 5-Phile 胶囊聚变：实时测量 5 个按钮 DOM 坐标 → 双帧 `rAF` 触发飞向中心合拢 → 750ms 高速旋转 → 1250ms 绽放花朵大图 → 2500ms 整页跳转；内置 Web Audio API 实时合成五音和弦 | `TK.data.philePetals`, `TK.config.links.phileJump`, `fadeOutMusic` |
+| **内核层** | [page-behaviors.js](./assets/js/app/core/page-behaviors.js) | 立即执行 | 拦截移动端双指捏合、300ms 内快速双击放大与 Safari `gesturestart` 缩放；捕获 `mouseover` 动态摘除元素的原生 `title` 属性以隐藏系统默认黄底提示框 | DOM Events |
+| **内核层** | [title-marquee.js](./assets/js/app/core/title-marquee.js) | 立即执行 | 监听 `visibilitychange`：切到后台时动态创建内联 `Blob Web Worker`，每 200ms 驱动标签页标题向左循环滚动诗句；切回前台时显示 `· ᴀᴍᴇɴ ·` 并在 2.5s 后恢复原标题 | `TK.data.titleVerse`, Web Worker |
+| **内核层** | [service-worker.js](./assets/js/app/core/service-worker.js) | 立即执行 | 在 `window.load` 后注册根目录 `./sw.js`；区分首次安装与版本更新，仅在老访客后台激活新版本 SW 时自动执行 `location.reload()` 热更新 | Service Worker API |
+| **入口层** | [main.js](./assets/js/app/main.js) | `app.mount('#app')` | 调用全部 `TK.composables.useXxx()`、监听 `pageshow (event.persisted)` 处理浏览器后退缓存（bfcache）状态复位、批量注册 `TK.components` 并挂载 Vue 根实例 | 以上全部模块 |
 
 ---
 
 ### 3.4 关键底层技术机制剖析
 
 #### 1. 宿主窗口与复古游戏模拟器（`games/emulator.html`）的双向协作机制
-当用户在「复古游戏」点击任意掌机游戏 `START` 时，[use-game-window.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-game-window.js) 会在悬浮窗口的 `<iframe>` 中加载 `./games/emulator.html?rom=xxx.gba`。两者之间设计了三项深度协同机制：
+当用户在「复古游戏」点击任意掌机游戏 `START` 时，[use-game-window.js](./assets/js/app/composables/use-game-window.js) 会在悬浮窗口的 `<iframe>` 中加载 `./games/emulator.html?rom=xxx.gba`。两者之间设计了三项深度协同机制：
 
 ```mermaid
 sequenceDiagram
@@ -321,7 +321,7 @@ sequenceDiagram
 * **40ms 批量队列节流**：本地移动鼠标产生的密集线段先推入 `pendingDrawData` 队列，每 40ms 打包为一条 `{ type: 'draw_batch', data: [...] }` WebSocket 消息发出，将每秒消息包数量限制在 25 包以内。
 
 #### 3. PWA Service Worker（`sw.js`）三级智能缓存路由
-[sw.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/sw.js) 针对不同体积与更新频率的资源实施差异化拦截策略：
+[sw.js](./sw.js) 针对不同体积与更新频率的资源实施差异化拦截策略：
 * **旁路直通（Bypass）**：非 `GET` 请求、Google Analytics、Cloudflare KV 统计接口，以及带有 `Range` 头的音频流媒体请求（交由浏览器原生流式磁盘缓存处理，保障音乐进度条自由拖拽且完美兼容 Safari）。
 * **策略 A —— 网页骨架（`.html`）采用 Network-First（网络优先，缓存兜底）**：每次联网访问均拉取最新 HTML，断网离线时自动回退本地缓存（并对 `emulator.html?rom=xxx` 启用 `ignoreSearch: true` 共享同一个 HTML 缓存）。
 * **策略 B —— 重型资产（`.gba/.sfc/.smc` 游戏 ROM、`.gltf/.bin` 3D 模型、`emulator_data/` WASM 内核、`.ttf` 字体）采用 Cache-First（绝对缓存优先）**：首次下载后永久驻留本地 `CacheStorage`，二次打开百兆模型与游戏均实现毫秒级秒开。
@@ -333,10 +333,10 @@ sequenceDiagram
 
 | 业务模块 | 调用位置 | 请求方式与地址 | 用途说明 |
 | :--- | :--- | :--- | :--- |
-| **独立访客统计 (UV)** | [use-uv-counter.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-uv-counter.js) | `GET https://tukuai-kv.xn--udsye.art/api/uv?uuid=<UUID>` | 传入设备 UUID 统计并获取全站 `fans` 总数（开启 30s 轮询时传 `?readonly=true` 仅读取不累加） |
-| **飞鸽传书密函发送** | [mail-modal.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/components/mail-modal.js) | `POST https://api.xn--udsye.art` | 发送 JSON `{ message, attachments: [{ filename, content(Base64) }] }` 至 Cloudflare Worker 转发邮件 |
-| **土块画板实时同步** | [use-board.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/composables/use-board.js) | `WSS wss://board.xn--udsye.art/ws` | 全服画板实时广播与历史笔触下发（支持 `history` / `draw` / `draw_batch` / `clear` 四类消息） |
-| **极客视界文章源与翻译** | [daily.html](file:///C:/Users/w1961/Documents/GitHub/TuKuai/daily.html) | `GET https://daily.土块.art`<br>`POST https://daily.土块.art/translate` | 获取 GitHub Blog 最新技术文章列表，并将英文标题与段落批量翻译为中文实现双语对照精读 |
+| **独立访客统计 (UV)** | [use-uv-counter.js](./assets/js/app/composables/use-uv-counter.js) | `GET https://tukuai-kv.xn--udsye.art/api/uv?uuid=<UUID>` | 传入设备 UUID 统计并获取全站 `fans` 总数（开启 30s 轮询时传 `?readonly=true` 仅读取不累加） |
+| **飞鸽传书密函发送** | [mail-modal.js](./assets/js/app/components/mail-modal.js) | `POST https://api.xn--udsye.art` | 发送 JSON `{ message, attachments: [{ filename, content(Base64) }] }` 至 Cloudflare Worker 转发邮件 |
+| **土块画板实时同步** | [use-board.js](./assets/js/app/composables/use-board.js) | `WSS wss://board.xn--udsye.art/ws` | 全服画板实时广播与历史笔触下发（支持 `history` / `draw` / `draw_batch` / `clear` 四类消息） |
+| **极客视界文章源与翻译** | [daily.html](./daily.html) | `GET https://daily.土块.art`<br>`POST https://daily.土块.art/translate` | 获取 GitHub Blog 最新技术文章列表，并将英文标题与段落批量翻译为中文实现双语对照精读 |
 
 ---
 
@@ -349,7 +349,7 @@ sequenceDiagram
 
 ### 4.1 新增/修改「在线使用」外链工具
 
-1. 打开 [assets/js/app/data/resources.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/data/resources.js)。
+1. 打开 [assets/js/app/data/resources.js](./assets/js/app/data/resources.js)。
 2. 找到 `TK.data.onlineTools` 数组（第 31 行起）。
 3. 复制任意一行，粘贴到你想放置的位置，修改 `name`（标题）、`desc`（副标题说明）、`url`（目标网址）：
 
@@ -364,7 +364,7 @@ TK.data.onlineTools = [
 
 ### 4.2 新增/修改「文件下载（资源库）」自研软件
 
-我们在 [assets/js/app/data/resources.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/data/resources.js) 中内置了标准化工厂函数 `project(slug, name, desc, opts)`。新增一款自研软件只需 **两步**：
+我们在 [assets/js/app/data/resources.js](./assets/js/app/data/resources.js) 中内置了标准化工厂函数 `project(slug, name, desc, opts)`。新增一款自研软件只需 **两步**：
 
 #### 第一步：按标准命名摆放 4 个文件（假设新软件英文目录代号 `slug` 为 `my-app`）
 * **卡片图标**：放入 `assets/images/apps/my-app.ico`
@@ -373,7 +373,7 @@ TK.data.onlineTools = [
 * **说明文档**：放入 `projects/my-app/docs/manual.md`
 
 #### 第二步：在 `resources.js` 中登记一行代码
-打开 [assets/js/app/data/resources.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/data/resources.js)，在 `TK.data.projects` 数组中添加：
+打开 [assets/js/app/data/resources.js](./assets/js/app/data/resources.js)，在 `TK.data.projects` 数组中添加：
 
 ```javascript
 TK.data.projects = [
@@ -392,8 +392,8 @@ TK.data.projects = [
 ### 4.3 新增/修改「复古游戏」掌机 ROM 或网页游戏
 
 #### 情况 A：新增掌机模拟器游戏（支持 `.gba` / `.sfc` / `.smc` / `.nes` / `.gb` / `.gbc` / `.nds`）
-1. 将游戏 ROM 文件（例如 `metal_slug.gba`，建议使用英文小写加下划线命名）放入 [`games/roms/`](file:///C:/Users/w1961/Documents/GitHub/TuKuai/games/roms) 目录。
-2. 打开 [assets/js/app/data/resources.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/data/resources.js)，在 `TK.data.games` 数组中添加一行 `rom('Emoji图标', '游戏中文名', 'ROM文件名')`：
+1. 将游戏 ROM 文件（例如 `metal_slug.gba`，建议使用英文小写加下划线命名）放入 [`games/roms/`](./games/roms) 目录。
+2. 打开 [assets/js/app/data/resources.js](./assets/js/app/data/resources.js)，在 `TK.data.games` 数组中添加一行 `rom('Emoji图标', '游戏中文名', 'ROM文件名')`：
 
 ```javascript
 TK.data.games = [
@@ -401,7 +401,7 @@ TK.data.games = [
     rom('🔫', '合金弹头 Advance', 'metal_slug.gba'),
 ];
 ```
-> [games/emulator.html](file:///C:/Users/w1961/Documents/GitHub/TuKuai/games/emulator.html) 会根据文件后缀名自动识别模拟器核心（`.gba` → `gba`，`.sfc/.smc` → `snes`，`.nes` → `nes`，`.gb/.gbc` → `gb`，`.nds` → `desmume`），并自动为该游戏生成独立的 IndexedDB 存档空间。
+> [games/emulator.html](./games/emulator.html) 会根据文件后缀名自动识别模拟器核心（`.gba` → `gba`，`.sfc/.smc` → `snes`，`.nes` → `nes`，`.gb/.gbc` → `gb`，`.nds` → `desmume`），并自动为该游戏生成独立的 IndexedDB 存档空间。
 
 #### 情况 B：新增在线网页小游戏
 直接在 `TK.data.games` 数组中添加普通对象：
@@ -414,10 +414,10 @@ TK.data.games = [
 ### 4.4 新增/修改「创意空间」3D 模型或互动网页
 
 #### 情况 A：新增本地 3D 模型（GLTF / GLB 格式）
-1. 在 [`models/`](file:///C:/Users/w1961/Documents/GitHub/TuKuai/models) 下新建一个英文小写文件夹，例如 `models/cyber-city/`。
+1. 在 [`models/`](./models) 下新建一个英文小写文件夹，例如 `models/cyber-city/`。
 2. 将模型的 `scene.gltf`、`scene.bin` 及 `textures/` 贴图文件夹放入 `models/cyber-city/`。
-3. 复制 [`models/residential-block/index.html`](file:///C:/Users/w1961/Documents/GitHub/TuKuai/models/residential-block/index.html) 到 `models/cyber-city/index.html`（无需修改代码，它会自动加载同目录下的 `./scene.gltf`）。
-4. 打开 [assets/js/app/data/resources.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/data/resources.js)，在 `TK.data.creativeWorks` 数组中添加一行：
+3. 复制 [`models/residential-block/index.html`](./models/residential-block/index.html) 到 `models/cyber-city/index.html`（无需修改代码，它会自动加载同目录下的 `./scene.gltf`）。
+4. 打开 [assets/js/app/data/resources.js](./assets/js/app/data/resources.js)，在 `TK.data.creativeWorks` 数组中添加一行：
 
 ```javascript
 TK.data.creativeWorks = [
@@ -433,16 +433,16 @@ TK.data.creativeWorks = [
 
 ### 4.5 新增/修改「电子音乐」歌曲、小电视动图与背景壁纸
 
-全部集中在 [assets/js/app/data/media.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/data/media.js) 一个文件中：
+全部集中在 [assets/js/app/data/media.js](./assets/js/app/data/media.js) 一个文件中：
 
 1. **新增背景音乐（MP3）**：
-   * 把音频文件（例如 `夜曲.mp3`）放入 [`assets/audio/`](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/audio) 目录。
+   * 把音频文件（例如 `夜曲.mp3`）放入 [`assets/audio/`](./assets/audio) 目录。
    * 在 `media.js` 的 `playlistTitles` 数组中加入歌名字符串 `'夜曲'`（无需写路径和 `.mp3` 后缀，程序会自动映射为 `./assets/audio/夜曲.mp3`）。
 2. **新增复古小电视 MV 动图（GIF）**：
-   * 把动图（例如 `mini-mv-13.gif`）放入 [`assets/images/tv-gifs/`](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/images/tv-gifs) 目录。
+   * 把动图（例如 `mini-mv-13.gif`）放入 [`assets/images/tv-gifs/`](./assets/images/tv-gifs) 目录。
    * 在 `media.js` 的 `TK.data.tvGifs` 数组末尾追加 `'./assets/images/tv-gifs/mini-mv-13.gif'`。
 3. **新增全站随机背景壁纸**：
-   * 把图片（例如 `bg-06.jpg` 或 `.avif`）放入 [`assets/images/backgrounds/`](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/images/backgrounds) 目录。
+   * 把图片（例如 `bg-06.jpg` 或 `.avif`）放入 [`assets/images/backgrounds/`](./assets/images/backgrounds) 目录。
    * 在 `media.js` 的 `TK.data.backgrounds` 数组末尾追加 `'./assets/images/backgrounds/bg-06.jpg'`。
 
 ---
@@ -450,9 +450,9 @@ TK.data.creativeWorks = [
 ### 4.6 修改导航菜单、霓虹主题色、作息表与状态语录
 
 * **修改左侧 6 大导航菜单名称、图标或主题色**：
-  打开 [assets/js/app/data/menu.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/data/menu.js)，修改 `TK.data.menuItems` 中对应项的 `title`、`icon`、`color`（主色）、`bg`（15% 透明度背景光）与 `glow`（50% 透明度发光阴影）。
+  打开 [assets/js/app/data/menu.js](./assets/js/app/data/menu.js)，修改 `TK.data.menuItems` 中对应项的 `title`、`icon`、`color`（主色）、`bg`（15% 透明度背景光）与 `glow`（50% 透明度发光阴影）。
 * **修改 24 小时作息时间段或聊天气泡语录**：
-  打开 [assets/js/app/data/content.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/data/content.js)：
+  打开 [assets/js/app/data/content.js](./assets/js/app/data/content.js)：
   * `TK.data.statusSchedule`：定义每个时间段对应的状态名（并与 `media.js` 中的 `avatarByStatus` 头像一一对应）；
   * `TK.data.quotes`：定义 `'smoking'` 状态下每 15 秒随机弹出的语录词库；
   * `TK.data.titleVerse`：定义浏览器标签页切到后台时的滚动跑马灯诗句。
@@ -462,9 +462,9 @@ TK.data.creativeWorks = [
 ### 4.7 修改后端接口地址、跃迁网址与刷新全站缓存
 
 * **修改 API 地址或跃迁目标网址**：
-  打开 [assets/js/app/config.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/assets/js/app/config.js)，修改 `TK.config.api`（密函、UV、画板 WebSocket）或 `TK.config.links`（`blog`、`wanderJump`、`phileJump`）。
+  打开 [assets/js/app/config.js](./assets/js/app/config.js)，修改 `TK.config.api`（密函、UV、画板 WebSocket）或 `TK.config.links`（`blog`、`wanderJump`、`phileJump`）。
 * **强制老访客清空旧版 PWA 缓存**：
-  当你替换了某个同名大文件（如替换了某张图片或某个 ROM）并希望所有老访客立即重新下载时，打开根目录的 [sw.js](file:///C:/Users/w1961/Documents/GitHub/TuKuai/sw.js)，将第 2 行的 `CACHE_VERSION` 版本号递增（例如从 `'v2.0.0'` 改为 `'v2.0.1'`）即可。
+  当你替换了某个同名大文件（如替换了某张图片或某个 ROM）并希望所有老访客立即重新下载时，打开根目录的 [sw.js](./sw.js)，将第 2 行的 `CACHE_VERSION` 版本号递增（例如从 `'v2.0.0'` 改为 `'v2.0.1'`）即可。
 
 ---
 

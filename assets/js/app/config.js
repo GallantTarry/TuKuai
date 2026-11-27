@@ -74,7 +74,7 @@
              * 在「我的简介」页点击底部名言 "Not all those who wander are lost." 后，
              * 播放完 4.5 秒黑屏坍缩动画后，整个浏览器页面跳转过去的目标网址
              */
-            wanderJump: 'https://gallanttarry.github.io/GallantTarry/',
+            wanderJump: 'https://xn--9myv52d.xn--udsye.art/',
 
             /**
              * 在「我的简介」页点击 5 个彩色性格胶囊按钮（Hodophile 等）后，
