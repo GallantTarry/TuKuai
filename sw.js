@@ -1,5 +1,5 @@
 // 以后只有当你希望强制清空所有老用户的全站缓存时，才需要修改这个版本号
-const CACHE_VERSION = 'v2.0.7';
+const CACHE_VERSION = 'v2.0.9';
 const CACHE_NAME = `tukuai-smart-cache-${CACHE_VERSION}`;
 
 // 1. 安装时立即接管
@@ -37,6 +37,7 @@ self.addEventListener('fetch', event => {
         url.hostname.includes('googletagmanager.com') ||
         url.hostname.includes('tukuai-kv') ||
         url.hostname === 'music.xn--udsye.art' ||
+        url.hostname === 'roms.xn--udsye.art' ||
         url.pathname.includes('/api/') ||
         url.pathname === '/robots.txt' ||
         url.pathname === '/sitemap.xml'

@@ -122,18 +122,17 @@
     // 对应页面：点击左侧「🎮 复古游戏」看到的卡片列表，右侧按钮是红色的 `START`
     //
     // 这里分两种类型的游戏：
-    //   类型 A —— 【模拟器 ROM 游戏】（占绝大多数，GBA / SNES 掌机游戏）：
+    //   类型 A —— 【模拟器 ROM 游戏】（占绝大多数，GBA / SNES / NDS 掌机游戏）：
     //     使用下面的 `rom('表情图标', '游戏中文名', 'rom文件名')` 快捷函数添加！
-    //     只要把游戏包（`.gba` / `.sfc` / `.smc`）放进 `./games/roms/` 文件夹，
-    //     `rom()` 函数会自动帮你把副标题写成 `"DIR: 文件名"`，并自动拼好模拟器启动地址 `./games/emulator.html?rom=文件名`。
+    //     ROM 文件统一托管在 Cloudflare R2（`https://roms.xn--udsye.art`），本地备份于桌面 `tukuai-roms` 目录。
+    //     直接运行项目根目录的 `./upload-rom.ps1` 即可一键上传新 ROM 到 R2 并自动追加到下方列表！
     //
     //   类型 B —— 【外部网页小游戏】（比如第一项 Pixel Canvas）：
     //     直接写对象：`{emoji: '🎨', title: '游戏名', desc: '副标题介绍', url: 'https://外部网址/'}`
     //
     // 【以后怎么新增一款掌机游戏？】
-    //   1. 把你的游戏 ROM 文件（比如 `contra.nes` 或 `pokemon.gba`）放进 `games/roms/` 文件夹
-    //   2. 在下面 `TK.data.games` 数组里加一行：
-    //      rom('🔫', '魂斗罗', 'contra.nes'),
+    //   直接右键运行根目录 `upload-rom.ps1` 选文件即可；或命令行执行：
+    //   .\upload-rom.ps1 -Files "D:\contra.nes" -Title "魂斗罗" -Emoji "🔫"
     // ========================================================================
     const rom = (emoji, title, romFile) => ({
         emoji,                                     // 卡片左边黑框里显示的 Emoji 图标

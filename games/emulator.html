@@ -321,8 +321,9 @@
         window.EJS_color = '#4ade80';
         window.EJS_startOnLoaded = true;
 
+        const ROM_BASE_URL = 'https://roms.xn--udsye.art';
         window.EJS_pathtodata = './emulator_data/';
-        window.EJS_gameUrl = './roms/' + romFile;
+        window.EJS_gameUrl = `${ROM_BASE_URL}/${encodeURIComponent(romFile)}`;
 
         // 👇 2. 修正 NDS 专属配置 👇
         if (core === 'desmume' || core === 'nds' || core === 'melonds') {

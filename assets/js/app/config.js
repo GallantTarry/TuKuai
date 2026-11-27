@@ -62,10 +62,11 @@
         }),
 
         /**
-         * 【电子音乐云端无损曲库 CDN 根地址】
-         * 托管于 Cloudflare R2（存储桶：tukuai-music），免出站流量费并支持 HTTP Range 流式分片播放
+         * 【电子音乐与掌机游戏 ROM 云端 R2 CDN 根地址】
+         * 托管于 Cloudflare R2（tukuai-music / tukuai-roms），免出站流量费
          */
         audioBaseUrl: 'https://music.xn--udsye.art',
+        romBaseUrl: 'https://roms.xn--udsye.art',
 
         /**
          * 【页面跳转与内嵌链接】
