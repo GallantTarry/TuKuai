@@ -29,8 +29,8 @@
 
     const {watch, nextTick} = Vue;
 
-    /** 需要加滚动渐显动效的 3 类元素的 CSS 选择器 */
-    const REVEAL_SELECTOR = '.glass-card, h2.tab-title, .song-item';
+    /** 需要加滚动渐显动效的 3 类元素的 CSS 选择器（.tab-header 覆盖整行标题栏及右侧附加按钮） */
+    const REVEAL_SELECTOR = '.glass-card, .tab-header, .song-item';
     /** 浮现动画持续时间：600 毫秒（与 `css/style.css` 里 `.reveal-transition` 的 0.6s 严格对应） */
     const REVEAL_DURATION_MS = 600;
 
