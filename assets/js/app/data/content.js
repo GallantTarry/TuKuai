@@ -96,32 +96,36 @@
      */
     TK.data.phileButtonBaseClass =
         'phile-btn px-4 py-2 md:px-5 md:py-2.5 text-[11px] md:text-sm font-bold tracking-wider rounded-full ' +
-        'hover:-translate-y-1 active:scale-95 transition-all duration-300 cursor-pointer backdrop-blur-md select-none';
+        'active:scale-95 transition-all duration-300 cursor-pointer select-none';
 
     /**
-     * 5 个胶囊按钮各自的名字（`label`）与专属颜色样式（`colorClass`）：
-     * 每项的 `colorClass` 都包含：10% 透明底色、文字颜色、30% 透明边框、默认微光阴影、悬停强光阴影、悬停 20% 底色
+     * 5 个胶囊按钮各自的名字（`label`）、RGB 色值（`rgb`，供 CSS 渲染恒定通透发光，避免 backdrop-filter 在动画层内变暗）与颜色类：
      */
     TK.data.phileButtons = [
         { // 第 1 个（蓝）：寻际者
             label: 'Hodophile',
-            colorClass: 'bg-[#38bdf8]/10 text-[#38bdf8] border border-[#38bdf8]/30 shadow-[0_0_10px_rgba(56,189,248,0.1)] hover:shadow-[0_0_25px_rgba(56,189,248,0.6)] hover:bg-[#38bdf8]/20'
+            rgb: '56, 189, 248',
+            colorClass: 'text-[#38bdf8]'
         },
         { // 第 2 个（绿）：逐美者
             label: 'Philocalist',
-            colorClass: 'bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/30 shadow-[0_0_10px_rgba(74,222,128,0.1)] hover:shadow-[0_0_25px_rgba(74,222,128,0.6)] hover:bg-[#4ade80]/20'
+            rgb: '74, 222, 128',
+            colorClass: 'text-[#4ade80]'
         },
         { // 第 3 个（黄）：游玩者
             label: 'Ludophile',
-            colorClass: 'bg-[#facc15]/10 text-[#facc15] border border-[#facc15]/30 shadow-[0_0_10px_rgba(250,204,21,0.1)] hover:shadow-[0_0_25px_rgba(250,204,21,0.6)] hover:bg-[#facc15]/20'
+            rgb: '250, 204, 21',
+            colorClass: 'text-[#facc15]'
         },
         { // 第 4 个（紫）：亲水者
             label: 'Aquaphile',
-            colorClass: 'bg-[#a855f7]/10 text-[#a855f7] border border-[#a855f7]/30 shadow-[0_0_10px_rgba(168,85,247,0.1)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:bg-[#a855f7]/20'
+            rgb: '168, 85, 247',
+            colorClass: 'text-[#a855f7]'
         },
         { // 第 5 个（红）：极客
             label: 'Technophile',
-            colorClass: 'bg-[#ef4444]/10 text-[#ef4444] border border-[#ef4444]/30 shadow-[0_0_10px_rgba(239,68,68,0.1)] hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] hover:bg-[#ef4444]/20'
+            rgb: '239, 68, 68',
+            colorClass: 'text-[#ef4444]'
         }
     ];
 

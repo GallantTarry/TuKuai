@@ -163,7 +163,62 @@
         timers.length = 0;
     }
 
-    // 把上面写好的 8 个工具函数全部塞进 `TK.utils` 抽屉里，供其他文件调用
+    /**
+     * 工具 9：读取指定名称的浏览器本地 Cookie
+     *
+     * @param {string} name Cookie 键名
+     * @returns {string|null} 对应的 Cookie 值；若不存在则返回 `null`
+     */
+    function getCookie(name) {
+        const prefix = `${encodeURIComponent(name)}=`;
+        const parts = document.cookie ? document.cookie.split('; ') : [];
+        for (let i = 0; i < parts.length; i++) {
+            if (parts[i].indexOf(prefix) === 0) {
+                return decodeURIComponent(parts[i].slice(prefix.length));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 工具 10：写入浏览器本地 Cookie（自动兼容本地 HTTP 调试与线上 HTTPS 部署）
+     *
+     * @param {string} name Cookie 键名
+     * @param {string} value Cookie 值
+     * @param {number} [maxAgeSeconds=31536000] 有效期秒数（默认 1 年）
+     */
+    function setCookie(name, value, maxAgeSeconds = 31536000) {
+        const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
+        document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; SameSite=Lax${secureFlag}`;
+    }
+
+    /**
+     * 工具 11：立即删除指定名称的本地 Cookie
+     *
+     * @param {string} name Cookie 键名
+     */
+    function deleteCookie(name) {
+        const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
+        document.cookie = `${encodeURIComponent(name)}=; path=/; max-age=0; SameSite=Lax${secureFlag}`;
+    }
+
+    /**
+     * 工具 12：生成标准 36 位随机 UUID（兼容非 HTTPS 局域网调试环境）
+     *
+     * @returns {string} 形如 `"3b241101-e2bb-4255-8caf-4136c566a962"` 的唯一标识
+     */
+    function generateUuid() {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+            return crypto.randomUUID();
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+            const r = (Math.random() * 16) | 0;
+            const v = c === 'x' ? r : ((r & 0x3) | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    // 把上面写好的工具函数全部塞进 `TK.utils` 抽屉里，供其他文件调用
     Object.assign(TK.utils, {
         randomIndex,
         randomItem,
@@ -172,6 +227,10 @@
         hexToRgb,
         clamp01,
         fadeOutAudio,
-        clearTimers
+        clearTimers,
+        getCookie,
+        setCookie,
+        deleteCookie,
+        generateUuid
     });
 })(window.TuKuai);

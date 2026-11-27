@@ -66,8 +66,9 @@
                 threshold: 0
             });
 
-            // 找到当前板块下所有的毛玻璃卡片、标题、歌单项，统一挂上初始隐藏状态并交给侦测器
+            // 找到当前板块下所有的毛玻璃卡片、标题、歌单项（排除 SYSTEM ALERT 覆盖层自身），统一挂上初始隐藏状态并交给侦测器
             document.querySelectorAll(REVEAL_SELECTOR).forEach((el) => {
+                if (el.closest('.system-alert-overlay')) return;
                 el.classList.add('reveal-init', 'reveal-transition');
                 observer.observe(el);
             });

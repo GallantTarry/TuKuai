@@ -51,20 +51,39 @@
             const currentBg = ref(TK.utils.randomItem(data.backgrounds));
 
             // ----------------------------------------------------------------------------------
-            // 2. 开机打字机动画 & 底部毛玻璃 Cookie 提示条
+            // 2. Cookie 授权状态、开机控制台动画 & 独立访客（FANS）计数联动
             // ----------------------------------------------------------------------------------
-            /** 控制黑屏开机动画与 `"HELLO, WORLD!"` 打字机效果（逻辑见 `use-boot-sequence.js`） */
-            const {isBooted, typedText} = use.useBootSequence();
-            /** 开机完成后自动检查并弹出底部 Cookie 隐私提示条（逻辑见 `use-cookie-consent.js`） */
-            use.useCookieConsent(isBooted);
+            /** 管理本地 Cookie 授权状态与覆盖在「身份档案」框上的 SYSTEM ALERT 面板（逻辑见 `use-cookie-consent.js`） */
+            const cookieConsent = use.useCookieConsent();
+            const {
+                hasCookieConsent,
+                showCookieAlert,
+                alertBounce,
+                acceptCookieConsent,
+                declineCookieConsent,
+                nudgeCookieAlert,
+                getAuthorizedUuid
+            } = cookieConsent;
+
+            /** 控制开场 PowerShell 终端动画：仅在已授权 Cookie 时自动跳过（逻辑见 `use-boot-sequence.js`） */
+            const {isBooted, typedText} = use.useBootSequence(hasCookieConsent);
+
+            /** 切换左侧导航菜单：若尚未处理 SYSTEM ALERT，轻晃面板提醒用户先选择「同意」或「拒绝」 */
+            const selectTab = (tabId) => {
+                if (showCookieAlert.value) {
+                    nudgeCookieAlert();
+                    return;
+                }
+                currentTab.value = tabId;
+            };
 
             // ----------------------------------------------------------------------------------
             // 3. 侧边栏与顶栏：实时时钟、作息状态、像素动态头像、访客计数、状态语录气泡
             // ----------------------------------------------------------------------------------
             /** 每秒跳动的电子表、按小时切换的作息状态与 SVG 像素动态头像（逻辑见 `use-clock-status.js`） */
             const {currentTime, currentStatus, currentAvatarSvg} = use.useClockStatus();
-            /** 全站独立访客数（FANS）统计（逻辑见 `use-uv-counter.js`） */
-            const {siteUv} = use.useUvCounter();
+            /** 全站独立访客数（FANS）统计：仅在点击「同意！」授权 Cookie 后才会 +1（逻辑见 `use-uv-counter.js`） */
+            const {siteUv} = use.useUvCounter(hasCookieConsent, getAuthorizedUuid);
             /** 头像旁每 15 秒弹出的赛博语录小气泡（逻辑见 `use-chat-bubble.js`） */
             const {showBubble, bubbleText} = use.useChatBubble(currentStatus);
 
@@ -141,9 +160,9 @@
             // ----------------------------------------------------------------------------------
             return {
                 // 导航 / 主题 / 背景
-                menuItems, currentTab, cssVars, activeColor, activeGlow, currentBg,
-                // 开机动画
-                isBooted, typedText,
+                menuItems, currentTab, selectTab, cssVars, activeColor, activeGlow, currentBg,
+                // 开机动画 & SYSTEM ALERT Cookie 授权面板
+                isBooted, typedText, showCookieAlert, alertBounce, acceptCookieConsent, declineCookieConsent,
                 // 侧边栏（时钟、状态、头像、粉丝数、对话气泡）
                 currentTime, currentStatus, currentAvatarSvg, siteUv, showBubble, bubbleText,
                 // 粒子画布引用

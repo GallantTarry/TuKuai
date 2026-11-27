@@ -91,27 +91,24 @@
         }),
 
         /**
-         * 【浏览器本地存储（localStorage）的键名（名字）】
-         * 什么是 localStorage？它是浏览器自带的一个“小记事本”，存在用户自己的电脑/手机里，关掉网页也不会丢。
-         * 我们用下面这 3 个名字在用户的浏览器里记 3 件事：
+         * 【浏览器本地 Cookie 配置】
+         * 仅在访客于主页「SYSTEM ALERT」面板点击「同意！」后才会写入本地 Cookie（有效期 1 年，与后端 KV 去重周期一致）：
+         *   1. `consent`    ：记录已授权状态（`'accepted'`），下次访问时据此自动跳过开场 PowerShell 控制台动画且不再弹出提示；
+         *   2. `deviceUuid` ：记录本设备唯一随机标识，用于向后端上报 `fans + 1` 并防止同一设备重复累加。
+         * 若访客点击「拒绝~」，则不写入任何本地 Cookie，FANS 不会增加，下次打开仍会播放开场动画并弹出提示。
+         */
+        cookies: Object.freeze({
+            consent: 'tukuai_cookie_consent',
+            deviceUuid: 'tukuai_device_uuid',
+            maxAgeSeconds: 365 * 24 * 60 * 60
+        }),
+
+        /**
+         * 【历史遗留 localStorage 键名（用于未授权时自动清理旧版本残留数据）】
          */
         storageKeys: Object.freeze({
-            /**
-             * 记录“这台设备的唯一身份证号（UUID）”
-             * 用来配合上面的 uv 接口识别是不是同一个老访客，避免同一个人刷新页面把粉丝数刷高
-             */
             deviceUuid: 'tukuai_device_uuid',
-
-            /**
-             * 记录“这个用户是不是已经看过开机 PowerShell 动画了”
-             * 第一次进网站没这个记录 -> 播开机动画 -> 播完存一个 `'true'` 进去 -> 下次再来直接进主页，不耽误时间
-             */
             booted: 'os_booted',
-
-            /**
-             * 记录“这个用户有没有点过左下角的 Cookie 授权弹窗”
-             * 点了同意存 `'accepted'`，点了拒绝存 `'declined'`；只要存过了，下次刷新就不再弹窗打扰
-             */
             cookieConsent: 'tukuai_cookie_consent'
         }),
 

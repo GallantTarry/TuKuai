@@ -116,23 +116,6 @@
 
 <body class="font-pixel text-xs md:text-sm">
 
-<!-- ============================ Cookie 授权提示条 ============================
-     默认隐藏；开机动画结束后由 use-cookie-consent.js 判断是否弹出，并处理两个按钮的点击。 -->
-<div id="cookieConsentBanner" class="cookie-consent-banner">
-    <div class="cookie-text">
-        <span class="text-[#4ade80] font-bold">SYSTEM ALERT:</span><br>
-        土块请求使用 Cookie 以优化系统交互与浏览体验，是否授权挂载？
-    </div>
-    <div class="cookie-buttons">
-        <button class="cookie-btn cookie-btn-decline flex items-center justify-center space-x-1" id="btnDecline">
-            <span>🙅‍♂️</span><span>拒绝~</span>
-        </button>
-        <button class="cookie-btn cookie-btn-accept flex items-center justify-center space-x-1" id="btnAccept">
-            <span>🙆‍♂️</span><span>同意！</span>
-        </button>
-    </div>
-</div>
-
 <!-- ============================ Vue 应用根节点 ============================
      v-cloak：Vue 接管前保持隐藏，避免用户看到未编译的 {{ }} 模板。
      :style="cssVars"：把随标签页变化的主题色以 CSS 变量（--theme-*）注入整棵 DOM 树。 -->
@@ -286,7 +269,7 @@
             <!-- 导航菜单：手机端横向滚动，桌面端纵向排列；数据来自 assets/js/app/data/menu.js -->
             <nav class="flex-none md:flex-1 p-3 md:p-5 flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto space-x-3 md:space-x-0 space-y-0 md:space-y-4 hide-scrollbar">
                 <button :class="['whitespace-nowrap flex-shrink-0 w-auto md:w-full text-left px-5 py-3 md:p-4 nav-item flex items-center', currentTab === item.id ? 'nav-active' : '']"
-                        :key="item.id" @click="currentTab = item.id"
+                        :key="item.id" @click="selectTab(item.id)"
                         v-for="item in menuItems">
                     <span class="mr-3 text-lg md:text-xl drop-shadow-md">{{ item.icon }}</span>
                     <span class="font-bold tracking-wide">{{ item.title }}</span>
@@ -315,29 +298,78 @@
                 </span>
             </div>
 
-            <!-- 主面板（毛玻璃）：根据 currentTab 切换显示不同标签页。
-                 「简介」页处于画板模式时面板固定尺寸并禁止滚动，其余情况内容超出时纵向滚动。
-                 panelJelly：每次切换档案 / 画板时播放一次果冻回弹动画。 -->
+            <!-- 主面板（通透冰晶毛玻璃）：根据 currentTab 切换显示不同标签页。
+                 长列表标签页固定顶栏标题、仅内部列表区独立滚动；短面板自适应内容高度并保持上下严格对称内边距。 -->
             <div :class="[
-                        'relative z-20 w-full md:w-4/5 max-w-3xl glass-panel transition-all duration-300 flex flex-col', panelJelly ? 'panel-jelly' : '',
+                        'relative z-20 w-full md:w-4/5 max-w-3xl glass-panel transition-all duration-300 flex flex-col',
+                        panelJelly ? 'panel-jelly' : '',
+                        alertBounce ? 'system-alert-bounce' : '',
                         (currentTab === 'about' && showCanvas)
                             ? 'h-[480px] md:h-[580px] p-2.5 md:p-3.5 overflow-hidden'
-                            : 'max-h-full overflow-y-auto hide-scrollbar p-5 md:p-10'
+                            : 'max-h-full overflow-hidden p-5 md:p-10'
                     ]">
 
+                <!-- ==================== SYSTEM ALERT：与「身份档案」默认尺寸严丝合缝的精简 Cookie 授权层 ==================== -->
+                <transition name="system-alert-fade">
+                    <div v-if="showCookieAlert"
+                         class="system-alert-overlay"
+                         role="dialog"
+                         aria-modal="true"
+                         aria-labelledby="systemAlertTitle">
+
+                        <!-- 顶栏：与 > 身份档案 同高对齐 -->
+                        <div class="tab-header system-alert-header">
+                            <div class="system-alert-title-wrap">
+                                <span class="system-alert-dot"></span>
+                                <h2 id="systemAlertTitle" class="system-alert-title">&gt; SYSTEM ALERT</h2>
+                            </div>
+                            <span class="system-alert-badge">LOCAL COOKIE</span>
+                        </div>
+
+                        <!-- 精简说明卡片：一句话交代用途 + 两行说明同意与拒绝的区别 -->
+                        <div class="glass-card system-alert-body">
+                            <p class="system-alert-lead">
+                                请求挂载本地 Cookie，仅用于<span class="system-alert-hl">「FANS 访客计数」</span>与<span class="system-alert-hl">「跳过开场控制台动画」</span>（不收集隐私）：
+                            </p>
+                            <div class="system-alert-rules">
+                                <div><span class="rule-accept">◈ 同意：</span>FANS +1 并保存本地 Cookie，下次访问直达主页</div>
+                                <div><span class="rule-decline">◈ 拒绝：</span>FANS 不增加，下次打开仍有开场动画与本提示</div>
+                            </div>
+                        </div>
+
+                        <!-- 底部操作栏 -->
+                        <div class="system-alert-actions">
+                            <button type="button"
+                                    class="cookie-btn cookie-btn-decline"
+                                    @click="declineCookieConsent">
+                                <span>🙅‍♂️</span><span>拒绝~</span>
+                            </button>
+                            <button type="button"
+                                    class="cookie-btn cookie-btn-accept"
+                                    @click="acceptCookieConsent">
+                                <span>🙆‍♂️</span><span>同意！</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </transition>
+
                 <!-- ==================== 标签页 1：我的简介 ==================== -->
-                <div :class="(currentTab === 'about' && showCanvas) ? 'w-full h-full flex-1 flex flex-col min-h-0' : 'w-full space-y-6'"
+                <div :class="[
+                        (currentTab === 'about' && showCanvas) ? 'w-full h-full flex-1 flex flex-col min-h-0' : 'w-full tab-section-shell',
+                        showCookieAlert ? 'panel-under-alert' : 'panel-under-alert-clear'
+                     ]"
                      v-if="currentTab === 'about'">
                     <transition name="board-fade" mode="out-in" @after-enter="initBoard">
 
                         <!-- ① 档案模式：标题 + 画板切换按钮 + 5 个 Phile 胶囊 + 跃迁文字块 -->
-                        <div v-if="!showCanvas" key="profile" class="space-y-6 w-full">
-                            <div class="tab-header flex justify-between items-center mb-6 shrink-0 relative z-20">
+                        <div v-if="!showCanvas" key="profile" class="tab-section-shell w-full">
+                            <div class="tab-header flex justify-between items-center shrink-0 relative z-20">
                                 <h2 class="text-lg md:text-xl tab-title font-bold m-0 tracking-wide">&gt; 身份档案</h2>
 
-                                <!-- 画板切换按钮（调色盘图标 + 5 色圆点 + 霓虹画笔，悬停时顶部出现主题色光条） -->
+                                <!-- 画板切换按钮（调色盘图标 + 5 色圆点 + 霓虹画笔，高度与全站标题栏严格锁齐） -->
                                 <button @click="toggleCanvas"
-                                        class="group relative flex items-center space-x-2 px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[var(--theme-color)] transition-all duration-300 cursor-pointer shadow-lg hover:shadow-[0_0_15px_var(--theme-glow)] active:scale-95 select-none"
+                                        class="about-board-btn group relative flex items-center space-x-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[var(--theme-color)] transition-all duration-300 cursor-pointer shadow-lg hover:shadow-[0_0_15px_var(--theme-glow)] active:scale-95 select-none"
                                         title="切换到土块画板">
                                     <!-- 悬浮光效指示微条 -->
                                     <span class="absolute -top-px left-3 right-3 h-px bg-gradient-to-r from-transparent via-[var(--theme-color)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
@@ -372,6 +404,7 @@
                             <div class="glass-card p-5 md:p-8 flex flex-wrap justify-center items-center gap-3 md:gap-4">
                                 <span :class="[phileButtonBaseClass, btn.colorClass]"
                                       :key="btn.label"
+                                      :style="{'--phile-rgb': btn.rgb}"
                                       @click.stop="triggerPhileFusion(index, $event)"
                                       v-for="(btn, index) in phileButtons">{{ btn.label }}</span>
                             </div>
@@ -606,32 +639,30 @@
                         </div>
                     </div>
 
-                    <!-- 歌单列表：点击任意一首立即播放；当前曲目高亮并显示跳动的 🎵 -->
-                    <div class="glass-card overflow-hidden flex-1 relative flex flex-col">
-                        <div class="overflow-y-auto hide-scrollbar flex-1">
-                            <div class="sticky top-0 z-10 px-5 py-3.5 border-b border-white/10 bg-[#050505]/60 backdrop-blur-xl flex items-center space-x-2 shadow-md rounded-t-[20px]">
-                                <span class="w-1.5 h-1.5 rounded-full bg-[#a855f7] animate-pulse shadow-[0_0_8px_#a855f7]"></span>
-                                <span class="text-[9px] text-gray-300 font-bold tracking-widest">LOCAL DISK &gt; /music/</span>
-                            </div>
+                    <!-- 歌单列表：目录栏固定在滚动区上方（无需黑底遮罩，文字绝不穿透重叠），仅下方曲目区独立滚动 -->
+                    <div class="glass-card music-playlist-card overflow-hidden flex-1 relative flex flex-col">
+                        <div class="px-5 py-3 border-b border-white/10 flex items-center space-x-2 shrink-0 select-none">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#a855f7] animate-pulse shadow-[0_0_8px_#a855f7]"></span>
+                            <span class="text-[9px] text-gray-300 font-bold tracking-widest">LOCAL DISK &gt; /music/</span>
+                        </div>
 
-                            <div class="p-3">
-                                <!-- song-item 类供 use-scroll-reveal.js 识别，做滚动渐显 -->
-                                <div :class="['song-item p-3 mb-2 cursor-pointer flex justify-between items-center text-[10px] md:text-xs rounded-xl transition-all', currentTrackIndex === index ? 'bg-white/10 text-white font-bold shadow-md' : 'text-gray-400 hover:bg-white/5']"
-                                     :key="index"
-                                     :style="{ borderLeft: currentTrackIndex === index ? `4px solid ${activeColor}` : '4px solid transparent' }"
-                                     @click="playTrack(index)"
-                                     v-for="(track, index) in playlist">
-                                    <span class="truncate flex-1 pl-2">{{ track.title }}</span>
-                                    <span class="tab-title ml-3 shrink-0 animate-pulse text-lg"
-                                          v-if="currentTrackIndex === index && isPlaying">🎵</span>
-                                </div>
+                        <div class="music-playlist-scroll overflow-y-auto hide-scrollbar flex-1 p-3">
+                            <!-- song-item 类供 use-scroll-reveal.js 识别，做滚动渐显 -->
+                            <div :class="['song-item p-3 mb-2 cursor-pointer flex justify-between items-center text-[10px] md:text-xs rounded-xl transition-all', currentTrackIndex === index ? 'bg-white/10 text-white font-bold shadow-md' : 'text-gray-400 hover:bg-white/5']"
+                                 :key="index"
+                                 :style="{ borderLeft: currentTrackIndex === index ? `4px solid ${activeColor}` : '4px solid transparent' }"
+                                 @click="playTrack(index)"
+                                 v-for="(track, index) in playlist">
+                                <span class="truncate flex-1 pl-2">{{ track.title }}</span>
+                                <span class="tab-title ml-3 shrink-0 animate-pulse text-lg"
+                                      v-if="currentTrackIndex === index && isPlaying">🎵</span>
                             </div>
                         </div>
                     </div>
                 </tab-section>
 
                 <!-- ==================== 标签页 5：复古游戏（点击 START 在游戏窗口中启动，数据见 data/resources.js） ==================== -->
-                <tab-section spacing="4" title="&gt; 引擎启动" v-if="currentTab === 'games'">
+                <tab-section title="&gt; 引擎启动" v-if="currentTab === 'games'">
                     <template #title-extra>
                         <button type="button"
                                 @click="showEngineHelp = true"
@@ -657,7 +688,7 @@
                 </tab-section>
 
                 <!-- ==================== 标签页 6：创意空间（3D 模型 / 创意网页，数据见 data/resources.js） ==================== -->
-                <tab-section spacing="4" title="&gt; 综合创意" v-if="currentTab === 'model'">
+                <tab-section title="&gt; 综合创意" v-if="currentTab === 'model'">
                     <launch-card :desc="work.desc" :emoji="work.emoji" :key="work.url" :name="work.title"
                                  @open="openGame(work.title, work.url)"
                                  accent="indigo" label="OPEN"
