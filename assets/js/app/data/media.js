@@ -14,79 +14,74 @@
     // ========================================================================
     // 1. 【电子音乐歌单】(`TK.data.playlist`)
     //
-    // 【超级省心的约定】
-    //   只要你把 `.mp3` 音乐文件放进项目的 `./assets/audio/` 文件夹里，
-    //   在下面的 `playlistTitles` 数组里**只写歌名**（不需要写 `./assets/audio/` 和 `.mp3`），
-    //   下面的代码会自动帮你把每一首歌拼成 `{title: '歌名', file: './assets/audio/歌名.mp3'}`！
-    //
-    // 【注意事项】
-    //   - 这里写的名字必须和 `./assets/audio/` 文件夹里的 `.mp3` 文件名**一字不差**（包括空格、大小写、标点符号）
-    //   - 数组里的先后顺序，就是网页上歌单从第 1 首到最后一首的排列顺序
-    //
-    // 【以后怎么加一首新歌？】
-    //   1. 把比如 `晴天.mp3` 放进 `assets/audio/` 文件夹
-    //   2. 在下面数组里加一行：`'晴天',` —— 搞定！
+    // 【云端 R2 曲库约定】
+    //   所有音频文件采用纯英文小写 kebab-case 命名（如 `the-internationale.flac`），
+    //   统一托管在 Cloudflare R2（`https://music.xn--udsye.art`，见 `config.js` 的 `audioBaseUrl`）。
+    //   新增或升级无损曲目时，直接运行项目根目录的 `./upload-music.ps1` 即可自动上传 R2 并更新下方列表！
     // ========================================================================
-    const playlistTitles = [
-        '国际歌',
-        'G弦上的咏叹调',
-        'Odysseus',
-        'CornfieldChase',
-        'Experience',
-        'gowest',
-        '复古广告loop',
-        '未白镇8bit',
-        '送别',
-        '雪绒花',
-        '小步舞曲',
-        '西西里舞曲',
-        '裸体舞曲Part1',
-        '少女的祈祷',
-        'G大调第一无伴奏大提琴组曲：前奏曲',
-        'Speak softly love',
-        'The Rain',
-        'HiddenPath',
-        'Rain',
-        'Si tu vois ma mère',
-        'Where Is Armo',
-        'Клетка',
-        'манго нектар',
-        'Судно',
-        'AULD LANG SYNE',
-        '苏维埃进行曲',
-        '贝多芬第五交响乐',
-        '致爱丽丝',
-        '贝多芬月光奏鸣曲',
-        '梦中的婚礼',
-        '茉莉花',
-        '流浪者之歌',
-        '十面埋伏',
-        '加州旅馆',
-        '爱的罗曼史',
-        '蓝色多瑙河',
-        'The Swan',
-        'Girls like you',
-        'Track in Time',
-        '飞越疯人院电影片尾曲',
-        'For River',
-        'Travelers',
-        '牧场物语矿石镇的伙伴们',
-        '勇者斗恶龙序曲',
-        'Minecraft',
-        '燃起来吧!',
-        'Sunflower',
-        '奇跡の山',
-        '花',
-        '风之诗',
-        '云中杉',
-        'MerryChristmas',
-    ];
+    const audioBase = (TK.config && TK.config.audioBaseUrl)
+        ? TK.config.audioBaseUrl.replace(/\/+$/, '')
+        : './assets/audio';
 
-    /**
-     * 把上面的纯歌名数组，自动转换成播放器需要的完整对象数组：
-     * 例如 `'国际歌'` -> `{ title: '国际歌', file: './assets/audio/国际歌.mp3' }`
-     */
-    TK.data.playlist = playlistTitles.map(title => ({title, file: `./assets/audio/${title}.mp3`}));
+    const track = (title, file) => ({
+        title,
+        file: `${audioBase}/${file}`
+    });
+
+    TK.data.playlist = [
+        track('The Internationale', 'the-internationale.flac'),
+        track('Air on the G String', 'air-on-the-g-string.flac'),
+        track('Odysseus', 'odysseus.mp3'),
+        track('Cornfield Chase', 'cornfield-chase.mp3'),
+        track('Experience', 'experience.mp3'),
+        track('Go West', 'go-west.mp3'),
+        track('Sleep Walk Loop', 'sleep-walk-loop.mp3'),
+        track('Littleroot Town 8-Bit', 'littleroot-town-8bit.mp3'),
+        track('Farewell', 'farewell.mp3'),
+        track('Edelweiss', 'edelweiss.mp3'),
+        track('Minuet', 'minuet.mp3'),
+        track('Sicilienne', 'sicilienne.mp3'),
+        track('Gymnopedie No. 1', 'gymnopedie-no-1.flac'),
+        track("Maiden's Prayer", 'maidens-prayer.mp3'),
+        track('Cello Suite No. 1 Prelude', 'cello-suite-no-1-prelude.flac'),
+        track('Speak Softly Love', 'speak-softly-love.mp3'),
+        track('The Rain', 'the-rain.mp3'),
+        track('Hidden Path', 'hidden-path.mp3'),
+        track('Rain', 'rain.mp3'),
+        track('Si Tu Vois Ma Mere', 'si-tu-vois-ma-mere.mp3'),
+        track('Where Is Armo', 'where-is-armo.mp3'),
+        track('Kletka', 'kletka.mp3'),
+        track('Mango Nectar', 'mango-nectar.mp3'),
+        track('Sudno', 'sudno.mp3'),
+        track('Auld Lang Syne', 'auld-lang-syne.mp3'),
+        track('Soviet March', 'soviet-march.mp3'),
+        track('Symphony No. 5', 'symphony-no-5.flac'),
+        track('Fur Elise', 'fur-elise.flac'),
+        track('Moonlight Sonata', 'moonlight-sonata.flac'),
+        track("Mariage d'Amour", 'mariage-d-amour.mp3'),
+        track('Jasmine Flower', 'jasmine-flower.mp3'),
+        track('Zigeunerweisen', 'zigeunerweisen.flac'),
+        track('Ambush from All Sides', 'ambush-from-all-sides.mp3'),
+        track('Hotel California', 'hotel-california.mp3'),
+        track('Romance de Amor', 'romance-de-amor.mp3'),
+        track('The Blue Danube', 'the-blue-danube.flac'),
+        track('The Swan', 'the-swan.flac'),
+        track('Girls Like You', 'girls-like-you.mp3'),
+        track('Track in Time', 'track-in-time.mp3'),
+        track("Cuckoo's Nest Finale", 'cuckoos-nest-finale.mp3'),
+        track('For River', 'for-river.mp3'),
+        track('Travelers', 'travelers.mp3'),
+        track('Mineral Town', 'mineral-town.mp3'),
+        track('Dragon Quest Overture', 'dragon-quest-overture.mp3'),
+        track('Minecraft', 'minecraft.mp3'),
+        track('Burn It Up', 'burn-it-up.mp3'),
+        track('Sunflower', 'sunflower.mp3'),
+        track('Miracle Mountain', 'miracle-mountain.mp3'),
+        track('Flower', 'flower.mp3'),
+        track('Wind Poem', 'wind-poem.mp3'),
+        track('Cedar in the Clouds', 'cedar-in-the-clouds.mp3'),
+        track('Merry Christmas Mr. Lawrence', 'merry-christmas-mr-lawrence.mp3'),
+    ];
 
     // ========================================================================
     // 2. 【音乐播放器的 3 种循环模式】(`TK.data.playModes`)

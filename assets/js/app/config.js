@@ -62,6 +62,12 @@
         }),
 
         /**
+         * 【电子音乐云端无损曲库 CDN 根地址】
+         * 托管于 Cloudflare R2（存储桶：tukuai-music），免出站流量费并支持 HTTP Range 流式分片播放
+         */
+        audioBaseUrl: 'https://music.xn--udsye.art',
+
+        /**
          * 【页面跳转与内嵌链接】
          */
         links: Object.freeze({
