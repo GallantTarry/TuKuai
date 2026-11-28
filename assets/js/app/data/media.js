@@ -47,7 +47,7 @@
         track('Speak Softly Love', 'speak-softly-love.mp3'),
         track('The Rain', 'the-rain.mp3'),
         track('Hidden Path', 'hidden-path.mp3'),
-        track('Rain', 'rain.mp3'),
+        track('Rain', 'rain.flac'),
         track('Si Tu Vois Ma Mere', 'si-tu-vois-ma-mere.mp3'),
         track('Where Is Armo', 'where-is-armo.mp3'),
         track('Kletka', 'kletka.mp3'),
