@@ -76,6 +76,9 @@
         {name: 'iCloud', desc: '苹果云服务', url: 'https://www.icloud.com/'},
         {name: 'Hacker News', desc: '硬核极客技术社区', url: 'https://news.ycombinator.com/'},
         {name: 'AMD', desc: '驱动更新', url: 'https://www.amd.com/en/support/download/drivers.html'},
+        {name: 'RuTracker', desc: '老牌 BT 资源与无损音乐档案库', url: 'https://rutracker.org/'},
+        {name: 'qBittorrent', desc: '开源跨平台 BT/磁力下载客户端', url: 'https://www.qbittorrent.org/'},
+        {name: 'Spek', desc: '开源音频频谱分析与真假无损检测', url: 'https://www.spek.cc/'},
     ];
 
     // ========================================================================
