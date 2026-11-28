@@ -49,7 +49,7 @@
         track('Hidden Path', 'hidden-path.mp3'),
         track('Rain', 'rain.flac'),
         track('Si Tu Vois Ma Mere', 'si-tu-vois-ma-mere.mp3'),
-        track('Where Is Armo', 'where-is-armo.mp3'),
+        track('Where Is Armo', 'where-is-armo.flac'),
         track('Kletka', 'kletka.mp3'),
         track('Mango Nectar', 'mango-nectar.mp3'),
         track('Sudno', 'sudno.mp3'),
