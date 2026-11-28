@@ -1,7 +1,7 @@
 // 每次发版更新静态资源后，只需递增此版本号：
 //   1. 自动清空老访客浏览器中的旧版 CacheStorage；
 //   2. 同源回源请求自动附加 `?_v=${CACHE_VERSION}` 并绕过本地磁盘缓存，直接穿透 Cloudflare 旧边缘缓存（无需去后台手动点 Purge）！
-const CACHE_VERSION = 'v2.1.8';
+const CACHE_VERSION = 'v2.1.9';
 const CACHE_NAME = `tukuai-smart-cache-${CACHE_VERSION}`;
 
 /**
