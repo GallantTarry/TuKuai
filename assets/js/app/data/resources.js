@@ -33,6 +33,7 @@
         {name: 'Google Drive', desc: '谷歌云盘', url: 'https://drive.google.com/'},
         {name: 'Google Docs', desc: '谷歌在线文档', url: 'https://docs.google.com/'},
         {name: 'Gemini', desc: '智能 AI 助手', url: 'https://gemini.google.com/app'},
+        {name: 'storedeveloper', desc: '微软开发者', url: 'https://storedeveloper.microsoft.com/'},
         {name: 'npm', desc: 'JS/TS 包管理平台', url: 'https://www.npmjs.com/'},
         {name: 'Z-Library', desc: '免费电子书库', url: 'https://zh.z-library.sk'},
         {name: 'GitHub', desc: '代码界的社交网络', url: 'https://github.com/'},
